@@ -22,33 +22,32 @@ interface VocabularyLessonProps {
 
 type MatchState = {
   isMatchMode: boolean;
-  selectedFront: number | null; // índice do front selecionado
-  matched: Set<number>; // índices já acertados
-  shuffledIdx: number[]; // mapeia posição -> índice real do back
+  selectedFront: number | null;
+  matched: Set<number>;
+  shuffledIdx: number[];
 };
 
-// Paleta de cores para os pares
 const pairColors = [
-  "#ff6b6b", // vermelho
-  "#4dabf7", // azul
-  "#51cf66", // verde
-  "#ffa94d", // laranja
-  "#845ef7", // roxo
-  "#f06595", // rosa
-  "#20c997", // turquesa
-  "#fcc419", // amarelo
-  "#339af0", // azul claro
-  "#ff922b", // laranja escuro
-  "#7950f2", // violeta
-  "#e64980", // magenta
-  "#12b886", // verde esmeralda
-  "#f783ac", // salmão
-  "#228be6", // azul royal
-  "#000000", // preto
-  "#495057", // cinza escuro
-  "#f03e3e", // vermelho forte
-  "#5c7cfa", // azul vibrante
-  "#37b24d", // verde vibrante
+  "#ff6b6b",
+  "#4dabf7",
+  "#51cf66",
+  "#ffa94d",
+  "#000000",
+  "#845ef7",
+  "#f06595",
+  "#20c997",
+  "#fcc419",
+  "#339af0",
+  "#ff922b",
+  "#7950f2",
+  "#e64980",
+  "#12b886",
+  "#f783ac",
+  "#228be6",
+  "#495057",
+  "#f03e3e",
+  "#5c7cfa",
+  "#37b24d",
 ];
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -71,7 +70,6 @@ export default function VocabularyLesson({
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
   const [seeFront, setSeeFront] = useState(false);
 
-  // ======== ESTADO DO EXERCÍCIO DE MATCH ========
   const [match, setMatch] = useState<MatchState>({
     isMatchMode: false,
     selectedFront: null,
@@ -83,13 +81,11 @@ export default function VocabularyLesson({
     ? element.sentences
     : [];
 
-  // Embaralhamos apenas quando entramos no modo match ou quando a lista muda
   const shuffledBackIndices = useMemo(() => {
     const base = sentences.map((_, i) => i);
     return shuffleArray(base);
   }, [sentences]);
 
-  // Ativar/desativar o modo match
   const toggleMatchMode = () => {
     if (!match.isMatchMode) {
       setMatch({
@@ -109,7 +105,7 @@ export default function VocabularyLesson({
   };
 
   const onPickFront = (frontIndex: number) => {
-    if (match.matched.has(frontIndex)) return; // já acertado
+    if (match.matched.has(frontIndex)) return;
     setMatch((prev) => ({ ...prev, selectedFront: frontIndex }));
   };
 
@@ -126,7 +122,6 @@ export default function VocabularyLesson({
     }
 
     if (selectedFront === realBackIndex) {
-      // ACERTOU
       const newMatched = new Set(match.matched);
       newMatched.add(selectedFront);
       setMatch((prev) => ({
@@ -136,7 +131,6 @@ export default function VocabularyLesson({
       }));
       notifyAlert("✔ Par correto!", "green");
     } else {
-      // ERROU
       notifyAlert("❌ Não é o par correspondente.", "red");
       setMatch((prev) => ({ ...prev, selectedFront: null }));
     }
@@ -184,7 +178,6 @@ export default function VocabularyLesson({
     }
   };
 
-  // ======== ESTILOS UTILITÁRIOS LOCAIS ========
   const cardStyle: React.CSSProperties = {
     border: "1px solid #e3e6ea",
     borderRadius: "4px",
@@ -202,7 +195,6 @@ export default function VocabularyLesson({
     outlineOffset: 2,
   };
 
-  // não mexe na borda para não matar a cor do par
   const matchedStyle: React.CSSProperties = {
     background: "#f0fff4",
   };
@@ -284,12 +276,6 @@ export default function VocabularyLesson({
                   flexDirection: "column",
                   background: "#fff",
                   justifyContent: "flex-start",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "#f3f3f3ff";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#fff";
                 }}
               >
                 <div
@@ -414,13 +400,13 @@ export default function VocabularyLesson({
                   key={`front-${idx}`}
                   style={{
                     ...cardStyle,
-                    border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
+                    border: `3px solid ${isDone ? color : "transparent"}`,
                     position: "relative",
                     ...(isSelected ? selectedStyle : {}),
                     ...(isDone
                       ? {
                           backgroundColor: isDone
-                            ? `${color}30`
+                            ? `${color}20`
                             : "transparent",
                         }
                       : {}),
@@ -429,8 +415,6 @@ export default function VocabularyLesson({
                     onPickFront(idx);
                     readText(s.english, true, "en", selectedVoice);
                   }}
-             
-                  
                 >
                   <div
                     style={{
@@ -505,19 +489,19 @@ export default function VocabularyLesson({
                   key={`back-${slot}`}
                   style={{
                     ...cardStyle,
-                    border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
+                    border: `3px solid ${isDone ? color : "transparent"}`,
                     position: "relative",
-                    ...(isDone ? {
+                    ...(isDone
+                      ? {
                           backgroundColor: isDone
-                            ? `${color}30`
+                            ? `${color}20`
                             : "transparent",
-                        } : {}),
+                        }
+                      : {}),
                   }}
                   onClick={() => {
                     if (!isDone) onPickBack(slot);
                   }}
-             
-                  
                 >
                   <div
                     style={{
