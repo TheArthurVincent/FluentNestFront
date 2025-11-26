@@ -417,7 +417,9 @@ export default function VocabularyLesson({
                     border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
                     position: "relative",
                     ...(isSelected ? selectedStyle : {}),
-                    ...(isDone ? matchedStyle : {}),
+                    ...(isDone ? {
+                      backgroundColor: isDone ? `${color}40` : "transparent",
+                    } : {}),
                   }}
                   onClick={() => {
                     onPickFront(idx);
