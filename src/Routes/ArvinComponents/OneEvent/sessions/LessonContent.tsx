@@ -11,6 +11,7 @@ type LessonContentProps = {
   headers: MyHeadersType;
   theLessonRender?: any;
   eventId: string;
+  fetchEventData: any;
   studentID: string;
   date?: string;
 };
@@ -18,10 +19,9 @@ type LessonContentProps = {
 const LessonContent: FC<LessonContentProps> = ({
   headers,
   theLessonRender,
+  fetchEventData,
   studentID,
 }) => {
-  const [change, setChange] = useState(false);
-
   return (
     <>
       <div
@@ -45,6 +45,7 @@ const LessonContent: FC<LessonContentProps> = ({
         </div>
         <EnglishClassCourse2
           canEditCourse={true}
+          fetchEventData={fetchEventData}
           mainStudentID={studentID}
           classId={theLessonRender}
           headers={headers}

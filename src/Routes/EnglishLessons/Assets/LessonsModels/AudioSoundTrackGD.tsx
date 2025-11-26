@@ -86,7 +86,7 @@ export default function AudioFile({
   const handlePlayText = () => {
     if (!element.text) return;
     // restart = true → mata o áudio anterior e toca este
-    readText(element.text, true, selectedVoice, undefined, 1.2);
+    readText(element.text, true, selectedVoice, undefined, 0.9);
   };
 
   return (

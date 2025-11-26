@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
+import { createPortal } from "react-dom";
 import { backDomain, Xp } from "../../../../Resources/UniversalComponents";
 import {
   alwaysWhite,
@@ -106,8 +107,6 @@ interface NewRecurringEventCalendarProps {
   change: boolean;
   alternateBoolean: boolean;
   setAlternateBoolean: React.Dispatch<React.SetStateAction<boolean>>;
-  studentsList?: Array<{ id: string | number; name: string }>;
-  groupsList?: Array<{ id: string | number; name: string }>;
 }
 function NewRecurringEventCalendar({
   headers,
@@ -116,8 +115,6 @@ function NewRecurringEventCalendar({
   change,
   alternateBoolean,
   setAlternateBoolean,
-  studentsList = [],
-  groupsList = [],
 }: NewRecurringEventCalendarProps) {
   // --- estado base do modal ---
   const [isModalOfTutoringsVisible, setIsModalOfTutoringsVisible] =
@@ -178,10 +175,9 @@ function NewRecurringEventCalendar({
     return diffDays;
   };
 
-  const handleSeeModalOfTutorings = () => {
-    setAlternateBoolean(!alternateBoolean);
-
-    setChange?.(!change);
+  const handleSeeModalOfTutorings = async () => {
+    // setAlternateBoolean(!alternateBoolean);
+    // setChange?.(!change);
     setNewStudentId("");
     setNewGroupId("");
     setShowClasses(false);
@@ -191,8 +187,15 @@ function NewRecurringEventCalendar({
     setSeeEditTutoring(false);
     setIsModalOfTutoringsVisible(true);
     setLoadingTutoringDays(false);
-    setLoadingModalTutoringsInfo(false);
     setShowSeeEditTutoring(false);
+
+    // 👇 acrescentar isso:
+    setLoadingModalTutoringsInfo(true);
+    try {
+      await fetchStudents();
+    } finally {
+      setLoadingModalTutoringsInfo(false);
+    }
   };
 
   const handleCloseModalOfTutorings = () => {
@@ -240,6 +243,30 @@ function NewRecurringEventCalendar({
     }
   };
 
+  const [studentsList, setStudentsList] = useState([]);
+  const [groupsList, setGroupsList] = useState([]);
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${myId}`,
+        { headers }
+      );
+      const res = response.data.listOfStudents;
+      setStudentsList(res);
+    } catch (error) {
+      console.log(error, "Erro ao encontrar alunos");
+    }
+    try {
+      const response = await axios.get(`${backDomain}/api/v1/groups/${myId}`, {
+        headers,
+      });
+      const res = response.data.groups;
+      setGroupsList(res);
+    } catch (error) {
+      console.log(error, "Erro ao encontrar Turmas");
+    }
+  };
+
   const fetchOneSetOfTutoringsInside = (e: any) => {
     const id = e.target.value;
     setNewStudentId(id);
@@ -281,6 +308,9 @@ function NewRecurringEventCalendar({
   const handleTimeChange = (e: any) => setTimeOfTutoring(e.target.value);
 
   const updateOneTutoring = async () => {
+    setLoadingTutoringDays(true);
+    setSeeEditTutoring(true);
+
     try {
       await axios.put(
         `${backDomain}/api/v1/tutoringevent`,
@@ -297,10 +327,14 @@ function NewRecurringEventCalendar({
       );
 
       setSeeEditTutoring(false);
+      setLoadingTutoringDays(false);
       if (newStudentId) fetchOneSetOfTutorings(newStudentId);
       if (newGroupId) fetchOneSetOfGroups(newGroupId);
     } catch (error) {
       console.log(error, "Erro ao atualizar recorrência");
+    } finally {
+      setLoadingTutoringDays(false);
+      setSeeEditTutoring(false);
     }
   };
 
@@ -393,920 +427,1135 @@ function NewRecurringEventCalendar({
     !numberOfWeeks ||
     Number(numberOfWeeks) <= 0 ||
     Number(duration) <= 0;
-
   return (
     <>
-      <button onClick={handleSeeModalOfTutorings}>
-        <i className="fa fa-repeat" style={{ fontSize: "10px" }} />
+      {/* Botão que abre o modal – estilo mais “pill” Arvin */}
+      <button
+        onClick={handleSeeModalOfTutorings}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "4px 10px",
+          borderRadius: "999px",
+          border: "1px solid " + partnerColor(),
+          background: "rgba(0,0,0,0.02)",
+          color: partnerColor(),
+          fontSize: 12,
+          cursor: "pointer",
+        }}
+      >
+        <i className="fa fa-repeat" style={{ fontSize: 11 }} />
         <span>{UniversalTexts.calendarModal.recurringClasses}</span>
       </button>
 
-      {/* backdrop */}
-      <div
-        style={{
-          backgroundColor: transparentWhite(),
-          width: "10000px",
-          height: "10000px",
-          top: 0,
-          left: 0,
-          position: "fixed",
-          zIndex: 99,
-          display: isModalOfTutoringsVisible ? "block" : "none",
-          padding: "0.5rem",
-        }}
-        onClick={handleCloseModalOfTutorings}
-      />
-
-      {/* modal */}
-      <div
-        className="modal box-shadow-white"
-        style={{
-          position: "fixed",
-          display: isModalOfTutoringsVisible ? "block" : "none",
-          zIndex: 100,
-          backgroundColor: alwaysWhite(),
-          padding: "1.5rem",
-          width: window.innerWidth <= 768 ? "90vw" : "28rem",
-          maxHeight: "80vh",
-          overflow: "auto",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          borderRadius: "4px",
-        }}
-      >
-        {/* header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <HTwo style={{ margin: 0, color: partnerColor() }}>
-            {UniversalTexts.editTurorings}
-          </HTwo>
-          <Xp
-            onClick={handleCloseModalOfTutorings}
-            style={{
-              cursor: "pointer",
-              color: "#998",
-              transition: "color 0.2s",
-            }}
-            onMouseEnter={(e: any) => (e.target.style.color = partnerColor())}
-            onMouseLeave={(e: any) => (e.target.style.color = "#998")}
-          >
-            ✕
-          </Xp>
-        </div>
-
-        {/* conteúdo */}
-        {loadingModalTutoringsInfo ? (
-          <div style={{ textAlign: "center", padding: "2rem" }}>
-            <CircularProgress style={{ color: partnerColor() }} />
-          </div>
-        ) : (
-          <div style={{ marginBottom: "1.5rem" }}>
-            {/* Debug info */}
+      {/* Modal no body via createPortal */}
+      {isModalOfTutoringsVisible &&
+        createPortal(
+          <>
+            {/* BACKDROP */}
             <div
+              onClick={handleCloseModalOfTutorings}
               style={{
-                padding: "8px",
-                background: "#f0f0f0",
-                borderRadius: "4px",
-                marginBottom: "1rem",
-                fontSize: "12px",
-                color: "#666",
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(15, 23, 42, 0.45)",
+                zIndex: 999,
               }}
-            >
-              Students: {studentsList?.length || 0} | Groups:{" "}
-              {groupsList?.length || 0}
-            </div>
+            />
 
-            {/* tabs aluno/grupo */}
+            {/* CONTAINER PARA CENTRALIZAR */}
             <div
               style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 1000,
                 display: "flex",
-                gap: "1rem",
-                justifyContent: "space-between",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "16px",
               }}
+              onClick={handleCloseModalOfTutorings}
             >
+              {/* MODAL EM SI */}
               <div
+                className="arvin-modal box-shadow-white"
+                onClick={(e) => e.stopPropagation()} // não fecha ao clicar dentro
                 style={{
-                  borderRadius: "1rem 1rem 0 0",
-                  padding: "10px",
-                  backgroundColor: showStudentsRecurring ? "#eee" : "white",
+                  width: "100%",
+                  maxWidth: 520,
+                  maxHeight: "90vh",
+                  overflow: "hidden",
+                  borderRadius: 12,
+                  backgroundColor: alwaysWhite(),
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <button
+                {/* HEADER */}
+                <div
                   style={{
-                    backgroundColor: showStudentsRecurring
-                      ? partnerColor()
-                      : "grey",
-                    color: "white",
-                    padding: "5px 1rem",
-                    borderRadius: "4px",
-                    border: "none",
-                    cursor: "pointer",
-                    marginBottom: "1rem",
-                  }}
-                  onClick={() => {
-                    setShowStudentsRecurring(true);
-                    setShowGroupsRecurring(false);
+                    padding: "14px 18px",
+                    borderBottom: "1px solid #e2e8f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
                   }}
                 >
-                  Selecionar Aluno
-                </button>
-              </div>
-              <div
-                style={{
-                  borderRadius: "1rem 1rem 0 0",
-                  padding: "10px",
-                  backgroundColor: showGroupsRecurring ? "#eee" : "white",
-                }}
-              >
-                <button
-                  style={{
-                    backgroundColor: showGroupsRecurring
-                      ? partnerColor()
-                      : "grey",
-                    color: "white",
-                    padding: "5px 1rem",
-                    borderRadius: "4px",
-                    border: "none",
-                    cursor: "pointer",
-                    marginBottom: "1rem",
-                  }}
-                  onClick={() => {
-                    setShowStudentsRecurring(false);
-                    setShowGroupsRecurring(true);
-                  }}
-                >
-                  Selecionar Grupo
-                </button>
-              </div>
-            </div>
-
-            {/* seleção */}
-            {showStudentsRecurring && (
-              <div
-                style={{
-                  borderRadius: "0 0 1rem 1rem",
-                  padding: "10px",
-                  backgroundColor: "#eee",
-                }}
-              >
-                <select
-                  onChange={fetchOneSetOfTutoringsInside}
-                  value={newStudentId}
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    borderRadius: "4px",
-                    border: "1px solid #ced4da",
-                    fontSize: "0.9rem",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <option value="" hidden>
-                    Select student
-                  </option>
-                  {studentsList && studentsList.length > 0 ? (
-                    studentsList.map((student: any) => (
-                      <option
-                        key={student.id || student._id}
-                        value={student.id || student._id}
-                      >
-                        {(student.name ||
-                          student.firstName ||
-                          student.username) +
-                          " " +
-                          (student.lastname || student.lastName || "")}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading students...</option>
-                  )}
-                </select>
-              </div>
-            )}
-
-            {showGroupsRecurring && (
-              <div
-                style={{
-                  borderRadius: "0 0 1rem 1rem",
-                  padding: "10px",
-                  backgroundColor: "#eee",
-                }}
-              >
-                <select
-                  value={newGroupId}
-                  onChange={fetchOneSetOfGroupClassesInside}
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    borderRadius: "4px",
-                    border: "1px solid #ced4da",
-                    fontSize: "0.9rem",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <option value="" hidden>
-                    Selecione o grupo...
-                  </option>
-                  {groupsList && groupsList.length > 0 ? (
-                    groupsList.map((group: any) => (
-                      <option
-                        key={group._id || group.id}
-                        value={group._id || group.id}
-                      >
-                        {group.name || group.title || group.groupName}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Loading groups...</option>
-                  )}
-                </select>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* lista de recorrências */}
-        {loadingTutoringDays ? (
-          <div style={{ textAlign: "center", padding: "2rem" }}>
-            <CircularProgress style={{ color: partnerColor() }} />
-          </div>
-        ) : (
-          <div style={{ marginBottom: "1.5rem" }}>
-            {showClasses && tutoringsListOfOneStudentOrGroup.length > 0 && (
-              <div>
-                <h4 style={{ color: partnerColor(), marginBottom: "1rem" }}>
-                  {UniversalTexts.calendarModal.currentClasses}
-                </h4>
-                <div style={{ display: "grid", gap: "5px" }}>
-                  {tutoringsListOfOneStudentOrGroup
-                    .sort(
-                      (a: any, b: any) =>
-                        moment(a.day, "dddd").day() -
-                        moment(b.day, "dddd").day()
-                    )
-                    .map((item: any, index: number) => {
-                      const isExpiring = isTutoringExpiringWithinMonth(item);
-                      const daysLeft = getDaysUntilExpiration(item);
-                      return (
-                        <div
-                          key={`${item.day}-${item.time}-${index}`}
-                          style={{
-                            backgroundColor: isExpiring ? "#ffebee" : "#f8f9fa",
-                            padding: "0.5rem",
-                            borderRadius: "4px",
-                            border: isExpiring
-                              ? "2px solid #f44336"
-                              : "1px solid #dee2e6",
-                            boxShadow: isExpiring
-                              ? "0 2px 8px rgba(244, 67, 54, 0.2)"
-                              : "none",
-                          }}
-                        >
-                          {isExpiring && (
-                            <div
-                              style={{
-                                backgroundColor: "#f44336",
-                                color: "white",
-                                padding: "4px 8px",
-                                borderRadius: "4px",
-                                fontSize: "11px",
-                                fontWeight: 600,
-                                marginBottom: "8px",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                            >
-                              ⚠️
-                              {/* @ts-ignore */}
-                              {daysLeft > 0
-                                ? `${UniversalTexts.endsIn} ${daysLeft} dia${
-                                    // @ts-ignore
-                                    daysLeft > 1 ? "s" : ""
-                                  } (${new Date(
-                                    item.endDate
-                                  ).toLocaleDateString("pt-BR")})`
-                                : `${UniversalTexts.expired} ${new Date(
-                                    item.endDate
-                                  ).toLocaleDateString("pt-BR")}`}
-                              {UniversalTexts.tutoringExpiring}
-                            </div>
-                          )}
-
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              flexWrap: "wrap",
-                              gap: "5px",
-                            }}
-                          >
-                            <div>
-                              <span
-                                style={{ fontWeight: 600, color: "#495057" }}
-                              >
-                                {UniversalTexts.Class} #{index + 1}
-                              </span>
-                              <div style={{ color: "#6c757d", marginTop: 2 }}>
-                                {item.day} - {item.time}
-                                {item.link ? (
-                                  <Link
-                                    target="_blank"
-                                    to={item.link}
-                                    style={{
-                                      color: partnerColor(),
-                                      textDecoration: "none",
-                                      marginLeft: "5px",
-                                    }}
-                                  >
-                                    {UniversalTexts.accessClass}
-                                  </Link>
-                                ) : null}
-                                {item.endDate && (
-                                  <span
-                                    style={{
-                                      marginLeft: "5px",
-                                      color: "#6c757d",
-                                    }}
-                                  >
-                                    (Ends on:
-                                    {moment(item.endDate).format("DD/MM/YYYY")})
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            <div style={{ display: "flex", gap: "5px" }}>
-                              <button
-                                onClick={() => seeEditOneTutoring(item)}
-                                style={{
-                                  padding: "5px 1rem",
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => deleteTutoring(item)}
-                                style={{
-                                  padding: "5px 1rem",
-                                  backgroundColor: "#dc3545",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* editor de recorrência existente */}
-        <div
-          style={{
-            display: seeEditTutoring ? "block" : "none",
-            backgroundColor: "#fff3cd",
-            padding: "1.5rem",
-            borderRadius: "4px",
-            border: "1px solid #ffeaa7",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            <h4 style={{ margin: 0, color: "#856404" }}>
-              {UniversalTexts.calendarModal.editClass}
-            </h4>
-            <button
-              onClick={closeEditOneTutoring}
-              style={{
-                backgroundColor: "#dc3545",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                padding: "5px 1rem",
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-          </div>
-
-          <div style={{ display: "grid", gap: "1rem" }}>
-            <select
-              onChange={handleWeekDayChange}
-              value={weekDay}
-              style={{
-                padding: "5px",
-                borderRadius: "4px",
-                border: "1px solid #ced4da",
-                backgroundColor: "white",
-              }}
-            >
-              <option value="" hidden>
-                {UniversalTexts.calendarModal.selectWeekDay}
-              </option>
-              {weekDays.map((wd: any) => (
-                <option key={wd} value={wd}>
-                  {wd}
-                </option>
-              ))}
-            </select>
-
-            <select
-              onChange={handleTimeChange}
-              value={timeOfTutoring}
-              style={{
-                padding: "5px",
-                borderRadius: "4px",
-                border: "1px solid #ced4da",
-                backgroundColor: "white",
-              }}
-            >
-              <option value="" hidden>
-                {UniversalTexts.calendarModal.selectTime}
-              </option>
-              {times.map((t: any) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-
-            <input
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder={UniversalTexts.calendarModal.meetingLink}
-              type="text"
-              style={{
-                padding: "5px",
-                borderRadius: "4px",
-                border: "1px solid #ced4da",
-              }}
-              required
-            />
-
-            <input
-              value={duration}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (
-                  v === "" ||
-                  (v.length <= 3 && Number(v) >= 0 && Number(v) <= 300)
-                ) {
-                  setDuration(v);
-                }
-              }}
-              placeholder={UniversalTexts.duration}
-              type="number"
-              min="1"
-              max="300"
-              style={{
-                padding: "5px",
-                borderRadius: "4px",
-                border: "1px solid #ced4da",
-                maxWidth: "80px",
-                textAlign: "center",
-              }}
-              required
-            />
-
-            <button
-              onClick={updateOneTutoring}
-              style={{
-                padding: "5px 1.5rem",
-                backgroundColor: "#28a745",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontWeight: 500,
-              }}
-            >
-              {UniversalTexts.calendarModal.saveChanges}
-            </button>
-          </div>
-        </div>
-
-        {/* toggle e form para criar nova recorrência */}
-        {(newStudentId !== "" || newGroupId !== "") && (
-          <button
-            onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
-            style={{
-              padding: "8px 1.5rem",
-              marginBottom: "5px",
-              borderRadius: "4px",
-              backgroundColor: !showSeeEditTutoring ? "#f0f9f0" : "#fdf2f2",
-              border: !showSeeEditTutoring
-                ? "1px solid #d4e6d4"
-                : "1px solid #f5c6c6",
-              color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
-              cursor: "pointer",
-              fontWeight: 500,
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = !showSeeEditTutoring
-                ? "#e8f5e8"
-                : "#fce8e8";
-              e.currentTarget.style.transform = "translateY(-1px)";
-              e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = !showSeeEditTutoring
-                ? "#f0f9f0"
-                : "#fdf2f2";
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-            }}
-          >
-            {showSeeEditTutoring
-              ? UniversalTexts.hideShowClasses
-              : UniversalTexts.showShowClasses}
-          </button>
-        )}
-
-        {(newStudentId !== "" || newGroupId !== "") &&
-          showSeeEditTutoring &&
-          !seeEditTutoring && (
-            <div
-              style={{
-                padding: "1.5rem",
-                borderRadius: "4px",
-                backgroundColor: "#d4edda",
-                border: "1px solid #c3e6cb",
-              }}
-            >
-              <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                {UniversalTexts.calendarModal.addNewClass}
-              </h4>
-
-              <div style={{ display: "grid", gap: "1rem" }}>
-                <select
-                  onChange={handleTheNewWeekDayChange}
-                  value={theNewWeekDay}
-                  style={{
-                    padding: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ced4da",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <option hidden value="">
-                    {UniversalTexts.calendarModal.selectWeekDayOption}
-                  </option>
-                  {weekDays.map((wd: any) => (
-                    <option key={wd} value={wd}>
-                      {wd}
-                    </option>
-                  ))}
-                </select>
-
-                <select
-                  onChange={handleTheNewTimeChange}
-                  value={theNewTimeOfTutoring}
-                  style={{
-                    padding: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ced4da",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <option hidden value="">
-                    {UniversalTexts.calendarModal.selectTimeOption}
-                  </option>
-                  {times.map((t: any) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
-                </select>
-
-                <input
-                  placeholder={UniversalTexts.calendarModal.meetingLink}
-                  value={theNewLink}
-                  onChange={(e) => setTheNewLink(e.target.value)}
-                  type="text"
-                  style={{
-                    padding: "5px",
-                    borderRadius: "4px",
-                    border: "1px solid #ced4da",
-                  }}
-                  required
-                />
-
-                {/* atalhos e duração */}
-                <div>
-                  <p
-                    style={{
-                      display: "block",
-                      marginBottom: "5px",
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      fontWeight: 500,
-                      margin: "0 0 5px 0",
-                    }}
-                  >
-                    {UniversalTexts.repeatFor}:
-                  </p>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "4px",
-                      marginBottom: "8px",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    {[
-                      { label: "1m", weeks: 4, tooltip: "1 mês" },
-                      { label: "3m", weeks: 12, tooltip: "3 meses" },
-                      { label: "6m", weeks: 24, tooltip: "6 meses" },
-                      { label: "1a", weeks: 52, tooltip: "1 ano" },
-                      { label: "2a", weeks: 104, tooltip: "2 anos" },
-                    ].map(({ label, weeks, tooltip }) => (
-                      <button
-                        key={label}
-                        title={tooltip}
-                        style={{
-                          backgroundColor:
-                            Number(numberOfWeeks) === weeks
-                              ? "#e3f2fd"
-                              : "#f8f9fa",
-                          border:
-                            Number(numberOfWeeks) === weeks
-                              ? "1px solid #2196f3"
-                              : "1px solid #e0e0e0",
-                          cursor: "pointer",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          fontSize: "10px",
-                          fontWeight: 500,
-                          color:
-                            Number(numberOfWeeks) === weeks
-                              ? "#1976d2"
-                              : "#6c757d",
-                          transition: "all 0.2s ease",
-                          minWidth: "24px",
-                          height: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                        onClick={() => setNumberOfWeeks(weeks)}
-                        onMouseEnter={(e) => {
-                          if (Number(numberOfWeeks) !== weeks) {
-                            e.currentTarget.style.backgroundColor = "#f0f0f0";
-                            e.currentTarget.style.borderColor = "#bdbdbd";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (Number(numberOfWeeks) !== weeks) {
-                            e.currentTarget.style.backgroundColor = "#f8f9fa";
-                            e.currentTarget.style.borderColor = "#e0e0e0";
-                          }
-                        }}
-                      >
-                        {label}
-                      </button>
-                    ))}
-
-                    <input
-                      placeholder="Ex: 8"
-                      value={numberOfWeeks}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (
-                          v === "" ||
-                          (v.length <= 2 && Number(v) >= 0 && Number(v) <= 99)
-                        ) {
-                          setNumberOfWeeks(v);
-                        }
-                      }}
-                      type="number"
-                      min="1"
-                      max="99"
+                  <div>
+                    <HTwo
                       style={{
-                        padding: "6px",
-                        maxWidth: "60px",
-                        borderRadius: "4px",
-                        border: "1px solid #ced4da",
-                        fontSize: "12px",
-                        textAlign: "center",
-                      }}
-                      required
-                    />
-
-                    <p
-                      style={{
-                        display: "block",
-                        marginBottom: "5px",
-                        fontSize: "12px",
-                        color: "#6c757d",
-                        fontWeight: 500,
-                        margin: "0 0 5px 0",
+                        margin: 0,
+                        color: partnerColor(),
+                        fontSize: 18,
                       }}
                     >
-                      {UniversalTexts.duration}:
+                      {UniversalTexts.editTurorings}
+                    </HTwo>
+                    <p
+                      style={{
+                        margin: "4px 0 0 0",
+                        fontSize: 12,
+                        color: "#64748b",
+                      }}
+                    >
+                      {UniversalTexts.calendarModal.recurringSubtitle ||
+                        "Gerencie as aulas recorrentes de alunos e grupos."}
                     </p>
                   </div>
 
-                  <div
+                  <button
+                    onClick={handleCloseModalOfTutorings}
                     style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      width: 28,
+                      height: 28,
+                      borderRadius: "999px",
                       display: "flex",
-                      gap: "4px",
-                      marginBottom: "8px",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      justifyContent: "center",
+                      fontSize: 16,
+                      color: "#94a3b8",
                     }}
                   >
-                    {[
-                      { label: "30min", minutes: 30, tooltip: "30 minutos" },
-                      { label: "45min", minutes: 45, tooltip: "45 minutos" },
-                      { label: "1h", minutes: 60, tooltip: "1 hora" },
-                      { label: "1h30min", minutes: 90, tooltip: "1h30" },
-                      { label: "2h", minutes: 120, tooltip: "2 horas" },
-                    ].map(({ label, minutes, tooltip }) => (
-                      <button
-                        key={label}
-                        title={tooltip}
-                        style={{
-                          backgroundColor:
-                            Number(duration) === minutes
-                              ? "#e3f2fd"
-                              : "#f8f9fa",
-                          border:
-                            Number(duration) === minutes
-                              ? "1px solid #2196f3"
-                              : "1px solid #e0e0e0",
-                          cursor: "pointer",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          fontSize: "10px",
-                          fontWeight: 500,
-                          color:
-                            Number(duration) === minutes
-                              ? "#1976d2"
-                              : "#6c757d",
-                          transition: "all 0.2s ease",
-                          minWidth: "24px",
-                          height: "20px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                        onClick={() => setDuration(minutes)}
-                        onMouseEnter={(e) => {
-                          if (Number(duration) !== minutes) {
-                            e.currentTarget.style.backgroundColor = "#f0f0f0";
-                            e.currentTarget.style.borderColor = "#bdbdbd";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (Number(duration) !== minutes) {
-                            e.currentTarget.style.backgroundColor = "#f8f9fa";
-                            e.currentTarget.style.borderColor = "#e0e0e0";
-                          }
-                        }}
-                      >
-                        {label}
-                      </button>
-                    ))}
-
-                    <input
-                      placeholder="Ex: 55"
-                      value={duration}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (
-                          v === "" ||
-                          (v.length <= 3 && Number(v) >= 0 && Number(v) <= 300)
-                        ) {
-                          setDuration(v);
-                        }
-                      }}
-                      type="number"
-                      min="1"
-                      max="300"
-                      style={{
-                        padding: "6px",
-                        maxWidth: "60px",
-                        borderRadius: "4px",
-                        border: "1px solid #ced4da",
-                        fontSize: "12px",
-                        textAlign: "center",
-                      }}
-                      required
-                    />
-                  </div>
-
-                  {/* preview do período */}
-                  <div
-                    style={{
-                      marginTop: "8px",
-                      padding: "6px 8px",
-                      backgroundColor: "#f8f9fa",
-                      border: "1px solid #e9ecef",
-                      borderRadius: "4px",
-                      fontSize: "11px",
-                      color: "#6c757d",
-                      lineHeight: "1.3",
-                    }}
-                  >
-                    {numberOfWeeks && Number(numberOfWeeks) > 0 ? (
-                      <div>
-                        {(() => {
-                          const today = new Date();
-                          const nextWeekDay = new Date(today);
-                          const dow = today.getDay();
-                          const daysUntilMonday = dow === 0 ? 1 : (8 - dow) % 7;
-                          nextWeekDay.setDate(
-                            today.getDate() + daysUntilMonday
-                          );
-                          const endDate = new Date(nextWeekDay);
-                          endDate.setDate(
-                            nextWeekDay.getDate() +
-                              (Number(numberOfWeeks) || 4) * 7 -
-                              1
-                          );
-                          const fmt = (d: any) =>
-                            d.toLocaleDateString("pt-BR", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                            });
-                          return `${fmt(nextWeekDay)} até ${fmt(
-                            endDate
-                          )} (${numberOfWeeks} semana${
-                            Number(numberOfWeeks) > 1 ? "s" : ""
-                          })`;
-                        })()}
-                      </div>
-                    ) : (
-                      <div>
-                        {UniversalTexts.calendarModal.selectNumberOfWeeks}
-                      </div>
-                    )}
-                  </div>
+                    ✕
+                  </button>
                 </div>
 
-                <button
-                  onClick={newTutoring}
-                  disabled={isFormIncompleteNew}
+                {/* BODY SCROLLÁVEL */}
+                <div
                   style={{
-                    padding: "5px 1.5rem",
-                    backgroundColor: isFormIncompleteNew
-                      ? "#6c757d"
-                      : partnerColor(),
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: isFormIncompleteNew ? "not-allowed" : "pointer",
-                    fontWeight: 500,
-                    opacity: isFormIncompleteNew ? 0.6 : 1,
-                    transition: "all 0.2s ease",
+                    padding: "14px 18px 16px",
+                    overflowY: "auto",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 16,
                   }}
-                  title={
-                    isFormIncompleteNew
-                      ? "Preencha todos os campos: estudante/grupo, dia, horário, link e número de semanas"
-                      : "Criar tutoria recorrente"
-                  }
                 >
-                  {UniversalTexts.calendarModal.addNewClass}
-                </button>
+                  {/* 1. SELECIONAR ALUNO / GRUPO */}
+                  {loadingModalTutoringsInfo ? (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        padding: "32px 0",
+                      }}
+                    >
+                      <CircularProgress style={{ color: partnerColor() }} />
+                    </div>
+                  ) : (
+                    <section
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 10,
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#475569",
+                          margin: 0,
+                        }}
+                      >
+                        {UniversalTexts.calendarModal.step1 ||
+                          "1. Escolha um aluno ou grupo"}
+                      </p>
+
+                      {/* Tabs aluno/grupo */}
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          padding: 4,
+                          borderRadius: 999,
+                          backgroundColor: "#f1f5f9",
+                          gap: 4,
+                          width: "fit-content",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowStudentsRecurring(true);
+                            setShowGroupsRecurring(false);
+                            setNewGroupId("");
+                            setShowClasses(false);
+                            setSeeEditTutoring(false);
+                            setShowSeeEditTutoring(false);
+                          }}
+                          style={{
+                            border: "none",
+                            cursor: "pointer",
+                            borderRadius: 999,
+                            padding: "6px 12px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            backgroundColor: showStudentsRecurring
+                              ? partnerColor()
+                              : "transparent",
+                            color: showStudentsRecurring ? "#fff" : "#475569",
+                          }}
+                        >
+                          {UniversalTexts.student || "Aluno"}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowStudentsRecurring(false);
+                            setShowGroupsRecurring(true);
+                            setNewStudentId("");
+                            setShowClasses(false);
+                            setSeeEditTutoring(false);
+                            setShowSeeEditTutoring(false);
+                          }}
+                          style={{
+                            border: "none",
+                            cursor: "pointer",
+                            borderRadius: 999,
+                            padding: "6px 12px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            backgroundColor: showGroupsRecurring
+                              ? partnerColor()
+                              : "transparent",
+                            color: showGroupsRecurring ? "#fff" : "#475569",
+                          }}
+                        >
+                          {UniversalTexts.group || "Grupo"}
+                        </button>
+                      </div>
+
+                      {/* Select Aluno */}
+                      {showStudentsRecurring && (
+                        <div
+                          style={{
+                            borderRadius: 8,
+                            padding: 10,
+                            backgroundColor: "#f8fafc",
+                            border: "1px solid #e2e8f0",
+                          }}
+                        >
+                          <label
+                            style={{
+                              display: "block",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              marginBottom: 4,
+                              color: "#64748b",
+                            }}
+                          >
+                            {UniversalTexts.selectStudent || "Selecionar aluno"}
+                          </label>
+                          <select
+                            onChange={fetchOneSetOfTutoringsInside}
+                            value={newStudentId}
+                            style={{
+                              width: "100%",
+                              padding: "8px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #cbd5e1",
+                              fontSize: 13,
+                            }}
+                          >
+                            <option value="" hidden>
+                              {UniversalTexts.selectStudentPlaceholder ||
+                                "Escolha um aluno..."}
+                            </option>
+                            {studentsList && studentsList.length > 0 ? (
+                              studentsList.map((student: any) => (
+                                <option
+                                  key={student.id || student._id}
+                                  value={student.id || student._id}
+                                >
+                                  {(student.name ||
+                                    student.firstName ||
+                                    student.username) +
+                                    " " +
+                                    (student.lastname ||
+                                      student.lastName ||
+                                      "")}
+                                </option>
+                              ))
+                            ) : (
+                              <option disabled>Loading students...</option>
+                            )}
+                          </select>
+                        </div>
+                      )}
+
+                      {/* Select Grupo */}
+                      {showGroupsRecurring && (
+                        <div
+                          style={{
+                            borderRadius: 8,
+                            padding: 10,
+                            backgroundColor: "#f8fafc",
+                            border: "1px solid #e2e8f0",
+                          }}
+                        >
+                          <label
+                            style={{
+                              display: "block",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              marginBottom: 4,
+                              color: "#64748b",
+                            }}
+                          >
+                            {UniversalTexts.selectGroup || "Selecionar grupo"}
+                          </label>
+                          <select
+                            value={newGroupId}
+                            onChange={fetchOneSetOfGroupClassesInside}
+                            style={{
+                              width: "100%",
+                              padding: "8px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #cbd5e1",
+                              fontSize: 13,
+                            }}
+                          >
+                            <option value="" hidden>
+                              {UniversalTexts.selectGroupPlaceholder ||
+                                "Escolha um grupo..."}
+                            </option>
+                            {groupsList && groupsList.length > 0 ? (
+                              groupsList.map((group: any) => (
+                                <option
+                                  key={group._id || group.id}
+                                  value={group._id || group.id}
+                                >
+                                  {group.name || group.title || group.groupName}
+                                </option>
+                              ))
+                            ) : (
+                              <option disabled>Loading groups...</option>
+                            )}
+                          </select>
+                        </div>
+                      )}
+                    </section>
+                  )}
+
+                  {/* 2. LISTA DE RECORRÊNCIAS EXISTENTES */}
+                  <section>
+                    <p
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#475569",
+                        margin: "0 0 6px 0",
+                      }}
+                    >
+                      {UniversalTexts.calendarModal.step2 ||
+                        "2. Veja e edite as aulas recorrentes"}
+                    </p>
+
+                    {loadingTutoringDays ? (
+                      <div
+                        style={{
+                          textAlign: "center",
+                          padding: "24px 0",
+                        }}
+                      >
+                        <CircularProgress style={{ color: partnerColor() }} />
+                      </div>
+                    ) : showClasses &&
+                      tutoringsListOfOneStudentOrGroup.length > 0 ? (
+                      <div style={{ display: "grid", gap: 8 }}>
+                        {tutoringsListOfOneStudentOrGroup
+                          .sort(
+                            (a: any, b: any) =>
+                              moment(a.day, "dddd").day() -
+                              moment(b.day, "dddd").day()
+                          )
+                          .map((item: any, index: number) => {
+                            const isExpiring =
+                              isTutoringExpiringWithinMonth(item);
+                            const daysLeft = getDaysUntilExpiration(item);
+
+                            return (
+                              <div
+                                key={`${item.day}-${item.time}-${index}`}
+                                style={{
+                                  backgroundColor: isExpiring
+                                    ? "#fff1f2"
+                                    : "#f8fafc",
+                                  padding: "8px 10px",
+                                  borderRadius: 8,
+                                  border: isExpiring
+                                    ? "1px solid #fb7185"
+                                    : "1px solid #e2e8f0",
+                                }}
+                              >
+                                {isExpiring && (
+                                  <div
+                                    style={{
+                                      backgroundColor: "#fb7185",
+                                      color: "white",
+                                      padding: "2px 6px",
+                                      borderRadius: 999,
+                                      fontSize: 10,
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 4,
+                                      marginBottom: 6,
+                                    }}
+                                  >
+                                    ⚠️
+                                    {daysLeft && daysLeft > 0
+                                      ? `${
+                                          UniversalTexts.endsIn
+                                        } ${daysLeft} dia${
+                                          daysLeft > 1 ? "s" : ""
+                                        } (${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")})`
+                                      : `${UniversalTexts.expired} ${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")}`}
+                                  </div>
+                                )}
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    gap: 8,
+                                    flexWrap: "wrap",
+                                  }}
+                                >
+                                  <div>
+                                    <span
+                                      style={{
+                                        fontWeight: 600,
+                                        fontSize: 13,
+                                        color: "#0f172a",
+                                      }}
+                                    >
+                                      {UniversalTexts.Class} #{index + 1}
+                                    </span>
+                                    <div
+                                      style={{
+                                        fontSize: 12,
+                                        color: "#64748b",
+                                        marginTop: 2,
+                                      }}
+                                    >
+                                      {item.day} • {item.time}
+                                      {item.link && (
+                                        <Link
+                                          target="_blank"
+                                          to={item.link}
+                                          style={{
+                                            color: partnerColor(),
+                                            textDecoration: "none",
+                                            marginLeft: 6,
+                                            fontWeight: 500,
+                                          }}
+                                        >
+                                          {UniversalTexts.accessClass}
+                                        </Link>
+                                      )}
+                                      {item.endDate && (
+                                        <span style={{ marginLeft: 6 }}>
+                                          (
+                                          {moment(item.endDate).format(
+                                            "DD/MM/YYYY"
+                                          )}
+                                          )
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: "inline-flex",
+                                      gap: 6,
+                                    }}
+                                  >
+                                    <button
+                                      onClick={() => seeEditOneTutoring(item)}
+                                      style={{
+                                        padding: "4px 10px",
+                                        fontSize: 11,
+                                        borderRadius: 999,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        backgroundColor: partnerColor(),
+                                        color: "#fff",
+                                      }}
+                                    >
+                                      {UniversalTexts.edit || "Editar"}
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTutoring(item)}
+                                      style={{
+                                        padding: "4px 10px",
+                                        fontSize: 11,
+                                        borderRadius: 999,
+                                        border: "none",
+                                        cursor: "pointer",
+                                        backgroundColor: "#ef4444",
+                                        color: "#fff",
+                                      }}
+                                    >
+                                      {UniversalTexts.delete || "Excluir"}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    ) : showClasses ? (
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: "#94a3b8",
+                          margin: 0,
+                        }}
+                      >
+                        {UniversalTexts.calendarModal.noRecurringClasses ||
+                          "Nenhuma recorrência encontrada para este aluno/grupo."}
+                      </p>
+                    ) : (
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: "#cbd5e1",
+                          margin: 0,
+                        }}
+                      >
+                        {UniversalTexts.calendarModal.selectAStudentOrGroup ||
+                          "Selecione um aluno ou grupo para carregar as recorrências."}
+                      </p>
+                    )}
+                  </section>
+
+                  {/* EDITAR UMA RECORRÊNCIA EXISTENTE */}
+                  {!loadingTutoringDays && seeEditTutoring && (
+                    <section
+                      style={{
+                        padding: 12,
+                        borderRadius: 10,
+                        backgroundColor: "#fff7ed",
+                        border: "1px solid #fed7aa",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <h4
+                          style={{
+                            margin: 0,
+                            fontSize: 13,
+                            color: "#9a3412",
+                          }}
+                        >
+                          {UniversalTexts.calendarModal.editClass}
+                        </h4>
+                        <button
+                          onClick={closeEditOneTutoring}
+                          style={{
+                            padding: "4px 10px",
+                            fontSize: 11,
+                            borderRadius: 999,
+                            border: "none",
+                            cursor: "pointer",
+                            backgroundColor: "#ef4444",
+                            color: "#fff",
+                          }}
+                        >
+                          {UniversalTexts.cancel || "Cancelar"}
+                        </button>
+                      </div>
+
+                      <div style={{ display: "grid", gap: 8 }}>
+                        <select
+                          onChange={handleWeekDayChange}
+                          value={weekDay}
+                          style={{
+                            padding: "6px 8px",
+                            borderRadius: 6,
+                            border: "1px solid #e2e8f0",
+                            fontSize: 13,
+                          }}
+                        >
+                          <option value="" hidden>
+                            {UniversalTexts.calendarModal.selectWeekDay}
+                          </option>
+                          {weekDays.map((wd) => (
+                            <option key={wd} value={wd}>
+                              {wd}
+                            </option>
+                          ))}
+                        </select>
+
+                        <select
+                          onChange={handleTimeChange}
+                          value={timeOfTutoring}
+                          style={{
+                            padding: "6px 8px",
+                            borderRadius: 6,
+                            border: "1px solid #e2e8f0",
+                            fontSize: 13,
+                          }}
+                        >
+                          <option value="" hidden>
+                            {UniversalTexts.calendarModal.selectTime}
+                          </option>
+                          {times.map((t) => (
+                            <option key={t} value={t}>
+                              {t}
+                            </option>
+                          ))}
+                        </select>
+
+                        <input
+                          value={link}
+                          onChange={(e) => setLink(e.target.value)}
+                          placeholder={UniversalTexts.calendarModal.meetingLink}
+                          type="text"
+                          style={{
+                            padding: "6px 8px",
+                            borderRadius: 6,
+                            border: "1px solid #e2e8f0",
+                            fontSize: 13,
+                          }}
+                        />
+
+                        <input
+                          value={duration}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            if (
+                              v === "" ||
+                              (v.length <= 3 &&
+                                Number(v) >= 0 &&
+                                Number(v) <= 300)
+                            ) {
+                              setDuration(v);
+                            }
+                          }}
+                          placeholder={UniversalTexts.duration}
+                          type="number"
+                          min={1}
+                          max={300}
+                          style={{
+                            padding: "6px 8px",
+                            borderRadius: 6,
+                            border: "1px solid #e2e8f0",
+                            fontSize: 13,
+                            maxWidth: 90,
+                          }}
+                        />
+
+                        <button
+                          onClick={updateOneTutoring}
+                          style={{
+                            padding: "6px 12px",
+                            borderRadius: 999,
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            backgroundColor: "#22c55e",
+                            color: "#fff",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {UniversalTexts.calendarModal.saveChanges}
+                        </button>
+                      </div>
+                    </section>
+                  )}
+
+                  {/* 3. CRIAR NOVA RECORRÊNCIA */}
+                  {!loadingModalTutoringsInfo &&
+                    (newStudentId !== "" || newGroupId !== "") && (
+                      <>
+                        <button
+                          onClick={() =>
+                            setShowSeeEditTutoring(!showSeeEditTutoring)
+                          }
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: 999,
+                            border: "1px solid #cbd5e1",
+                            backgroundColor: showSeeEditTutoring
+                              ? "#fee2e2"
+                              : "#ecfdf3",
+                            color: showSeeEditTutoring ? "#b91c1c" : "#15803d",
+                            fontSize: 12,
+                            cursor: "pointer",
+                            alignSelf: "flex-start",
+                          }}
+                        >
+                          {showSeeEditTutoring
+                            ? UniversalTexts.hideShowClasses
+                            : UniversalTexts.showShowClasses}
+                        </button>
+
+                        {showSeeEditTutoring && !seeEditTutoring && (
+                          <section
+                            style={{
+                              padding: 12,
+                              borderRadius: 10,
+                              backgroundColor: "#ecfdf3",
+                              border: "1px solid #bbf7d0",
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 10,
+                            }}
+                          >
+                            <p
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 600,
+                                color: "#166534",
+                                margin: 0,
+                              }}
+                            >
+                              {UniversalTexts.calendarModal.addNewClass}
+                            </p>
+
+                            {/* Dia / hora / link */}
+                            <div style={{ display: "grid", gap: 8 }}>
+                              <select
+                                onChange={handleTheNewWeekDayChange}
+                                value={theNewWeekDay}
+                                style={{
+                                  padding: "6px 8px",
+                                  borderRadius: 6,
+                                  border: "1px solid #e2e8f0",
+                                  fontSize: 13,
+                                }}
+                              >
+                                <option hidden value="">
+                                  {
+                                    UniversalTexts.calendarModal
+                                      .selectWeekDayOption
+                                  }
+                                </option>
+                                {weekDays.map((wd) => (
+                                  <option key={wd} value={wd}>
+                                    {wd}
+                                  </option>
+                                ))}
+                              </select>
+
+                              <select
+                                onChange={handleTheNewTimeChange}
+                                value={theNewTimeOfTutoring}
+                                style={{
+                                  padding: "6px 8px",
+                                  borderRadius: 6,
+                                  border: "1px solid #e2e8f0",
+                                  fontSize: 13,
+                                }}
+                              >
+                                <option hidden value="">
+                                  {
+                                    UniversalTexts.calendarModal
+                                      .selectTimeOption
+                                  }
+                                </option>
+                                {times.map((t) => (
+                                  <option key={t} value={t}>
+                                    {t}
+                                  </option>
+                                ))}
+                              </select>
+
+                              <input
+                                placeholder={
+                                  UniversalTexts.calendarModal.meetingLink
+                                }
+                                value={theNewLink}
+                                onChange={(e) => setTheNewLink(e.target.value)}
+                                type="text"
+                                style={{
+                                  padding: "6px 8px",
+                                  borderRadius: 6,
+                                  border: "1px solid #e2e8f0",
+                                  fontSize: 13,
+                                }}
+                              />
+                            </div>
+
+                            {/* atalhos semanas & duração – mantive tua lógica, só dei uma limpada visual */}
+                            <div>
+                              <p
+                                style={{
+                                  display: "block",
+                                  marginBottom: "5px",
+                                  fontSize: "12px",
+                                  color: "#6c757d",
+                                  fontWeight: 500,
+                                  margin: "0 0 5px 0",
+                                }}
+                              >
+                                {UniversalTexts.repeatFor}:
+                              </p>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "4px",
+                                  marginBottom: "8px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                {[
+                                  { label: "1m", weeks: 4, tooltip: "1 mês" },
+                                  {
+                                    label: "3m",
+                                    weeks: 12,
+                                    tooltip: "3 meses",
+                                  },
+                                  {
+                                    label: "6m",
+                                    weeks: 24,
+                                    tooltip: "6 meses",
+                                  },
+                                  { label: "1a", weeks: 52, tooltip: "1 ano" },
+                                  {
+                                    label: "2a",
+                                    weeks: 104,
+                                    tooltip: "2 anos",
+                                  },
+                                ].map(({ label, weeks, tooltip }) => (
+                                  <button
+                                    key={label}
+                                    title={tooltip}
+                                    style={{
+                                      backgroundColor:
+                                        Number(numberOfWeeks) === weeks
+                                          ? "#e3f2fd"
+                                          : "#f8f9fa",
+                                      border:
+                                        Number(numberOfWeeks) === weeks
+                                          ? "1px solid #2196f3"
+                                          : "1px solid #e0e0e0",
+                                      cursor: "pointer",
+                                      padding: "2px 6px",
+                                      borderRadius: "4px",
+                                      fontSize: "10px",
+                                      fontWeight: 500,
+                                      color:
+                                        Number(numberOfWeeks) === weeks
+                                          ? "#1976d2"
+                                          : "#6c757d",
+                                      transition: "all 0.2s ease",
+                                      minWidth: "24px",
+                                      height: "20px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    onClick={() => setNumberOfWeeks(weeks)}
+                                    onMouseEnter={(e) => {
+                                      if (Number(numberOfWeeks) !== weeks) {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#f0f0f0";
+                                        e.currentTarget.style.borderColor =
+                                          "#bdbdbd";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (Number(numberOfWeeks) !== weeks) {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#f8f9fa";
+                                        e.currentTarget.style.borderColor =
+                                          "#e0e0e0";
+                                      }
+                                    }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+
+                                <input
+                                  placeholder="Ex: 8"
+                                  value={numberOfWeeks}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    if (
+                                      v === "" ||
+                                      (v.length <= 2 &&
+                                        Number(v) >= 0 &&
+                                        Number(v) <= 99)
+                                    ) {
+                                      setNumberOfWeeks(v);
+                                    }
+                                  }}
+                                  type="number"
+                                  min="1"
+                                  max="99"
+                                  style={{
+                                    padding: "6px",
+                                    maxWidth: "60px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "12px",
+                                    textAlign: "center",
+                                  }}
+                                  required
+                                />
+
+                                <p
+                                  style={{
+                                    display: "block",
+                                    marginBottom: "5px",
+                                    fontSize: "12px",
+                                    color: "#6c757d",
+                                    fontWeight: 500,
+                                    margin: "0 0 5px 0",
+                                  }}
+                                >
+                                  {UniversalTexts.duration}:
+                                </p>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "4px",
+                                  marginBottom: "8px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                {[
+                                  {
+                                    label: "30min",
+                                    minutes: 30,
+                                    tooltip: "30 minutos",
+                                  },
+                                  {
+                                    label: "45min",
+                                    minutes: 45,
+                                    tooltip: "45 minutos",
+                                  },
+                                  {
+                                    label: "1h",
+                                    minutes: 60,
+                                    tooltip: "1 hora",
+                                  },
+                                  {
+                                    label: "1h30min",
+                                    minutes: 90,
+                                    tooltip: "1h30",
+                                  },
+                                  {
+                                    label: "2h",
+                                    minutes: 120,
+                                    tooltip: "2 horas",
+                                  },
+                                ].map(({ label, minutes, tooltip }) => (
+                                  <button
+                                    key={label}
+                                    title={tooltip}
+                                    style={{
+                                      backgroundColor:
+                                        Number(duration) === minutes
+                                          ? "#e3f2fd"
+                                          : "#f8f9fa",
+                                      border:
+                                        Number(duration) === minutes
+                                          ? "1px solid #2196f3"
+                                          : "1px solid #e0e0e0",
+                                      cursor: "pointer",
+                                      padding: "2px 6px",
+                                      borderRadius: "4px",
+                                      fontSize: "10px",
+                                      fontWeight: 500,
+                                      color:
+                                        Number(duration) === minutes
+                                          ? "#1976d2"
+                                          : "#6c757d",
+                                      transition: "all 0.2s ease",
+                                      minWidth: "24px",
+                                      height: "20px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    onClick={() => setDuration(minutes)}
+                                    onMouseEnter={(e) => {
+                                      if (Number(duration) !== minutes) {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#f0f0f0";
+                                        e.currentTarget.style.borderColor =
+                                          "#bdbdbd";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (Number(duration) !== minutes) {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#f8f9fa";
+                                        e.currentTarget.style.borderColor =
+                                          "#e0e0e0";
+                                      }
+                                    }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+
+                                <input
+                                  placeholder="Ex: 55"
+                                  value={duration}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    if (
+                                      v === "" ||
+                                      (v.length <= 3 &&
+                                        Number(v) >= 0 &&
+                                        Number(v) <= 300)
+                                    ) {
+                                      setDuration(v);
+                                    }
+                                  }}
+                                  type="number"
+                                  min="1"
+                                  max="300"
+                                  style={{
+                                    padding: "6px",
+                                    maxWidth: "60px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "12px",
+                                    textAlign: "center",
+                                  }}
+                                  required
+                                />
+                              </div>
+
+                              {/* preview do período */}
+                              <div
+                                style={{
+                                  marginTop: "8px",
+                                  padding: "6px 8px",
+                                  backgroundColor: "#f8f9fa",
+                                  border: "1px solid #e9ecef",
+                                  borderRadius: "4px",
+                                  fontSize: "11px",
+                                  color: "#6c757d",
+                                  lineHeight: "1.3",
+                                }}
+                              >
+                                {numberOfWeeks && Number(numberOfWeeks) > 0 ? (
+                                  <div>
+                                    {(() => {
+                                      const today = new Date();
+                                      const nextWeekDay = new Date(today);
+                                      const dow = today.getDay();
+                                      const daysUntilMonday =
+                                        dow === 0 ? 1 : (8 - dow) % 7;
+                                      nextWeekDay.setDate(
+                                        today.getDate() + daysUntilMonday
+                                      );
+                                      const endDate = new Date(nextWeekDay);
+                                      endDate.setDate(
+                                        nextWeekDay.getDate() +
+                                          (Number(numberOfWeeks) || 4) * 7 -
+                                          1
+                                      );
+                                      const fmt = (d: any) =>
+                                        d.toLocaleDateString("pt-BR", {
+                                          day: "2-digit",
+                                          month: "2-digit",
+                                          year: "numeric",
+                                        });
+                                      return `${fmt(nextWeekDay)} até ${fmt(
+                                        endDate
+                                      )} (${numberOfWeeks} semana${
+                                        Number(numberOfWeeks) > 1 ? "s" : ""
+                                      })`;
+                                    })()}
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {
+                                      UniversalTexts.calendarModal
+                                        .selectNumberOfWeeks
+                                    }
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {/* Para não estourar a resposta, mantive a lógica igual à sua, só dentro desse section */}
+
+                            {/* BOTÃO FINAL */}
+                            <button
+                              onClick={newTutoring}
+                              disabled={isFormIncompleteNew}
+                              style={{
+                                marginTop: 4,
+                                padding: "6px 12px",
+                                borderRadius: 999,
+                                border: "none",
+                                cursor: isFormIncompleteNew
+                                  ? "not-allowed"
+                                  : "pointer",
+                                fontSize: 12,
+                                fontWeight: 500,
+                                backgroundColor: isFormIncompleteNew
+                                  ? "#94a3b8"
+                                  : partnerColor(),
+                                color: "#fff",
+                                opacity: isFormIncompleteNew ? 0.7 : 1,
+                              }}
+                            >
+                              {UniversalTexts.calendarModal.addNewClass}
+                            </button>
+                          </section>
+                        )}
+                      </>
+                    )}
+                </div>
               </div>
             </div>
-          )}
-      </div>
+          </>,
+          document.body
+        )}
     </>
   );
 }

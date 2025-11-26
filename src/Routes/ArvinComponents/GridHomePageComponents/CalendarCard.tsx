@@ -4,6 +4,7 @@ import { CalendarIcon } from "@phosphor-icons/react/dist/ssr";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { createPortal } from "react-dom";
+import { CircularProgress } from "@mui/material";
 
 interface CalendarCardProps {
   actualHeaders?: any;
@@ -41,9 +42,13 @@ export const CalendarCard: FC<CalendarCardProps> = ({
     "Dezembro",
   ];
 
+  const [loadingModal, setLoadingModal] = useState(false);
+
   // ====== FUNÇÃO PARA BUSCAR EVENTOS DE UM DIA ======
   const getDayEvents = async (date: Date) => {
     if (!studentId) return;
+    setIsModalOpen(true);
+    setLoadingModal(true);
 
     const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -61,7 +66,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
 
       setDayEvents(events);
       setModalDateLabel(date.toLocaleDateString("pt-BR"));
-      setIsModalOpen(true);
+      setLoadingModal(false);
 
       console.log("EVENTS FOR", dateStr, data);
     } catch (error) {
@@ -69,6 +74,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
       setDayEvents([]);
       setModalDateLabel(date.toLocaleDateString("pt-BR"));
       setIsModalOpen(true);
+      setLoadingModal(false);
     }
   };
 
@@ -346,145 +352,156 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                   ×
                 </button>
               </div>
+              {loadingModal ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "1rem",
+                  }}
+                >
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <div
+                  style={{
+                    borderTop: "1px solid #E5E7EB",
+                    marginTop: "4px",
+                    paddingTop: "8px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {dayEvents.length === 0 ? (
+                    <div
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: "12px",
+                        color: "#6b7280",
+                        padding: "8px 2px",
+                      }}
+                    >
+                      Nenhum evento neste dia.
+                    </div>
+                  ) : (
+                    dayEvents.map((ev) => {
+                      const isCanceled = ev.status === "desmarcado";
 
-              <div
-                style={{
-                  borderTop: "1px solid #E5E7EB",
-                  marginTop: "4px",
-                  paddingTop: "8px",
-                  overflowY: "auto",
-                }}
-              >
-                {dayEvents.length === 0 ? (
-                  <div
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      padding: "8px 2px",
-                    }}
-                  >
-                    Nenhum evento neste dia.
-                  </div>
-                ) : (
-                  dayEvents.map((ev) => {
-                    const isCanceled = ev.status === "desmarcado";
-
-                    return (
-                      <div
-                        key={ev._id}
-                        onClick={() => {
-                          if (ev.link && !isCanceled) {
-                            window.open(ev.link, "_blank");
-                          }
-                        }}
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "4px",
-                          padding: "10px 12px",
-                          borderRadius: "12px",
-                          border: "1px solid #E5E7EB",
-                          marginBottom: "8px",
-                          cursor:
-                            ev.link && !isCanceled ? "pointer" : "default",
-                          backgroundColor: isCanceled ? "#FEF2F2" : "#F9FAFB",
-                        }}
-                      >
+                      return (
                         <div
+                          key={ev._id}
+                          onClick={() => {
+                            if (ev.link && !isCanceled) {
+                              window.open(ev.link, "_blank");
+                            }
+                          }}
                           style={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: "8px",
+                            flexDirection: "column",
+                            gap: "4px",
+                            padding: "10px 12px",
+                            borderRadius: "12px",
+                            border: "1px solid #E5E7EB",
+                            marginBottom: "8px",
+                            cursor:
+                              ev.link && !isCanceled ? "pointer" : "default",
+                            backgroundColor: isCanceled ? "#FEF2F2" : "#F9FAFB",
                           }}
                         >
-                          <span
+                          <div
                             style={{
-                              fontFamily: "Plus Jakarta Sans",
-                              fontSize: "13px",
-                              fontWeight: 600,
-                              color: "#111827",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              gap: "8px",
                             }}
                           >
-                            {ev.student || "Aluno(a)"}
-                          </span>
-
-                          <span
-                            style={{
-                              fontFamily: "Plus Jakarta Sans",
-                              fontSize: "11px",
-                              fontWeight: 600,
-                              padding: "2px 8px",
-                              borderRadius: "999px",
-                              backgroundColor: isCanceled
-                                ? "#FECACA"
-                                : "#DCFCE7",
-                              color: isCanceled ? "#991B1B" : "#166534",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            {ev.status}
-                          </span>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "8px",
-                            alignItems: "center",
-                            fontFamily: "Plus Jakarta Sans",
-                            fontSize: "11px",
-                            color: "#4B5563",
-                          }}
-                        >
-                          <span>
-                            {ev.time || "--:--"} • {ev.duration || 60} min
-                          </span>
-                          {ev.category && (
                             <span
                               style={{
-                                fontSize: "10px",
-                                padding: "1px 6px",
-                                borderRadius: "999px",
-                                border: "1px solid #E5E7EB",
+                                fontFamily: "Plus Jakarta Sans",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                                color: "#111827",
                               }}
                             >
-                              {ev.category}
+                              {ev.student || "Aluno(a)"}
+                            </span>
+
+                            <span
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontSize: "11px",
+                                fontWeight: 600,
+                                padding: "2px 8px",
+                                borderRadius: "999px",
+                                backgroundColor: isCanceled
+                                  ? "#FECACA"
+                                  : "#DCFCE7",
+                                color: isCanceled ? "#991B1B" : "#166534",
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {ev.status}
+                            </span>
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              alignItems: "center",
+                              fontFamily: "Plus Jakarta Sans",
+                              fontSize: "11px",
+                              color: "#4B5563",
+                            }}
+                          >
+                            <span>
+                              {ev.time || "--:--"} • {ev.duration || 60} min
+                            </span>
+                            {ev.category && (
+                              <span
+                                style={{
+                                  fontSize: "10px",
+                                  padding: "1px 6px",
+                                  borderRadius: "999px",
+                                  border: "1px solid #E5E7EB",
+                                }}
+                              >
+                                {ev.category}
+                              </span>
+                            )}
+                          </div>
+
+                          {ev.description && (
+                            <span
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontSize: "11px",
+                                color: "#6B7280",
+                                marginTop: "2px",
+                              }}
+                            >
+                              {ev.description}
+                            </span>
+                          )}
+                          {ev.link && !isCanceled && (
+                            <span
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontSize: "11px",
+                                color: isCanceled ? "#9CA3AF" : partnerColor(),
+                                textDecoration: "underline",
+                                marginTop: "2px",
+                              }}
+                            >
+                              Entrar na aula
                             </span>
                           )}
                         </div>
-
-                        {ev.description && (
-                          <span
-                            style={{
-                              fontFamily: "Plus Jakarta Sans",
-                              fontSize: "11px",
-                              color: "#6B7280",
-                              marginTop: "2px",
-                            }}
-                          >
-                            {ev.description}
-                          </span>
-                        )}
-                        {ev.link && !isCanceled && (
-                          <span
-                            style={{
-                              fontFamily: "Plus Jakarta Sans",
-                              fontSize: "11px",
-                              color: isCanceled ? "#9CA3AF" : partnerColor(),
-                              textDecoration: "underline",
-                              marginTop: "2px",
-                            }}
-                          >
-                            Entrar na aula
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
             </div>
           </div>,
           document.body

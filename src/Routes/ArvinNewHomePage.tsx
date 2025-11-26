@@ -490,6 +490,8 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         justifyContent: isDesktop ? "space-between" : "flex-start",
         height: "100vh",
         width: "100%",
+        minWidth: 0, // 👈 deixa o flex encolher
+        overflowX: "hidden", // 👈 NADA passa da largura da janela
       }}
     >
       <Routes>
@@ -540,9 +542,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                     >
                       {component.component}
                       {isDesktop ? null : (
-                        <span style={{ paddingBottom: isDesktop ? 20 : 100 }}>
-                          .
-                        </span>
+                        <span
+                          style={{ paddingBottom: isDesktop ? 20 : 100 }}
+                        ></span>
                       )}
                     </div>
                   </>

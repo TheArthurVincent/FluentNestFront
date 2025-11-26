@@ -91,6 +91,7 @@ interface EditLessonModelProps {
   classId: string;
   setSeeEdit?: (v: boolean) => void;
   headers?: any;
+  fetchEventData?: any;
   buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
   studentId?: string | any;
@@ -111,8 +112,6 @@ type NewBlockType =
   | "explanation"
   | "singleimages";
 
-type ActiveTab = "edit" | "import";
-
 export default function EditLesson({
   classId,
   headers,
@@ -120,6 +119,7 @@ export default function EditLesson({
   setSeeEdit,
   buttonText,
   studentId,
+  fetchEventData,
   setChange,
   change,
   language,
@@ -128,7 +128,6 @@ export default function EditLesson({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -143,9 +142,6 @@ export default function EditLesson({
 
   // --- Responsividade simples (mobile)
   const [isMobile, setIsMobile] = useState<boolean>(false);
-
-  // --- Aba ativa: "edit" (editor completo) OU "import" (ImportElementsEditor) ---
-  const [activeTab, setActiveTab] = useState<ActiveTab>("edit");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -199,7 +195,15 @@ export default function EditLesson({
     }
   };
 
-  // ===================== SALVAR AULA =====================
+  // ✅ Continua útil: se IA salvar direto no back e der setChange, recarrega do backend
+  useEffect(() => {
+    if (!open) return;
+    if (!classId) return;
+    if (change === undefined) return;
+    getClass();
+  }, [change]);
+
+  // ===================== SALVAR AULA (persiste tudo, inclusive os importados) =====================
   const handleSave = async () => {
     if (!lesson) return;
     if (!isValid) {
@@ -212,7 +216,7 @@ export default function EditLesson({
 
     // Remove o campo `order` de cada element antes de enviar
     const sanitizedElements: ElementItem[] = (elements || []).map((el: any) => {
-      const { order: _ignored, ...rest } = el;
+      const { order: _ignored, _id: _ignoredId, ...rest } = el;
       return rest;
     });
 
@@ -241,7 +245,7 @@ export default function EditLesson({
         updated.elements
       )
         ? updated.elements.map((el: any) => {
-            const { order: _ignored, ...rest } = el;
+            const { order: _ignored, _id: _ignoredId, ...rest } = el;
             return rest;
           })
         : [];
@@ -252,7 +256,7 @@ export default function EditLesson({
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
       setElements(updatedSanitizedElements);
       onUpdated?.(updated);
-
+      setSeeEdit?.(false);
       window.location.reload();
     } catch (err: any) {
       console.error(err);
@@ -358,6 +362,26 @@ export default function EditLesson({
     );
   };
 
+  // ===================== Import de elementos (sem salvar no back) =====================
+  const handleImportChange = (info: {
+    mode: "one" | "all";
+    fromClassId: string;
+    fromTitle: string;
+    elements: any[];
+  }) => {
+    const { elements: imported } = info;
+
+    setElements((prev) => {
+      const cleanImported: ElementItem[] = imported.map((plain: any) => {
+        const { _id, order, ...rest } = plain;
+        return rest as ElementItem;
+      });
+
+      // pode mudar estratégia se quiser (no início, só no final, etc.)
+      return [...prev, ...cleanImported];
+    });
+  };
+
   // ===================== ESTILOS BASE =====================
   const outerWrapStyle: React.CSSProperties = {
     width: "98%",
@@ -405,28 +429,6 @@ export default function EditLesson({
     color: "white",
     fontWeight: 600,
     border: "none",
-  };
-
-  const tabsWrapper: React.CSSProperties = {
-    display: "flex",
-    gap: 4,
-    borderRadius: 999,
-    background: "#e5e7eb40",
-    padding: 3,
-    margin: "8px auto 12px",
-    maxWidth: 360,
-  };
-
-  const tabButtonBase: React.CSSProperties = {
-    flex: 1,
-    borderRadius: 999,
-    border: "none",
-    padding: "6px 10px",
-    fontSize: 13,
-    cursor: "pointer",
-    background: "transparent",
-    color: "#6b7280",
-    fontWeight: 500,
   };
 
   // =====================================================================
@@ -488,458 +490,399 @@ export default function EditLesson({
             )}
           </div>
 
+          <div
+            style={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              gap: 8,
+              marginBottom: 10,
+            }}
+          >
+            <button
+              onClick={() => {
+                setOpen(false);
+                setSeeEdit?.(false);
+              }}
+              style={{
+                ...fullWidthButton,
+                width: isMobile ? "100%" : "auto",
+                maxWidth: isMobile ? "100%" : 180,
+              }}
+            >
+              Fechar sem salvar
+            </button>
+          </div>
+
           {/* CABEÇALHO E METADADOS */}
-          <div style={{ ...sectionCard, marginBottom: 12 }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: isMobile ? "column" : "row",
-                gap: 8,
-                marginBottom: 10,
-              }}
-            >
-              <button
-                onClick={() => {
-                  setOpen(false);
-                  setSeeEdit?.(false);
-                }}
-                style={{
-                  ...fullWidthButton,
-                  width: isMobile ? "100%" : "auto",
-                  maxWidth: isMobile ? "100%" : 180,
-                }}
-              >
-                Fechar sem salvar
-              </button>
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: isMobile
-                  ? "1fr"
-                  : "minmax(0, 2fr) minmax(0, 1fr)",
-                gap: 10,
-                marginBottom: 10,
-              }}
-            >
-              <div>
-                <div style={labelStyle}>Título da aula</div>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Ex.: Business Essentials — Vocabulary & Usage"
-                  style={inputBase}
-                />
-              </div>
-
-              <div>
-                <div style={labelStyle}>Language</div>
-                <select
-                  value={lesson?.language ?? "en"}
-                  onChange={(e) =>
-                    setLesson((prev) =>
-                      prev ? { ...prev, language: e.target.value } : prev
-                    )
-                  }
-                  style={{
-                    ...inputBase,
-                    background: "white",
-                    paddingRight: 24,
-                  }}
-                >
-                  <option value="en">English (en)</option>
-                  <option value="es">Spanish (es)</option>
-                  <option value="fr">French (fr)</option>
-                </select>
-              </div>
-            </div>
-
-            <TagsEditor
-              value={tags}
-              onChange={setTags}
-              helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
-            />
-
-            <div style={{ marginTop: 10 }}>
-              <div style={labelStyle}>Description</div>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                placeholder="Descrição da aula"
-                style={{ ...inputBase, resize: "vertical" }}
-              />
-            </div>
-
-            <div style={{ marginTop: 10 }}>
-              <div style={labelStyle}>Imagem da aula</div>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => onPickLessonImage(e.target.files?.[0] || null)}
-                disabled={uploadingImage}
-              />
-              {uploadingImage && (
-                <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
-              )}
-              {uploadError && (
-                <small style={{ color: "#b91c1c" }}>{uploadError}</small>
-              )}
-
-              {image && (
-                <div
-                  style={{
-                    marginTop: 8,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <img
-                    src={image}
-                    alt="Lesson thumbnail"
-                    style={{
-                      width: isMobile ? "100%" : 240,
-                      maxWidth: 300,
-                      height: isMobile ? "auto" : 240,
-                      objectFit: "cover",
-                      borderRadius: 8,
-                      border: "1px solid #e2e8f0",
-                    }}
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                  <button
-                    onClick={() => setImage("")}
-                    style={{
-                      ...fullWidthButton,
-                      maxWidth: 180,
-                      fontSize: 12,
-                    }}
-                  >
-                    Remover imagem
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* TABS: EDITAR AULA vs IMPORTAR ELEMENTOS */}
-          <div style={tabsWrapper}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("edit")}
-              style={{
-                ...tabButtonBase,
-                background: activeTab === "edit" ? "#ffffff" : "transparent",
-                color: activeTab === "edit" ? "#0f172a" : "#6b7280",
-                boxShadow:
-                  activeTab === "edit"
-                    ? "0 1px 2px rgba(15,23,42,0.15)"
-                    : "none",
-              }}
-            >
-              Editar elementos da aula
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("import")}
-              style={{
-                ...tabButtonBase,
-                background: activeTab === "import" ? "#ffffff" : "transparent",
-                color: activeTab === "import" ? "#0f172a" : "#6b7280",
-                boxShadow:
-                  activeTab === "import"
-                    ? "0 1px 2px rgba(15,23,42,0.15)"
-                    : "none",
-              }}
-            >
-              Importar elementos de outras aulas
-            </button>
-          </div>
-
-          {/* CONTEÚDO DA AULA / TABS */}
-          {activeTab === "edit" && (
+          {!fetchEventData && (
             <div style={{ ...sectionCard, marginBottom: 12 }}>
-              <h3
-                style={{
-                  fontSize: "clamp(16px, 3vw, 18px)",
-                  textAlign: "center",
-                  margin: "0 0 8px 0",
-                  color: "#0f172a",
-                }}
-              >
-                Conteúdo da Aula
-              </h3>
-
-              {/* Toolbar de adicionar bloco */}
               <div
                 style={{
                   display: "grid",
                   gridTemplateColumns: isMobile
                     ? "1fr"
-                    : "minmax(0, 2fr) auto auto",
-                  gap: 8,
-                  marginBottom: 12,
-                }}
-              >
-                <select
-                  value={newType}
-                  onChange={(e) => setNewType(e.target.value as NewBlockType)}
-                  style={{
-                    ...inputBase,
-                    background: "white",
-                    paddingRight: 24,
-                  }}
-                  title="Tipo do novo bloco"
-                >
-                  <option value="explanation">Explanation/Introduction</option>
-                  <option value="vocabulary">Vocabulary</option>
-                  <option value="singleimages">Single Images</option>
-                  <option value="sentences">Sentences</option>
-                  <option value="audio">Text + Audio</option>
-                  <option value="images">Images (Grid + Audio)</option>
-                  <option value="video">Video</option>
-                  <option value="exercise">Exercise (List of questions)</option>
-                  <option value="dialogue">Dialogue</option>
-                  <option value="selectexercise">Select Exercise</option>
-                </select>
-
-                <button
-                  onClick={() => addBlock("start")}
-                  style={{
-                    ...fullWidthButton,
-                    width: "100%",
-                  }}
-                  title="Adicionar no início"
-                >
-                  + Adicionar no início
-                </button>
-
-                <button
-                  onClick={() => addBlock("end")}
-                  style={primaryButton}
-                  title="Adicionar ao final"
-                >
-                  + Adicionar ao final
-                </button>
-              </div>
-
-              {/* Lista de blocos */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
+                    : "minmax(0, 2fr) minmax(0, 1fr)",
                   gap: 10,
+                  marginBottom: 10,
                 }}
               >
-                {elements.length === 0 && (
-                  <div
+                <div>
+                  <div style={labelStyle}>Título da aula</div>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Ex.: Business Essentials — Vocabulary & Usage"
+                    style={inputBase}
+                  />
+                </div>
+
+                <div>
+                  <div style={labelStyle}>Language</div>
+                  <select
+                    value={lesson?.language ?? "en"}
+                    onChange={(e) =>
+                      setLesson((prev) =>
+                        prev ? { ...prev, language: e.target.value } : prev
+                      )
+                    }
                     style={{
-                      border: "1px dashed #94a3b8",
-                      borderRadius: 8,
-                      padding: 14,
-                      color: "#64748b",
-                      fontSize: 13,
-                      textAlign: "center",
+                      ...inputBase,
+                      background: "white",
+                      paddingRight: 24,
                     }}
                   >
-                    Nenhum elemento cadastrado.
-                  </div>
+                    <option value="en">English (en)</option>
+                    <option value="es">Spanish (es)</option>
+                    <option value="fr">French (fr)</option>
+                  </select>
+                </div>
+              </div>
+
+              <TagsEditor
+                value={tags}
+                onChange={setTags}
+                helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+              />
+
+              <div style={{ marginTop: 10 }}>
+                <div style={labelStyle}>Description</div>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                  placeholder="Descrição da aula"
+                  style={{ ...inputBase, resize: "vertical" }}
+                />
+              </div>
+
+              <div style={{ marginTop: 10 }}>
+                <div style={labelStyle}>Imagem da aula</div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    onPickLessonImage(e.target.files?.[0] || null)
+                  }
+                  disabled={uploadingImage}
+                />
+                {uploadingImage && (
+                  <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
+                )}
+                {uploadError && (
+                  <small style={{ color: "#b91c1c" }}>{uploadError}</small>
                 )}
 
-                {elements.map((el, idx) => {
-                  if (el?.type === "sentences") {
-                    return (
-                      <SentencesEditor
-                        key={idx}
-                        setChange={setChange}
-                        change={change}
-                        language={language}
-                        studentId={studentId}
-                        value={el as SentencesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "vocabulary") {
-                    return (
-                      <VocabularyEditor
-                        key={idx}
-                        value={el as SentencesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        change={change}
-                        setChange={setChange}
-                        language={language}
-                        changeTokens={change}
-                        setChangeTokens={setChange}
-                        studentId={studentId}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                        headers={headers}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "video") {
-                    return (
-                      <VideoEditor
-                        key={idx}
-                        value={el as VideoBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "exercise") {
-                    return (
-                      <ExerciseEditor
-                        key={idx}
-                        language={language}
-                        studentId={studentId}
-                        type="exercises"
-                        value={el as ExerciseBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "images") {
-                    return (
-                      <ImagesEditor
-                        key={idx}
-                        value={el as ImagesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                        headers={headers}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "audio") {
-                    return (
-                      <AudioAndTextEditor
-                        key={idx}
-                        value={el as AudioBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        language={language}
-                        studentId={studentId}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                        headers={headers}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "dialogue") {
-                    return (
-                      <DialogueEditor
-                        key={idx}
-                        value={el as DialogueBlock}
-                        language={language}
-                        studentId={studentId}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "selectexercise") {
-                    return (
-                      <SelectExerciseEditor
-                        key={idx}
-                        value={el as SelectExerciseBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "explanation") {
-                    return (
-                      <ExplanationEditor
-                        key={idx}
-                        value={el as ExplanationBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                        headers={headers}
-                      />
-                    );
-                  }
-
-                  if (el?.type === "singleimages") {
-                    return (
-                      <SingleImagesEditor
-                        key={idx}
-                        value={el as SingleImagesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                        onMoveUp={() => moveElementUp(idx)}
-                        onMoveDown={() => moveElementDown(idx)}
-                        headers={headers}
-                      />
-                    );
-                  }
-
-                  return null;
-                })}
+                {image && (
+                  <div
+                    style={{
+                      marginTop: 8,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <img
+                      src={image}
+                      alt="Lesson thumbnail"
+                      style={{
+                        width: isMobile ? "100%" : 240,
+                        maxWidth: 300,
+                        height: isMobile ? "auto" : 240,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        border: "1px solid #e2e8f0",
+                      }}
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                    <button
+                      onClick={() => setImage("")}
+                      style={{
+                        ...fullWidthButton,
+                        maxWidth: 180,
+                        fontSize: 12,
+                      }}
+                    >
+                      Remover imagem
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {activeTab === "import" && (
-            <div style={{ ...sectionCard, marginBottom: 12 }}>
-              <h3
-                style={{
-                  fontSize: "clamp(16px, 3vw, 18px)",
-                  textAlign: "center",
-                  margin: "0 0 8px 0",
-                  color: "#0f172a",
-                }}
-              >
-                Importar elementos de outras aulas
-              </h3>
-              <p
-                style={{
-                  fontSize: 12,
-                  color: "#64748b",
-                  margin: "0 0 10px 0",
-                  textAlign: "center",
-                }}
-              >
-                Pesquise aulas por título ou tags e copie elementos prontos
-                diretamente para esta aula.
-              </p>
-              <ImportElementsEditor
-                lessonId={classId}
-                onChange={setChange}
-                studentId={studentId}
-                headers={headers}
-              />
+          {/* TOOLBAR: Import + tipo + add início/fim */}
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginBottom: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <select
+              value={newType}
+              onChange={(e) => setNewType(e.target.value as NewBlockType)}
+              style={{
+                ...inputBase,
+                background: "white",
+                maxWidth: 140,
+                paddingRight: 24,
+              }}
+              title="Tipo do novo bloco"
+            >
+              <option value="explanation">Explanation/Introduction</option>
+              <option value="vocabulary">Vocabulary</option>
+              <option value="singleimages">Single Images</option>
+              <option value="sentences">Sentences</option>
+              <option value="audio">Text + Audio</option>
+              <option value="images">Images (Grid + Audio)</option>
+              <option value="video">Video</option>
+              <option value="exercise">Exercise (List of questions)</option>
+              <option value="dialogue">Dialogue</option>
+              <option value="selectexercise">Select Exercise</option>
+            </select>
+
+            <button
+              onClick={() => addBlock("start")}
+              style={{
+                ...fullWidthButton,
+                maxWidth: 100,
+              }}
+              title="Adicionar no início"
+            >
+              + Início
+            </button>
+
+            <button
+              onClick={() => addBlock("end")}
+              style={{ ...primaryButton, maxWidth: 100 }}
+              title="Adicionar ao final"
+            >
+              + Final
+            </button>
+            <ImportElementsEditor
+              lessonId={classId}
+              studentId={studentId}
+              headers={headers}
+              onChange={handleImportChange}
+              fetchEventData={fetchEventData}
+            />
+          </div>
+
+          {/* CONTEÚDO DA AULA */}
+          <div style={{ ...sectionCard, marginBottom: 12 }}>
+            <h3
+              style={{
+                fontSize: "clamp(16px, 3vw, 18px)",
+                textAlign: "center",
+                margin: "0 0 8px 0",
+                color: "#0f172a",
+              }}
+            >
+              Conteúdo da Aula
+            </h3>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              {elements.length === 0 && (
+                <div
+                  style={{
+                    border: "1px dashed #94a3b8",
+                    borderRadius: 8,
+                    padding: 14,
+                    color: "#64748b",
+                    fontSize: 13,
+                    textAlign: "center",
+                  }}
+                >
+                  Nenhum elemento cadastrado.
+                </div>
+              )}
+
+              {elements.map((el, idx) => {
+                if (el?.type === "sentences") {
+                  return (
+                    <SentencesEditor
+                      key={idx}
+                      setChange={setChange}
+                      change={change}
+                      language={language}
+                      studentId={studentId}
+                      value={el as SentencesBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                    />
+                  );
+                }
+
+                if (el?.type === "vocabulary") {
+                  return (
+                    <VocabularyEditor
+                      key={idx}
+                      value={el as SentencesBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      change={change}
+                      setChange={setChange}
+                      language={language}
+                      changeTokens={change}
+                      setChangeTokens={setChange}
+                      studentId={studentId}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                      headers={headers}
+                    />
+                  );
+                }
+
+                if (el?.type === "video") {
+                  return (
+                    <VideoEditor
+                      key={idx}
+                      value={el as VideoBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                    />
+                  );
+                }
+
+                if (el?.type === "exercise") {
+                  return (
+                    <ExerciseEditor
+                      key={idx}
+                      language={language}
+                      studentId={studentId}
+                      type="exercises"
+                      value={el as ExerciseBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                    />
+                  );
+                }
+
+                if (el?.type === "images") {
+                  return (
+                    <ImagesEditor
+                      key={idx}
+                      value={el as ImagesBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                      headers={headers}
+                    />
+                  );
+                }
+
+                if (el?.type === "audio") {
+                  return (
+                    <AudioAndTextEditor
+                      key={idx}
+                      value={el as AudioBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      language={language}
+                      studentId={studentId}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                      headers={headers}
+                    />
+                  );
+                }
+
+                if (el?.type === "dialogue") {
+                  return (
+                    <DialogueEditor
+                      key={idx}
+                      value={el as DialogueBlock}
+                      language={language}
+                      studentId={studentId}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                    />
+                  );
+                }
+
+                if (el?.type === "selectexercise") {
+                  return (
+                    <SelectExerciseEditor
+                      key={idx}
+                      value={el as SelectExerciseBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                    />
+                  );
+                }
+
+                if (el?.type === "explanation") {
+                  return (
+                    <ExplanationEditor
+                      key={idx}
+                      value={el as ExplanationBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                      headers={headers}
+                    />
+                  );
+                }
+
+                if (el?.type === "singleimages") {
+                  return (
+                    <SingleImagesEditor
+                      key={idx}
+                      value={el as SingleImagesBlock}
+                      onChange={(next) => updateElementAt(idx, next)}
+                      onRemove={() => removeElementAt(idx)}
+                      onMoveUp={() => moveElementUp(idx)}
+                      onMoveDown={() => moveElementDown(idx)}
+                      headers={headers}
+                    />
+                  );
+                }
+
+                return null;
+              })}
             </div>
-          )}
+          </div>
 
           {/* AÇÕES FINAIS */}
           <div

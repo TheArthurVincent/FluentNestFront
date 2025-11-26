@@ -24,6 +24,12 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [eventData, setEventData] = useState<any>(null);
   const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
+  const [seeReplenish, setSeeReplenish] = useState(false);
+
+  // NOVO: controle de abas
+  const [activeTab, setActiveTab] = useState<"dados" | "homework" | "conteudo">(
+    "dados"
+  );
 
   const fetchEventData = async () => {
     setPermissionsUser(
@@ -99,6 +105,23 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     }
   };
 
+  const handleScheduleReplenish = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const { id } = user;
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/scheduleclass/${id}?eventId=${eventId}`,
+        {
+          headers,
+        }
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div
       style={{
@@ -132,7 +155,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           </section>
 
           {/* Só mostra os botões se o evento já foi carregado */}
-          {event && (
+          {event && event.category !== "Marcar Reposição" && (
             <div
               style={{
                 display: permissionsUser !== "student" ? "flex" : "none",
@@ -261,111 +284,120 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         }}
       >
         {/* MOBILE – só renderiza se o evento existir */}
-        {!isDesktop && event && event.status && (
-          <div
-            style={{
-              display: permissionsUser !== "student" ? "flex" : "none",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-              fontSize: "0.8rem",
-              padding: "0.5rem",
-              borderRadius: "4px",
-            }}
-          >
+        {!isDesktop &&
+          event &&
+          event.status &&
+          event.category !== "Marcar Reposição" && (
             <div
-              style={{ textAlign: "center", cursor: "pointer" }}
-              onClick={() => updateScheduled(event._id)}
+              style={{
+                display: permissionsUser !== "student" ? "flex" : "none",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1rem",
+                fontSize: "0.8rem",
+                padding: "0.5rem",
+                borderRadius: "4px",
+              }}
             >
-              <i
-                className="fa fa-clock-o"
-                style={{
-                  fontSize:
-                    event.status === "Scheduled" || event.status === "marcado"
-                      ? "24px"
-                      : "18px",
-                  color:
-                    event.status === "Scheduled" || event.status === "marcado"
-                      ? "#007bff"
-                      : "#6c757d",
-                  transition: "all 0.2s",
-                }}
-              />
               <div
-                style={{
-                  color:
-                    event.status === "Scheduled" || event.status === "marcado"
-                      ? "#007bff"
-                      : "#6c757d",
-                  marginTop: "2px",
-                }}
+                style={{ textAlign: "center", cursor: "pointer" }}
+                onClick={() => updateScheduled(event._id)}
               >
-                Agendado
+                <i
+                  className="fa fa-clock-o"
+                  style={{
+                    fontSize:
+                      event.status === "Scheduled" || event.status === "marcado"
+                        ? "24px"
+                        : "18px",
+                    color:
+                      event.status === "Scheduled" || event.status === "marcado"
+                        ? "#007bff"
+                        : "#6c757d",
+                    transition: "all 0.2s",
+                  }}
+                />
+                <div
+                  style={{
+                    color:
+                      event.status === "Scheduled" || event.status === "marcado"
+                        ? "#007bff"
+                        : "#6c757d",
+                    marginTop: "2px",
+                  }}
+                >
+                  Agendado
+                </div>
               </div>
-            </div>
-            <div
-              style={{ textAlign: "center", cursor: "pointer" }}
-              onClick={() => updateRealizedClass(event._id)}
-            >
-              <i
-                className="fa fa-check-circle"
-                style={{
-                  fontSize:
-                    event.status === "Realized" || event.status === "realizada"
-                      ? "24px"
-                      : "18px",
-                  color:
-                    event.status === "Realized" || event.status === "realizada"
-                      ? "#28a745"
-                      : "#6c757d",
-                  transition: "all 0.2s",
-                }}
-              />
               <div
-                style={{
-                  color:
-                    event.status === "Realized" || event.status === "realizada"
-                      ? "#28a745"
-                      : "#6c757d",
-                  marginTop: "2px",
-                }}
+                style={{ textAlign: "center", cursor: "pointer" }}
+                onClick={() => updateRealizedClass(event._id)}
               >
-                Realizado
+                <i
+                  className="fa fa-check-circle"
+                  style={{
+                    fontSize:
+                      event.status === "Realized" ||
+                      event.status === "realizada"
+                        ? "24px"
+                        : "18px",
+                    color:
+                      event.status === "Realized" ||
+                      event.status === "realizada"
+                        ? "#28a745"
+                        : "#6c757d",
+                    transition: "all 0.2s",
+                  }}
+                />
+                <div
+                  style={{
+                    color:
+                      event.status === "Realized" ||
+                      event.status === "realizada"
+                        ? "#28a745"
+                        : "#6c757d",
+                    marginTop: "2px",
+                  }}
+                >
+                  Realizado
+                </div>
               </div>
-            </div>
 
-            <div
-              style={{ textAlign: "center", cursor: "pointer" }}
-              onClick={() => updateUnscheduled(event._id)}
-            >
-              <i
-                className="fa fa-times-circle-o"
-                style={{
-                  fontSize:
-                    event.status === "Canceled" || event.status === "desmarcado"
-                      ? "24px"
-                      : "18px",
-                  color:
-                    event.status === "Canceled" || event.status === "desmarcado"
-                      ? "#dc3545"
-                      : "#6c757d",
-                  transition: "all 0.2s",
-                }}
-              />
               <div
-                style={{
-                  color:
-                    event.status === "Canceled" || event.status === "desmarcado"
-                      ? "#dc3545"
-                      : "#6c757d",
-                  marginTop: "2px",
-                }}
+                style={{ textAlign: "center", cursor: "pointer" }}
+                onClick={() => updateUnscheduled(event._id)}
               >
-                Cancelado
+                <i
+                  className="fa fa-times-circle-o"
+                  style={{
+                    fontSize:
+                      event.status === "Canceled" ||
+                      event.status === "desmarcado"
+                        ? "24px"
+                        : "18px",
+                    color:
+                      event.status === "Canceled" ||
+                      event.status === "desmarcado"
+                        ? "#dc3545"
+                        : "#6c757d",
+                    transition: "all 0.2s",
+                  }}
+                />
+                <div
+                  style={{
+                    color:
+                      event.status === "Canceled" ||
+                      event.status === "desmarcado"
+                        ? "#dc3545"
+                        : "#6c757d",
+                    marginTop: "2px",
+                  }}
+                >
+                  Cancelado
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
         {!event && (
           <div
@@ -379,131 +411,318 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           </div>
         )}
 
-        {event && (
+        {event && event.category === "Marcar Reposição" && (
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 8,
+              overflow: "hidden",
+              border: "1px solid #e2e8f0",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              padding: 16,
+              marginBottom: 20,
+            }}
+          >
+            {/* Botão principal */}
+            {!seeReplenish && (
+              <button
+                onClick={() => setSeeReplenish(true)}
+                style={{
+                  marginTop: 4,
+                  width: "100%",
+                  borderRadius: 999,
+                  border: "1px solid transparent",
+                  padding: "8px 12px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}cc)`,
+                  color: "#ffffff",
+                }}
+              >
+                Reservar o horário de {event.date} às {event.time} reposição
+              </button>
+            )}
+
+            {/* Confirmação */}
+            {seeReplenish && (
+              <div
+                style={{
+                  marginTop: 6,
+                  borderRadius: 10,
+                  padding: "12px 12px 10px",
+                  backgroundColor: "#0f172a",
+                  color: "#e5e7eb",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    fontWeight: 500,
+                  }}
+                >
+                  Deseja agendar sua aula de reposição para este horário? Esta
+                  ação não poderá ser desfeita.
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  <button
+                    onClick={() => setSeeReplenish(false)}
+                    style={{
+                      padding: "6px 16px",
+                      fontSize: 12,
+                      fontWeight: 500,
+                      borderRadius: 999,
+                      border: "1px solid #e5e7eb",
+                      backgroundColor: "#ffffff",
+                      color: "#0f172a",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      await handleScheduleReplenish();
+                      setSeeReplenish(false);
+                    }}
+                    style={{
+                      padding: "6px 16px",
+                      fontSize: 12,
+                      fontWeight: 600,
+                      borderRadius: 999,
+                      border: "1px solid transparent",
+                      background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}cc)`,
+                      color: "#ffffff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Confirmar reposição
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {event && event.category !== "Marcar Reposição" && (
           <>
-            {(event.video || permissionsUser !== "student") && (
-              <EventVideo
-                allowedToEdit={permissionsUser !== "student"}
-                fetchEventData={fetchEventData}
-                headers={headers}
-                videoUrl={event.video}
-                evendId={event._id}
-              />
-            )}{" "}
-            <div
-              style={{
-                display: "grid",
-                gap: 12,
-                gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
-              }}
-            >
-              <MainInfoClass
-                event={event}
-                allowedToEdit={permissionsUser !== "student"}
-                headers={headers}
-                isDesktop={isDesktop}
-                fetchEventData={fetchEventData}
-                evendId={event._id}
-              />
-              {(event.description || permissionsUser !== "student") && (
-                <Description
-                  title={event.student || "Aluno particular"}
-                  status={event.status}
-                  allowedToEdit={permissionsUser !== "student"}
-                  lesson={event.theLesson}
-                  headers={headers}
-                  theDescription={event.description}
-                  theTeacherDescription={event.teacherDescription}
-                  evendId={event._id}
-                  fetchEventData={fetchEventData}
-                />
-              )}
-            </div>
-            {(event.board || permissionsUser !== "student") && (
-              <Board
-                allowedToEdit={permissionsUser !== "student"}
-                headers={headers}
-                theBoard={event.board}
-                evendId={event._id}
-              />
-            )}{" "}
-            {(event.theLessonRender || permissionsUser !== "student") && (
-              <LessonContent
-                headers={headers}
-                date={event.date}
-                theLessonRender={event.theLessonRender}
-                eventId={event._id}
-                studentID={event.studentID}
-              />
-            )}{" "}
-            {(event.homeworkDetails || permissionsUser !== "student") && (
-              <HomeworkClass
-                homeworkID={event.homeworkID}
-                homeworkData={
-                  event.homeworkDetails
-                    ? event.homeworkDetails.description
-                    : "Type here"
-                }
-                headers={headers}
-                evendId={event._id}
-                event={event}
-                isDesktop={isDesktop}
-                fetchEventData={fetchEventData}
-                allowedToEdit={permissionsUser !== "student"}
-              />
-            )}
-            {lastLesson && permissionsUser !== "student" && (
-              <LastClass
-                replicateLastEvent={replicateLastEvent}
-                headers={headers}
-                evendId={event._id}
-                allowedToEdit={permissionsUser !== "student"}
-                isDesktop={isDesktop}
-                lastLesson={lastLesson}
-              />
-            )}
+            {/* ABAS */}
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                width: "50vw",
-                gap: 10,
+                gap: 8,
+                borderBottom: "1px solid #e2e8f0",
+                marginBottom: 4,
               }}
             >
               <button
+                onClick={() => setActiveTab("dados")}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  color: partnerColor(),
-                  maxWidth: "fit-content",
-                  maxHeight: "fit-content",
                   padding: "6px 12px",
+                  fontSize: 13,
+                  borderRadius: 0,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  border: "none",
+                  background: "transparent",
+                  color: activeTab === "dados" ? partnerColor() : "#64748B",
+                  outline: "none",
                 }}
-                onClick={() =>
-                  window.location.assign(`/my-calendar/event/${lastLesson._id}`)
-                }
               >
-                <i
-                  style={{
-                    marginTop: 3,
-                  }}
-                  className="fa fa-arrow-left"
-                />
-                Aula anterior
+                Dados da aula
               </button>
-              {permissionsUser !== "student" && (
-                <DeleteClass
-                  headers={headers}
-                  evendId={event._id}
-                  allowedToEdit={permissionsUser !== "student"}
-                  isDesktop={isDesktop}
-                  lastLesson={lastLesson}
-                />
-              )}
+              <button
+                onClick={() => setActiveTab("conteudo")}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  border: "none",
+                  background: "transparent",
+                  color: activeTab === "conteudo" ? partnerColor() : "#64748B",
+                  outline: "none",
+                }}
+              >
+                Conteúdo da aula
+              </button>
+              <button
+                onClick={() => setActiveTab("homework")}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  borderRadius: 0,
+                  cursor: "pointer",
+                  border: "none",
+                  background: "transparent",
+                  color: activeTab === "homework" ? partnerColor() : "#64748B",
+                  outline: "none",
+                }}
+              >
+                Lição de casa
+              </button>
             </div>
+
+            {/* ABA: DADOS DA AULA */}
+            {activeTab === "dados" && (
+              <>
+                {(event.video || permissionsUser !== "student") && (
+                  <EventVideo
+                    allowedToEdit={permissionsUser !== "student"}
+                    fetchEventData={fetchEventData}
+                    headers={headers}
+                    videoUrl={event.video}
+                    evendId={event._id}
+                  />
+                )}
+                <div
+                  style={{
+                    display: "grid",
+                    gap: 12,
+                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+                  }}
+                >
+                  <MainInfoClass
+                    event={event}
+                    allowedToEdit={permissionsUser !== "student"}
+                    headers={headers}
+                    isDesktop={isDesktop}
+                    fetchEventData={fetchEventData}
+                    evendId={event._id}
+                  />
+                  {(event.description || permissionsUser !== "student") && (
+                    <Description
+                      title={event.student || "Aluno particular"}
+                      status={event.status}
+                      allowedToEdit={permissionsUser !== "student"}
+                      lesson={event.theLesson}
+                      headers={headers}
+                      theDescription={event.description}
+                      theTeacherDescription={event.teacherDescription}
+                      evendId={event._id}
+                      fetchEventData={fetchEventData}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* ABA: CONTEÚDO DA AULA */}
+            {activeTab === "conteudo" && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: isDesktop ? "0.5fr 1fr" : "1fr",
+                  gap: 12,
+                }}
+              >
+                {(event.board || permissionsUser !== "student") && (
+                  <Board
+                    allowedToEdit={permissionsUser !== "student"}
+                    headers={headers}
+                    theBoard={event.board}
+                    evendId={event._id}
+                  />
+                )}
+                {(event.theLessonRender || permissionsUser !== "student") && (
+                  <LessonContent
+                    headers={headers}
+                    fetchEventData={fetchEventData}
+                    date={event.date}
+                    theLessonRender={event.theLessonRender}
+                    eventId={event._id}
+                    studentID={event.studentID}
+                  />
+                )}
+              </div>
+            )}
+            {activeTab === "homework" && (
+              <>
+                {(event.homeworkDetails || permissionsUser !== "student") && (
+                  <HomeworkClass
+                    homeworkID={event.homeworkID}
+                    homeworkData={
+                      event.homeworkDetails
+                        ? event.homeworkDetails.description
+                        : "Type here"
+                    }
+                    headers={headers}
+                    evendId={event._id}
+                    event={event}
+                    isDesktop={isDesktop}
+                    fetchEventData={fetchEventData}
+                    allowedToEdit={permissionsUser !== "student"}
+                  />
+                )}
+                {lastLesson && permissionsUser !== "student" && (
+                  <LastClass
+                    replicateLastEvent={replicateLastEvent}
+                    headers={headers}
+                    evendId={event._id}
+                    allowedToEdit={permissionsUser !== "student"}
+                    isDesktop={isDesktop}
+                    lastLesson={lastLesson}
+                  />
+                )}
+              </>
+            )}
           </>
+        )}
+
+        {event && permissionsUser !== "student" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+            }}
+          >
+            <button
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                color: partnerColor(),
+                maxWidth: "fit-content",
+                maxHeight: "fit-content",
+                padding: "6px 12px",
+              }}
+              onClick={() =>
+                window.location.assign(`/my-calendar/event/${lastLesson._id}`)
+              }
+            >
+              <i
+                style={{
+                  marginTop: 3,
+                }}
+                className="fa fa-arrow-left"
+              />
+              Aula anterior
+            </button>
+            <DeleteClass
+              headers={headers}
+              evendId={event._id}
+              allowedToEdit={permissionsUser !== "student"}
+              isDesktop={isDesktop}
+              lastLesson={lastLesson}
+            />
+          </div>
         )}
       </div>
 

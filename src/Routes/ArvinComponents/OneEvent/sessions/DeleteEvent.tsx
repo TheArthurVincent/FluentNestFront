@@ -73,7 +73,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
       });
 
       notifyAlert("Aula excluída com sucesso.", partnerColor());
-      window.location.assign("/my-calenadar");
+      window.location.assign("/my-calendar");
     } catch (error) {
       console.error(error);
       notifyAlert("Erro ao excluir a aula.", partnerColor());

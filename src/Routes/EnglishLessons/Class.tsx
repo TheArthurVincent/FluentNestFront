@@ -54,6 +54,7 @@ interface EnglishClassCourse2ModelProps {
   setChange?: any;
   mainStudentID?: string;
   change?: any;
+  fetchEventData?: any;
   canEditCourse: boolean | undefined;
 }
 
@@ -62,6 +63,7 @@ export default function EnglishClassCourse2({
   classId,
   previousClass,
   nextClass,
+  fetchEventData,
   courseTitle,
   setChange,
   change,
@@ -3073,7 +3075,7 @@ export default function EnglishClassCourse2({
   return (
     <div
       style={{
-        margin: "auto",
+        // margin: "auto",
         padding: mainStudentID ? 0 : "1rem",
         minHeight: theclass?.elements?.length > 0 ? "80vh" : "none",
         fontFamily: "Plus Jakarta Sans",
@@ -3208,6 +3210,7 @@ export default function EnglishClassCourse2({
                   headers={actualHeaders}
                   classId={classId}
                   language={classLanguage}
+                  fetchEventData={fetchEventData}
                 />
               )}
             </>

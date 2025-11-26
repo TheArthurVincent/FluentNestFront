@@ -1626,6 +1626,7 @@ function MyCalendar({
     <div
       style={{
         margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
+        flex: "1 1 0", // 👈 deixa esse card “flexível” na linha
       }}
     >
       {isDesktop && (
@@ -1660,6 +1661,7 @@ function MyCalendar({
           borderRadius: "12px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
+          minWidth: 0, // 👈 reforça dentro do card também
         }}
       >
         {headers ? (

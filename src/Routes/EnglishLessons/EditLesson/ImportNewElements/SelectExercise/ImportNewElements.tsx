@@ -1,22 +1,20 @@
-// ImportElementsEditor.tsx
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
-import { color } from "framer-motion";
 
 interface ImportElementsEditorProps {
-  lessonId: string; // aula que está sendo editada (destino)
+  lessonId: string; // aula que está sendo editada (destino) – pode nem usar, mas deixei
   studentId: string; // aluno logado (pra limitar o que pode ver)
   headers?: any; // headers de auth
+  fetchEventData?: any;
   onChange?: (info: {
-    // callback opcional pra pai recarregar a aula
-    importedCount: number;
+    mode: "one" | "all";
     fromClassId: string;
     fromTitle: string;
-    mode: "one" | "all";
+    elements: ElementType[];
   }) => void;
 }
 
@@ -25,7 +23,7 @@ type ElementType = {
   subtitle?: string;
   comments?: string;
   type: string;
-  sentences?: string[];
+  sentences?: any[];
   text?: string;
   link?: string;
   items?: string[];
@@ -43,6 +41,7 @@ export default function ImportElementsEditor({
   studentId,
   headers,
   onChange,
+  fetchEventData,
 }: ImportElementsEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,7 +54,6 @@ export default function ImportElementsEditor({
 
   const [openClassId, setOpenClassId] = useState<string | null>(null);
 
-  const [importing, setImporting] = useState(false);
   const [importMsg, setImportMsg] = useState<string | null>(null);
 
   const openModal = () => setIsOpen(true);
@@ -67,10 +65,8 @@ export default function ImportElementsEditor({
     setErrorMsg(null);
     setLoadingLessons(false);
     setOpenClassId(null);
-    setImporting(false);
     setImportMsg(null);
-    // ❌ antes recarregava a página
-    window.location.reload();
+    fetchEventData?.();
   };
 
   // ============================================
@@ -160,6 +156,7 @@ export default function ImportElementsEditor({
         </div>
       );
     }
+
     if (el.type === "audio") {
       return (
         <div key={index} style={baseStyle}>
@@ -231,6 +228,23 @@ export default function ImportElementsEditor({
       );
     }
 
+    if (el.type === "video") {
+      return (
+        <div key={index} style={baseStyle}>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              marginBottom: 4,
+              color: "#111827",
+            }}
+          >
+            {subtitle} - Vídeo
+          </div>
+        </div>
+      );
+    }
+
     // fallback genérico
     return (
       <div key={index} style={baseStyle}>
@@ -298,9 +312,9 @@ export default function ImportElementsEditor({
   }, [search, language, isOpen, studentId, headers]);
 
   // ============================================
-  // Chamar backend ImportNewElements
+  // Import "no front" – só manda pro pai
   // ============================================
-  const importElementsToLesson = async (params: {
+  const importElementsToLesson = (params: {
     mode: "one" | "all";
     fromClassId: string;
     fromTitle: string;
@@ -310,47 +324,16 @@ export default function ImportElementsEditor({
 
     if (!elements || elements.length === 0) return;
 
-    try {
-      setImporting(true);
-      setImportMsg(null);
+    setImportMsg(
+      `Selecionados ${elements.length} elemento(s) de "${fromTitle}" para importar para o editor.`
+    );
 
-      const { data } = await axios.post(
-        `${backDomain}/api/v1/course-classes/${lessonId}/import-new-elements`,
-        {
-          mode,
-          fromClassId,
-          fromTitle,
-          elements,
-        },
-        {
-          headers: headers ? { ...headers } : {},
-        }
-      );
-
-      const importedCount = data?.importedCount ?? elements.length;
-
-      setImporting(false);
-      setImportMsg(
-        data?.message ||
-          `Importação concluída (${importedCount} elemento(s) copiado(s)).`
-      );
-
-      if (onChange) {
-        onChange({
-          importedCount,
-          fromClassId,
-          fromTitle,
-          mode,
-        });
-      }
-    } catch (error: any) {
-      console.error("Erro ao importar elementos:", error);
-      setImporting(false);
-      const msg =
-        error?.response?.data?.error ||
-        "Erro ao importar elementos. Tente novamente.";
-      setImportMsg(msg);
-    }
+    onChange?.({
+      mode,
+      fromClassId,
+      fromTitle,
+      elements,
+    });
   };
 
   // ============================================
@@ -414,16 +397,14 @@ export default function ImportElementsEditor({
           </button>
         </div>
 
-        {/* MENSAGEM DE IMPORT (pode aparecer em erros) */}
+        {/* MENSAGEM DE IMPORT */}
         {importMsg && (
           <p
             style={{
               marginTop: 4,
               marginBottom: 12,
               fontSize: 12,
-              color: importMsg.toLowerCase().includes("erro")
-                ? "#b91c1c"
-                : "#047857",
+              color: "#047857",
             }}
           >
             {importMsg}
@@ -525,7 +506,7 @@ export default function ImportElementsEditor({
                   </p>
                 ) : (
                   lessons.map((lesson) => {
-                    const isOpen = openClassId === lesson.classId;
+                    const isOpenLesson = openClassId === lesson.classId;
                     const elements = lesson.elements || [];
 
                     return (
@@ -549,7 +530,7 @@ export default function ImportElementsEditor({
                             cursor: "pointer",
                           }}
                           onClick={() =>
-                            setOpenClassId(isOpen ? null : lesson.classId)
+                            setOpenClassId(isOpenLesson ? null : lesson.classId)
                           }
                         >
                           <div
@@ -564,7 +545,7 @@ export default function ImportElementsEditor({
                             <span
                               style={{
                                 fontSize: 18,
-                                transform: isOpen
+                                transform: isOpenLesson
                                   ? "rotate(180deg)"
                                   : "rotate(0deg)",
                                 transition: "transform 0.15s ease",
@@ -614,7 +595,7 @@ export default function ImportElementsEditor({
                         </div>
 
                         {/* CONTEÚDO EXPANDIDO */}
-                        {isOpen && (
+                        {isOpenLesson && (
                           <div
                             style={{
                               marginTop: 10,
@@ -622,7 +603,7 @@ export default function ImportElementsEditor({
                               paddingTop: 10,
                             }}
                           >
-                            {/* BOTÃO COPIAR TODOS */}
+                            {/* BOTÃO COPIAR TODOS (no front) */}
                             {elements.length > 0 && (
                               <div
                                 style={{
@@ -634,16 +615,13 @@ export default function ImportElementsEditor({
                                 <button
                                   style={{
                                     padding: "6px 10px",
-                                    background: importing
-                                      ? "#6b7280"
-                                      : partnerColor(),
+                                    background: partnerColor(),
                                     border: "none",
                                     color: "#fff",
                                     borderRadius: 6,
                                     cursor: "pointer",
                                     fontSize: 12,
                                   }}
-                                  disabled={importing}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     importElementsToLesson({
@@ -654,9 +632,7 @@ export default function ImportElementsEditor({
                                     });
                                   }}
                                 >
-                                  {importing
-                                    ? "Importando..."
-                                    : "Copiar aula completa"}
+                                  Copiar aula completa
                                 </button>
                               </div>
                             )}
@@ -688,32 +664,33 @@ export default function ImportElementsEditor({
                                       display: "flex",
                                       justifyContent: "flex-end",
                                       marginTop: 4,
+                                      width: "100%",
+                                      gap: 8,
                                     }}
                                   >
                                     {renderElementPreview(el, idx)}
-                                    {!importing && (
-                                      <button
-                                        style={{
-                                          padding: "4px 8px",
-                                          background: `${partnerColor()}30`,
-                                          border: "none",
-                                          borderRadius: 6,
-                                          cursor: "pointer",
-                                          fontSize: 12,
-                                        }}
-                                        disabled={importing}
-                                        onClick={() =>
-                                          importElementsToLesson({
-                                            mode: "one",
-                                            fromClassId: lesson.classId,
-                                            fromTitle: lesson.title,
-                                            elements: [el],
-                                          })
-                                        }
-                                      >
-                                        Importar
-                                      </button>
-                                    )}
+                                    <button
+                                      style={{
+                                        padding: "4px 8px",
+                                        background: `${partnerColor()}30`,
+                                        border: "none",
+                                        borderRadius: 6,
+                                        cursor: "pointer",
+                                        fontSize: 12,
+                                        height: "fit-content",
+                                        alignSelf: "flex-start",
+                                      }}
+                                      onClick={() =>
+                                        importElementsToLesson({
+                                          mode: "one",
+                                          fromClassId: lesson.classId,
+                                          fromTitle: lesson.title,
+                                          elements: [el],
+                                        })
+                                      }
+                                    >
+                                      ✨ Importar
+                                    </button>
                                   </div>
                                 </div>
                               ))
@@ -742,14 +719,15 @@ export default function ImportElementsEditor({
         onClick={openModal}
         style={{
           borderRadius: 6,
-          border: "1px solid #e5e7eb",
+          border: "none",
           padding: "6px 10px",
           fontSize: 13,
           background: "#f9fafb",
           cursor: "pointer",
+          whiteSpace: "nowrap",
         }}
       >
-        Importar elementos de aulas
+        ✨ Importar
       </button>
 
       {typeof document !== "undefined" &&
