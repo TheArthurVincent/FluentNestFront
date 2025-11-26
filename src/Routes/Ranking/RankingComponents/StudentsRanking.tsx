@@ -21,18 +21,12 @@ import { listOfButtons } from "./ListOfCriteria";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
 import styled, { keyframes } from "styled-components";
-import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 interface StudentsRankingProps {
   headers: MyHeadersType | null;
-  monthNow: string;
 }
 
-export default function StudentsRanking({
-  headers,
-  monthNow,
-}: StudentsRankingProps) {
-  const { UniversalTexts } = useUserContext();
+export default function StudentsRanking({ headers }: StudentsRankingProps) {
   interface StudentsType {
     id: string;
     lastname: string;
@@ -342,202 +336,7 @@ export default function StudentsRanking({
   };
 
   return (
-    <div>
-      <div
-        style={{
-          backgroundColor: transparentBlack(),
-          width: "10000px",
-          height: "10000px",
-          top: "0",
-          left: "0",
-          position: "fixed",
-          zIndex: 95,
-          display: isVisible ? "block" : "none",
-          padding: "1rem",
-        }}
-      />
-      <div
-        style={{
-          position: "fixed",
-          zIndex: 100,
-          padding: "1rem",
-          backgroundColor: alwaysWhite(),
-          top: "50%",
-          left: "50%",
-          width: "25rem",
-          height: "25rem",
-          display: isVisible ? "block" : "none",
-          transform: "translate(-50%, -50%)",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gap: "0.5rem",
-          }}
-        >
-          <Xp
-            onClick={() => handleSeeModal()}
-            style={{
-              fontSize: "1.5rem",
-            }}
-          >
-            ✕
-          </Xp>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gap: "1rem",
-            overflow: "auto",
-          }}
-        >
-          {!card && user.permissions === "superadmin" && (
-            <div
-              style={{
-                display: "grid",
-                gap: "0.5rem",
-              }}
-            >
-              <HThree>
-                Monthly Score: <strong>{formatNumber(monthlyScore)} </strong>{" "}
-              </HThree>
-              <HThree>
-                Total Score: <strong>{formatNumber(totalScore)} </strong>
-              </HThree>
-              <HThree>
-                Homework Done: <strong>{totalHomeworkDone} </strong>{" "}
-              </HThree>
-              <HThree>
-                Flashcards 25/day: <strong>{totalFlashCards25} </strong>
-              </HThree>
-              {listOfButtons.map((item, index) => {
-                return (
-                  <button
-                    key={index}
-                    disabled={disabled}
-                    style={{
-                      color: alwaysWhite(),
-                      fontSize: "0.8rem",
-                    }}
-                    color={item.color}
-                    onClick={() =>
-                      submitPlusScore(
-                        ID,
-                        item.score,
-                        item.description,
-                        item.category
-                      )
-                    }
-                  >
-                    {item.text}
-                  </button>
-                );
-              })}
-
-              <div>
-                <p>Personalizado</p>
-                <input
-                  style={{ maxWidth: "5rem", marginRight: "5px" }}
-                  placeholder="Special Score"
-                  onChange={(e) => changePlusScore(Number(e.target.value))}
-                  type="number"
-                />
-                <input
-                  style={{ maxWidth: "5rem", marginRight: "5px" }}
-                  placeholder="Description"
-                  onChange={(e) => setDescSpecial(e.target.value)}
-                  type="text"
-                />
-                <button
-                  onClick={() =>
-                    submitPlusScore(ID, plusScore, descSpecial, "Others")
-                  }
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          )}
-
-          {loadingScore ? (
-            <CircularProgress style={{ color: partnerColor() }} />
-          ) : (
-            <div
-              id="the-card"
-              style={{
-                display: card ? "block" : "none",
-                position: "relative",
-              }}
-            >
-              <img
-                style={{
-                  maxWidth: "22rem",
-                  position: "absolute",
-                  zIndex: 1,
-                }}
-                src={
-                  updateScore(totalScore, totalFlashCards25, totalHomeworkDone)
-                    .card
-                }
-                alt=""
-              />
-              <img
-                style={{
-                  maxWidth: "10rem",
-                  width: "10rem",
-                  height: "10rem",
-                  objectFit: "cover",
-                  margin: "auto",
-                  borderRadius: "50%",
-                  position: "relative",
-                  zIndex: 2,
-                  left: "7em",
-                  top: "2rem",
-                }}
-                src={pic}
-                alt=""
-              />
-              <p
-                style={{
-                  position: "relative",
-                  zIndex: 3,
-                  height: "12rem",
-                  objectFit: "cover",
-                  margin: "auto",
-                  borderRadius: "50%",
-                  left: "10rem",
-                  top: "5.5rem",
-                  fontSize: "1.2rem",
-                  fontWeight: 800,
-                }}
-              >
-                {name}
-              </p>
-            </div>
-          )}
-          {user.permissions === "superadmin" && (
-            <button
-              onClick={() => {
-                setCard(!card);
-              }}
-            >
-              {card ? "See Score" : "See Card"}
-            </button>
-          )}
-          {user.permissions === "superadmin" && (
-            <p>
-              New{" "}
-              {
-                updateScore(totalScore, totalFlashCards25, totalHomeworkDone)
-                  .text
-              }
-              !! Congratulations, {name}
-            </p>
-          )}
-        </div>
-      </div>
+    <>
       {loading && FIRST ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
@@ -602,7 +401,6 @@ export default function StudentsRanking({
                         item.picture ||
                         "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
                       }
-                      onClick={() => handleSeeModal(item._id)}
                     />
                   </div>
                   <p
@@ -733,6 +531,6 @@ export default function StudentsRanking({
           })}
         </ul>
       )}
-    </div>
+    </>
   );
 }

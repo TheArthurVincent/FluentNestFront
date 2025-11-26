@@ -36,9 +36,7 @@ export default function Ranking({ headers, isDesktop }: Props) {
     {
       title: UniversalTexts.monthlyRanking + " " + monthInQuestion,
       value: "1",
-      component: (
-        <StudentsRanking monthNow={monthInQuestion} headers={headers || {}} />
-      ),
+      component: <StudentsRanking headers={headers || {}} />,
     },
     {
       title: UniversalTexts.totalRanking,
