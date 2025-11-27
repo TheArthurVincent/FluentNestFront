@@ -179,7 +179,6 @@ export function MyHomePage({
   const [loadingReports, setLoadingReports] = useState<boolean>(true);
 
   const seeReports = async () => {
-    
     //fórmula que pega a data atual e coloca no formato mm-yyyy
     const currentDate = new Date();
     const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0"); // Meses são baseados em zero

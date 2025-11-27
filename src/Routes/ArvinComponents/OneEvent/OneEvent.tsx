@@ -658,27 +658,50 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isDesktop ? "0.5fr 1fr" : "1fr",
+                  gridTemplateColumns: isDesktop ? "1fr 0.5fr" : "1fr",
                   gap: 12,
                 }}
               >
-                {(event.board || permissionsUser !== "student") && (
-                  <Board
-                    allowedToEdit={permissionsUser !== "student"}
-                    headers={headers}
-                    theBoard={event.board}
-                    evendId={event._id}
-                  />
-                )}
                 {(event.theLessonRender || permissionsUser !== "student") && (
-                  <LessonContent
-                    headers={headers}
-                    fetchEventData={fetchEventData}
-                    date={event.date}
-                    theLessonRender={event.theLessonRender}
-                    eventId={event._id}
-                    studentID={event.studentID}
-                  />
+                  <div
+                    style={{
+                      paddingLeft: isDesktop ? 12 : 0,
+                      maxHeight: isDesktop ? "90vw" : "none",
+                      scrollbarWidth: isDesktop ? "thin" : "auto",
+                      scrollbarColor: isDesktop
+                        ? `${partnerColor()} transparent`
+                        : "transparent",
+                      overflowY: isDesktop ? "auto" : "visible",
+                    }}
+                  >
+                    <LessonContent
+                      headers={headers}
+                      fetchEventData={fetchEventData}
+                      date={event.date}
+                      theLessonRender={event.theLessonRender}
+                      eventId={event._id}
+                      studentID={event.studentID}
+                    />
+                  </div>
+                )}
+                {(event.board || permissionsUser !== "student") && (
+                  <div
+                    style={{
+                      position: isDesktop ? "sticky" : "relative",
+                      top: isDesktop ? 20 : 0,
+                      alignSelf: "start", // mantém o sticky no topo
+                      height: "fit-content",
+                      maxHeight: isDesktop ? "90vw" : "none",
+                      zIndex: 5, // garante sobreposição
+                    }}
+                  >
+                    <Board
+                      allowedToEdit={permissionsUser !== "student"}
+                      headers={headers}
+                      theBoard={event.board}
+                      evendId={event._id}
+                    />
+                  </div>
                 )}
               </div>
             )}
