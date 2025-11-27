@@ -13,6 +13,7 @@ import LessonContent from "./sessions/LessonContent";
 import DeleteClass from "./sessions/DeleteEvent";
 import { partnerColor } from "../../../Styles/Styles";
 import HomeworkClass from "./sessions/HomeworkClass";
+import Helmets from "../../../Resources/Helmets";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -181,6 +182,13 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 ? `${event.student} ${event.date} (${event.time})`
                 : "Evento"}
             </span>
+            <Helmets
+              text={
+                event
+                  ? `${event.student} ${event.date} (${event.time})`
+                  : "Evento"
+              }
+            />
           </section>
 
           {/* Só mostra os botões se o evento já foi carregado */}
