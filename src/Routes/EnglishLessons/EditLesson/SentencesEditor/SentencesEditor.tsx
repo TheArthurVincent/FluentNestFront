@@ -509,9 +509,25 @@ const SentencesEditor: React.FC<Props> = ({
 
       {/* Header */}
       <div className="se-header">
-        <strong onClick={() => setShowConfig((v) => !v)} className="se-title">
-          Sentences
-          {value.subtitle ? ` - ${truncateString(value.subtitle, 15)}` : ""}
+        <strong
+          onClick={() => setShowConfig(!showConfig)}
+          style={{
+            cursor: "pointer",
+            fontSize: 14,
+            color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <i
+            className={showConfig ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | SENTENÇAS
         </strong>
 
         <span className="se-actions">

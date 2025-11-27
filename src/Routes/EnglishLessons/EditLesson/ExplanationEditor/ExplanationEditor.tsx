@@ -162,9 +162,23 @@ export default function ExplanationEditor({
       >
         <strong
           onClick={() => setOpen(!open)}
-          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
+          style={{
+            cursor: "pointer",
+            fontSize: 14,
+            color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
         >
-          Explanation - {value.subtitle && truncateString(value.subtitle, 15)}
+          <i
+            className={open ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | EXPLICAÇÃO
         </strong>
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <div>

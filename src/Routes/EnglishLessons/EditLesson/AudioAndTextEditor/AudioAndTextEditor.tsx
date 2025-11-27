@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { uploadImageViaBackend } from "../../../../Resources/ImgUpload";
 import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../Styles/Styles";
-import { backDomain } from "../../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
 import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 export type AudioBlock = {
@@ -263,9 +266,19 @@ export default function AudioAndTextEditor({
             cursor: "pointer",
             fontSize: 14,
             color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          Text & Audio {value.subtitle ? `- ${value.subtitle}` : ""}
+          <i
+            className={showConfig ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | TEXTO
         </strong>
         <span
           style={{

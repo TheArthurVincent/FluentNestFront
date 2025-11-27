@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { uploadImageViaBackend } from "../../../../Resources/ImgUpload";
+import { truncateString } from "../../../../Resources/UniversalComponents";
 
 export type SingleImagesBlock = {
   type: "singleimages";
@@ -140,11 +141,26 @@ export default function SingleImagesEditor({
           alignItems: "center",
         }}
       >
+        <i className="fa fa-arrow-down" style={{ color: "#0f172a" }}></i>
         <strong
-          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
           onClick={() => setShow(!show)}
+          style={{
+            cursor: "pointer",
+            fontSize: 14,
+            color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
         >
-          Single Images {value.subtitle ? `- ${value.subtitle}` : ""}
+          <i
+            className={show ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | IMAGEM INDIVIDUAL
         </strong>
 
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>

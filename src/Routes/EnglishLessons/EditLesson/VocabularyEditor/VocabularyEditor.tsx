@@ -375,11 +375,24 @@ export default function VocabularyEditor({
         }}
       >
         <strong
-          onClick={() => setShowConfig((v) => !v)}
-          style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
+          onClick={() => setShowConfig(!showConfig)}
+          style={{
+            cursor: "pointer",
+            fontSize: 14,
+            color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
         >
-          Vocabulary{" "}
-          {value.subtitle ? `- ${truncateString(value.subtitle, 15)}` : ""}
+          <i
+            className={showConfig ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | VOCABULÁRIO
         </strong>
 
         <span

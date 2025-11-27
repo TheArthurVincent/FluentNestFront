@@ -170,9 +170,19 @@ export default function ImagesEditor({
             cursor: "pointer",
             fontSize: 14,
             color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          Images - {value.subtitle && truncateString(value.subtitle, 15)}
+          <i
+            className={showConfig ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | IMAGENS
         </strong>
         <span style={headerBtnWrap}>
           <div>
@@ -361,30 +371,6 @@ export default function ImagesEditor({
                         gridTemplateColumns: "1fr",
                       }}
                     >
-                      {/* <select
-                        value={withLang.languages!.language2}
-                        onChange={(e) =>
-                          updateImageAt(idx, {
-                            languages: {
-                              ...withLang.languages!,
-                              language2: e.target.value,
-                            },
-                          })
-                        }
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          padding: 8,
-                          fontSize: 13,
-                          background: "white",
-                        }}
-                      >
-                        {LANG_OPTIONS.map((code) => (
-                          <option key={code} value={code}>
-                            {code}
-                          </option>
-                        ))}
-                      </select> */}
                       <input
                         value={withLang.portuguese ?? ""}
                         onChange={(e) =>

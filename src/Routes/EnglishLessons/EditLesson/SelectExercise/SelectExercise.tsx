@@ -211,10 +211,19 @@ export default function SelectExerciseEditor({
             cursor: "pointer",
             fontSize: 14,
             color: "#0f172a",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          Select Exercise -{" "}
-          {value.subtitle && truncateString(value.subtitle, 15)}
+          <i
+            className={showConfig ? "fa fa-arrow-down" : "fa fa-arrow-right"}
+            style={{ color: "#0f172a" }}
+          />
+          {value.subtitle
+            ? truncateString(value.subtitle, 15)
+            : "Adicione  um título"}{" "}
+          | EXERCÍCIO DE MÚLTIPLA ESCOLHA
         </strong>
 
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
