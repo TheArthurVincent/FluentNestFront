@@ -387,19 +387,16 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                       const isCanceled = ev.status === "desmarcado";
 
                       return (
-                        <div
+                        <a
                           key={ev._id}
-                          onClick={() => {
-                            if (ev.link && !isCanceled) {
-                              window.open(ev.link, "_blank");
-                            }
-                          }}
+                          href={`my-calendar/event/${ev._id}`}
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "4px",
                             padding: "10px 12px",
                             borderRadius: "12px",
+                            textDecoration: "none",
                             border: "1px solid #E5E7EB",
                             marginBottom: "8px",
                             cursor:
@@ -496,7 +493,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                               Entrar na aula
                             </span>
                           )}
-                        </div>
+                        </a>
                       );
                     })
                   )}
