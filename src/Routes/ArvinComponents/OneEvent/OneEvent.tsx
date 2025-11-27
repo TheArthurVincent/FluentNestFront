@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import { Outlet, useParams } from "react-router-dom";
+import { useSearchParams, Outlet, useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
@@ -18,6 +18,7 @@ type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
 };
+type TabType = "dados" | "homework" | "conteudo";
 
 const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -25,11 +26,39 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
   const [seeReplenish, setSeeReplenish] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // NOVO: controle de abas
-  const [activeTab, setActiveTab] = useState<"dados" | "homework" | "conteudo">(
-    "dados"
-  );
+  // NOVO: controle de abas  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<TabType>("dados");
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get("tab") as TabType | null;
+
+    if (
+      tabFromUrl === "dados" ||
+      tabFromUrl === "conteudo" ||
+      tabFromUrl === "homework"
+    ) {
+      setActiveTab(tabFromUrl);
+    } else {
+      // se não tiver `tab` na URL, garante o default
+      setActiveTab("dados");
+    }
+  }, [searchParams]);
+
+  const handleChangeTab = (tab: TabType) => {
+    setActiveTab(tab);
+    const newParams = new URLSearchParams(searchParams);
+
+    // se quiser SEMPRE explicitar a aba na URL:
+    newParams.set("tab", tab);
+
+    // se quiser que a aba padrão não use ?tab=...
+    // if (tab === "dados") newParams.delete("tab");
+    // else newParams.set("tab", tab);
+
+    setSearchParams(newParams);
+  };
 
   const fetchEventData = async () => {
     setPermissionsUser(
@@ -531,7 +560,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               }}
             >
               <button
-                onClick={() => setActiveTab("dados")}
+                onClick={() => handleChangeTab("dados")}
                 style={{
                   padding: "6px 12px",
                   fontSize: 13,
@@ -547,7 +576,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 Dados da aula
               </button>
               <button
-                onClick={() => setActiveTab("conteudo")}
+                onClick={() => handleChangeTab("conteudo")}
                 style={{
                   padding: "6px 12px",
                   fontSize: 13,
@@ -563,7 +592,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 Conteúdo da aula
               </button>
               <button
-                onClick={() => setActiveTab("homework")}
+                onClick={() => handleChangeTab("homework")}
                 style={{
                   padding: "6px 12px",
                   fontSize: 13,

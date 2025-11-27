@@ -257,6 +257,7 @@ export default function EditLesson({
       setElements(updatedSanitizedElements);
       onUpdated?.(updated);
       setSeeEdit?.(false);
+
       window.location.reload();
     } catch (err: any) {
       console.error(err);

@@ -179,18 +179,18 @@ export function MyHomePage({
   const [loadingReports, setLoadingReports] = useState<boolean>(true);
 
   const seeReports = async () => {
+    
     //fórmula que pega a data atual e coloca no formato mm-yyyy
     const currentDate = new Date();
     const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0"); // Meses são baseados em zero
     const currentYear = currentDate.getFullYear();
-    const currentMonthYear = `${currentMonth}-${currentYear}`;
 
     try {
       const response = await axios.get(`${backDomain}/api/v1/finance/${id}`, {
         headers: headers ? { ...headers } : {},
-        params: { month: currentMonthYear },
+        params: { month: `${currentMonth}-${currentYear}` },
       });
-
+      console.log("Financial reports response:", response.data);
       if (response.data.financialReportsOfTheMonth?.length === 0) {
         setFinancialReports(
           response.data.financialReportsOfTheMonth?.length > 0
@@ -341,7 +341,7 @@ export function MyHomePage({
                     seeScore(id);
                   }}
                   style={{
-                    display: "flex",
+                    display: loadingReports ? "flex" : "none",
                     alignItems: "center",
                     gap: "6px",
                     borderRadius: "80px",
