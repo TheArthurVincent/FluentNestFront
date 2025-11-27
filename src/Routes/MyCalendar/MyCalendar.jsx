@@ -1669,7 +1669,7 @@ function MyCalendar({
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
               fontStyle: "SemiBold",
-              display: "flex",
+              display: "grid",
               flexDirection: "column",
               fontSize: "14px",
               padding: isDesktop ? "1rem" : "5px 1rem ",
@@ -1685,16 +1685,19 @@ function MyCalendar({
                   setShouldScrollToToday(false);
                 }}
                 style={{
-                  display: !isVisible ? "flex" : "none",
+                  display: !isVisible ? "grid" : "none",
                   overflowX: "auto",
-                  padding: "8px 4px 4px",
-                  maxWidth: "100%",
-                  width: "100%",
-                  boxSizing: "border-box",
-                  flex: "1 1 auto",
-                  minWidth: 0,
-                  scrollbarWidth: "thin",
+                  gridTemplateColumns: `repeat(${futureDates.length}, minmax(200px, 1fr))`,
+                  gap: "8px",
                   scrollbarColor: `${partnerColor()} transparent`,
+                  // padding: "8px 4px 4px",
+                  // maxWidth: "100%",
+                  // width: "100%",
+                  // boxSizing: "border-box",
+                  // flex: "1 1 auto",
+                  // minWidth: 0,
+                  // scrollbarWidth: "thin",
+                  // scrollbarColor: `${partnerColor()} transparent`,
                 }}
               >
                 {futureDates.map((date, index) => {
@@ -1705,10 +1708,13 @@ function MyCalendar({
                     hj.getFullYear() === date.getFullYear();
 
                   return (
-                    <StyledDiv
+                    <article
                       className={isToday ? "glowing" : "none"}
                       ref={isToday ? todayRef : null}
                       style={{
+                        maxHeight: "65vh",
+                        overflowY: "auto",
+                        marginRight: "12px",
                         fontSize: "10px",
                         border: isToday
                           ? `3px solid ${partnerColor()}`
@@ -1719,7 +1725,7 @@ function MyCalendar({
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
                           : "0 2px 8px rgba(0,0,0,0.08)",
                         transition: "all 0.3s ease",
-                        minWidth: "200px",
+                        minWidth: "150px",
                       }}
                       key={index}
                     >
@@ -2207,7 +2213,7 @@ function MyCalendar({
                           </div>
                         )}
                       </div>
-                    </StyledDiv>
+                    </article>
                   );
                 })}
               </div>
