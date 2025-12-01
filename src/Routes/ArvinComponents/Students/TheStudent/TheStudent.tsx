@@ -137,12 +137,12 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
         {/* COLUNA ESQUERDA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentMainCard student={student} />
-          <StudentTodayClassesCard actualHeaders={headers} student={student} />
+          <StudentLessonsCard student={student.id} />
         </div>
 
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <StudentLessonsCard student={student.id} />
+          <StudentTodayClassesCard actualHeaders={headers} student={student} />
           <StudentScoresCard student={student} />
         </div>
 
