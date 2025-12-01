@@ -1,24 +1,28 @@
-// Routes/ArvinComponents/Students/sections/StudentLessonsCard.tsx
+// Routes/ArvinComponents/Students/sections/StudentHWCard.tsx
 import React, { FC } from "react";
 import { UserCheckIcon } from "@phosphor-icons/react";
 import { cardBase, cardTitle } from "../types/studentPage.styles";
 import { partnerColor } from "../../../../../Styles/Styles";
 
-interface StudentLessonsCardProps {
+interface StudentHWCardProps {
   student: string;
 }
 
-export const StudentLessonsCard: FC<StudentLessonsCardProps> = ({
+export const StudentHWCard: FC<StudentHWCardProps> = ({
   student,
 }) => {
   return (
     <div style={cardBase}>
-      <div style={cardTitle}>
+      <div
+        style={{
+          ...cardTitle,
+        }}
+      >
         <UserCheckIcon size={18} weight="bold" color="#111827" />
-        <span>Aulas Dadas</span>
+        <span>Lições de Casa</span>
       </div>
       <a
-        href={"/students/" + student + "/classes"}
+        href={"/my-homework-and-lessons/" + student}
         style={{
           marginTop: 14,
           display: "flex",
@@ -31,7 +35,7 @@ export const StudentLessonsCard: FC<StudentLessonsCardProps> = ({
           gap: 6,
         }}
       >
-        {"Acessar aulas do aluno"}
+        {"Acessar lições de casa do aluno"}
         <i className="fa fa-chevron-right" />
       </a>
     </div>

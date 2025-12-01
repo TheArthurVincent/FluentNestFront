@@ -212,26 +212,30 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           margin: !isDesktop ? 12 : 0,
         }}
       >
-        {/* Título interno do card (opcional) */}
-        <div
+        <a
+          href={`/students/${studentId}`}
           style={{
-            ...cardTitle,
-            marginBottom: 14,
-            justifyContent: "space-between",
+            marginTop: 14,
+            display: "block",
+            fontWeight: 700,
+            textAlign: "right",
+            color: partnerColor(),
+            textDecoration: "none",
+            fontSize: 12,
+            textTransform: "uppercase",
+            alignItems: "center",
+            gap: 6,
           }}
         >
-          <span>Histórico de aulas</span>
-          <span
+          Ver aluno
+          <i
             style={{
-              fontSize: 11,
-              fontWeight: 500,
-              color: "#6B7280",
+              marginLeft: 8,
             }}
-          >
-            Total: {totalEvents}
-          </span>
-        </div>
-
+            className="fa fa-chevron-right"
+          />
+        </a>
+        <br />
         {/* Controles de paginação (quantidade por página) */}
         <div
           style={{

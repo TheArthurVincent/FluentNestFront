@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   backDomain,
   formatDateBr,
-  truncateString,
   updateInfo,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
@@ -38,7 +37,6 @@ export default function Homework({
 }: HWProps) {
   const { studentId } = useParams<{ studentId: string }>();
 
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isGroupClass, setIsGroupClass] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(true);
   const [tutoringList, setTutoringList] = useState<any>([]);
@@ -60,39 +58,6 @@ export default function Homework({
   const [homeworkAnswer, setHomeworkAnswer] = useState<string>("");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const pill = (active: boolean): React.CSSProperties => ({
-    padding: "6px 10px",
-    borderRadius: 6,
-    border: `1px solid ${active ? partnerColor() : "#E5E7EB"}`,
-    background: active ? "#fff" : "#F9FAFB",
-    color: active ? partnerColor() : "#374151",
-    fontSize: 13,
-    cursor: "pointer",
-    transition: "all .15s ease",
-  });
-
-  const group = {
-    wrap: {
-      display: "flex",
-      gap: "8px",
-      flexWrap: "wrap",
-      alignItems: "center",
-    } as React.CSSProperties,
-    label: {
-      fontSize: 13,
-      color: "#6B7280",
-      marginRight: 6,
-    } as React.CSSProperties,
-    bar: {
-      display: "flex",
-      gap: 6,
-      background: "#F3F4F6",
-      padding: 6,
-      borderRadius: 6,
-      alignItems: "center",
-    } as React.CSSProperties,
-  };
-
   function normalizeCategory(v?: string) {
     return (v || "").toLowerCase().trim();
   }
@@ -107,9 +72,6 @@ export default function Homework({
     ].includes(c);
   }
 
-  const toggleOpen = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setSelectedFile(file || null);
@@ -290,6 +252,7 @@ export default function Homework({
     setSubmissionMode("file");
   };
 
+  const [studentName, setStudentName] = useState<string>("");
   const handleHomeworkAnswerChange = (content: string) => {
     setHomeworkAnswer(content);
   };
@@ -308,7 +271,7 @@ export default function Homework({
       );
       const tt = response.data.tutoringHomeworkList;
       setTutoringList(tt);
-      console.log(tt);
+      setStudentName(response.data.studentName || "");
       setBoth(true);
       setIsGroupClass(false);
 
@@ -421,7 +384,9 @@ export default function Homework({
               fontSize: "1.5rem",
             }}
           >
-            <span style={newArvinTitleStyle}>Lições de Casa</span>
+            <span style={newArvinTitleStyle}>
+              Lições de Casa de {studentName}
+            </span>
           </section>
         </div>
       )}
@@ -438,6 +403,29 @@ export default function Homework({
           padding: "10px",
         }}
       >
+        <a
+          href={`/students/${studentId}`}
+          style={{
+            marginTop: 14,
+            display: "block",
+            fontWeight: 700,
+            textAlign: "right",
+            color: partnerColor(),
+            textDecoration: "none",
+            fontSize: 12,
+            textTransform: "uppercase",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          Ver aluno
+          <i
+            style={{
+              marginLeft: 8,
+            }}
+            className="fa fa-chevron-right"
+          />
+        </a>
         <Helmets text="Classes & Homework" />
         <>
           {loading ? (

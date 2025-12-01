@@ -12,6 +12,7 @@ import { StudentScoresCard } from "./sections/StudentScoresCard";
 import { StudentFinancialReportsCard } from "./sections/StudentFinancialReportsCard";
 import { StudentItem, TodayClass } from "./types/studentsTypes";
 import { StudentMainCard } from "./sections/StudentMainCard.tsx";
+import { StudentHWCard } from "./sections/StudentHomework";
 
 type StudentPageProps = {
   headers: MyHeadersType;
@@ -138,6 +139,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentMainCard student={student} />
           <StudentLessonsCard student={student.id} />
+          <StudentHWCard student={student.id} />
         </div>
 
         {/* COLUNA CENTRAL */}
