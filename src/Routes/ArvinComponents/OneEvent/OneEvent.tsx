@@ -676,8 +676,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns:
-                    isDesktop && event.board ? "1fr 0.5fr" : "1fr",
+                  gridTemplateColumns: isDesktop ? "1fr 0.5fr" : "1fr",
                   gap: 12,
                 }}
               >
@@ -685,12 +684,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   <div
                     style={{
                       paddingLeft: isDesktop ? 12 : 0,
-                      maxHeight: isDesktop ? "90vw" : "none",
-                      scrollbarWidth: isDesktop ? "thin" : "auto",
-                      scrollbarColor: isDesktop
-                        ? `${partnerColor()} transparent`
-                        : "transparent",
-                      overflowY: isDesktop ? "auto" : "visible",
+                      overflowY: "visible",
                     }}
                   >
                     <LessonContent
