@@ -23,22 +23,22 @@ import FindTeacher from "./AdmComponents/ArthurSection/FindTeacher";
 export function Adm({ headers }: HeadersProps) {
   const { id, plan } = localStorageLoggedIn;
   const componentsToRender = [
-    {
-      title: "Alunos",
-      displayArthur: "block",
-      value: "0",
-      tooltip:
-        "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
-      component: <AllStudents id={id} headers={headers} plan={plan} />,
-    },
-    {
-      title: "Turmas",
-      displayArthur: "block",
-      value: "1",
-      tooltip:
-        "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
-      component: <Groups id={id} headers={headers} />,
-    },
+    // {
+    //   title: "Alunos",
+    //   displayArthur: "block",
+    //   value: "0",
+    //   tooltip:
+    //     "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
+    //   component: <AllStudents id={id} headers={headers} plan={plan} />,
+    // },
+    // {
+    //   title: "Turmas",
+    //   displayArthur: "block",
+    //   value: "1",
+    //   tooltip:
+    //     "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
+    //   component: <Groups id={id} headers={headers} />,
+    // },
     {
       title: "Financeiro",
       displayArthur: "block",
