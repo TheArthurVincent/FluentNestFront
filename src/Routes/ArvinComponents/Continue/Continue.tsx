@@ -3,6 +3,7 @@ import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { PlayIcon } from "@phosphor-icons/react";
+import InstallPWA from "../../../Components/InstallPWA";
 
 interface ContinueProps {
   actualHeaders?: any;
@@ -246,6 +247,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
           }}
         />
       )}
+      <InstallPWA />
     </div>
   );
 };
