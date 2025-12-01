@@ -174,6 +174,7 @@ export function ListOfStudentsToClick({
     ? studentsWithoutEventToday
     : filteredStudents;
 
+  const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
   return (
     <>
       {loading && <p>Loading...</p>}
@@ -223,7 +224,7 @@ export function ListOfStudentsToClick({
               padding: "12px 16px",
               borderRadius: 12,
               border: "1px solid #e4e6ea",
-              display: "flex",
+              display: myId !== st.id ? "flex" : "none",
               alignItems: "center",
               gap: 12,
               transition: "0.2s",

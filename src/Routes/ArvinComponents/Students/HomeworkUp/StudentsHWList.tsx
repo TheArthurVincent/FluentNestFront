@@ -174,62 +174,71 @@ export function ListOfStudentsHWToClick({
     ? studentsWithoutEventToday
     : filteredStudents;
 
+    const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
   return (
-    <>
-      {loading && <p>Loading...</p>}
-      {!loading && students.length === 0 && <p>No students found.</p>}
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-        {/* Barra de busca + novo aluno */}
-        <div
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: isDesktop
+          ? "repeat(auto-fill, minmax(260px, 1fr))"
+          : "1fr",
+        gap: 16,
+      }}
+    >
+      {/* BARRA DE BUSCA + NOVO ALUNO */}
+      <div
+        style={{
+          gridColumn: "1 / -1",
+          display: "flex",
+          alignItems: !isDesktop ? "flex-end" : "center",
+          padding: "8px 0",
+          flexDirection: isDesktop ? "row" : "column",
+          fontSize: 12,
+          color: "#555",
+          gap: 8,
+          marginBottom: isDesktop ? 4 : 12,
+        }}
+      >
+        <input
+          type="text"
+          placeholder="🔍 Qual é o aluno cujas lições de casa você gostaria de ver?"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           style={{
-            display: "flex",
-            alignItems: !isDesktop ? "flex-end" : "center",
-            padding: "8px 0",
-            flexDirection: isDesktop ? "row" : "column",
-            fontSize: 12,
-            color: "#555",
-            gap: 8,
-            marginBottom: isDesktop ? 4 : 12,
+            flex: 1,
+            minWidth: isDesktop ? 260 : "100%",
+            borderRadius: 999,
+            border: "1px solid #E2E8F0",
+            padding: "8px 14px",
+            fontSize: 13,
+            outline: "none",
+            background: "#fafafa",
+          }}
+        />
+        <NewStudentModal id={ID} headers={actualHeaders} />
+      </div>
+
+      {/* GRID DE CARDS */}
+      {listToRender.map((st) => (
+        <Link
+          key={st.id}
+          to={`/my-homework-and-lessons/${st.id}`}
+          style={{
+            textDecoration: "none",
+            color: "#222",
+            background: "white",
+            padding: "16px",
+            borderRadius: 16,
+            border: "1px solid #e4e6ea",
+            display: myId !== st.id ? "flex" : "none",
+            flexDirection: "column",
+            gap: 12,
+            transition: "0.25s",
+            fontFamily: "Plus Jakarta Sans",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
           }}
         >
-          <input
-            type="text"
-            placeholder="🔍 Buscar aluno por nome, usuário ou e-mail..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              flex: 1,
-              minWidth: isDesktop ? 260 : "100%",
-              borderRadius: 999,
-              border: "1px solid #E2E8F0",
-              padding: "8px 14px",
-              fontSize: 13,
-              outline: "none",
-            }}
-          />
-          <NewStudentModal id={ID} headers={actualHeaders} />
-        </div>
-
-        {/* Lista normal (ou restante da lista) */}
-        {listToRender.map((st) => (
-          <Link
-            key={st.id}
-            to={`/my-homework-and-lessons/${st.id}`}
-            style={{
-              textDecoration: "none",
-              color: "#222",
-              background: "white",
-              padding: "12px 16px",
-              borderRadius: 12,
-              border: "1px solid #e4e6ea",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              transition: "0.2s",
-              fontFamily: "Plus Jakarta Sans",
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <img
               src={
                 st.picture ||
@@ -237,22 +246,22 @@ export function ListOfStudentsHWToClick({
               }
               alt={st.name}
               style={{
-                width: 42,
-                height: 42,
+                width: 48,
+                height: 48,
                 borderRadius: "50%",
                 objectFit: "cover",
               }}
             />
+
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 15, fontWeight: 600 }}>
+              <span style={{ fontSize: 16, fontWeight: 600 }}>
                 {st.name} {st.lastname}
               </span>
-              <span style={{ fontSize: 12, opacity: 0.7 }}>{st.email}</span>
             </div>
-          </Link>
-        ))}
-      </div>
-    </>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
 
