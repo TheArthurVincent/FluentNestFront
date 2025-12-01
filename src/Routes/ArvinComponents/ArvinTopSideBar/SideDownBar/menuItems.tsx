@@ -169,7 +169,7 @@ export const menuItems: MenuItem[] = [
   {
     showInBottomBar: !!studentId,
     justBottom: false,
-    label: "Lições & Aula",
+    label: "Lições de Casa",
     orderSideBar: 5,
     Icon: NotebookIcon,
     path: studentId ? `/my-homework-and-lessons/${studentId}` : "/",
