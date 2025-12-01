@@ -36,11 +36,9 @@ import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 import SubscriptionExpired from "./Routes/SubscriptionExpired";
 import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinLandingPageNew";
-import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 import ArvinNewHomePage from "./Routes/ArvinNewHomePage";
-import StudentPage from "./Routes/ArvinComponents/Students/TheStudent/TheStudent";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
