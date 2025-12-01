@@ -259,8 +259,6 @@ export default function Homework({
 
   const [studentName, setStudentName] = useState<string>("");
 
-
-  
   const handleHomeworkAnswerChange = (content: string) => {
     setHomeworkAnswer(content);
   };
@@ -411,29 +409,31 @@ export default function Homework({
           padding: "10px",
         }}
       >
-{isAllowed &&        <a
-          href={`/students/${studentId}`}
-          style={{
-            marginTop: 14,
-            display: "block",
-            fontWeight: 700,
-            textAlign: "right",
-            color: partnerColor(),
-            textDecoration: "none",
-            fontSize: 12,
-            textTransform: "uppercase",
-            alignItems: "center",
-            gap: 6,
-          }}
-        >
-          Ver aluno
-          <i
+        {isAllowed && (
+          <a
+            href={`/students/${studentId}`}
             style={{
-              marginLeft: 8,
+              marginTop: 14,
+              display: "block",
+              fontWeight: 700,
+              textAlign: "right",
+              color: partnerColor(),
+              textDecoration: "none",
+              fontSize: 12,
+              textTransform: "uppercase",
+              alignItems: "center",
+              gap: 6,
             }}
-            className="fa fa-chevron-right"
-          />
-        </a>}
+          >
+            Ver aluno
+            <i
+              style={{
+                marginLeft: 8,
+              }}
+              className="fa fa-chevron-right"
+            />
+          </a>
+        )}
         <Helmets text={`Lições da Casa de ${studentName}`} />
         <>
           {loading ? (
