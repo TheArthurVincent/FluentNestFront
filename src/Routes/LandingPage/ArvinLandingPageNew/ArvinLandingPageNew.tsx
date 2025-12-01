@@ -1009,7 +1009,7 @@ function ArvinLandingPageNew() {
                       gap: "24px",
                     }}
                   >
-                    <div
+                    {/* <div
                       style={{
                         backgroundColor: "#F3F5F7",
                         borderRadius: "12px",
@@ -1086,7 +1086,7 @@ function ArvinLandingPageNew() {
                             letterSpacing: "-3%",
                           }}
                         >
-                          {!isMonth ? <>R$ 89,99</> : <>R$ 899,90</>}
+                          {!isMonth ? <>R$ 79,99</> : <>R$ 799,90</>}
                         </span>
                         <span
                           style={{
@@ -1212,16 +1212,17 @@ function ArvinLandingPageNew() {
                           Contratar agora
                         </button>
                       </div>
-                    </div>
+                    </div> */}
                     <div
                       style={{
                         backgroundColor: "#F3F5F7",
                         borderRadius: "12px",
+                        marginBottom: "12px",
                         padding: "4px 12px",
                       }}
                     >
-                      <div>
-                        <p
+                      {/* <div> */}
+                      {/* <p
                           style={{
                             fontFamily: "Plus Jakarta Sans",
                             fontWeight: 600,
@@ -1242,23 +1243,25 @@ function ArvinLandingPageNew() {
                             weight="fill"
                           />
                           Gold
-                        </p>
-                        <div
-                          style={{
-                            backgroundColor: "#101721",
-                            color: "#fff",
-                            gap: "10px",
-                            borderRadius: "30px",
-                            paddingTop: "4px",
-                            paddingRight: "16px",
-                            paddingBottom: "4px",
-                            textAlign: "center",
-                            paddingLeft: "16px",
-                          }}
-                        >
-                          Grátis por 30 dias
-                        </div>
+                        </p> */}
+                      <div
+                        style={{
+                          marginTop: "16px",
+                          marginBottom: "12px",
+                          backgroundColor: "#101721",
+                          color: "#fff",
+                          gap: "10px",
+                          borderRadius: "30px",
+                          paddingTop: "4px",
+                          paddingRight: "16px",
+                          paddingBottom: "4px",
+                          textAlign: "center",
+                          paddingLeft: "16px",
+                        }}
+                      >
+                        Grátis por 30 dias
                       </div>
+                      {/* </div> */}
                       <p
                         style={{
                           fontFamily: "Plus Jakarta Sans",
@@ -1316,20 +1319,29 @@ function ArvinLandingPageNew() {
                         {[
                           {
                             check: true,
-                            text: "100+ alunos particulares",
+                            text: "Personalização da plataforma",
                           },
                           {
                             check: true,
-                            text: "Flashcards ilimitados por dia",
-                          },
-                          {
-                            check: true,
-                            text: "Aulas prontas para lecionar",
+                            text: "Construção de materiais e aulas completos",
                           },
                           {
                             check: true,
                             text: "1.000 tokens de IA por mês",
                           },
+                          {
+                            check: true,
+                            text: "100+ alunos particulares",
+                          },
+                          {
+                            check: true,
+                            text: "Flashcards e exercícios para os alunos",
+                          },
+                          {
+                            check: true,
+                            text: "Aulas prontas para lecionar",
+                          },
+
                           {
                             check: true,
                             text: "Gerenciamento de alunos",
@@ -1345,10 +1357,6 @@ function ArvinLandingPageNew() {
                           {
                             check: true,
                             text: "Emissão de recibos",
-                          },
-                          {
-                            check: true,
-                            text: "Personalização da plataforma",
                           },
                         ].map((item: any, index: number) => {
                           return (
