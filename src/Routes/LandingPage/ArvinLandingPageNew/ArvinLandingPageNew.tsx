@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./styles.arvinNewLp.css";
 import {
-  CastleTurretIcon,
   CheckCircleIcon,
-  CrownSimpleIcon,
   ListIcon,
   WhatsappLogoIcon,
   XCircleIcon,
@@ -1009,210 +1007,6 @@ function ArvinLandingPageNew() {
                       gap: "24px",
                     }}
                   >
-                    {/* <div
-                      style={{
-                        backgroundColor: "#F3F5F7",
-                        borderRadius: "12px",
-                        padding: "4px 12px",
-                      }}
-                    >
-                      <div>
-                        <p
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 600,
-                            fontStyle: "SemiBold",
-                            fontSize: "24px",
-                            lineHeight: "150%",
-                            letterSpacing: "-3%",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            marginTop: "16px",
-                            marginBottom: "12px",
-                          }}
-                        >
-                          <CastleTurretIcon
-                            size={24}
-                            color="grey"
-                            weight="fill"
-                          />
-                          Silver
-                        </p>
-                        <div
-                          style={{
-                            backgroundColor: "#101721",
-                            color: "#fff",
-                            gap: "10px",
-                            borderRadius: "30px",
-                            paddingTop: "4px",
-                            paddingRight: "16px",
-                            paddingBottom: "4px",
-                            textAlign: "center",
-                            paddingLeft: "16px",
-                          }}
-                        >
-                          Grátis por 30 dias
-                        </div>
-                      </div>
-                      <p
-                        style={{
-                          fontFamily: "Plus Jakarta Sans",
-                          fontWeight: 500,
-                          fontStyle: "Medium",
-                          fontSize: "14px",
-                          marginTop: "24px",
-                          lineHeight: "150%",
-                          letterSpacing: "-2%",
-                          color: "#596780",
-                        }}
-                      >
-                        Para quem está começando a ensinar e quer uma plataforma
-                        completa e prática.
-                      </p>
-                      <p
-                        style={{
-                          margin: "24px 0",
-                        }}
-                      >
-                        <span
-                          style={{
-                            color: "#101721",
-                            fontFamily: " Plus Jakarta Sans",
-                            fontWeight: 600,
-                            fontStyle: "SemiBold",
-                            fontSize: "32px",
-                            lineHeight: "150%",
-                            letterSpacing: "-3%",
-                          }}
-                        >
-                          {!isMonth ? <>R$ 79,99</> : <>R$ 799,90</>}
-                        </span>
-                        <span
-                          style={{
-                            color: "#596780",
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            fontStyle: "Medium",
-                            fontSize: "16px",
-                            lineHeight: "150%",
-                            letterSpacing: "-2%",
-                          }}
-                        >
-                          {!isMonth ? (
-                            <>/mês</>
-                          ) : (
-                            <>
-                              /ano <br /> (em até 10x sem juros)
-                            </>
-                          )}
-                        </span>
-                      </p>
-                      <div>
-                        {[
-                          {
-                            check: true,
-                            text: "Até 30 alunos particulares",
-                          },
-                          {
-                            check: true,
-                            text: "25 flashcards/dia",
-                          },
-                          {
-                            check: true,
-                            text: "Aulas prontas para lecionar",
-                          },
-                          {
-                            check: true,
-                            text: "25 tokens de IA por mês",
-                          },
-                          {
-                            check: true,
-                            text: "Gerenciamento de alunos",
-                          },
-                          {
-                            check: false,
-                            text: "Gestão financeira e relatórios",
-                          },
-                          {
-                            check: false,
-                            text: "Área de responsáveis",
-                          },
-                          {
-                            check: false,
-                            text: "Emissão de recibos",
-                          },
-                          {
-                            check: false,
-                            text: "Personalização da plataforma",
-                          },
-                        ].map((item: any, index: number) => {
-                          return (
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "12px",
-                                marginBottom: "16px",
-                              }}
-                              key={index}
-                            >
-                              {item.check ? (
-                                <CheckCircleIcon
-                                  weight="fill"
-                                  color="#0FBD11"
-                                  size={24}
-                                />
-                              ) : (
-                                <XCircleIcon
-                                  weight="fill"
-                                  color="#596780"
-                                  size={24}
-                                />
-                              )}
-                              <span
-                                style={{
-                                  fontFamily: "Plus Jakarta Sans",
-                                  fontWeight: 500,
-                                  fontStyle: "Medium",
-                                  fontSize: "14px",
-                                  lineHeight: "150%",
-                                  letterSpacing: "-2%",
-                                }}
-                              >
-                                {item.text}
-                              </span>
-                            </div>
-                          );
-                        })}
-                        <button
-                          style={{
-                            color: "#FFFFFF",
-                            backgroundColor: "#ED5914",
-                            borderRadius: 30,
-                            padding: "12px 24px",
-                            border: "none",
-                            cursor: "pointer",
-                            marginTop: "16px",
-                            marginBottom: "16px",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                            display: "block",
-                            width: "90%",
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 600,
-                            fontStyle: "SemiBold",
-                            fontSize: "14px",
-                            lineHeight: "150%",
-                            letterSpacing: "-2%",
-                            textAlign: "center",
-                          }}
-                          onClick={scrollToSubscription}
-                        >
-                          Contratar agora
-                        </button>
-                      </div>
-                    </div> */}
                     <div
                       style={{
                         backgroundColor: "#F3F5F7",
@@ -1221,29 +1015,6 @@ function ArvinLandingPageNew() {
                         padding: "4px 12px",
                       }}
                     >
-                      {/* <div> */}
-                      {/* <p
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 600,
-                            fontStyle: "SemiBold",
-                            fontSize: "24px",
-                            lineHeight: "150%",
-                            letterSpacing: "-3%",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                            marginTop: "16px",
-                            marginBottom: "12px",
-                          }}
-                        >
-                          <CrownSimpleIcon
-                            size={24}
-                            color="gold"
-                            weight="fill"
-                          />
-                          Gold
-                        </p> */}
                       <div
                         style={{
                           marginTop: "16px",
@@ -1261,7 +1032,6 @@ function ArvinLandingPageNew() {
                       >
                         Grátis por 30 dias
                       </div>
-                      {/* </div> */}
                       <p
                         style={{
                           fontFamily: "Plus Jakarta Sans",
