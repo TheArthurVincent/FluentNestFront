@@ -87,7 +87,7 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
         <div dangerouslySetInnerHTML={{ __html: homeworkData }} />
       </div>
       <a
-        href={"/my-homework-and-lessons"}
+        href={`/my-homework-and-lessons/${studentId}`}
         style={{
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 700,

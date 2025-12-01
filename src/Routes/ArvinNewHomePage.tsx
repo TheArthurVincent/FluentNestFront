@@ -250,38 +250,24 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: <MyClasses headers={headers} />,
     },
+    // {
+    //   title: "Homework",
+    //   showLeftBar: true,
+    //   levelcard: false,
+    //   component: (
+    //     <Homework
+    //       isDesktop={isDesktop}
+    //       change={change}
+    //       setChange={setChange}
+    //       headers={headers}
+    //     />
+    //   ),
+    // },
     {
-      title: "Homework",
+      path: "my-homework-and-lessons/:studentId",
       showLeftBar: true,
-      levelcard: false,
-      component: (
-        <Homework
-          isDesktop={isDesktop}
-          change={change}
-          setChange={setChange}
-          headers={headers}
-        />
-      ),
-    },
-    {
-      path: "my-homework-and-lessons",
-      showLeftBar: true,
-      title: "Homework",
-      levelcard: false,
-      component: (
-        <Homework
-          isDesktop={isDesktop}
-          change={change}
-          setChange={setChange}
-          headers={headers}
-        />
-      ),
-    },
-    {
       title: "Homework",
       levelcard: false,
-      showLeftBar: true,
-      path: "/my-classes",
       component: (
         <Homework
           isDesktop={isDesktop}
