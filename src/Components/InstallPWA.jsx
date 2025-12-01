@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { createPortal } from "react-dom";
 
 const InstallPromptContainer = styled.div`
   position: fixed;
@@ -148,7 +149,10 @@ const InstallPWA = () => {
     return null;
   }
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  // PORTAL: cola o fixed direto no documento principal
+  return createPortal(
     <InstallPromptContainer>
       <div>
         <strong>Instalar ARVIN</strong>
@@ -160,7 +164,8 @@ const InstallPWA = () => {
         <InstallButton onClick={handleInstallClick}>Instalar</InstallButton>
         <DismissButton onClick={handleDismiss}>Agora não</DismissButton>
       </div>
-    </InstallPromptContainer>
+    </InstallPromptContainer>,
+    document.body
   );
 };
 
