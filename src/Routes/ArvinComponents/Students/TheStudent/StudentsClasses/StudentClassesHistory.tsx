@@ -89,6 +89,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [studentName, setStudentName] = useState<string>("");
+
+  // 🔍 NOVO: termo de busca por descrição
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!studentId) return;
 
@@ -139,14 +143,28 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     }
   };
 
-  const totalEvents = eventsList.length;
+  // 🔍 NOVO: eventos filtrados pela descrição
+  const filteredEvents = useMemo(() => {
+    if (!searchTerm.trim()) return eventsList;
+    const term = searchTerm.toLowerCase();
+    return eventsList.filter((e) =>
+      (e.description || "").toLowerCase().includes(term)
+    );
+  }, [eventsList, searchTerm]);
+
+  // quando mudar o filtro, volta pra página 0
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm]);
+
+  const totalEvents = filteredEvents.length;
   const totalPages = totalEvents === 0 ? 1 : Math.ceil(totalEvents / pageSize);
 
   const paginatedEvents = useMemo(() => {
     const start = currentPage * pageSize;
     const end = start + pageSize;
-    return eventsList.slice(start, end);
-  }, [eventsList, currentPage, pageSize]);
+    return filteredEvents.slice(start, end);
+  }, [filteredEvents, currentPage, pageSize]);
 
   const handleChangePageSize = (value: number) => {
     setPageSize(value);
@@ -196,7 +214,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               alignItems: "center",
               paddingLeft: "8px",
               width: "100%",
-              fontSize: "1.5rem",
             }}
           >
             <span style={newArvinTitleStyle}>
@@ -212,7 +229,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           ...cardBase,
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 600,
-          fontSize: 14,
           margin: !isDesktop ? 12 : 0,
         }}
       >
@@ -225,7 +241,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             textAlign: "right",
             color: partnerColor(),
             textDecoration: "none",
-            fontSize: 12,
             textTransform: "uppercase",
             alignItems: "center",
             gap: 6,
@@ -240,33 +255,67 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           />
         </a>
         <br />
-        {/* Controles de paginação (quantidade por página) */}
+
+        {/* Controles de paginação + filtro */}
         <div
           style={{
             display: "flex",
+            flexDirection: isDesktop ? "row" : "column",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: isDesktop ? "center" : "flex-start",
             marginBottom: 10,
             gap: 8,
           }}
         >
-          <span
+          <div
             style={{
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 500,
-              fontSize: 13,
-              color: "#4B5563",
+              display: "flex",
+              flexDirection: "column",
+              gap: 6,
+              flex: 1,
             }}
           >
-            Aulas exibidas: {paginatedEvents.length}
-          </span>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span
               style={{
                 fontFamily: "Plus Jakarta Sans",
                 fontWeight: 500,
-                fontSize: 13,
+                color: "#4B5563",
+              }}
+            >
+              Aulas exibidas: {paginatedEvents.length}{" "}
+              {searchTerm && `(filtrado de ${totalEvents})`}
+            </span>
+
+            {/* 🔍 Input de busca por descrição */}
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar por descrição da aula..."
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 400,
+                fontSize: 14,
+                borderRadius: 8,
+                border: "1px solid #E5E7EB",
+                padding: "6px 10px",
+                backgroundColor: "#F9FAFB",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 500,
                 color: "#4B5563",
               }}
             >
@@ -278,7 +327,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               style={{
                 fontFamily: "Plus Jakarta Sans",
                 fontWeight: 500,
-                fontSize: 13,
                 borderRadius: 8,
                 border: "1px solid #E5E7EB",
                 padding: "4px 8px",
@@ -299,7 +347,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 400,
-              fontSize: 13,
               color: "#4B5563",
             }}
           >
@@ -313,7 +360,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 400,
-              fontSize: 13,
               color: "#4B5563",
             }}
           >
@@ -359,24 +405,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       style={{
                         fontFamily: "Plus Jakarta Sans",
                         fontWeight: 600,
-                        fontSize: 13,
                         color: "#111827",
                       }}
                     >
                       {formatDate(event.date)} — {event.time || "--:--"}
-                    </span>
-
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 400,
-                        fontSize: 12,
-                        color: "#4B5563",
-                      }}
-                    >
-                      {event.description
-                        ? truncateString(event.description, 60)
-                        : "Sem descrição"}
                     </span>
                   </div>
 
@@ -392,7 +424,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         style={{
                           fontFamily: "Plus Jakarta Sans",
                           fontWeight: 500,
-                          fontSize: 12,
                           color: "#4B5563",
                         }}
                       >
@@ -404,7 +435,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
                     <span
                       style={{
-                        fontSize: 16,
                         transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
                         transition: "transform 0.15s ease-out",
                       }}
@@ -425,20 +455,48 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       gap: 10,
                       fontFamily: "Plus Jakarta Sans",
                       fontWeight: 400,
-                      fontSize: 13,
                       color: "#111827",
                     }}
                   >
-                    <p
+                    <div
                       style={{
-                        margin: 0,
-                        fontSize: 12,
-                        color: "#4B5563",
+                        display: "flex",
+                        marginBottom: 8,
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <strong>Descrição: </strong>
-                      {event.description ? event.description : "-"}
-                    </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          color: "#4B5563",
+                        }}
+                      >
+                        <strong>Descrição: </strong>
+                        {event.description ? event.description : "-"}
+                      </p>
+                      <a
+                        href={`/my-calendar/event/${event._id}`}
+                        style={{
+                          display: "block",
+                          fontWeight: 700,
+                          textAlign: "right",
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          textTransform: "uppercase",
+                          alignItems: "center",
+                          gap: 6,
+                        }}
+                      >
+                        Ver Evento
+                        <i
+                          style={{
+                            marginLeft: 8,
+                          }}
+                          className="fa fa-chevron-right"
+                        />
+                      </a>
+                    </div>
 
                     {event.video && (
                       <div style={{ display: "grid", gap: 6 }}>
@@ -477,7 +535,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           style={{
                             fontFamily: "Plus Jakarta Sans",
                             fontWeight: 500,
-                            fontSize: 12,
                             color: "#030303",
                             maxWidth: "100%",
                             maxHeight: 150,
@@ -511,7 +568,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                                   <pre
                                     style={{
                                       whiteSpace: "pre-wrap",
-                                      fontSize: 11,
                                       color: "#6B7280",
                                     }}
                                   >
@@ -532,7 +588,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           style={{
                             fontFamily: "Plus Jakarta Sans",
                             fontWeight: 700,
-                            fontSize: 12,
                             lineHeight: "100%",
                             textTransform: "uppercase",
                             cursor: "pointer",
@@ -565,7 +620,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               alignItems: "center",
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 400,
-              fontSize: 12,
               color: "#4B5563",
             }}
           >

@@ -41,6 +41,11 @@ export default function Homework({
   const [both, setBoth] = useState<boolean>(true);
   const [tutoringList, setTutoringList] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // 👇 NOVOS
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [ID, setID] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
   const [myPermissions, setPermissions] = useState<string>("");
@@ -426,7 +431,7 @@ export default function Homework({
             className="fa fa-chevron-right"
           />
         </a>
-        <Helmets text="Classes & Homework" />
+        <Helmets text={`Lições da Casa de ${studentName}`} />
         <>
           {loading ? (
             <CircularProgress
