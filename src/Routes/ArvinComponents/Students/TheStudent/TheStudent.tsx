@@ -142,13 +142,12 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
 
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <StudentStatsStrip student={student} />
           <StudentLessonsCard student={student.id} />
+          <StudentScoresCard student={student} />
         </div>
 
         {/* COLUNA DIREITA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <StudentScoresCard student={student} />
           <StudentFinancialReportsCard
             financialReports={student.financialReports || []}
             formatDate={formatDate}
