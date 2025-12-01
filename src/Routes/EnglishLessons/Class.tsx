@@ -3655,7 +3655,7 @@ export default function EnglishClassCourse2({
                                     )}
                                     {element.video &&
                                       element.subtitle &&
-                                      isArthurVincent && (
+                                      (
                                         <VideoLessonModel element={element} />
                                       )}
 
