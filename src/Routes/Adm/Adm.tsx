@@ -42,7 +42,7 @@ export function Adm({ headers }: HeadersProps) {
     {
       title: "Financeiro",
       displayArthur: "block",
-      value: "3",
+      value: "0",
       tooltip:
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
