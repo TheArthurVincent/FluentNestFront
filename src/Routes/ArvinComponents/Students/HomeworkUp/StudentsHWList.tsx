@@ -6,7 +6,7 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 import { Link } from "react-router-dom";
 import NewStudentModal from "../NewStudent/NewStudent";
 
-type ListOfStudentsToClickProps = HeadersProps & {
+type ListOfStudentsHWToClickProps = HeadersProps & {
   change?: boolean;
   setChange?: (value: boolean) => void;
   isDesktop: boolean;
@@ -62,10 +62,10 @@ type EventMap = {
   };
 };
 
-export function ListOfStudentsToClick({
+export function ListOfStudentsHWToClick({
   actualHeaders,
   isDesktop,
-}: ListOfStudentsToClickProps) {
+}: ListOfStudentsHWToClickProps) {
   const [students, setStudents] = useState<StudentItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
@@ -215,7 +215,7 @@ export function ListOfStudentsToClick({
         {listToRender.map((st) => (
           <Link
             key={st.id}
-            to={`/students/${st.id}`}
+            to={`/my-homework-and-lessons/${st.id}`}
             style={{
               textDecoration: "none",
               color: "#222",
@@ -256,4 +256,4 @@ export function ListOfStudentsToClick({
   );
 }
 
-export default ListOfStudentsToClick;
+export default ListOfStudentsHWToClick;

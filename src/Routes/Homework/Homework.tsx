@@ -493,7 +493,7 @@ export default function Homework({
                             }}
                           >
                             {hw.dueDate && (
-                              <span>
+                              <span style={cardTitle}>
                                 Entrega em: {formatDateBr(hw.dueDate)}
                               </span>
                             )}

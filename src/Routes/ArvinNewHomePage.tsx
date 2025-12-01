@@ -54,6 +54,7 @@ import Turmas from "./ArvinComponents/Groups/Groups";
 import StudentPage from "./ArvinComponents/Students/TheStudent/TheStudent";
 import Event from "./ArvinComponents/OneEvent/OneEvent";
 import StudentClassesHistory from "./ArvinComponents/Students/TheStudent/StudentsClasses/StudentClassesHistory";
+import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -274,6 +275,21 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           change={change}
           setChange={setChange}
           headers={headers}
+        />
+      ),
+    },
+    {
+      path: "homework",
+      showLeftBar: true,
+      title: "Homework",
+      levelcard: false,
+      component: (
+        <HWUp
+          headers={headers}
+          actualHeaders={headers}
+          change={change}
+          setChange={setChange}
+          isDesktop={isDesktop}
         />
       ),
     },

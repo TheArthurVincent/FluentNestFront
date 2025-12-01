@@ -23,6 +23,7 @@ export type MenuItem = {
   justBottom?: boolean;
   admin?: boolean;
   isMobile?: boolean;
+  isJustStudent?: boolean;
   orderMobile?: number;
   currentPath?: string;
   showSideBarOnly?: boolean;
@@ -35,6 +36,7 @@ export const ItemRow: FC<{
   admin?: boolean;
   currentPath: string;
   bgActive: string;
+  isJustStudent?: boolean;
   baseTextColor: string;
   partnerColor: () => string;
   collapsed?: boolean;
@@ -124,6 +126,7 @@ export const ItemRow: FC<{
 };
 
 const studentId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
+const permissions = JSON.parse(localStorage.getItem("loggedIn") || "null")?.permissions;
 export const menuItems: MenuItem[] = [
   {
     label: "Início",
@@ -172,7 +175,8 @@ export const menuItems: MenuItem[] = [
     label: "Lições de Casa",
     orderSideBar: 5,
     Icon: NotebookIcon,
-    path: studentId ? `/my-homework-and-lessons/${studentId}` : "/",
+    isJustStudent: true,
+    path: permissions == "student" ? `/my-homework-and-lessons/${studentId}` : "/homework",
     isMobile: false,
   },
   {
