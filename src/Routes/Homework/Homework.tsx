@@ -523,55 +523,6 @@ export default function Homework({
                         </span>
                       </div>
 
-                      {/* Descrição do homework */}
-                      <div
-                        style={{
-                          fontFamily: "Plus Jakarta Sans",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: "#111827",
-                          marginBottom: 10,
-                        }}
-                      >
-                        <div
-                          style={{
-                            color: "#333",
-                            lineHeight: "1.4",
-                          }}
-                          dangerouslySetInnerHTML={{ __html: hw.description }}
-                        />
-                      </div>
-
-                      {/* Link para o evento */}
-                      {eventId && (
-                        <div
-                          style={{
-                            marginBottom: 10,
-                            fontSize: 12,
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 6,
-                          }}
-                        >
-                          <span style={{ color: "#6B7280", fontWeight: 500 }}>
-                            Aula relacionada:
-                          </span>
-                          <Link
-                            to={`/my-calendar/event/${eventId}?tab=homework`}
-                            style={{
-                              fontFamily: "Plus Jakarta Sans",
-                              fontWeight: 600,
-                              fontSize: 12,
-                              textDecoration: "none",
-                              color: partnerColor(),
-                            }}
-                          >
-                            Ver evento
-                          </Link>
-                        </div>
-                      )}
-
-                      {/* Botões – só professor/superadmin vê */}
                       {isAllowed && (
                         <div
                           style={{
@@ -618,7 +569,6 @@ export default function Homework({
                               Marcar como feito
                             </button>
                           )}
-
                           <button
                             type="button"
                             onClick={() => justStatus(hw._id)}
@@ -635,6 +585,51 @@ export default function Homework({
                             Só mudar status
                           </button>
                         </div>
+                      )}
+                      {/* Descrição do homework */}
+                      <div
+                        style={{
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: "#111827",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#333",
+                            lineHeight: "1.4",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: hw.description }}
+                        />
+                      </div>
+
+                      {/* Link para o evento */}
+                      {eventId && (
+                        <a
+                          href={`/my-calendar/event/${eventId}?tab=homework`}
+                          style={{
+                            marginTop: 14,
+                            display: "block",
+                            fontWeight: 700,
+                            textAlign: "right",
+                            color: partnerColor(),
+                            textDecoration: "none",
+                            fontSize: 12,
+                            textTransform: "uppercase",
+                            alignItems: "center",
+                            gap: 6,
+                          }}
+                        >
+                          {isDone ? "Ver Lição de Casa" : "Fazer Lição de Casa"}
+                          <i
+                            style={{
+                              marginLeft: 8,
+                            }}
+                            className="fa fa-chevron-right"
+                          />
+                        </a>
                       )}
                     </div>
                   ) : null;

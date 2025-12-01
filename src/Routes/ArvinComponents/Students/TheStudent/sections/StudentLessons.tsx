@@ -34,6 +34,27 @@ export const StudentLessonsCard: FC<StudentLessonsCardProps> = ({
         {"Acessar aulas do aluno"}
         <i className="fa fa-chevron-right" />
       </a>
+      <div style={cardTitle}>
+        <UserCheckIcon size={18} weight="bold" color="#111827" />
+        <span>Lições de Casa</span>
+      </div>
+      <a
+        href={"/my-homework-and-lessons/" + student}
+        style={{
+          marginTop: 14,
+          display: "flex",
+          fontWeight: 700,
+          color: partnerColor(),
+          textDecoration: "none",
+          fontSize: 12,
+          textTransform: "uppercase",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        {"Acessar lições de casa do aluno"}
+        <i className="fa fa-chevron-right" />
+      </a>
     </div>
   );
 };
