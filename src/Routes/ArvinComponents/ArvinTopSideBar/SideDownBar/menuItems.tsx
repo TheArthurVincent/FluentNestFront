@@ -126,7 +126,9 @@ export const ItemRow: FC<{
 };
 
 const studentId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
-const permissions = JSON.parse(localStorage.getItem("loggedIn") || "null")?.permissions;
+const permissions = JSON.parse(
+  localStorage.getItem("loggedIn") || "null"
+)?.permissions;
 export const menuItems: MenuItem[] = [
   {
     label: "Início",
@@ -176,7 +178,10 @@ export const menuItems: MenuItem[] = [
     orderSideBar: 5,
     Icon: NotebookIcon,
     isJustStudent: true,
-    path: permissions == "student" ? `/my-homework-and-lessons/${studentId}` : "/homework",
+    path:
+      permissions == "student"
+        ? `/my-homework-and-lessons/${studentId}`
+        : "/homework",
     isMobile: false,
   },
   {

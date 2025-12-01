@@ -43,7 +43,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
           .filter((item) => !(isDesktop && item.justBottom))
           .map((item, idx) => (
             <ItemRow
-            isJustStudent={item.isJustStudent}
+              isJustStudent={item.isJustStudent}
               key={`side-${item.path}-${idx}`}
               item={item}
               admin={admin}

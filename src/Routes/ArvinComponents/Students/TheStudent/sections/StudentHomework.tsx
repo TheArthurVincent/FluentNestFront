@@ -8,9 +8,7 @@ interface StudentHWCardProps {
   student: string;
 }
 
-export const StudentHWCard: FC<StudentHWCardProps> = ({
-  student,
-}) => {
+export const StudentHWCard: FC<StudentHWCardProps> = ({ student }) => {
   return (
     <div style={cardBase}>
       <div

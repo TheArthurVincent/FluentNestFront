@@ -57,6 +57,7 @@ interface HomeworkFromApi {
   homework?: string;
   board?: string;
   status?: string;
+  studentName?: string;
   [key: string]: unknown;
 }
 
@@ -64,6 +65,7 @@ interface EventsResponse {
   events: EventFromApi[];
   total: number;
   page: number;
+  studentName?: string;
   limit: number;
   totalPages: number;
   homeworkByEvent?: {
@@ -86,7 +88,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   const [pageSize, setPageSize] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [openEventId, setOpenEventId] = useState<string | null>(null);
-
+  const [studentName, setStudentName] = useState<string>("");
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!studentId) return;
 
@@ -101,7 +103,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           headers: headers as any,
         }
       );
-
+      setStudentName(response.data.studentName || "");
       console.log(response.data);
       setEventsList(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
@@ -197,7 +199,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               fontSize: "1.5rem",
             }}
           >
-            <span style={newArvinTitleStyle}>Histórico de Aulas</span>
+            <span style={newArvinTitleStyle}>
+              Histórico de Aulas {studentName && `de ${studentName}`}
+            </span>
           </section>
         </div>
       )}
