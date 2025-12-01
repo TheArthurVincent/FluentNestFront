@@ -15,11 +15,12 @@ import { partnerColor } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress } from "@mui/material";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
-import { isArthurVincent } from "../../App";
+
 import { newArvinTitleStyle } from "../ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 import {
   cardBase,
   cardTitle,
+  pillStatus,
 } from "../ArvinComponents/Students/TheStudent/types/studentPage.styles";
 
 interface HWProps {
@@ -307,6 +308,7 @@ export default function Homework({
       );
       const tt = response.data.tutoringHomeworkList;
       setTutoringList(tt);
+      console.log(tt);
       setBoth(true);
       setIsGroupClass(false);
 
@@ -445,918 +447,198 @@ export default function Homework({
               }}
             />
           ) : (
-            <div>
-              {type === 1 ? (
-                <span>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      margin: "0 auto",
-                      padding:
-                        window.innerWidth <= 768 ? "0.5rem" : "1rem 0.5rem",
-                      maxWidth: window.innerWidth <= 768 ? "100%" : "900px",
-                      gap: "12px",
-                    }}
-                  >
-                    {/* ======= BARRA DE FILTROS ======= */}
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection:
-                          window.innerWidth <= 768 ? "column" : "row",
-                        gap: 12,
-                        marginBottom: 12,
-                        justifyContent: "space-between",
-                        alignItems:
-                          window.innerWidth <= 768 ? "stretch" : "center",
-                      }}
-                    >
-                      {/* Grupo 1: Status do Homework */}
-                      <div style={group.wrap}>
-                        <span style={group.label}>Status do homework:</span>
-                        <div style={group.bar}>
-                          <button
-                            style={pill(both)}
-                            onClick={() => setBoth(true)}
-                          >
-                            Todos
-                          </button>
-                          <button
-                            style={pill(isSubmitted && !both)}
-                            onClick={() => {
-                              setIsSubmitted(true);
-                              setBoth(false);
-                            }}
-                          >
-                            Entregues
-                          </button>
-                          <button
-                            style={pill(!isSubmitted && !both)}
-                            onClick={() => {
-                              setIsSubmitted(false);
-                              setBoth(false);
-                            }}
-                          >
-                            Não entregues
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Grupo 2: Tipo da Aula */}
-                      <div style={group.wrap}>
-                        <span style={group.label}>Tipo de aula:</span>
-                        <div style={group.bar}>
-                          <button
-                            style={pill(isGroupClass)}
-                            onClick={() => {
-                              setIsGroupClass(true);
-                            }}
-                          >
-                            Group Class
-                          </button>
-                          <button
-                            style={pill(!isGroupClass)}
-                            onClick={() => {
-                              setIsGroupClass(false);
-                            }}
-                          >
-                            1:1
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* LISTA */}
-                    <ul
-                      style={{
-                        width: "100%",
-                        padding: 0,
-                        margin: 0,
-                        listStyle: "none",
-                      }}
-                    >
-                      <>
-                        {tutoringList.length > 0 ? (
-                          tutoringList.map((homework: any, index: number) => {
-                            const submittedMatch =
-                              both ||
-                              (isSubmitted
-                                ? !!homework.submitted
-                                : !homework.submitted);
-
-                            const cat =
-                              homework?.eventDetails?.category ||
-                              homework?.category ||
-                              homework?.eventDetails?.type;
-
-                            const itemIsGroup = isGroupCat(cat);
-                            const classMatch = isGroupClass
-                              ? itemIsGroup
-                              : !itemIsGroup;
-
-                            const show = submittedMatch && classMatch;
-
-                            return (
-                              <li
-                                key={index}
-                                style={{
-                                  display: show ? "block" : "none",
-                                  margin:
-                                    window.innerWidth <= 768
-                                      ? "0.75rem 0"
-                                      : "8px 0",
-                                }}
-                              >
-                                {/* CARD DO ITEM */}
-                                <div
-                                  style={{
-                                    ...cardBase,
-                                    padding: 0,
-                                    overflow: "hidden",
-                                    transition:
-                                      "transform .15s ease, box-shadow .15s ease",
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.currentTarget.style.boxShadow =
-                                      "0 6px 20px rgba(0,0,0,.06)";
-                                    e.currentTarget.style.transform =
-                                      "translateY(-1px)";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.currentTarget.style.boxShadow = "none";
-                                    e.currentTarget.style.transform = "none";
-                                  }}
-                                >
-                                  <div
-                                    onClick={() => toggleOpen(index)}
-                                    role="button"
-                                    aria-expanded={openIndex === index}
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                      if (e.key === "Enter" || e.key === " ") {
-                                        e.preventDefault();
-                                        toggleOpen(index);
-                                      }
-                                    }}
-                                    style={{
-                                      height: 75,
-                                      display: "grid",
-                                      gridTemplateColumns:
-                                        window.innerWidth <= 768
-                                          ? "1fr auto"
-                                          : "1.5fr 1fr auto",
-                                      gap: window.innerWidth <= 768 ? 8 : 12,
-                                      alignItems: "center",
-                                      padding: 8,
-                                      backgroundColor: (() => {
-                                        if (
-                                          homework.eventDetails &&
-                                          homework.eventDetails.category ===
-                                            "Group Class"
-                                        ) {
-                                          return "#dff1ff";
-                                        }
-                                        return "#fff";
-                                      })(),
-                                      cursor: "pointer",
-                                      userSelect: "none",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.boxShadow =
-                                        "0 2px 8px rgba(0, 0, 0, 0.08)";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.boxShadow = "none";
-                                    }}
-                                  >
-                                    {/* Coluna 1 — Datas empilhadas */}
-                                    <div style={{ minWidth: 0 }}>
-                                      {/* Data da aula */}
-                                      {homework.eventDetails?.date ? (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 8,
-                                            fontSize: 12,
-                                            color: "#1f2937",
-                                            marginBottom: 6,
-                                            whiteSpace: "nowrap",
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              display: "inline-block",
-                                              padding: "2px 6px",
-                                              borderRadius: 6,
-                                              border:
-                                                "1px solid rgba(3,105,161,0.18)",
-                                              background:
-                                                homework.eventDetails.status ===
-                                                "realizada"
-                                                  ? "rgba(3,105,161,0.06)"
-                                                  : "#ff8f8f",
-                                              color:
-                                                homework.eventDetails.status ===
-                                                "realizada"
-                                                  ? "#075985"
-                                                  : "#ffffff",
-                                              fontWeight: 600,
-                                              letterSpacing: "0.2px",
-                                            }}
-                                          >
-                                            Data da aula{" "}
-                                            {homework.eventDetails &&
-                                            homework.eventDetails.category ===
-                                              "Group Class"
-                                              ? "(Group Class)"
-                                              : ""}
-                                          </span>
-                                          <span style={{ fontWeight: 500 }}>
-                                            {formatDateBr(
-                                              new Date(
-                                                homework.eventDetails.date
-                                              ).getTime() +
-                                                3.5 * 60 * 60 * 1000
-                                            )}{" "}
-                                            {homework.eventDetails.time &&
-                                              "às " +
-                                                homework.eventDetails.time}
-                                          </span>
-                                        </div>
-                                      ) : (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 8,
-                                            fontSize: 12,
-                                            color: "#6b7280",
-                                            marginBottom: 6,
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              display: "inline-block",
-                                              padding: "2px 6px",
-                                              borderRadius: 6,
-                                              border:
-                                                "1px solid rgba(3,105,161,0.18)",
-                                              background:
-                                                "rgba(3,105,161,0.06)",
-                                              color: "#075985",
-                                              fontWeight: 600,
-                                              letterSpacing: "0.2px",
-                                            }}
-                                          >
-                                            Data da aula
-                                          </span>
-                                          <span style={{ fontWeight: 500 }}>
-                                            Nenhuma aula relacionada
-                                          </span>
-                                        </div>
-                                      )}
-
-                                      {/* Due date */}
-                                      {homework.description && (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 8,
-                                            fontSize: 12,
-                                            color: "#1f2937",
-                                            whiteSpace: "nowrap",
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              display: "inline-block",
-                                              padding: "2px 6px",
-                                              borderRadius: 6,
-                                              border:
-                                                "1px solid rgba(5,150,105,0.18)",
-                                              background:
-                                                "rgba(5,150,105,0.07)",
-                                              color: "#065f46",
-                                              fontWeight: 600,
-                                              letterSpacing: "0.2px",
-                                            }}
-                                          >
-                                            Entrega em
-                                          </span>
-                                          <span style={{ fontWeight: 500 }}>
-                                            {formatDateBr(homework.dueDate)}
-                                          </span>
-                                        </div>
-                                      )}
-                                      {homework.eventDetails?.description && (
-                                        <span
-                                          style={{
-                                            fontSize: 10,
-                                            color: "#555",
-                                            fontWeight: 500,
-                                          }}
-                                        >
-                                          {truncateString(
-                                            homework.eventDetails
-                                              ?.description || "null",
-                                            50
-                                          )}
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {/* Coluna 2 — Status */}
-                                    {homework.description && (
-                                      <div
-                                        style={{
-                                          justifySelf:
-                                            window.innerWidth <= 768
-                                              ? "start"
-                                              : "center",
-                                        }}
-                                      >
-                                        <div
-                                          style={{
-                                            fontSize:
-                                              window.innerWidth <= 768
-                                                ? 11
-                                                : 10.5,
-                                            fontWeight: 700,
-                                            padding:
-                                              window.innerWidth <= 768
-                                                ? "4px 8px"
-                                                : "3px 8px",
-                                            borderRadius: 6,
-                                            backgroundColor:
-                                              homework?.status === "done"
-                                                ? "#eef9ef"
-                                                : "#fff7e6",
-                                            color:
-                                              homework?.status === "done"
-                                                ? "#1f6b1f"
-                                                : "#7a5a00",
-                                            border:
-                                              homework?.status === "done"
-                                                ? "1px solid #cbe9cb"
-                                                : "1px solid #ffe3a3",
-                                            textTransform: "uppercase",
-                                            letterSpacing: "0.35px",
-                                            lineHeight: 1.2,
-                                          }}
-                                        >
-                                          {homework?.status === "done"
-                                            ? "Lição concluída"
-                                            : "Lição pendente"}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {/* Coluna 3 — marca + chevron */}
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: 10,
-                                        justifySelf: "end",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          width: 4,
-                                          height:
-                                            window.innerWidth <= 768 ? 28 : 32,
-                                          borderRadius: 6,
-                                          background: partnerColor(),
-                                          boxShadow:
-                                            "0 0 0 1px rgba(0,0,0,0.05) inset",
-                                        }}
-                                      />
-                                      <div
-                                        aria-hidden
-                                        style={{
-                                          transition: "transform 0.2s ease",
-                                          transform:
-                                            openIndex === index
-                                              ? "rotate(180deg)"
-                                              : "rotate(0deg)",
-                                          fontSize: 14,
-                                          color: "#6b7280",
-                                          lineHeight: 1,
-                                        }}
-                                      >
-                                        ▾
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* ACORDEON ABERTO */}
-                                  {openIndex === index && (
-                                    <div
-                                      style={{
-                                        backgroundColor: (() => {
-                                          if (
-                                            homework.eventDetails &&
-                                            homework.eventDetails.category ===
-                                              "Group Class"
-                                          ) {
-                                            return "#dff1ff";
-                                          }
-                                          return "#fff";
-                                        })(),
-                                      }}
-                                    >
-                                      {/* HEADER INTERNO DO ACORDEON */}
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          flexDirection:
-                                            window.innerWidth <= 768
-                                              ? "column"
-                                              : "row",
-                                          justifyContent: "space-between",
-                                          alignItems:
-                                            window.innerWidth <= 768
-                                              ? "flex-start"
-                                              : "center",
-                                          padding:
-                                            window.innerWidth <= 768
-                                              ? 12
-                                              : "12px 16px",
-                                          backgroundColor: "#fafafa",
-                                          borderBottom: "1px solid #f0f0f0",
-                                          fontSize:
-                                            window.innerWidth <= 768 ? 14 : 13,
-                                          color: "#555",
-                                          gap: window.innerWidth <= 768 ? 8 : 0,
-                                        }}
-                                      >
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            flexDirection:
-                                              window.innerWidth <= 768
-                                                ? "row"
-                                                : "column",
-                                            alignItems:
-                                              window.innerWidth <= 768
-                                                ? "center"
-                                                : "flex-end",
-                                            gap: 4,
-                                          }}
-                                        >
-                                          {homework.submittedAt && (
-                                            <div
-                                              style={{
-                                                fontSize:
-                                                  window.innerWidth <= 768
-                                                    ? 12
-                                                    : 11,
-                                                fontWeight: 400,
-                                                padding:
-                                                  window.innerWidth <= 768
-                                                    ? "6px 10px"
-                                                    : "4px 8px",
-                                                marginTop: 8,
-                                                borderRadius: 6,
-                                                backgroundColor: "#f0f9ff",
-                                                color: "#1e40af",
-                                                border: "1px solid #93c5fd",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: 6,
-                                              }}
-                                            >
-                                              <i
-                                                className="fa fa-clock-o"
-                                                style={{ fontSize: 10 }}
-                                              />
-                                              Enviado em:{" "}
-                                              {formatDateBr(
-                                                homework.submittedAt
-                                              )}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      <h2
-                                        style={{
-                                          textAlign: "center",
-                                          marginTop: 8,
-                                        }}
-                                      >
-                                        {homework.eventDetails &&
-                                        homework.eventDetails.category ===
-                                          "Group Class"
-                                          ? "Group Class"
-                                          : ""}
-                                      </h2>
-
-                                      {/* AÇÕES DO PROFESSOR */}
-                                      {isAllowed && homework.description && (
-                                        <div
-                                          style={{
-                                            margin:
-                                              window.innerWidth <= 768
-                                                ? "0.75rem 0.5rem"
-                                                : "1rem",
-                                            padding:
-                                              window.innerWidth <= 768
-                                                ? "0.75rem"
-                                                : "1rem",
-                                            backgroundColor: "#ffffff",
-                                            border: "1px solid #e2e8f0",
-                                            borderRadius: 6,
-                                            boxShadow:
-                                              "0 1px 3px rgba(0, 0, 0, 0.05)",
-                                          }}
-                                        >
-                                          <h4
-                                            style={{
-                                              margin: "0 0 8px 0",
-                                              fontSize:
-                                                window.innerWidth <= 768
-                                                  ? 16
-                                                  : 14,
-                                              fontWeight: 600,
-                                              color: "#374151",
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: 8,
-                                            }}
-                                          >
-                                            <i className="fa fa-cogs" />
-                                            Ações do professor
-                                          </h4>
-
-                                          <div
-                                            style={{
-                                              display: "flex",
-                                              gap:
-                                                window.innerWidth <= 768
-                                                  ? "0.75rem"
-                                                  : "0.5rem",
-                                              flexWrap: "wrap",
-                                              flexDirection:
-                                                window.innerWidth <= 768
-                                                  ? "column"
-                                                  : "row",
-                                            }}
-                                          >
-                                            {homework.status === "pending" && (
-                                              <>
-                                                <button
-                                                  disabled={disabled}
-                                                  onClick={() =>
-                                                    updateRealizedClass(
-                                                      homework._id,
-                                                      pointsMadeHW
-                                                    )
-                                                  }
-                                                  style={{
-                                                    backgroundColor:
-                                                      "transparent",
-                                                    color: disabled
-                                                      ? "#999"
-                                                      : "#666",
-                                                    border: "1px solid #ddd",
-                                                    padding:
-                                                      window.innerWidth <= 768
-                                                        ? "10px 14px"
-                                                        : "4px 8px",
-                                                    borderRadius: 6,
-                                                    fontSize:
-                                                      window.innerWidth <= 768
-                                                        ? 14
-                                                        : 11,
-                                                    fontWeight: "normal",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap:
-                                                      window.innerWidth <= 768
-                                                        ? 6
-                                                        : 3,
-                                                    cursor: disabled
-                                                      ? "not-allowed"
-                                                      : "pointer",
-                                                    opacity: disabled ? 0.6 : 1,
-                                                    minHeight:
-                                                      window.innerWidth <= 768
-                                                        ? 44
-                                                        : "auto",
-                                                    justifyContent: "center",
-                                                    flex:
-                                                      window.innerWidth <= 768
-                                                        ? 1
-                                                        : "none",
-                                                  }}
-                                                  onMouseOver={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "#f5f5f5";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#bbb";
-                                                    }
-                                                  }}
-                                                  onMouseOut={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "transparent";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#ddd";
-                                                    }
-                                                  }}
-                                                >
-                                                  <i
-                                                    className="fa fa-check"
-                                                    style={{
-                                                      fontSize:
-                                                        window.innerWidth <= 768
-                                                          ? 13
-                                                          : 10,
-                                                    }}
-                                                  />
-                                                  No prazo
-                                                </button>
-
-                                                <button
-                                                  disabled={disabled}
-                                                  onClick={() =>
-                                                    updateRealizedClass(
-                                                      homework._id,
-                                                      pointsLateHW
-                                                    )
-                                                  }
-                                                  style={{
-                                                    backgroundColor:
-                                                      "transparent",
-                                                    color: disabled
-                                                      ? "#999"
-                                                      : "#666",
-                                                    border: "1px solid #ddd",
-                                                    padding:
-                                                      window.innerWidth <= 768
-                                                        ? "10px 14px"
-                                                        : "4px 8px",
-                                                    borderRadius: 6,
-                                                    fontSize:
-                                                      window.innerWidth <= 768
-                                                        ? 14
-                                                        : 11,
-                                                    fontWeight: "normal",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap:
-                                                      window.innerWidth <= 768
-                                                        ? 6
-                                                        : 3,
-                                                    cursor: disabled
-                                                      ? "not-allowed"
-                                                      : "pointer",
-                                                    opacity: disabled ? 0.6 : 1,
-                                                    minHeight:
-                                                      window.innerWidth <= 768
-                                                        ? 44
-                                                        : "auto",
-                                                    justifyContent: "center",
-                                                    flex:
-                                                      window.innerWidth <= 768
-                                                        ? 1
-                                                        : "none",
-                                                  }}
-                                                  onMouseOver={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "#f5f5f5";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#bbb";
-                                                    }
-                                                  }}
-                                                  onMouseOut={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "transparent";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#ddd";
-                                                    }
-                                                  }}
-                                                >
-                                                  <i
-                                                    className="fa fa-clock-o"
-                                                    style={{
-                                                      fontSize:
-                                                        window.innerWidth <= 768
-                                                          ? 13
-                                                          : 10,
-                                                    }}
-                                                  />
-                                                  Atrasado
-                                                </button>
-
-                                                {isArthurVincent && (
-                                                  <button
-                                                    disabled={disabled}
-                                                    onClick={() =>
-                                                      justStatus(homework._id)
-                                                    }
-                                                    style={{
-                                                      backgroundColor:
-                                                        "transparent",
-                                                      color: disabled
-                                                        ? "#999"
-                                                        : "#666",
-                                                      border: "1px solid #ddd",
-                                                      padding:
-                                                        window.innerWidth <= 768
-                                                          ? "10px 14px"
-                                                          : "4px 8px",
-                                                      borderRadius: 6,
-                                                      fontSize:
-                                                        window.innerWidth <= 768
-                                                          ? 14
-                                                          : 11,
-                                                      fontWeight: "normal",
-                                                      display: "flex",
-                                                      alignItems: "center",
-                                                      gap:
-                                                        window.innerWidth <= 768
-                                                          ? 6
-                                                          : 3,
-                                                      cursor: disabled
-                                                        ? "not-allowed"
-                                                        : "pointer",
-                                                      opacity: disabled
-                                                        ? 0.6
-                                                        : 1,
-                                                      minHeight:
-                                                        window.innerWidth <= 768
-                                                          ? 44
-                                                          : "auto",
-                                                      justifyContent: "center",
-                                                      flex:
-                                                        window.innerWidth <= 768
-                                                          ? 1
-                                                          : "none",
-                                                    }}
-                                                    onMouseOver={(e) => {
-                                                      if (!disabled) {
-                                                        e.currentTarget.style.backgroundColor =
-                                                          "#f5f5f5";
-                                                        e.currentTarget.style.borderColor =
-                                                          "#bbb";
-                                                      }
-                                                    }}
-                                                    onMouseOut={(e) => {
-                                                      if (!disabled) {
-                                                        e.currentTarget.style.backgroundColor =
-                                                          "transparent";
-                                                        e.currentTarget.style.borderColor =
-                                                          "#ddd";
-                                                      }
-                                                    }}
-                                                  >
-                                                    <i
-                                                      className="fa fa-edit"
-                                                      style={{
-                                                        fontSize:
-                                                          window.innerWidth <=
-                                                          768
-                                                            ? 13
-                                                            : 10,
-                                                      }}
-                                                    />
-                                                    Só status
-                                                  </button>
-                                                )}
-                                              </>
-                                            )}
-
-                                            {homework.status !== "pending" && (
-                                              <button
-                                                onClick={() =>
-                                                  handleReturnToPending(
-                                                    homework._id
-                                                  )
-                                                }
-                                                style={{
-                                                  margin: "0 10px",
-                                                  backgroundColor:
-                                                    "transparent",
-                                                  color: disabled
-                                                    ? "#999"
-                                                    : "#666",
-                                                  border: "1px solid #ddd",
-                                                  padding:
-                                                    window.innerWidth <= 768
-                                                      ? "10px 14px"
-                                                      : "4px 8px",
-                                                  borderRadius: 6,
-                                                  fontSize:
-                                                    window.innerWidth <= 768
-                                                      ? 14
-                                                      : 11,
-                                                  fontWeight: "normal",
-                                                  display: "flex",
-                                                  alignItems: "center",
-                                                  gap:
-                                                    window.innerWidth <= 768
-                                                      ? 6
-                                                      : 3,
-                                                  cursor: disabled
-                                                    ? "not-allowed"
-                                                    : "pointer",
-                                                  opacity: disabled ? 0.6 : 1,
-                                                  minHeight:
-                                                    window.innerWidth <= 768
-                                                      ? 44
-                                                      : "auto",
-                                                  justifyContent: "center",
-                                                  flex:
-                                                    window.innerWidth <= 768
-                                                      ? 1
-                                                      : "none",
-                                                }}
-                                              >
-                                                Retornar status para pendente
-                                              </button>
-                                            )}
-
-                                            <button
-                                              onDoubleClick={() =>
-                                                deleteHomework(homework._id)
-                                              }
-                                              style={{
-                                                backgroundColor: "transparent",
-                                                color: "#999",
-                                                border: "1px solid #ddd",
-                                                padding: "4px 8px",
-                                                borderRadius: 6,
-                                                fontSize: 11,
-                                                fontWeight: "normal",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: 3,
-                                                cursor: "pointer",
-                                              }}
-                                              onMouseOver={(e) => {
-                                                e.currentTarget.style.backgroundColor =
-                                                  "#f5f5f5";
-                                                e.currentTarget.style.borderColor =
-                                                  "#bbb";
-                                                e.currentTarget.style.color =
-                                                  "#d32f2f";
-                                              }}
-                                              onMouseOut={(e) => {
-                                                e.currentTarget.style.backgroundColor =
-                                                  "transparent";
-                                                e.currentTarget.style.borderColor =
-                                                  "#ddd";
-                                                e.currentTarget.style.color =
-                                                  "#999";
-                                              }}
-                                            >
-                                              <i
-                                                className="fa fa-trash"
-                                                aria-hidden="true"
-                                                style={{ fontSize: 10 }}
-                                              />
-                                              Double click
-                                            </button>
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {/* RESTANTE (attachments, answers, descrição) — só troquei labels */}
-                                      {/* ... aqui você mantém o mesmo código, só com os textos mockados como fiz acima ... */}
-                                    </div>
-                                  )}
-                                </div>
-                              </li>
-                            );
-                          })
-                        ) : (
-                          <li
-                            style={{
-                              listStyle: "none",
-                              margin: "2rem 0",
-                              textAlign: "center",
-                              color: "#64748b",
-                              fontSize: 16,
-                              fontStyle: "italic",
-                            }}
-                          >
-                            Nenhum homework encontrado.
-                          </li>
-                        )}
-                      </>
-                    </ul>
-                  </div>
-                </span>
+            <div style={{ marginTop: 16 }}>
+              {tutoringList.length === 0 ? (
+                <p
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 400,
+                    fontSize: 13,
+                    color: "#6B7280",
+                  }}
+                >
+                  Nenhum homework encontrado.
+                </p>
               ) : (
-                <></>
+                tutoringList.map((hw: any) => {
+                  const isDone = hw.status === "done";
+                  const eventId = hw?.eventDetails?.id || hw?.eventID;
+
+                  return hw.description ? (
+                    <div
+                      key={hw._id}
+                      style={{
+                        ...cardBase,
+                        padding: 14,
+                        marginBottom: 10,
+                      }}
+                    >
+                      {/* Cabeçalho do card */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: 8,
+                        }}
+                      >
+                        <div
+                          style={{ display: "flex", flexDirection: "column" }}
+                        >
+                          <span
+                            style={{
+                              ...cardTitle,
+                              marginBottom: 2,
+                              fontSize: 13,
+                            }}
+                          >
+                            {hw.dueDate && (
+                              <span>
+                                Entrega em: {formatDateBr(hw.dueDate)}
+                              </span>
+                            )}
+                          </span>
+                          {hw.assignmentDate && (
+                            <span
+                              style={{
+                                fontSize: 11,
+                                color: "#6B7280",
+                                fontWeight: 500,
+                              }}
+                            >
+                              Atribuído em: {formatDateBr(hw.assignmentDate)}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Status do homework */}
+                        <span
+                          style={{
+                            ...pillStatus,
+                            backgroundColor: isDone ? "#e6f4ea" : "#fff7e6",
+                            color: isDone ? "#137333" : "#92400e",
+                          }}
+                        >
+                          {isDone ? "Concluído" : "Pendente"}
+                        </span>
+                      </div>
+
+                      {/* Descrição do homework */}
+                      <div
+                        style={{
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 13,
+                          fontWeight: 500,
+                          color: "#111827",
+                          marginBottom: 10,
+                        }}
+                      >
+                        <div
+                          style={{
+                            color: "#333",
+                            lineHeight: "1.4",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: hw.description }}
+                        />
+                      </div>
+
+                      {/* Link para o evento */}
+                      {eventId && (
+                        <div
+                          style={{
+                            marginBottom: 10,
+                            fontSize: 12,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                          }}
+                        >
+                          <span style={{ color: "#6B7280", fontWeight: 500 }}>
+                            Aula relacionada:
+                          </span>
+                          <Link
+                            to={`/my-calendar/event/${eventId}?tab=homework`}
+                            style={{
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 600,
+                              fontSize: 12,
+                              textDecoration: "none",
+                              color: partnerColor(),
+                            }}
+                          >
+                            Ver evento
+                          </Link>
+                        </div>
+                      )}
+
+                      {/* Botões – só professor/superadmin vê */}
+                      {isAllowed && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 8,
+                            marginTop: 4,
+                          }}
+                        >
+                          {isDone ? (
+                            <button
+                              type="button"
+                              disabled={disabled}
+                              onClick={() => handleReturnToPending(hw._id)}
+                              style={{
+                                padding: "6px 10px",
+                                borderRadius: 6,
+                                border: "1px solid #E5E7EB",
+                                backgroundColor: "#F9FAFB",
+                                fontSize: 12,
+                                fontWeight: 500,
+                                cursor: disabled ? "not-allowed" : "pointer",
+                              }}
+                            >
+                              Marcar como pendente
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled={disabled}
+                              onClick={() =>
+                                updateRealizedClass(hw._id, pointsMadeHW)
+                              }
+                              style={{
+                                padding: "6px 10px",
+                                borderRadius: 6,
+                                border: "1px solid #E5E7EB",
+                                backgroundColor: "#F9FAFB",
+                                fontSize: 12,
+                                fontWeight: 500,
+                                cursor: disabled ? "not-allowed" : "pointer",
+                              }}
+                            >
+                              Marcar como feito
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => justStatus(hw._id)}
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #E5E7EB",
+                              backgroundColor: "#FFF",
+                              fontSize: 12,
+                              fontWeight: 500,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Só mudar status
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : null;
+                })
               )}
             </div>
           )}

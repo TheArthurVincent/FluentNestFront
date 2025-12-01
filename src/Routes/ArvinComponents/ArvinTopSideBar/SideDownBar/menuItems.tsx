@@ -123,6 +123,7 @@ export const ItemRow: FC<{
   );
 };
 
+const studentId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
 export const menuItems: MenuItem[] = [
   {
     label: "Início",
@@ -166,12 +167,12 @@ export const menuItems: MenuItem[] = [
     justBottom: false,
   },
   {
-    showInBottomBar: true,
+    showInBottomBar: !!studentId,
     justBottom: false,
     label: "Lições & Aula",
     orderSideBar: 5,
     Icon: NotebookIcon,
-    path: "/my-homework-and-lessons",
+    path: studentId ? `/my-homework-and-lessons/${studentId}` : "/",
     isMobile: false,
   },
   {
