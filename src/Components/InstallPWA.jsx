@@ -68,11 +68,10 @@ const DismissButton = styled.button`
 `;
 
 function isMobileDevice() {
-  return (
-    typeof window !== "undefined" &&
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    )
+  if (typeof window === "undefined") return false;
+
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
   );
 }
 
@@ -82,22 +81,39 @@ const InstallPWA = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setIsMobile(isMobileDevice());
+    if (typeof window === "undefined") return;
+
+    const mobile = isMobileDevice();
+    setIsMobile(mobile);
+
+    // se não for mobile, nem segue
+    if (!mobile) return;
+
+    // não mostrar se o usuário já instalou
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      // iOS PWA
+      window.navigator.standalone === true;
+
+    if (isStandalone) return;
+
+    // não mostrar se usuário recusou recentemente (7 dias)
+    const dismissed = localStorage.getItem("pwa-install-dismissed");
+    if (dismissed) {
+      const dismissedTime = parseInt(dismissed, 10);
+      const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
+      if (Date.now() - dismissedTime < sevenDaysInMs) {
+        return;
+      }
+    }
+
     const handler = (e) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Save the event so it can be triggered later
       setDeferredPrompt(e);
-      // Show install prompt
       setShowInstallPrompt(true);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
-
-    // Check if app is already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setShowInstallPrompt(false);
-    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handler);
@@ -105,42 +121,30 @@ const InstallPWA = () => {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
-      return;
-    }
+    if (!deferredPrompt) return;
 
-    // Show the install prompt
     deferredPrompt.prompt();
 
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
-
     console.log(`User response to the install prompt: ${outcome}`);
 
-    // Clear the deferredPrompt for next time
     setDeferredPrompt(null);
     setShowInstallPrompt(false);
+
+    if (outcome === "dismissed") {
+      localStorage.setItem("pwa-install-dismissed", Date.now().toString());
+    }
   };
 
   const handleDismiss = () => {
     setShowInstallPrompt(false);
-    // Save dismiss state to localStorage to not show again for a while
     localStorage.setItem("pwa-install-dismissed", Date.now().toString());
   };
 
-  // Check if user dismissed recently (within 7 days)
-  useEffect(() => {
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) {
-      const dismissedTime = parseInt(dismissed);
-      const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
-      if (Date.now() - dismissedTime < sevenDaysInMs) {
-        setShowInstallPrompt(false);
-      }
-    }
-  }, []);
-
-  if (!showInstallPrompt || !isMobile) {
+  // só renderiza se:
+  // - for mobile
+  // - e tivermos permissão pra mostrar
+  if (!isMobile || !showInstallPrompt) {
     return null;
   }
 

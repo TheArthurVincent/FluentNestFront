@@ -405,7 +405,7 @@ function App() {
             }
           })}
         </Routes>
-        <InstallPWA />
+        {/* <InstallPWA /> */}
         <NotificationManager />
       </Router>
     </UserProvider>

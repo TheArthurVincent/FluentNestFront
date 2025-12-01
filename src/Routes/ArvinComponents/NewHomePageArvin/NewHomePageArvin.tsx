@@ -64,6 +64,7 @@ export function MyHomePage({
     const { permissions } = JSON.parse(
       localStorage.getItem("loggedIn") || "{}"
     );
+    setStudentPermissions(permissions || "");
     setPERMISSIONS(permissions || "");
     console.log("Score data response:", permissions);
 
@@ -228,7 +229,7 @@ export function MyHomePage({
 
   useEffect(() => {
     seeReports();
-  }, []);
+  }, [thereAreReports]);
 
   const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
     // Teacher e superadmin usam showToTeacher
@@ -295,45 +296,45 @@ export function MyHomePage({
                   actualHeaders={actualHeaders}
                 />
               </span> */}
-              {studentPermissions == "student" ? (
-                <span
-                  onClick={() => {
-                    seeScore(id);
-                  }}
+              <span
+                onClick={() => {
+                  seeScore(id);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  borderRadius: "80px",
+                  padding: "8px 12px",
+                  backgroundColor: `${partnerColor()}20`,
+                  border: `1px solid ${partnerColor()}50`,
+                }}
+              >
+                <i
+                  className="fa fa-trophy"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "80px",
-                    padding: "8px 12px",
-                    backgroundColor: `${partnerColor()}20`,
-                    border: `1px solid ${partnerColor()}50`,
+                    fontSize: "12px",
+                    left: "10px",
+                    top: "50%",
+                    color: partnerColor(),
+                    pointerEvents: "none",
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                    fontStyle: "SemiBold",
+                    fontSize: "14px",
+                    color: partnerColor(),
+                    lineHeight: "100%",
+                    letterSpacing: "0%",
                   }}
                 >
-                  <i
-                    className="fa fa-trophy"
-                    style={{
-                      fontSize: "12px",
-                      left: "10px",
-                      top: "50%",
-                      color: partnerColor(),
-                      pointerEvents: "none",
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "14px",
-                      color: partnerColor(),
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    {monthlyScore} pts
-                  </span>
+                  {monthlyScore} pts
                 </span>
+              </span>
+              {/* {studentPermissions == "student" ? (
               ) : (
                 <span
                   onClick={() => {
@@ -396,7 +397,7 @@ export function MyHomePage({
                     )}
                   </span>
                 </span>
-              )}
+              )} */}
               <img
                 onClick={() => {
                   window.location.assign("/my-profile");
