@@ -53,6 +53,8 @@ import Students from "./ArvinComponents/Students/Students";
 import Turmas from "./ArvinComponents/Groups/Groups";
 import StudentPage from "./ArvinComponents/Students/TheStudent/TheStudent";
 import Event from "./ArvinComponents/OneEvent/OneEvent";
+import StudentClassesHistory from "./ArvinComponents/Students/TheStudent/StudentsClasses/StudentClassesHistory";
+import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -249,9 +251,23 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: <MyClasses headers={headers} />,
     },
+    // {
+    //   title: "Homework",
+    //   showLeftBar: true,
+    //   levelcard: false,
+    //   component: (
+    //     <Homework
+    //       isDesktop={isDesktop}
+    //       change={change}
+    //       setChange={setChange}
+    //       headers={headers}
+    //     />
+    //   ),
+    // },
     {
-      title: "Homework",
+      path: "my-homework-and-lessons/:studentId",
       showLeftBar: true,
+      title: "Homework",
       levelcard: false,
       component: (
         <Homework
@@ -263,30 +279,17 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       ),
     },
     {
-      path: "my-homework-and-lessons",
+      path: "homework",
       showLeftBar: true,
       title: "Homework",
       levelcard: false,
       component: (
-        <Homework
-          isDesktop={isDesktop}
+        <HWUp
+          headers={headers}
+          actualHeaders={headers}
           change={change}
           setChange={setChange}
-          headers={headers}
-        />
-      ),
-    },
-    {
-      title: "Homework",
-      levelcard: false,
-      showLeftBar: true,
-      path: "/my-classes",
-      component: (
-        <Homework
           isDesktop={isDesktop}
-          change={change}
-          setChange={setChange}
-          headers={headers}
         />
       ),
     },
@@ -414,6 +417,16 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: headers ? (
         <StudentPage isDesktop={isDesktop} headers={headers} />
+      ) : (
+        <div>Loading...</div>
+      ),
+    },
+    {
+      title: "Alunos",
+      path: "/students/:studentId/classes",
+      showLeftBar: true,
+      component: headers ? (
+        <StudentClassesHistory isDesktop={isDesktop} headers={headers} />
       ) : (
         <div>Loading...</div>
       ),

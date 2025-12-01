@@ -657,6 +657,16 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       fetchEventData={fetchEventData}
                     />
                   )}
+                  {lastLesson && permissionsUser !== "student" && (
+                    <LastClass
+                      replicateLastEvent={replicateLastEvent}
+                      headers={headers}
+                      evendId={event._id}
+                      allowedToEdit={permissionsUser !== "student"}
+                      isDesktop={isDesktop}
+                      lastLesson={lastLesson}
+                    />
+                  )}
                 </div>
               </>
             )}
@@ -666,7 +676,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isDesktop ? "1fr 0.5fr" : "1fr",
+                  gridTemplateColumns:
+                    isDesktop && event.board ? "1fr 0.5fr" : "1fr",
                   gap: 12,
                 }}
               >
@@ -674,12 +685,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   <div
                     style={{
                       paddingLeft: isDesktop ? 12 : 0,
-                      maxHeight: isDesktop ? "90vw" : "none",
-                      scrollbarWidth: isDesktop ? "thin" : "auto",
-                      scrollbarColor: isDesktop
-                        ? `${partnerColor()} transparent`
-                        : "transparent",
-                      overflowY: isDesktop ? "auto" : "visible",
+                      overflowY: "visible",
                     }}
                   >
                     <LessonContent
@@ -729,16 +735,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     isDesktop={isDesktop}
                     fetchEventData={fetchEventData}
                     allowedToEdit={permissionsUser !== "student"}
-                  />
-                )}
-                {lastLesson && permissionsUser !== "student" && (
-                  <LastClass
-                    replicateLastEvent={replicateLastEvent}
-                    headers={headers}
-                    evendId={event._id}
-                    allowedToEdit={permissionsUser !== "student"}
-                    isDesktop={isDesktop}
-                    lastLesson={lastLesson}
                   />
                 )}
               </>

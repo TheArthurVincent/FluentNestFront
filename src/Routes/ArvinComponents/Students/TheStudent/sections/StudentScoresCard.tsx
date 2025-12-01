@@ -33,18 +33,7 @@ export const StudentScoresCard: FC<StudentScoresCardProps> = ({ student }) => {
           <strong>Lições feitas:</strong> {student.homeworkAssignmentsDone}
         </span>
         <span>
-          <strong>Taxa de acerto (reviews):</strong>{" "}
-          {student.flashCardsReviewRate}%
-        </span>
-        <span>
           <strong>Reviews hoje:</strong> {student.flashCardsReviewsToday}
-        </span>
-        <span>
-          <strong>Streak atual:</strong> {student.flashcardsStreak} dia(s)
-        </span>
-        <span>
-          <strong>Maior streak:</strong> {student.flashcardsLongestStreak}{" "}
-          dia(s)
         </span>
       </div>
     </div>

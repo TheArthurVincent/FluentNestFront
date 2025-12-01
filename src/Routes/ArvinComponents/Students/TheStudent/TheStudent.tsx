@@ -7,11 +7,12 @@ import { newArvinTitleStyle } from "../Students";
 import { StudentHeader } from "./sections/StudentHeader";
 import { StudentTodayClassesCard } from "./sections/StudentTodayClassesCard";
 import { StudentStatsStrip } from "./sections/StudentStatsStrip";
-import { StudentAboutCard } from "./sections/StudentAboutCard";
+import { StudentLessonsCard } from "./sections/StudentLessons";
 import { StudentScoresCard } from "./sections/StudentScoresCard";
 import { StudentFinancialReportsCard } from "./sections/StudentFinancialReportsCard";
 import { StudentItem, TodayClass } from "./types/studentsTypes";
 import { StudentMainCard } from "./sections/StudentMainCard.tsx";
+import { StudentHWCard } from "./sections/StudentHomework";
 
 type StudentPageProps = {
   headers: MyHeadersType;
@@ -137,18 +138,18 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
         {/* COLUNA ESQUERDA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentMainCard student={student} />
-          <StudentTodayClassesCard actualHeaders={headers} student={student} />
+          <StudentLessonsCard student={student.id} />
+          <StudentHWCard student={student.id} />
         </div>
 
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <StudentStatsStrip student={student} />
-          <StudentAboutCard student={student} formatDate={formatDate} />
+          <StudentTodayClassesCard actualHeaders={headers} student={student} />
+          <StudentScoresCard student={student} />
         </div>
 
         {/* COLUNA DIREITA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <StudentScoresCard student={student} />
           <StudentFinancialReportsCard
             financialReports={student.financialReports || []}
             formatDate={formatDate}
