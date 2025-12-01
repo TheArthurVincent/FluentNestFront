@@ -1293,7 +1293,7 @@ function ArvinLandingPageNew() {
                             letterSpacing: "-3%",
                           }}
                         >
-                          {!isMonth ? <>R$ 149,99</> : <>R$ 1.499,90</>}
+                          {!isMonth ? <>R$ 79,99</> : <>R$ 799,90</>}
                         </span>
                         <span
                           style={{
