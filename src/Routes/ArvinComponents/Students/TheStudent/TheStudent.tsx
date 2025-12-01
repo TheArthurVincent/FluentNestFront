@@ -7,7 +7,7 @@ import { newArvinTitleStyle } from "../Students";
 import { StudentHeader } from "./sections/StudentHeader";
 import { StudentTodayClassesCard } from "./sections/StudentTodayClassesCard";
 import { StudentStatsStrip } from "./sections/StudentStatsStrip";
-import { StudentAboutCard } from "./sections/StudentAboutCard";
+import { StudentLessonsCard } from "./sections/StudentLessons";
 import { StudentScoresCard } from "./sections/StudentScoresCard";
 import { StudentFinancialReportsCard } from "./sections/StudentFinancialReportsCard";
 import { StudentItem, TodayClass } from "./types/studentsTypes";
@@ -143,7 +143,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentStatsStrip student={student} />
-          <StudentAboutCard student={student} formatDate={formatDate} />
+          <StudentLessonsCard student={student.id} />
         </div>
 
         {/* COLUNA DIREITA */}
