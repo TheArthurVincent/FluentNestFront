@@ -676,7 +676,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: isDesktop ? "1fr 0.5fr" : "1fr",
+                  gridTemplateColumns: isDesktop && event.board ? "1fr 0.5fr" : "1fr",
                   gap: 12,
                 }}
               >
