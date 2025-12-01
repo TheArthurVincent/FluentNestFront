@@ -15,7 +15,7 @@ export const StudentLessonsCard: FC<StudentLessonsCardProps> = ({
     <div style={cardBase}>
       <div style={cardTitle}>
         <UserCheckIcon size={18} weight="bold" color="#111827" />
-        <span>Aulas</span>
+        <span>Aulas Dadas</span>
       </div>
       <a
         href={"/students/" + student + "/classes"}
