@@ -258,6 +258,9 @@ export default function Homework({
   };
 
   const [studentName, setStudentName] = useState<string>("");
+
+
+  
   const handleHomeworkAnswerChange = (content: string) => {
     setHomeworkAnswer(content);
   };
@@ -408,7 +411,7 @@ export default function Homework({
           padding: "10px",
         }}
       >
-        <a
+{isAllowed &&        <a
           href={`/students/${studentId}`}
           style={{
             marginTop: 14,
@@ -430,7 +433,7 @@ export default function Homework({
             }}
             className="fa fa-chevron-right"
           />
-        </a>
+        </a>}
         <Helmets text={`Lições da Casa de ${studentName}`} />
         <>
           {loading ? (
