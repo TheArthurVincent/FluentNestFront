@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { readText, notifyAlert } from "../../Assets/Functions/FunctionLessons";
-import { HOne } from "../../../../Resources/Components/RouteBox";
+import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/SearchMaterials";
 
 export type SentenceItem = {
   english: string;
@@ -41,54 +41,6 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: 900,
-        margin: "0 auto",
-        borderRadius: 6,
-        background: "#fff",
-        boxSizing: "border-box",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function HeaderBar({
-  title,
-  right,
-}: {
-  title: string;
-  right?: React.ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 16,
-      }}
-    >
-      <HOne
-        style={{
-          fontSize: 20,
-          fontWeight: 700,
-          letterSpacing: "-0.01em",
-          margin: 0,
-        }}
-      >
-        {title}
-      </HOne>
-      <div>{right}</div>
-    </div>
-  );
-}
-
 // mesmas cores usadas no outro componente para vincular frente/back
 const pairColors = [
   "#4dabf7",
@@ -107,6 +59,147 @@ const pairColors = [
   "#5c7cfa",
   "#37b24d",
 ];
+
+// ==== ESTILOS NO MESMO CLIMA DO RANKING / ARVIN ====
+
+const cardContainerStyle: React.CSSProperties = {
+  width: "100%",
+  maxWidth: 900,
+  margin: "0 auto",
+  borderRadius: 12,
+  background: "#FFFFFF",
+  boxSizing: "border-box",
+  padding: 16,
+  boxShadow:
+    "0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04)",
+  border: "1px solid #e5e7eb",
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+};
+
+const headerBarStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginBottom: 8,
+  gap: 12,
+};
+
+const headerRightStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  fontFamily: "Plus Jakarta Sans",
+  fontSize: 13,
+};
+
+const restartButtonStyle: React.CSSProperties = {
+  padding: "6px 10px",
+  borderRadius: 999,
+  background: "#FFFFFF",
+  cursor: "pointer",
+  fontWeight: 600,
+  border: "1px solid #E5E7EB",
+  fontFamily: "Plus Jakarta Sans",
+  fontSize: 12,
+};
+
+const gridWrapperStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 12,
+};
+
+const columnStyle: React.CSSProperties = {
+  display: "grid",
+  gap: 10,
+};
+
+const baseCardStyle: React.CSSProperties = {
+  border: "1px solid #e3e6ea",
+  borderRadius: 8,
+  padding: "10px 12px",
+  position: "relative",
+  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.08)",
+  minHeight: "40px",
+  display: "flex",
+  flexDirection: "column",
+  background: "#fff",
+  justifyContent: "flex-start",
+  cursor: "pointer",
+  transition:
+    "background 0.15s ease, transform 0.08s ease, box-shadow 0.1s ease",
+};
+
+const selectedStyle: React.CSSProperties = {
+  outline: "2px solid #111827",
+  outlineOffset: 1,
+};
+
+const audioButtonStyle: React.CSSProperties = {
+  padding: "8px",
+  borderRadius: 999,
+  background: "#F3F4F6",
+  border: "1px solid #D1D5DB",
+  cursor: "pointer",
+  fontSize: "12px",
+  minWidth: "32px",
+  height: "32px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+const checkTagStyle: React.CSSProperties = {
+  fontSize: 12,
+  color: "#16a34a",
+  fontWeight: 600,
+};
+
+const finishedRowStyle: React.CSSProperties = {
+  marginTop: 12,
+  fontSize: 14,
+  fontWeight: 600,
+  color: "#065F46",
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+  justifyContent: "space-between",
+  fontFamily: "Plus Jakarta Sans",
+};
+
+// ==== COMPONENTES E LÓGICA ====
+
+function Card({ children }: { children: React.ReactNode }) {
+  return <div style={cardContainerStyle}>{children}</div>;
+}
+
+function HeaderBar({
+  title,
+  right,
+}: {
+  title: string;
+  right?: React.ReactNode;
+}) {
+  return (
+    <div style={headerBarStyle}>
+      <h1
+        style={{
+          ...newArvinTitleStyle,
+          fontSize: 20,
+          margin: 0,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        {title}
+      </h1>
+      <div style={headerRightStyle}>{right}</div>
+    </div>
+  );
+}
 
 export default function VocabularyMatchExercise({
   sentences,
@@ -139,25 +232,6 @@ export default function VocabularyMatchExercise({
 
   const total = pool.length;
   const done = matched.size === total;
-
-  // estilos gerais (compatíveis com sua UI)
-  const baseCardStyle: React.CSSProperties = {
-    border: "1px solid #e3e6ea",
-    borderRadius: "4px",
-    padding: "8px 12px 8px 12px",
-    position: "relative",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    minHeight: "40px",
-    display: "flex",
-    flexDirection: "column",
-    background: "#fff",
-    justifyContent: "flex-start",
-    cursor: "pointer",
-  };
-  const selectedStyle: React.CSSProperties = {
-    outline: "3px solid #111827",
-    outlineOffset: 2,
-  };
 
   function getLanguages(sentence: SentenceItem) {
     const languages = sentence?.languages || {};
@@ -241,42 +315,29 @@ export default function VocabularyMatchExercise({
   }
 
   return (
-    <Card>
+    <div>
       <HeaderBar
         title={L.title}
         right={
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <>
             <span>
               {matched.size} {L.of} {total}
             </span>
             <button
               onClick={reset}
-              style={{
-                padding: "6px 10px",
-                borderRadius: 6,
-                background: "#FFFFFF",
-                cursor: "pointer",
-                fontWeight: 600,
-                border: "1px solid #E5E7EB",
-              }}
+              style={restartButtonStyle}
               title={L.restart}
             >
               {L.restart}
             </button>
-          </div>
+          </>
         }
       />
 
       {/* layout duas colunas */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 12,
-        }}
-      >
+      <div style={gridWrapperStyle}>
         {/* LEFT: fronts (áudio, com highlight de par) */}
-        <div style={{ display: "grid", gap: 10 }}>
+        <div style={columnStyle}>
           {pool.map((s, i) => {
             const isSelected = selectedFront === i;
             const isDone = matched.has(i);
@@ -288,9 +349,9 @@ export default function VocabularyMatchExercise({
                 key={`front-${i}`}
                 style={{
                   ...baseCardStyle,
-                  border: `3px solid ${isDone ? color : "#eee"}`,
+                  border: `2px solid ${isDone ? color : "#e5e7eb"}`,
                   ...(isSelected ? selectedStyle : {}),
-                  ...(isDone ? { backgroundColor: `${color}20` } : {}),
+                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
                 }}
                 onClick={() => {
                   handlePickFront(i);
@@ -298,12 +359,12 @@ export default function VocabularyMatchExercise({
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? `${color}30`
-                    : "#f3f3f3ff";
+                    ? `${color}1F`
+                    : "#f9fafb";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? `${color}20`
+                    ? `${color}14`
                     : "#fff";
                 }}
               >
@@ -316,42 +377,24 @@ export default function VocabularyMatchExercise({
                   }}
                 >
                   <span
-                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
                   >
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         readText(s.english, true, frontLang, selectedVoice);
                       }}
-                      style={{
-                        padding: "8px",
-                        borderRadius: 4,
-                        background: "#F3F4F6",
-                        border: "1px solid #D1D5DB",
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        minWidth: "32px",
-                        height: "32px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
+                      style={audioButtonStyle}
                       title="Ouvir"
                     >
                       <i className="fa fa-volume-up" aria-hidden="true" />
                     </button>
                   </span>
-                  {isDone && (
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#16a34a",
-                        fontWeight: 600,
-                      }}
-                    >
-                      ✔
-                    </span>
-                  )}
+                  {isDone && <span style={checkTagStyle}>✔</span>}
                 </div>
               </div>
             );
@@ -359,7 +402,7 @@ export default function VocabularyMatchExercise({
         </div>
 
         {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
-        <div style={{ display: "grid", gap: 10 }}>
+        <div style={columnStyle}>
           {shuffledIdx.map((realIndex, slot) => {
             const s = pool[realIndex];
             const isDone = matched.has(realIndex);
@@ -371,20 +414,20 @@ export default function VocabularyMatchExercise({
                 key={`back-${slot}`}
                 style={{
                   ...baseCardStyle,
-                  border: `3px solid ${isDone ? color : "#eee"}`,
-                  ...(isDone ? { backgroundColor: `${color}20` } : {}),
+                  border: `2px solid ${isDone ? color : "#e5e7eb"}`,
+                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
                 }}
                 onClick={() => {
                   if (!isDone) handlePickBack(slot);
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? `${color}30`
-                    : "#f3f3f3ff";
+                    ? `${color}1F`
+                    : "#f9fafb";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? `${color}20`
+                    ? `${color}14`
                     : "#fff";
                 }}
               >
@@ -401,19 +444,7 @@ export default function VocabularyMatchExercise({
                   >
                     {backLang !== "pt" && s?.portuguese && (
                       <button
-                        style={{
-                          padding: "8px",
-                          borderRadius: 4,
-                          background: "#F3F4F6",
-                          border: "1px solid #D1D5DB",
-                          cursor: "pointer",
-                          fontSize: "12px",
-                          minWidth: "32px",
-                          height: "32px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
+                        style={audioButtonStyle}
                         onClick={(e) => {
                           e.stopPropagation();
                           readText(s.portuguese, true, backLang, selectedVoice);
@@ -423,30 +454,21 @@ export default function VocabularyMatchExercise({
                         <i className="fa fa-volume-up" aria-hidden="true" />
                       </button>
                     )}
-                    <div style={{ marginLeft: 10 }}>
+                    <div style={{ marginLeft: 4 }}>
                       <div
                         style={{
-                          color: "#6c757d",
+                          color: "#4b5563",
                           fontStyle: "italic",
                           fontSize: "13px",
                           wordBreak: "break-word",
+                          fontFamily: "Plus Jakarta Sans",
                         }}
                       >
                         {s.portuguese}
                       </div>
                     </div>
                   </span>
-                  {isDone && (
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#16a34a",
-                        fontWeight: 600,
-                      }}
-                    >
-                      ✔
-                    </span>
-                  )}
+                  {isDone && <span style={checkTagStyle}>✔</span>}
                 </div>
               </div>
             );
@@ -455,22 +477,11 @@ export default function VocabularyMatchExercise({
       </div>
 
       {done && (
-        <div
-          style={{
-            marginTop: 12,
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#065F46",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            justifyContent: "space-between",
-          }}
-        >
+        <div style={finishedRowStyle}>
           <span>✅ {L.finished}</span>
           <span>{L.plusPoints}</span>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
