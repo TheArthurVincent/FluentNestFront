@@ -3310,7 +3310,7 @@ export default function EnglishClassCourse2({
                           )}
                         </span>
                       </div>
-                      {theclass?.elements?.length > 0 && (
+                      {theclass?.elements?.length > 0 && !fetchEventData && (
                         <div
                           style={{
                             display: "flex",
