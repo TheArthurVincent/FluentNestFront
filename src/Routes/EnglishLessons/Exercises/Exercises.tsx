@@ -349,21 +349,21 @@ export default function ExerciseRunner({
   );
 
   const exerciseCatalog: ExerciseEntry[] = [
-    {
-      key: "vocabulary_match",
-      title: "Match de Vocabulário",
-      render: () => {
-        if (!vocabularyItems.length) return null; // só aparece com type "vocabulary"
-        return (
-          <VocabularyMatchExercise
-            sentences={vocabularyItems}
-            selectedVoice={selectedVoice}
-            language={language}
-            exerciseScore={exerciseScore}
-          />
-        );
-      },
-    },
+    // {
+    //   key: "vocabulary_match",
+    //   title: "Match de Vocabulário",
+    //   render: () => {
+    //     if (!vocabularyItems.length) return null; // só aparece com type "vocabulary"
+    //     return (
+    //       <VocabularyMatchExercise
+    //         sentences={vocabularyItems}
+    //         selectedVoice={selectedVoice}
+    //         language={language}
+    //         exerciseScore={exerciseScore}
+    //       />
+    //     );
+    //   },
+    // },
     {
       key: "dictation_from_sentences",
       title: "Ditado",
