@@ -613,7 +613,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   outline: "none",
                 }}
               >
-                Atividades
+                Exercícios
               </button>
             </div>
 

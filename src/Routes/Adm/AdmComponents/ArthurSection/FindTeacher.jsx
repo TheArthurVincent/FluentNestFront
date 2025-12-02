@@ -200,12 +200,12 @@ export function FindTeacher({ headers, id, plan }) {
         editedStudent,
         { headers }
       );
-      notifyAlert("Usuário editado com sucesso!", "green");
+      notifyAlert("Usuário editado com sucesso!", partnerColor());
       setSelectedStudent(null);
       handleSeeModal();
       fetchStudents();
     } catch (error) {
-      notifyAlert("Erro ao editar usuário");
+      notifyAlert("Erro ao editar usuário", "red");
       handleSeeModal();
     }
   };
@@ -231,9 +231,9 @@ export function FindTeacher({ headers, id, plan }) {
 
       handleSeeModal();
       fetchStudents();
-      notifyAlert("Permissões editadas com sucesso!", "green");
+      notifyAlert("Permissões editadas com sucesso!", partnerColor());
     } catch (error) {
-      notifyAlert("Erro ao editar permissões");
+      notifyAlert("Erro ao editar permissões", "red");
       handleSeeModal();
     }
   };
@@ -508,11 +508,11 @@ export function FindTeacher({ headers, id, plan }) {
         { score, description, type },
         { headers }
       );
-      notifyAlert("Pontuação atualizada com sucesso!", "green");
+      notifyAlert("Pontuação atualizada com sucesso!", partnerColor());
       await updateScoreNow(id); // ESSENCIAL!
       setDisabled(false);
     } catch (error) {
-      notifyAlert("Erro ao atualizar pontuação");
+      notifyAlert("Erro ao atualizar pontuação", "red");
       setDisabled(false);
     }
   };
@@ -528,11 +528,11 @@ export function FindTeacher({ headers, id, plan }) {
         { newPassword },
         { headers }
       );
-      notifyAlert("Senha editada com sucesso!", "green");
+      notifyAlert("Senha editada com sucesso!", partnerColor());
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      notifyAlert("Erro ao editar senha");
+      notifyAlert("Erro ao editar senha", "red");
       handleSeeModal();
     }
   };

@@ -131,23 +131,12 @@ export default function VocabularyLesson({
       const newMatched = new Set(match.matched);
       newMatched.add(selectedFront);
 
-      // ✅ ACERTOU → ganha 2 pontos
-      try {
-        const frontText = sentences[selectedFront]?.english || "";
-        const backText = sentences[realBackIndex]?.portuguese || "";
-        const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
-        exerciseScore?.(2, desc, studentId);
-      } catch (e) {
-        // só pra garantir que um erro aqui não quebre o fluxo de jogo
-        console.error("Erro ao registrar pontuação do match:", e);
-      }
-
       setMatch((prev) => ({
         ...prev,
         selectedFront: null,
         matched: newMatched,
       }));
-      notifyAlert("✔ Par correto! (+2 pontos)", "green");
+      notifyAlert("✔ Par correto!", partnerColor());
     } else {
       notifyAlert("❌ Não é o par correspondente.", "red");
       setMatch((prev) => ({ ...prev, selectedFront: null }));
@@ -188,7 +177,7 @@ export default function VocabularyLesson({
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyAlert(showThis, "green");
+      notifyAlert(showThis, partnerColor());
       setClickedButtons((prev) => new Set(prev).add(index));
     } catch (error) {
       alert("Erro ao enviar cards");

@@ -38,7 +38,7 @@ export function ArthurSection({ headers }) {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      notifyAlert("Erro ao resetar");
+      notifyAlert("Erro ao resetar", partnerColor());
     }
   };
   const handleResetUsers = async () => {

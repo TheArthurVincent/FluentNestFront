@@ -443,11 +443,10 @@ export default function EditLesson({
           disabled={loading}
           style={{
             borderRadius: 6,
-            border: "1px solid #e2e8f0",
-            backgroundColor: "#f8fafc",
+            backgroundColor: partnerColor(),
+            color: "#fff",
             fontSize: 12,
             fontWeight: 400,
-            color: "#64748b",
             padding: "6px 10px",
             height: 18,
             outline: "none",

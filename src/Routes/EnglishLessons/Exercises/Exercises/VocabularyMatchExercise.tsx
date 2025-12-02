@@ -28,7 +28,8 @@ export const defaultLabels = {
   correct: "✔ Par correto!",
   wrong: "❌ Não é o par correspondente.",
   finished: "Você concluiu todos os pares! 🎉",
-  plusPoints: "+2 pontos por acerto",
+  plusPoints:
+    "Pontuação: 3 / 2 / 1 pontos por acerto (diminuindo por tentativas)",
 };
 
 function shuffle<T>(arr: T[]): T[] {
@@ -128,6 +129,9 @@ export default function VocabularyMatchExercise({
   const [selectedFront, setSelectedFront] = useState<number | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
 
+  // tentativas por card (index do pool)
+  const [attempts, setAttempts] = useState<Record<number, number>>({});
+
   const shuffledIdx = useMemo(
     () => shuffle(pool.map((_, i) => i)),
     [pool, seed]
@@ -167,11 +171,28 @@ export default function VocabularyMatchExercise({
     setSeed((v) => v + 1);
     setSelectedFront(null);
     setMatched(new Set());
+    setAttempts({});
   }
 
   function handlePickFront(i: number) {
     if (matched.has(i)) return;
     setSelectedFront(i);
+  }
+
+  function incrementAttemptsFor(index: number) {
+    setAttempts((prev) => {
+      const prevCount = prev[index] ?? 0;
+      return { ...prev, [index]: prevCount + 1 };
+    });
+  }
+
+  function getPointsForCard(cardIndex: number): number {
+    const tries = attempts[cardIndex] ?? 0;
+    // tries = quantos erros já teve ANTES do acerto
+    if (tries === 0) return 3; // acertou de primeira
+    if (tries === 1) return 2; // acertou na 2ª tentativa
+    if (tries === 2) return 1; // acertou na 3ª
+    return 0; // depois disso não pontua
   }
 
   function handlePickBack(slot: number) {
@@ -191,18 +212,29 @@ export default function VocabularyMatchExercise({
       setMatched(next);
       setSelectedFront(null);
 
+      // calcula pontuação com base nas tentativas para esse card
+      const points = getPointsForCard(realIndex);
+
       try {
         const frontText = pool[realIndex]?.english || "";
         const backText = pool[realIndex]?.portuguese || "";
         const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
-        exerciseScore?.(2, desc); // +2 pontos por par correto
+
+        if (points > 0) {
+          exerciseScore?.(points, desc);
+        }
       } catch (e) {
         console.error("Erro ao registrar pontuação do match:", e);
       }
 
-      notifyAlert(`${L.correct} (+2 pontos)`, "green");
+      const pointsMsg =
+        points > 0 ? ` (+${points} ponto${points > 1 ? "s" : ""})` : "";
+      notifyAlert(`${L.correct}${pointsMsg}`, "green");
     } else {
-      // ❌ ERROU
+      // ❌ ERROU – conta uma tentativa para o card selecionado
+      if (selectedFront !== null && !matched.has(selectedFront)) {
+        incrementAttemptsFor(selectedFront);
+      }
       notifyAlert(L.wrong, "red");
       setSelectedFront(null);
     }
