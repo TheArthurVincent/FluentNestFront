@@ -3318,27 +3318,25 @@ export default function EnglishClassCourse2({
                             gap: "8px",
                           }}
                         >
-                          {!fetchEventData && (
-                            <button
-                              onClick={() => setExercise(!exercise)}
-                              style={{
-                                borderRadius: "4px",
-                                border: "1px solid #e2e8f0",
-                                backgroundColor: partnerColor(),
-                                fontSize: "11px",
-                                fontWeight: "400",
-                                color: "white",
-                                padding: "4px 6px",
-                                height: "28px",
-                                outline: "none",
-                                cursor: "pointer",
-                                display: "block",
-                              }}
-                            >
-                              {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
-                            </button>
-                          )}
-                          {!exercise && !fetchEventData && (
+                          <button
+                            onClick={() => setExercise(!exercise)}
+                            style={{
+                              borderRadius: "4px",
+                              border: "1px solid #e2e8f0",
+                              backgroundColor: partnerColor(),
+                              fontSize: "11px",
+                              fontWeight: "400",
+                              color: "white",
+                              padding: "4px 6px",
+                              height: "28px",
+                              outline: "none",
+                              cursor: "pointer",
+                              display: "block",
+                            }}
+                          >
+                            {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
+                          </button>
+                          {!exercise && (
                             <div
                               className="isMobileDisapear"
                               style={{
