@@ -98,7 +98,13 @@ export function MyHomePage({
     {
       showToStudent: true,
       showToTeacher: true,
-      component: <NextClass studentId={id} actualHeaders={actualHeaders} />,
+      component: (
+        <NextClass
+          isDesktop={isDesktop}
+          studentId={id}
+          actualHeaders={actualHeaders}
+        />
+      ),
     },
     {
       showToStudent: true,

@@ -10,13 +10,20 @@ import { PresentationIcon } from "@phosphor-icons/react";
 interface NextClassProps {
   actualHeaders?: any;
   studentId?: string;
+  isDesktop?: boolean;
 }
 
-export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
+export const NextClass: FC<NextClassProps> = ({
+  actualHeaders,
+  studentId,
+  isDesktop,
+}) => {
   const [NXTCLASS, setNXTCLASS] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [now, setNow] = useState<Date>(new Date());
   const [thePermissions, setPermissions] = useState<any>("");
+  const [NEXT3, setNEXT3] = useState<any[]>([]);
+
   const [teacher, setTeacher] = useState<any>("");
   const [student, setStudent] = useState<any>("");
   const fetchLastClassId = async () => {
@@ -29,8 +36,12 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
           headers: actualHeaders,
         }
       );
+      console.log("Response Next Event:", response.data);
       if (response.data.nextEvent) {
         setNXTCLASS(response.data.nextEvent);
+      }
+      if (response.data.nextThreeEvents) {
+        setNEXT3(response.data.nextThreeEvents);
       }
 
       if (response.data.teacherName) {
@@ -175,7 +186,7 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
                 letterSpacing: "0%",
               }}
             >
-              {formatDateBr(NXTCLASS.date)}
+              {NXTCLASS.date}
               <br />
               {NXTCLASS.time}
               {endTimeStr && ` - ${endTimeStr}`}
@@ -183,7 +194,9 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
           </div>
         )}
       </div>
+
       <a
+        target={isDesktop ? "_blank" : "_self"}
         href={NXTCLASS ? `my-calendar/event/${NXTCLASS._id}` : "/my-calendar"}
         style={{
           fontFamily: "Plus Jakarta Sans",
@@ -205,6 +218,66 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
         {loading || !NXTCLASS ? "Acessar calendário" : "Acessar aula"}{" "}
         <i className="fa fa-chevron-right" />
       </a>
+      {(thePermissions === "teacher" || thePermissions === "superadmin") &&
+        NEXT3.length > 1 && (
+          <div style={{ marginTop: "20px" }}>
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "#030303",
+              }}
+            >
+              Próximos eventos
+            </span>
+
+            <div
+              style={{
+                marginTop: "12px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              {NEXT3.slice(1).map((ev, index) => (
+                <div
+                  key={ev._id + index}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  <a
+                    target={isDesktop ? "_blank" : "_self"}
+                    href={`my-calendar/event/${ev._id}`}
+                    style={{
+                      textDecoration: "none",
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      color: "#030303",
+                    }}
+                  >
+                    {ev.student || ev.teacherName || "Aluno"}
+                  </a>
+
+                  <span
+                    style={{
+                      fontSize: "13px",
+                      color: "#606060",
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {ev.date ? ev.date : ""} ({ev.time})
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
     </>
   );
 };

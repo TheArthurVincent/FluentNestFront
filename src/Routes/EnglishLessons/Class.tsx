@@ -3653,11 +3653,9 @@ export default function EnglishClassCourse2({
                                         alt={element.subtitle}
                                       />
                                     )}
-                                    {element.video &&
-                                      element.subtitle &&
-                                       (
-                                        <VideoLessonModel element={element} />
-                                      )}
+                                    {element.video && element.subtitle && (
+                                      <VideoLessonModel element={element} />
+                                    )}
 
                                     {element.comments && (
                                       <p
