@@ -56,6 +56,7 @@ interface EnglishClassCourse2ModelProps {
   change?: any;
   fetchEventData?: any;
   canEditCourse: boolean | undefined;
+  seeExercise?: boolean;
 }
 
 export default function EnglishClassCourse2({
@@ -69,6 +70,7 @@ export default function EnglishClassCourse2({
   change,
   mainStudentID,
   canEditCourse,
+  seeExercise,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
 
@@ -111,7 +113,7 @@ export default function EnglishClassCourse2({
   const [theStudentsWhoCompletedIt, setStudentsWhoCompletedIt] = useState<any>(
     []
   );
-  const [exercise, setExercise] = useState<boolean>(false);
+  const [exercise, setExercise] = useState<boolean>(seeExercise || false);
   const [seeEdit, setSeeEdit] = useState<boolean>(false);
   const [classLanguage, setClassLanguage] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
@@ -3202,23 +3204,21 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-          {!exercise && (
-            <>
-              {canEditCourse && !seeBoard && thePermissions !== "student" && (
-                <EditLesson
-                  setChange={setChange}
-                  change={change}
-                  studentId={myId}
-                  buttonText={"Editar Aula"}
-                  setSeeEdit={setSeeEdit}
-                  headers={actualHeaders}
-                  classId={classId}
-                  language={classLanguage}
-                  fetchEventData={fetchEventData}
-                />
-              )}
-            </>
-          )}
+          <>
+            {canEditCourse && !seeBoard && thePermissions !== "student" && (
+              <EditLesson
+                setChange={setChange}
+                change={change}
+                studentId={myId}
+                buttonText={"Editar Conteúdo"}
+                setSeeEdit={setSeeEdit}
+                headers={actualHeaders}
+                classId={classId}
+                language={classLanguage}
+                fetchEventData={fetchEventData}
+              />
+            )}
+          </>
           {!seeEdit && (
             <>
               {!seeBoard ? (

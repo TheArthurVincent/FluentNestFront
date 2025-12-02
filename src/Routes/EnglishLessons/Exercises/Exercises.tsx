@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
@@ -7,8 +7,10 @@ import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
+import { newArvinTitleStyle } from "../../ArvinComponents/SearchMaterials/SearchMaterials";
 
 type SentenceItem = { portuguese: string; english?: string };
+
 type ImageItem = {
   img: string;
   text?: string;
@@ -79,6 +81,7 @@ type ElementSelectExercise = {
   }[];
   order?: number;
 };
+
 type ElementVocabulary = {
   type: "vocabulary";
   subtitle?: string;
@@ -88,7 +91,7 @@ type ElementVocabulary = {
   order?: number;
 };
 
-// adicione no union:
+// union principal
 type ElementItem =
   | ElementVocabulary
   | ElementSentences
@@ -98,78 +101,34 @@ type ElementItem =
   | ElementAudio
   | ElementListenInEnglish
   | ElementSelectExercise;
-///
-function getVocabularySentences(elements?: ElementItem[]): SentenceItem[] {
-  const list: SentenceItem[] = [];
-  const els = safeElements(elements);
-  for (const el of els) {
-    if (
-      (el as any)?.type === "vocabulary" &&
-      Array.isArray((el as any).sentences)
-    ) {
-      for (const s of (el as ElementVocabulary).sentences) {
-        if (s?.english?.trim() && s?.portuguese?.trim()) list.push(s);
-      }
-    }
-  }
-  return list;
-}
-type ExerciseRunnerProps = {
-  elements?: ElementItem[];
-  count?: number;
-  exerciseScore?: any;
-  flag?: boolean;
-  dictationItems?: number;
-  classId: string;
-  labels?: Partial<typeof defaultLabels>;
-  studentId?: string;
-  headers?: MyHeadersType | null;
-  selectedVoice?: string;
-  language?: string;
-};
-
-export const defaultLabels = {
-  exercise: "Exercício",
-  of: "de",
-  next: "Próximo",
-  back: "Voltar",
-  doneAll: "Você concluiu todos os exercícios! 🎉",
-  play: "Ouvir",
-  retry: "Ouvir de novo",
-  yourAnswer:
-    "Sua resposta (Para pontuar, você precisa acertar pelo menos 70% do texto.)",
-  check: "Conferir",
-  correctWords: "Palavras corretas",
-  accuracy: "Precisão",
-  showAnswer: "Mostrar gabarito",
-  hideAnswer: "Ocultar gabarito",
-  loadingSentences: "Não há mais frases disponíveis.",
-  noImages: "Não há mais imagens disponíveis.",
-  dictationTitle: "Ditado",
-  imageToWordTitle: "Que imagem é essa?",
-  wordToImageTitle: "Qual é a imagem correta?",
-  continue: "Continuar",
-};
-
-export function shuffle<T>(arr: T[]): T[] {
-  const a = (arr || []).slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function safeElements(el?: ElementItem[]): ElementItem[] {
   return Array.isArray(el) ? el : [];
 }
+
+// AGORA: em vez de juntar tudo, pegamos os blocos vocabulary separadamente
+function getVocabularyElements(elements?: ElementItem[]): ElementVocabulary[] {
+  const list: ElementVocabulary[] = [];
+  const els = safeElements(elements);
+  for (const el of els) {
+    if (
+      (el as any)?.type === "vocabulary" &&
+      Array.isArray((el as ElementVocabulary).sentences) &&
+      (el as ElementVocabulary).sentences.length > 0
+    ) {
+      list.push(el as ElementVocabulary);
+    }
+  }
+  return list;
+}
+
 function getAllSentences(elements?: ElementItem[]): SentenceItem[] {
   const list: SentenceItem[] = [];
   const els = safeElements(elements);
   for (const el of els) {
     if (
       (el as any)?.type === "sentences" &&
-      Array.isArray((el as any).sentences)
+      Array.isArray((el as ElementSentences).sentences)
     ) {
       for (const s of (el as ElementSentences).sentences) {
         if (s?.english?.trim()) list.push(s);
@@ -178,6 +137,7 @@ function getAllSentences(elements?: ElementItem[]): SentenceItem[] {
   }
   return list;
 }
+
 function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
   const list: ImageItem[] = [];
   const els = safeElements(elements);
@@ -268,6 +228,7 @@ export function Card({
     </div>
   );
 }
+
 export function HeaderBar({
   title,
   right,
@@ -307,12 +268,58 @@ type CatalogCtx = {
   headers?: MyHeadersType | null;
   selectedVoice?: string;
 };
+
 type ExerciseEntry = {
   key: string;
-
   title: string;
   render: (ctx: CatalogCtx) => React.ReactNode | null;
 };
+
+type ExerciseRunnerProps = {
+  elements?: ElementItem[];
+  count?: number;
+  exerciseScore?: any;
+  flag?: boolean;
+  dictationItems?: number;
+  classId: string;
+  labels?: Partial<typeof defaultLabels>;
+  studentId?: string;
+  headers?: MyHeadersType | null;
+  selectedVoice?: string;
+  language?: string;
+};
+
+export const defaultLabels = {
+  exercise: "#",
+  of: "de",
+  next: "Próximo",
+  back: "Voltar",
+  doneAll: "Você concluiu todos os exercícios! 🎉",
+  play: "Ouvir",
+  retry: "Ouvir de novo",
+  yourAnswer:
+    "Sua resposta (Para pontuar, você precisa acertar pelo menos 70% do texto.)",
+  check: "Conferir",
+  correctWords: "Palavras corretas",
+  accuracy: "Precisão",
+  showAnswer: "Mostrar gabarito",
+  hideAnswer: "Ocultar gabarito",
+  loadingSentences: "Não há mais frases disponíveis.",
+  noImages: "Não há mais imagens disponíveis.",
+  dictationTitle: "Ditado",
+  imageToWordTitle: "Que imagem é essa?",
+  wordToImageTitle: "Qual é a imagem correta?",
+  continue: "Continuar",
+};
+
+export function shuffle<T>(arr: T[]): T[] {
+  const a = (arr || []).slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function ExerciseRunner({
   elements = [],
@@ -328,8 +335,9 @@ export default function ExerciseRunner({
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
 
-  const vocabularyItems = useMemo(
-    () => getVocabularySentences(safeEls),
+  // AGORA: um bloco vocabulary por exercício
+  const vocabularyElements = useMemo(
+    () => getVocabularyElements(safeEls),
     [safeEls]
   );
 
@@ -349,21 +357,25 @@ export default function ExerciseRunner({
   );
 
   const exerciseCatalog: ExerciseEntry[] = [
-    // {
-    //   key: "vocabulary_match",
-    //   title: "Match de Vocabulário",
-    //   render: () => {
-    //     if (!vocabularyItems.length) return null; // só aparece com type "vocabulary"
-    //     return (
-    //       <VocabularyMatchExercise
-    //         sentences={vocabularyItems}
-    //         selectedVoice={selectedVoice}
-    //         language={language}
-    //         exerciseScore={exerciseScore}
-    //       />
-    //     );
-    //   },
-    // },
+    // VOCABULARY: um exercício por bloco vocabulary
+    ...vocabularyElements.map((vocabEl, index) => ({
+      key: `vocabulary_match_${index}`,
+      title:
+        vocabEl.subtitle ||
+        (vocabularyElements.length > 1
+          ? `Match de Vocabulário ${index + 1}`
+          : "Match de Vocabulário"),
+      render: () => (
+        <VocabularyMatchExercise
+          sentences={vocabEl.sentences}
+          selectedVoice={selectedVoice}
+          language={language}
+          exerciseScore={exerciseScore}
+        />
+      ),
+    })),
+
+    // DITADO
     {
       key: "dictation_from_sentences",
       title: "Ditado",
@@ -382,6 +394,8 @@ export default function ExerciseRunner({
         );
       },
     },
+
+    // IMAGEM -> PALAVRA
     {
       key: "images_to_word",
       title: "Que imagem é essa?",
@@ -399,6 +413,8 @@ export default function ExerciseRunner({
         );
       },
     },
+
+    // PALAVRA -> IMAGENS
     {
       key: "word_to_images",
       title: "Qual é a imagem correta?",
@@ -413,8 +429,8 @@ export default function ExerciseRunner({
         );
       },
     },
-    // Unified Questions section combining all exercise elements
 
+    // LISTEN IN ENGLISH – um exercício por bloco
     ...listenInEnglishElements.map((listenElement, index) => ({
       key: `listen_${index}`,
       title: listenElement.subtitle || `Listen in English ${index + 1}`,
@@ -429,6 +445,8 @@ export default function ExerciseRunner({
         />
       ),
     })),
+
+    // SELECT EXERCISE – um exercício por bloco
     ...selectExerciseElements.map((selectElement, index) => ({
       key: `select_${index}`,
       title: selectElement.subtitle || `Select Exercise ${index + 1}`,
@@ -446,23 +464,13 @@ export default function ExerciseRunner({
   ];
 
   const available = exerciseCatalog.filter((e) => {
-    if (e.key === "vocabulary_match") return vocabularyItems.length > 0; // <- AQUI
     if (e.key === "dictation_from_sentences") return sentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
-    if (e.key === "questions_unified") return exerciseElements.length > 0;
-    if (e.key.startsWith("listen_")) return true;
-    if (e.key.startsWith("select_")) return true;
+    if (e.key === "questions_unified") return exerciseElements.length > 0; // legado
+    // vocabulary_match_*, listen_*, select_* já foram filtrados pela própria montagem
     return true;
   });
-
-  const [activeKey, setActiveKey] = useState<string>(available[0]?.key ?? "");
-  const [restartTick, setRestartTick] = useState(0);
-
-  const activeEntry = useMemo(
-    () => available.find((e) => e.key === activeKey) || null,
-    [available, activeKey]
-  );
 
   if (!available.length) {
     return (
@@ -501,6 +509,10 @@ export default function ExerciseRunner({
             Ou adicione um bloco <code>selectexercise</code> para habilitar os
             exercícios de seleção múltipla.
           </li>
+          <li>
+            Ou adicione um bloco <code>vocabulary</code> para habilitar os
+            matches de vocabulário.
+          </li>
         </ul>
       </Card>
     );
@@ -523,57 +535,41 @@ export default function ExerciseRunner({
           width: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           gap: 24,
         }}
       >
-        {available.length > 1 && (
-          <div style={{ width: "100%" }}>
-            <HeaderBar title="Escolha o tipo de exercício" />
+        <HeaderBar title="Exercícios desta aula" />
+
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 24,
+          }}
+        >
+          {available.map((entry, index) => (
             <div
+              key={entry.key}
               style={{
-                display: "grid",
-                gap: 8,
-                gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-                flexWrap: "wrap",
-                marginBottom: 8,
+                borderTop: index === 0 ? "none" : "1px solid #E5E7EB",
+                paddingTop: index === 0 ? 0 : 16,
               }}
             >
-              {available.map((entry) => {
-                const isActive = entry.key === activeKey;
-                return (
-                  <button
-                    key={entry.key}
-                    onClick={() => {
-                      setActiveKey(entry.key);
-                      setRestartTick((t) => t + 1);
-                    }}
-                    style={{
-                      padding: "8px 12px",
-                      fontSize: 13,
-                      fontWeight: 700,
-                      border: isActive
-                        ? "1px solid #111827"
-                        : "1px solid #E5E7EB",
-                      color: isActive ? "#FFFFFF" : "#111827",
-                      background: isActive
-                        ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
-                        : "#FFFFFF",
-                      cursor: "pointer",
-                    }}
-                    title={entry.title}
-                  >
-                    {entry.title}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        <div style={{ width: "100%" }}>
-          {activeEntry ? (
-            <div key={activeKey + "_" + restartTick}>
-              {activeEntry.render({
+              <h1
+                style={{
+                  ...newArvinTitleStyle,
+                  fontSize: 20,
+                  margin: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                #{index + 1}
+              </h1>
+
+              {entry.render({
                 elements: safeEls,
                 labels,
                 dictationItems,
@@ -582,14 +578,7 @@ export default function ExerciseRunner({
                 selectedVoice,
               })}
             </div>
-          ) : (
-            <Card>
-              <HeaderBar title="Sem modo válido selecionado" />
-              <p style={{ color: "#4B5563", marginTop: 0 }}>
-                Selecione um dos modos de exercício acima.
-              </p>
-            </Card>
-          )}
+          ))}
         </div>
       </div>
     </div>

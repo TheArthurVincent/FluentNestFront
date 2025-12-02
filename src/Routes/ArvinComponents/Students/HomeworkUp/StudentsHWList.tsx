@@ -31,37 +31,6 @@ type StudentItem = {
   username: string;
 };
 
-type EventToday = {
-  event: {
-    _id: string;
-    studentID: string;
-    tutoringID?: string;
-    edited?: boolean;
-    duration?: number;
-    student?: string;
-    status?: string;
-    link?: string;
-    description?: string | null;
-    category?: string;
-    date: string; // "2025-11-20"
-    time: string; // "08:00"
-  };
-  student?: {
-    _id: string;
-    name: string;
-    lastname: string;
-    picture?: string;
-    email?: string;
-  };
-};
-
-type EventMap = {
-  [studentId: string]: {
-    time: string;
-    link: string;
-  };
-};
-
 export function ListOfStudentsHWToClick({
   actualHeaders,
   isDesktop,
@@ -70,27 +39,6 @@ export function ListOfStudentsHWToClick({
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
   const [ID, setID] = useState("");
-  const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]);
-
-  // ====== BUSCAR EVENTOS DO DIA ======
-  const getDayEvents = async (userid: string, date: Date) => {
-    const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/students-events-today/${userid}`,
-        {
-          headers: actualHeaders ? { ...actualHeaders } : {},
-          params: { today: dateStr },
-        }
-      );
-
-      const events: EventToday[] = response.data.events || response.data || [];
-      setEventsForToday(events || []);
-    } catch (error) {
-      console.log("Erro ao buscar eventos do dia:", error);
-    }
-  };
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -107,9 +55,6 @@ export function ListOfStudentsHWToClick({
       );
 
       setStudents(response.data.listOfStudents || response.data || []);
-      if (userId) {
-        getDayEvents(userId, new Date());
-      }
     } catch (error) {
       console.error(error);
       notifyAlert("Erro ao encontrar alunos");
@@ -141,40 +86,8 @@ export function ListOfStudentsHWToClick({
     });
   }, [students, search]);
 
-  // ====== MAPA DE EVENTOS (studentId -> menor horário) ======
-  const eventsMap: EventMap = useMemo(() => {
-    const map: EventMap = {};
+  const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
 
-    (eventsForToday || []).forEach((item) => {
-      const studentId = item.student?._id || item.event.studentID || "";
-      if (!studentId) return;
-
-      const time = item.event.time || "23:59";
-      const link = item.event.link || "";
-
-      if (!map[studentId] || time < map[studentId].time) {
-        map[studentId] = { time, link };
-      }
-    });
-
-    return map;
-  }, [eventsForToday]);
-
-  const hasEventsToday = useMemo(
-    () => Object.keys(eventsMap).length > 0,
-    [eventsMap]
-  );
-
-  const studentsWithoutEventToday = useMemo(() => {
-    if (!hasEventsToday) return filteredStudents;
-    return filteredStudents.filter((s) => !eventsMap[s.id]);
-  }, [filteredStudents, eventsMap, hasEventsToday]);
-
-  const listToRender = hasEventsToday
-    ? studentsWithoutEventToday
-    : filteredStudents;
-
-    const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
   return (
     <div
       style={{
@@ -219,7 +132,7 @@ export function ListOfStudentsHWToClick({
       </div>
 
       {/* GRID DE CARDS */}
-      {listToRender.map((st) => (
+      {filteredStudents.map((st) => (
         <Link
           key={st.id}
           to={`/my-homework-and-lessons/${st.id}`}

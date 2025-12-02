@@ -613,7 +613,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   outline: "none",
                 }}
               >
-                Lição de casa
+                Exercícios
               </button>
             </div>
 
@@ -691,6 +691,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     <LessonContent
                       headers={headers}
                       fetchEventData={fetchEventData}
+                      seeExercise={false}
                       date={event.date}
                       theLessonRender={event.theLessonRender}
                       eventId={event._id}
@@ -721,22 +722,42 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             )}
             {activeTab === "homework" && (
               <>
-                {(event.homeworkDetails || permissionsUser !== "student") && (
-                  <HomeworkClass
-                    homeworkID={event.homeworkID}
-                    homeworkData={
-                      event.homeworkDetails
-                        ? event.homeworkDetails.description
-                        : "Type here"
-                    }
-                    headers={headers}
-                    evendId={event._id}
-                    event={event}
-                    isDesktop={isDesktop}
-                    fetchEventData={fetchEventData}
-                    allowedToEdit={permissionsUser !== "student"}
-                  />
-                )}
+                <div
+                  style={{
+                    paddingLeft: isDesktop ? 12 : 0,
+                    overflowY: "visible",
+                    display: "grid",
+                    gap: 12,
+                  }}
+                >
+                  {(event.homeworkDetails || permissionsUser !== "student") && (
+                    <HomeworkClass
+                      homeworkID={event.homeworkID}
+                      homeworkData={
+                        event.homeworkDetails
+                          ? event.homeworkDetails.description
+                          : "Type here"
+                      }
+                      headers={headers}
+                      evendId={event._id}
+                      event={event}
+                      isDesktop={isDesktop}
+                      fetchEventData={fetchEventData}
+                      allowedToEdit={permissionsUser !== "student"}
+                    />
+                  )}
+                  {(event.theLessonRender || permissionsUser !== "student") && (
+                    <LessonContent
+                      headers={headers}
+                      fetchEventData={fetchEventData}
+                      date={event.date}
+                      seeExercise={true}
+                      theLessonRender={event.theLessonRender}
+                      eventId={event._id}
+                      studentID={event.studentID}
+                    />
+                  )}
+                </div>
               </>
             )}
           </>
