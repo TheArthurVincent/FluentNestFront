@@ -3323,10 +3323,10 @@ export default function EnglishClassCourse2({
                             style={{
                               borderRadius: "4px",
                               border: "1px solid #e2e8f0",
-                              backgroundColor: "#f8fafc",
+                              backgroundColor: partnerColor(),
                               fontSize: "11px",
                               fontWeight: "400",
-                              color: "#64748b",
+                              color: "white",
                               padding: "4px 6px",
                               height: "28px",
                               outline: "none",
