@@ -3681,6 +3681,7 @@ export default function EnglishClassCourse2({
                                       />
                                     ) : element.type === "vocabulary" ? (
                                       <VocabularyLesson
+                                      exerciseScore={exerciseScore}
                                         mainTag={theclass.mainTag}
                                         element={element}
                                         studentId={mainStudentID || studentID}

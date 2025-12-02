@@ -55,13 +55,6 @@ type EventToday = {
   };
 };
 
-type EventMap = {
-  [studentId: string]: {
-    time: string;
-    link: string;
-  };
-};
-
 export function ListOfStudentsToClick({
   actualHeaders,
   isDesktop,
@@ -70,9 +63,9 @@ export function ListOfStudentsToClick({
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
   const [ID, setID] = useState("");
-  const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]);
+  const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]); // se não precisar, pode apagar isso também
 
-  // ====== BUSCAR EVENTOS DO DIA ======
+  // ====== BUSCAR EVENTOS DO DIA (opcional, não usado no filtro) ======
   const getDayEvents = async (userid: string, date: Date) => {
     const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -108,7 +101,7 @@ export function ListOfStudentsToClick({
 
       setStudents(response.data.listOfStudents || response.data || []);
       if (userId) {
-        getDayEvents(userId, new Date());
+        getDayEvents(userId, new Date()); // se não quiser nem buscar eventos, pode remover esta linha
       }
     } catch (error) {
       console.error(error);
@@ -141,40 +134,12 @@ export function ListOfStudentsToClick({
     });
   }, [students, search]);
 
-  // ====== MAPA DE EVENTOS (studentId -> menor horário) ======
-  const eventsMap: EventMap = useMemo(() => {
-    const map: EventMap = {};
-
-    (eventsForToday || []).forEach((item) => {
-      const studentId = item.student?._id || item.event.studentID || "";
-      if (!studentId) return;
-
-      const time = item.event.time || "23:59";
-      const link = item.event.link || "";
-
-      if (!map[studentId] || time < map[studentId].time) {
-        map[studentId] = { time, link };
-      }
-    });
-
-    return map;
-  }, [eventsForToday]);
-
-  const hasEventsToday = useMemo(
-    () => Object.keys(eventsMap).length > 0,
-    [eventsMap]
-  );
-
-  const studentsWithoutEventToday = useMemo(() => {
-    if (!hasEventsToday) return filteredStudents;
-    return filteredStudents.filter((s) => !eventsMap[s.id]);
-  }, [filteredStudents, eventsMap, hasEventsToday]);
-
-  const listToRender = hasEventsToday
-    ? studentsWithoutEventToday
-    : filteredStudents;
+  // 🔴 REMOVIDO: eventsMap, hasEventsToday, studentsWithoutEventToday
+  // Agora a lista a renderizar é SEMPRE filteredStudents
+  const listToRender = filteredStudents;
 
   const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
+
   return (
     <>
       {loading && <p>Loading...</p>}
@@ -212,7 +177,7 @@ export function ListOfStudentsToClick({
           <NewStudentModal id={ID} headers={actualHeaders} />
         </div>
 
-        {/* Lista normal (ou restante da lista) */}
+        {/* Lista de alunos (sem filtro por aula de hoje) */}
         {listToRender.map((st) => (
           <Link
             key={st.id}

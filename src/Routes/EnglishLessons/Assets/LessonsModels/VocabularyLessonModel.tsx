@@ -18,6 +18,7 @@ interface VocabularyLessonProps {
   studentId: string;
   mainTag: string;
   selectedVoice: any;
+  exerciseScore: (points: number, description: string) => void;
 }
 
 type MatchState = {
@@ -59,6 +60,7 @@ export default function VocabularyLesson({
   element,
   mainTag,
   studentId,
+  exerciseScore,
   selectedVoice,
 }: VocabularyLessonProps) {
   const actualHeaders = headers || {};
@@ -99,6 +101,15 @@ export default function VocabularyLesson({
     }
   };
 
+  // Utilitário para pegar idiomas do front/back
+  const getLanguages = (sentence: any) => {
+    const languages = sentence?.languages || {};
+    return {
+      frontLang: languages.language1 || "en",
+      backLang: languages.language2 || "pt",
+    };
+  };
+
   const onPickFront = (frontIndex: number) => {
     if (match.matched.has(frontIndex)) return;
     setMatch((prev) => ({ ...prev, selectedFront: frontIndex }));
@@ -119,12 +130,24 @@ export default function VocabularyLesson({
     if (selectedFront === realBackIndex) {
       const newMatched = new Set(match.matched);
       newMatched.add(selectedFront);
+
+      // ✅ ACERTOU → ganha 2 pontos
+      try {
+        const frontText = sentences[selectedFront]?.english || "";
+        const backText = sentences[realBackIndex]?.portuguese || "";
+        const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
+        exerciseScore?.(2, desc);
+      } catch (e) {
+        // só pra garantir que um erro aqui não quebre o fluxo de jogo
+        console.error("Erro ao registrar pontuação do match:", e);
+      }
+
       setMatch((prev) => ({
         ...prev,
         selectedFront: null,
         matched: newMatched,
       }));
-      notifyAlert("✔ Par correto!", "green");
+      notifyAlert("✔ Par correto! (+2 pontos)", "green");
     } else {
       notifyAlert("❌ Não é o par correspondente.", "red");
       setMatch((prev) => ({ ...prev, selectedFront: null }));
@@ -248,7 +271,7 @@ export default function VocabularyLesson({
         </button>
       </div>
 
-      {/* ======== MODO LISTA (ORIGINAL) ======== */}
+      {/* ======== MODO LISTA ======== */}
       {!match.isMatchMode && (
         <div
           style={{
@@ -258,119 +281,136 @@ export default function VocabularyLesson({
           }}
         >
           {element.sentences &&
-            element.sentences.map((sentence: any, i: number) => (
-              <div
-                key={i}
-                style={{
-                  border: "1px solid #e3e6ea",
-                  borderRadius: "4px",
-                  padding: "8px 12px 8px 12px",
-                  position: "relative",
-                  minHeight: "40px",
-                  display: "flex",
-                  flexDirection: "column",
-                  background: "#fff",
-                  justifyContent: "flex-start",
-                }}
-              >
+            element.sentences.map((sentence: any, i: number) => {
+              const { frontLang, backLang } = getLanguages(sentence);
+
+              return (
                 <div
+                  key={i}
                   style={{
+                    border: "1px solid #e3e6ea",
+                    borderRadius: "4px",
+                    padding: "8px 12px 8px 12px",
+                    position: "relative",
+                    minHeight: "40px",
                     display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    justifyContent: "space-between",
+                    flexDirection: "column",
+                    background: "#fff",
+                    justifyContent: "flex-start",
                   }}
                 >
-                  {/* Botão + para adicionar aos flashcards */}
-                  <span
-                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      justifyContent: "space-between",
+                    }}
                   >
-                    {/* Botão de áudio */}
-                    <Tooltip title="Ouvir" placement="top" arrow>
-                      <button
-                        style={{
-                          color: partnerColor(),
-                          padding: 0,
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "13px",
-                          background: "none",
-                          transition: "all 0.2s",
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          readText(sentence.english, true, "en", selectedVoice);
-                        }}
-                      >
-                        <i className="fa fa-volume-up" aria-hidden="true" />
-                      </button>
-                    </Tooltip>
-                    <div style={{ marginLeft: 10 }}>
-                      <div
-                        style={{
-                          fontWeight: 500,
-                          color: "#222",
-                          fontSize: "14px",
-                          marginBottom: 2,
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {sentence.english}
-                      </div>
-                      <div
-                        style={{
-                          color: "#6c757d",
-                          fontStyle: "italic",
-                          fontSize: "13px",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {sentence.portuguese}
-                      </div>
-                    </div>
-                  </span>
-                  <span>
-                    {!clickedButtons.has(i) && (
-                      <Tooltip
-                        title="Adicionar ao flashcard"
-                        placement="top"
-                        arrow
-                      >
+                    <span
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      {/* Áudio FRONT */}
+                      <Tooltip title="Ouvir frente" placement="top" arrow>
                         <button
                           style={{
-                            backgroundColor: "none",
                             color: partnerColor(),
-                            width: "5px",
-                            height: "5px",
+                            padding: 0,
                             border: "none",
-                            borderRadius: "50%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: "bold",
-                            fontSize: "15px",
                             cursor: "pointer",
+                            fontSize: "13px",
+                            background: "none",
                             transition: "all 0.2s",
-                            opacity: 0.7,
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            addNewCards(
+                            readText(
                               sentence.english,
-                              sentence.portuguese,
-                              i,
-                              sentence.languages ? sentence.languages : null
+                              true,
+                              frontLang,
+                              selectedVoice
                             );
                           }}
                         >
-                          +
+                          <i className="fa fa-volume-up" aria-hidden="true" />
                         </button>
                       </Tooltip>
-                    )}
-                  </span>
+                      <div style={{ marginLeft: 10 }}>
+                        <div
+                          style={{
+                            fontWeight: 500,
+                            color: "#222",
+                            fontSize: "14px",
+                            marginBottom: 2,
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {sentence.english}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                          }}
+                        >
+                          <div
+                            style={{
+                              color: "#6c757d",
+                              fontStyle: "italic",
+                              fontSize: "13px",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {sentence.portuguese}
+                          </div>
+                        </div>
+                      </div>
+                    </span>
+
+                    <span>
+                      {!clickedButtons.has(i) && (
+                        <Tooltip
+                          title="Adicionar ao flashcard"
+                          placement="top"
+                          arrow
+                        >
+                          <button
+                            style={{
+                              backgroundColor: "none",
+                              color: partnerColor(),
+                              width: "5px",
+                              height: "5px",
+                              border: "none",
+                              borderRadius: "50%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: "bold",
+                              fontSize: "15px",
+                              cursor: "pointer",
+                              transition: "all 0.2s",
+                              opacity: 0.7,
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addNewCards(
+                                sentence.english,
+                                sentence.portuguese,
+                                i,
+                                sentence.languages ? sentence.languages : null
+                              );
+                            }}
+                          >
+                            +
+                          </button>
+                        </Tooltip>
+                      )}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       )}
 
@@ -379,16 +419,17 @@ export default function VocabularyLesson({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "0.3fr 1fr",
             gap: 12,
           }}
         >
-          {/* Coluna LEFT: FRONTS (inglês) */}
+          {/* Coluna LEFT: FRONTS */}
           <div style={{ display: "grid", gap: 10 }}>
             {sentences.map((s, idx) => {
               const isSelected = match.selectedFront === idx;
               const isDone = match.matched.has(idx);
               const color = pairColors[idx % pairColors.length];
+              const { frontLang } = getLanguages(s);
 
               return (
                 <div
@@ -397,18 +438,14 @@ export default function VocabularyLesson({
                     ...cardStyle,
                     border: `3px solid ${isDone ? color : "transparent"}`,
                     position: "relative",
-                    ...(isSelected ? selectedStyle : {}),
-                    ...(isDone
-                      ? {
-                          backgroundColor: isDone
-                            ? `${color}20`
-                            : "transparent",
-                        }
-                      : {}),
+                    ...(isSelected
+                      ? selectedStyle
+                      : { border: "#eee 1px solid" }),
+                    ...(isDone ? { backgroundColor: `${color}20` } : {}),
                   }}
                   onClick={() => {
                     onPickFront(idx);
-                    readText(s.english, true, "en", selectedVoice);
+                    readText(s.english, true, frontLang, selectedVoice);
                   }}
                 >
                   <div
@@ -473,11 +510,13 @@ export default function VocabularyLesson({
             })}
           </div>
 
-          {/* Coluna RIGHT: BACKS (português) embaralhados */}
+          {/* Coluna RIGHT: BACKS embaralhados */}
           <div style={{ display: "grid", gap: 10 }}>
             {match.shuffledIdx.map((realIndex, slot) => {
+              const sentence = sentences[realIndex];
               const isDone = match.matched.has(realIndex);
               const color = pairColors[realIndex % pairColors.length];
+              const { backLang } = getLanguages(sentence);
 
               return (
                 <div
@@ -486,13 +525,7 @@ export default function VocabularyLesson({
                     ...cardStyle,
                     border: `3px solid ${isDone ? color : "transparent"}`,
                     position: "relative",
-                    ...(isDone
-                      ? {
-                          backgroundColor: isDone
-                            ? `${color}20`
-                            : "transparent",
-                        }
-                      : {}),
+                    ...(isDone ? { backgroundColor: `${color}20` } : {}),
                   }}
                   onClick={() => {
                     if (!isDone) onPickBack(slot);
@@ -509,6 +542,32 @@ export default function VocabularyLesson({
                     <span
                       style={{ display: "flex", alignItems: "center", gap: 12 }}
                     >
+                      {backLang !== "pt" && sentence?.portuguese && (
+                        <Tooltip title="Ouvir definição" placement="top" arrow>
+                          <button
+                            style={{
+                              color: partnerColor(),
+                              padding: 0,
+                              border: "none",
+                              cursor: "pointer",
+                              fontSize: "13px",
+                              background: "none",
+                              transition: "all 0.2s",
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              readText(
+                                sentence.portuguese,
+                                true,
+                                backLang,
+                                selectedVoice
+                              );
+                            }}
+                          >
+                            <i className="fa fa-volume-up" aria-hidden="true" />
+                          </button>
+                        </Tooltip>
+                      )}
                       <div style={{ marginLeft: 10 }}>
                         <div
                           style={{
@@ -518,21 +577,32 @@ export default function VocabularyLesson({
                             wordBreak: "break-word",
                           }}
                         >
-                          {sentences[realIndex]?.portuguese}
+                          {sentence?.portuguese}
                         </div>
                       </div>
                     </span>
-                    {isDone && (
-                      <span
-                        style={{
-                          fontSize: 12,
-                          color: "#16a34a",
-                          fontWeight: 600,
-                        }}
-                      >
-                        ✔
-                      </span>
-                    )}
+
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                      }}
+                    >
+                      {/* Áudio BACK no match (só se idioma != pt) */}
+
+                      {isDone && (
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color: "#16a34a",
+                            fontWeight: 600,
+                          }}
+                        >
+                          ✔
+                        </span>
+                      )}
+                    </span>
                   </div>
                 </div>
               );
