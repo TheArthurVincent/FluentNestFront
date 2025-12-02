@@ -1,6 +1,6 @@
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
+import { defaultLabels, HeaderBar, shuffle } from "../Exercises";
 import React, { useEffect, useMemo, useState } from "react";
 
 function wordCount(str: string): number {
@@ -85,6 +85,103 @@ function hasTTS(): boolean {
   );
 }
 
+// ===== ESTILOS NO CLIMA DO CARD ARVIN =====
+
+const mainWrapperStyle: React.CSSProperties = {
+  position: "relative",
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+  gap: 12,
+};
+
+const progressBarBgStyle: React.CSSProperties = {
+  width: "100%",
+  height: 8,
+  background: "#F2F4F7",
+  borderRadius: 999,
+  overflow: "hidden",
+  marginBottom: 16,
+};
+
+const metricsChipStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  padding: "6px 10px",
+  borderRadius: 999,
+  background: "#FFFFFF",
+  border: "1px solid #E5E7EB",
+  fontSize: 13,
+  fontFamily: "Plus Jakarta Sans",
+};
+
+const metricsWrapperStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 8,
+  fontSize: 13,
+  marginBottom: 12,
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 13,
+  fontWeight: 600,
+  color: "#111827",
+  marginBottom: 8,
+  fontFamily: "Plus Jakarta Sans",
+};
+
+const textareaStyle: React.CSSProperties = {
+  width: "100%",
+  borderRadius: 8,
+  border: "1px solid #D1D5DB",
+  padding: 10,
+  outline: "none",
+  boxSizing: "border-box",
+  fontSize: 14,
+  lineHeight: 1.5,
+  fontFamily: "Plus Jakarta Sans",
+};
+
+const primaryButtonStyle: React.CSSProperties = {
+  padding: "8px 14px",
+  borderRadius: 999,
+  background: "#111827",
+  color: "#FFFFFF",
+  border: "none",
+  cursor: "pointer",
+  fontFamily: "Plus Jakarta Sans",
+  fontSize: 13,
+  fontWeight: 600,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+};
+
+const ghostButtonStyle: React.CSSProperties = {
+  padding: "6px 12px",
+  borderRadius: 999,
+  background: "#F3F4F6",
+  color: "#111827",
+  border: "1px solid #E5E7EB",
+  cursor: "pointer",
+  fontFamily: "Plus Jakarta Sans",
+  fontSize: 13,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6,
+};
+
+const finishedContinueTextStyle: React.CSSProperties = {
+  fontSize: 14,
+  color: "#065F46",
+  fontWeight: 600,
+  fontFamily: "Plus Jakarta Sans",
+};
+
 export function DictationExercise({
   sentences,
   itemsCount,
@@ -124,10 +221,10 @@ export function DictationExercise({
 
   if (!pool.length || !target) {
     return (
-      <Card>
+      <div>
         <HeaderBar title={labels.dictationTitle} />
         <div className="text-sm text-gray-500">{labels.loadingSentences}</div>
-      </Card>
+      </div>
     );
   }
 
@@ -135,7 +232,7 @@ export function DictationExercise({
   const wordsExpected = wordCount(target);
   const wordsTyped = wordCount(answer);
   const similarity = similarityPercentage(target, answer);
-  //arredondar para baixo para nota de 0 a 10 * numero de palavras
+  // arredondar para baixo para nota de 0 a 10 * numero de palavras
   const roundedSimilarity =
     similarity >= 70 ? Math.floor(similarity / 20) * wordsExpected : 0;
   const { matches, total, perWordCorrect, atTokens } = countPositionMatches(
@@ -146,244 +243,45 @@ export function DictationExercise({
   const progressPct = Math.round((index / pool.length) * 100);
 
   return (
-    <div
-      style={{
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          pointerEvents: "none",
-          position: "absolute",
-          top: -40,
-          right: -40,
-          width: 160,
-          height: 160,
-        }}
-      />
-      <HeaderBar
-        title={labels.dictationTitle}
-        right={
-          <span>
-            {index + 1} {labels.of} {pool.length}
-          </span>
-        }
-      />
-      <div
-        style={{
-          width: "100%",
-          height: 8,
-          background: "#F2F4F7",
-          borderRadius: 999,
-          overflow: "hidden",
-          marginBottom: 16,
-        }}
-      >
-        <div
-          style={{
-            height: 8,
-            width: `${progressPct}%`,
-            background: "#111827",
-            transition: "width 240ms ease",
-          }}
+    <div>
+      <div style={mainWrapperStyle}>
+        <HeaderBar
+          title={labels.dictationTitle}
+          right={
+            <span style={{ fontFamily: "Plus Jakarta Sans", fontSize: 13 }}>
+              {index + 1} {labels.of} {pool.length}
+            </span>
+          }
         />
-      </div>
-      {!checked && (
-        <>
-          <label
+
+        {/* Barra de progresso */}
+        <div style={progressBarBgStyle}>
+          <div
             style={{
-              display: "block",
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#111827",
-              marginBottom: 8,
-            }}
-          >
-            {labels.yourAnswer}
-          </label>
-          <button
-            style={{ marginBottom: 8, marginRight: 8 }}
-            onClick={() => {
-              readText(target, true, language, selectedVoice);
-            }}
-            disabled={!target || !hasTTS()}
-            aria-label={labels.play}
-            title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
-          >
-            🔊 Ouvir
-          </button>
-          <textarea
-            value={answer}
-            onChange={(e) => {
-              setAnswer(e.target.value);
-              setChecked(false);
-              setShowKey(false);
-            }}
-            onKeyDown={(e) => {
-              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                setChecked(true);
-                return;
-              }
-              const isPasteCombo =
-                ((e.ctrlKey || e.metaKey) &&
-                  (e.key === "v" || e.key === "V")) ||
-                (e.shiftKey && e.key === "Insert");
-              if (isPasteCombo) {
-                e.preventDefault();
-                notifyAlert(
-                  "Colar texto não é permitido aqui.",
-                  partnerColor()
-                );
-              }
-            }}
-            onPaste={(e) => {
-              e.preventDefault();
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault();
-            }}
-            rows={4}
-            placeholder="Digite exatamente o que ouviu…"
-            style={{
-              width: "100%",
-              borderRadius: 6,
-              border: "1px solid #D1D5DB",
-              padding: 10,
-              outline: "none",
-              boxSizing: "border-box",
-              fontSize: 14,
-              lineHeight: 1.5,
+              height: 8,
+              width: `${progressPct}%`,
+              background: "#111827",
+              transition: "width 240ms ease",
+              borderRadius: 999,
             }}
           />
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 12,
-              marginTop: 16,
-            }}
-          >
-            <button onClick={() => setChecked(true)}>✅ Conferir</button>
-          </div>
-        </>
-      )}
-      {checked && (
-        <div
-          style={{
-            marginTop: 20,
-            borderRadius: 6,
-            border: "1px solid #E5E7EB",
-            padding: 16,
-            background: "#F9FAFB",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 8,
-              fontSize: 13,
-              marginBottom: 12,
-            }}
-          >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 10px",
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              🧮 Palavras:{" "}
-              <strong>
-                {wordsTyped}/{wordsExpected}
-              </strong>
-            </span>
+        </div>
 
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 10px",
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              🎯 Corretas por posição:{" "}
-              <strong>
-                {matches}/{total}
-              </strong>
-            </span>
+        {/* Modo de resposta */}
+        {!checked && (
+          <>
+            <label style={labelStyle}>{labels.yourAnswer}</label>
 
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 10px",
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              📊 Similaridade: <strong>{similarity}%</strong>
-            </span>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "6px 10px",
-                borderRadius: 999,
-                background: "#FFFFFF",
-                border: "1px solid #E5E7EB",
-              }}
-            >
-              🏆 Sua nota: <strong>{roundedSimilarity}</strong>
-            </span>
-          </div>
-
-          <div style={{ marginTop: 16, display: "grid", gap: 8 }}>
-            <div style={{ fontSize: 12, color: "#6B7280" }}>Sua resposta</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {atTokens.map((w, i) => (
-                <span
-                  key={`at-${i}-${w}-${index}`}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: `1px solid ${
-                      perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
-                    }`,
-                    background: perWordCorrect[i] ? "#D1FAE5" : "#FEE2E2",
-                  }}
-                >
-                  {w}
-                </span>
-              ))}
-            </div>
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 12 }}>
-              Gabarito:
-            </div>
             <div
               style={{
                 display: "flex",
-                gap: 8,
                 alignItems: "center",
+                gap: 8,
+                marginBottom: 8,
               }}
             >
               <button
+                style={ghostButtonStyle}
                 onClick={() => {
                   readText(target, true, language, selectedVoice);
                 }}
@@ -391,76 +289,222 @@ export function DictationExercise({
                 aria-label={labels.play}
                 title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
               >
-                🔊 Ouvir
+                🔊 {labels.play || "Ouvir"}
               </button>
-              <div style={{ display: "grid", gap: 8 }}>
-                <b>{target && target}</b> <i>({targetTr})</i>
+            </div>
+
+            <textarea
+              value={answer}
+              onChange={(e) => {
+                setAnswer(e.target.value);
+                setChecked(false);
+                setShowKey(false);
+              }}
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                  setChecked(true);
+                  return;
+                }
+                const isPasteCombo =
+                  ((e.ctrlKey || e.metaKey) &&
+                    (e.key === "v" || e.key === "V")) ||
+                  (e.shiftKey && e.key === "Insert");
+                if (isPasteCombo) {
+                  e.preventDefault();
+                  notifyAlert(
+                    "Colar texto não é permitido aqui.",
+                    partnerColor()
+                  );
+                }
+              }}
+              onPaste={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+              }}
+              rows={4}
+              placeholder="Digite exatamente o que ouviu…"
+              style={textareaStyle}
+            />
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: 12,
+                marginTop: 16,
+              }}
+            >
+              <button
+                onClick={() => setChecked(true)}
+                style={primaryButtonStyle}
+              >
+                ✅ {labels.check || "Conferir"}
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Resultado após conferir */}
+        {checked && (
+          <div
+            style={{
+              marginTop: 20,
+              borderRadius: 10,
+              border: "1px solid #E5E7EB",
+              padding: 16,
+              background: "#F9FAFB",
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            {/* Métricas */}
+            <div style={metricsWrapperStyle}>
+              <span style={metricsChipStyle}>
+                🧮 Palavras:{" "}
+                <strong>
+                  {wordsTyped}/{wordsExpected}
+                </strong>
+              </span>
+
+              <span style={metricsChipStyle}>
+                🎯 Corretas por posição:{" "}
+                <strong>
+                  {matches}/{total}
+                </strong>
+              </span>
+
+              <span style={metricsChipStyle}>
+                📊 Similaridade: <strong>{similarity}%</strong>
+              </span>
+
+              <span style={metricsChipStyle}>
+                🏆 Sua nota: <strong>{roundedSimilarity}</strong>
+              </span>
+            </div>
+
+            {/* Tokens digitados */}
+            <div style={{ display: "grid", gap: 8 }}>
+              <div style={{ fontSize: 12, color: "#6B7280" }}>Sua resposta</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {atTokens.map((w, i) => (
+                  <span
+                    key={`at-${i}-${w}-${index}`}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: 999,
+                      border: `1px solid ${
+                        perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
+                      }`,
+                      background: perWordCorrect[i] ? "#D1FAE5" : "#FEE2E2",
+                      fontFamily: "Plus Jakarta Sans",
+                      fontSize: 13,
+                    }}
+                  >
+                    {w}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Gabarito + áudio */}
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
+              Gabarito:
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                style={ghostButtonStyle}
+                onClick={() => {
+                  readText(target, true, language, selectedVoice);
+                }}
+                disabled={!target || !hasTTS()}
+                aria-label={labels.play}
+                title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
+              >
+                🔊 {labels.play || "Ouvir"}
+              </button>
+              <div style={{ display: "grid", gap: 4 }}>
+                <b style={{ fontFamily: "Plus Jakarta Sans" }}>
+                  {target && target}
+                </b>
+                <i style={{ color: "#6B7280" }}>({targetTr})</i>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {/* Gabarito literal (só após check) */}
-      {checked && showKey && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: 10,
-            borderRadius: 6,
-            background: "#FFFBEB",
-            border: "1px solid #FDE68A",
-            fontSize: 14,
-            color: "#1F2937",
-          }}
-        >
-          <strong>Gabarito:</strong> {target}
-          {current.portuguese && (
-            <div style={{ color: "#6B7280", marginTop: 6 }}>
-              {current.portuguese}
-            </div>
-          )}
-        </div>
-      )}
-      <div
-        style={{
-          marginTop: 24,
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-        }}
-      >
-        {index < pool.length ? (
-          <>
-            {" "}
-            {checked && (
-              <button
-                onClick={() => {
-                  exerciseScore(
-                    roundedSimilarity,
-                    `Ditado: ${target} / Resposta: ${answer}`
-                  );
-                  setIndex((i) => i + 1);
-                  setAnswer("");
-                  setChecked(false);
-                  setShowKey(false);
-                  if (hasTTS()) window.speechSynthesis.cancel();
-                }}
-              >
-                {defaultLabels.next} ▶︎
-              </button>
-            )}
-          </>
-        ) : (
-          <span
+        )}
+
+        {/* Gabarito literal extra (se quiser manter) */}
+        {checked && showKey && (
+          <div
             style={{
+              marginTop: 16,
+              padding: 10,
+              borderRadius: 8,
+              background: "#FFFBEB",
+              border: "1px solid #FDE68A",
               fontSize: 14,
-              color: "#065F46",
-              fontWeight: 600,
+              color: "#1F2937",
+              fontFamily: "Plus Jakarta Sans",
             }}
           >
-            {defaultLabels.continue}
-          </span>
+            <strong>Gabarito:</strong> {target}
+            {current.portuguese && (
+              <div style={{ color: "#6B7280", marginTop: 6 }}>
+                {current.portuguese}
+              </div>
+            )}
+          </div>
         )}
+
+        {/* Navegação / Próxima frase */}
+        <div
+          style={{
+            marginTop: 24,
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {index < pool.length ? (
+            <>
+              {checked && (
+                <button
+                  onClick={() => {
+                    exerciseScore?.(
+                      roundedSimilarity,
+                      `Ditado: ${target} / Resposta: ${answer}`
+                    );
+                    setIndex((i) => i + 1);
+                    setAnswer("");
+                    setChecked(false);
+                    setShowKey(false);
+                    if (hasTTS()) window.speechSynthesis.cancel();
+                  }}
+                  style={primaryButtonStyle}
+                >
+                  {defaultLabels.next} ▶︎
+                </button>
+              )}
+            </>
+          ) : (
+            <span style={finishedContinueTextStyle}>
+              {defaultLabels.continue}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

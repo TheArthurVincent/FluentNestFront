@@ -7,6 +7,7 @@ import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
+import { newArvinTitleStyle } from "../../ArvinComponents/SearchMaterials/SearchMaterials";
 
 type SentenceItem = { portuguese: string; english?: string };
 
@@ -555,16 +556,18 @@ export default function ExerciseRunner({
                 paddingTop: index === 0 ? 0 : 16,
               }}
             >
-              <HOne
+              <h1
                 style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                  margin: "0 0 8px 0",
-                  letterSpacing: "-0.01em",
+                  ...newArvinTitleStyle,
+                  fontSize: 20,
+                  margin: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
                 }}
               >
                 #{index + 1}
-              </HOne>
+              </h1>
 
               {entry.render({
                 elements: safeEls,
