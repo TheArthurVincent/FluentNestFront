@@ -456,7 +456,7 @@ export default function EditLesson({
             maxWidth: isMobile ? "100%" : 120,
           }}
         >
-          {loading ? "Carregando..." : buttonText || "Editar aula"}
+          {loading ? "Carregando..." : buttonText || "Editar Conteúdo"}
         </button>
       )}
 
@@ -472,7 +472,7 @@ export default function EditLesson({
                 color: "#0f172a",
               }}
             >
-              {buttonText || "Editar aula"}
+              {buttonText || "Editar Conteúdo"}
             </h2>
 
             {error && (

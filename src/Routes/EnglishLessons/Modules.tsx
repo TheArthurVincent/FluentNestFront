@@ -224,6 +224,7 @@ const ClassByParam: React.FC<{
       classId={moduleKey || ""} // << ID da aula via URL
       previousClass={prev}
       nextClass={next}
+      seeExercise={false}
       courseTitle={courseTitle}
     />
   );

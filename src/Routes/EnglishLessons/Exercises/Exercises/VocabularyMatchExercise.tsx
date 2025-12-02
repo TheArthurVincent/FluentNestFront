@@ -1,11 +1,14 @@
 import React, { useMemo, useState } from "react";
-import { readText } from "../../Assets/Functions/FunctionLessons";
+import { readText, notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 
 export type SentenceItem = {
   english: string;
   portuguese: string;
-  languages?: any;
+  languages?: {
+    language1?: string; // frente
+    language2?: string; // trás
+  };
 };
 
 type Props = {
@@ -13,7 +16,7 @@ type Props = {
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
   selectedVoice?: string;
-  language?: string;
+  language?: string; // mantido por compatibilidade, mas agora priorizamos languages.language1/2
   exerciseScore: (points: number, label?: string) => void;
 };
 
@@ -85,11 +88,30 @@ function HeaderBar({
   );
 }
 
+// mesmas cores usadas no outro componente para vincular frente/back
+const pairColors = [
+  "#4dabf7",
+  "#51cf66",
+  "#ffa94d",
+  "#000000",
+  "#845ef7",
+  "#008cffff",
+  "#753951",
+  "#ff00aaff",
+  "#7c542cff",
+  "#926060ff",
+  "#71b0d8ff",
+  "#228be6",
+  "#495057",
+  "#5c7cfa",
+  "#37b24d",
+];
+
 export default function VocabularyMatchExercise({
   sentences,
   labels,
   selectedVoice,
-  language,
+  language, // mantido caso alguma chamada ainda use
   exerciseScore,
 }: Props) {
   const L = { ...defaultLabels, ...(labels || {}) };
@@ -105,7 +127,6 @@ export default function VocabularyMatchExercise({
   const [seed, setSeed] = useState(0);
   const [selectedFront, setSelectedFront] = useState<number | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
-  const [scored, setScored] = useState(false); // evita pontuar mais de uma vez
 
   const shuffledIdx = useMemo(
     () => shuffle(pool.map((_, i) => i)),
@@ -116,7 +137,7 @@ export default function VocabularyMatchExercise({
   const done = matched.size === total;
 
   // estilos gerais (compatíveis com sua UI)
-  const cardStyle: React.CSSProperties = {
+  const baseCardStyle: React.CSSProperties = {
     border: "1px solid #e3e6ea",
     borderRadius: "4px",
     padding: "8px 12px 8px 12px",
@@ -130,19 +151,22 @@ export default function VocabularyMatchExercise({
     cursor: "pointer",
   };
   const selectedStyle: React.CSSProperties = {
-    outline: "2px solid #111827",
+    outline: "3px solid #111827",
     outlineOffset: 2,
   };
-  const matchedStyle: React.CSSProperties = {
-    background: "#f0fff4",
-    borderColor: "#86efac",
-  };
+
+  function getLanguages(sentence: SentenceItem) {
+    const languages = sentence?.languages || {};
+    return {
+      frontLang: languages.language1 || language || "en",
+      backLang: languages.language2 || "pt",
+    };
+  }
 
   function reset() {
     setSeed((v) => v + 1);
     setSelectedFront(null);
     setMatched(new Set());
-    setScored(false);
   }
 
   function handlePickFront(i: number) {
@@ -151,26 +175,37 @@ export default function VocabularyMatchExercise({
   }
 
   function handlePickBack(slot: number) {
-    if (selectedFront === null) return;
     const realIndex = shuffledIdx[slot];
+
     if (matched.has(realIndex)) return;
 
+    if (selectedFront === null) {
+      notifyAlert(L.selectLeftFirst, "orange");
+      return;
+    }
+
     if (selectedFront === realIndex) {
+      // ✅ ACERTOU
       const next = new Set(matched);
       next.add(realIndex);
       setMatched(next);
       setSelectedFront(null);
+
+      try {
+        const frontText = pool[realIndex]?.english || "";
+        const backText = pool[realIndex]?.portuguese || "";
+        const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
+        exerciseScore?.(2, desc); // +2 pontos por par correto
+      } catch (e) {
+        console.error("Erro ao registrar pontuação do match:", e);
+      }
+
+      notifyAlert(`${L.correct} (+2 pontos)`, "green");
     } else {
-      // apenas feedback visual/console; aqui você pode disparar seu notify se quiser
+      // ❌ ERROU
+      notifyAlert(L.wrong, "red");
       setSelectedFront(null);
     }
-  }
-
-  // pontua ao concluir
-  if (done && !scored) {
-    const points = total * 2; // 2 por palavra
-    setScored(true);
-    exerciseScore(points, "Vocabulary Match");
   }
 
   return (
@@ -208,28 +243,35 @@ export default function VocabularyMatchExercise({
           gap: 12,
         }}
       >
-        {/* LEFT: fronts (somente áudio, sem texto) */}
+        {/* LEFT: fronts (áudio, com highlight de par) */}
         <div style={{ display: "grid", gap: 10 }}>
           {pool.map((s, i) => {
             const isSelected = selectedFront === i;
             const isDone = matched.has(i);
+            const color = pairColors[i % pairColors.length];
+            const { frontLang } = getLanguages(s);
+
             return (
               <div
                 key={`front-${i}`}
                 style={{
-                  ...cardStyle,
+                  ...baseCardStyle,
+                  border: `3px solid ${isDone ? color : "#eee"}`,
                   ...(isSelected ? selectedStyle : {}),
-                  ...(isDone ? matchedStyle : {}),
+                  ...(isDone ? { backgroundColor: `${color}20` } : {}),
                 }}
-                onClick={() => handlePickFront(i)}
+                onClick={() => {
+                  handlePickFront(i);
+                  readText(s.english, true, frontLang, selectedVoice);
+                }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? "#f0fff4"
+                    ? `${color}30`
                     : "#f3f3f3ff";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? "#f0fff4"
+                    ? `${color}20`
                     : "#fff";
                 }}
               >
@@ -247,7 +289,7 @@ export default function VocabularyMatchExercise({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        readText(s.english, true, language, selectedVoice);
+                        readText(s.english, true, frontLang, selectedVoice);
                       }}
                       style={{
                         padding: "8px",
@@ -284,29 +326,33 @@ export default function VocabularyMatchExercise({
           })}
         </div>
 
-        {/* RIGHT: backs embaralhados (com texto em pt) */}
+        {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
         <div style={{ display: "grid", gap: 10 }}>
           {shuffledIdx.map((realIndex, slot) => {
-            const isDone = matched.has(realIndex);
             const s = pool[realIndex];
+            const isDone = matched.has(realIndex);
+            const color = pairColors[realIndex % pairColors.length];
+            const { backLang } = getLanguages(s);
+
             return (
               <div
                 key={`back-${slot}`}
                 style={{
-                  ...cardStyle,
-                  ...(isDone ? matchedStyle : {}),
+                  ...baseCardStyle,
+                  border: `3px solid ${isDone ? color : "#eee"}`,
+                  ...(isDone ? { backgroundColor: `${color}20` } : {}),
                 }}
                 onClick={() => {
                   if (!isDone) handlePickBack(slot);
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? "#f0fff4"
+                    ? `${color}30`
                     : "#f3f3f3ff";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = isDone
-                    ? "#f0fff4"
+                    ? `${color}20`
                     : "#fff";
                 }}
               >
@@ -321,6 +367,30 @@ export default function VocabularyMatchExercise({
                   <span
                     style={{ display: "flex", alignItems: "center", gap: 12 }}
                   >
+                    {backLang !== "pt" && s?.portuguese && (
+                      <button
+                        style={{
+                          padding: "8px",
+                          borderRadius: 4,
+                          background: "#F3F4F6",
+                          border: "1px solid #D1D5DB",
+                          cursor: "pointer",
+                          fontSize: "12px",
+                          minWidth: "32px",
+                          height: "32px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          readText(s.portuguese, true, backLang, selectedVoice);
+                        }}
+                        title="Ouvir definição"
+                      >
+                        <i className="fa fa-volume-up" aria-hidden="true" />
+                      </button>
+                    )}
                     <div style={{ marginLeft: 10 }}>
                       <div
                         style={{

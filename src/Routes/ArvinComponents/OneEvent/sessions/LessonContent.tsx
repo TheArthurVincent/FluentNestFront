@@ -1,9 +1,4 @@
-import React, { FC, useState } from "react";
-import axios from "axios";
-import {
-  cardBase,
-  cardTitle,
-} from "../../Students/TheStudent/types/studentPage.styles";
+import React, { FC } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import EnglishClassCourse2 from "../../../EnglishLessons/Class";
 
@@ -14,6 +9,7 @@ type LessonContentProps = {
   fetchEventData: any;
   studentID: string;
   date?: string;
+  seeExercise: boolean;
 };
 
 const LessonContent: FC<LessonContentProps> = ({
@@ -21,6 +17,7 @@ const LessonContent: FC<LessonContentProps> = ({
   theLessonRender,
   fetchEventData,
   studentID,
+  seeExercise = false,
 }) => {
   return (
     <>
@@ -35,16 +32,9 @@ const LessonContent: FC<LessonContentProps> = ({
           position: "relative",
         }}
       >
-        <div
-          style={{
-            ...cardTitle,
-            justifyContent: "space-between",
-          }}
-        >
-          <span>Conteúdo da Aula</span>
-        </div>
         <EnglishClassCourse2
           canEditCourse={true}
+          seeExercise={seeExercise}
           fetchEventData={fetchEventData}
           mainStudentID={studentID}
           classId={theLessonRender}
