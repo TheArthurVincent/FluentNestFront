@@ -234,10 +234,14 @@ export default function EnglishClassCourse2({
     }
   };
 
-  var exerciseScore = async (score: number, description: string) => {
+  var exerciseScore = async (
+    score: number,
+    description: string,
+    id?: string
+  ) => {
     try {
       var response = await axios.put(
-        `${backDomain}/api/v1/exercise-score/${studentID}`,
+        `${backDomain}/api/v1/exercise-score/${id ? id : studentID}`,
         {
           score,
           description,
@@ -3681,7 +3685,7 @@ export default function EnglishClassCourse2({
                                       />
                                     ) : element.type === "vocabulary" ? (
                                       <VocabularyLesson
-                                      exerciseScore={exerciseScore}
+                                        exerciseScore={exerciseScore}
                                         mainTag={theclass.mainTag}
                                         element={element}
                                         studentId={mainStudentID || studentID}

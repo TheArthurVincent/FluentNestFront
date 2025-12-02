@@ -18,7 +18,7 @@ interface VocabularyLessonProps {
   studentId: string;
   mainTag: string;
   selectedVoice: any;
-  exerciseScore: (points: number, description: string) => void;
+  exerciseScore: (points: number, description: string, id?: string) => void;
 }
 
 type MatchState = {
@@ -136,7 +136,7 @@ export default function VocabularyLesson({
         const frontText = sentences[selectedFront]?.english || "";
         const backText = sentences[realBackIndex]?.portuguese || "";
         const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
-        exerciseScore?.(2, desc);
+        exerciseScore?.(2, desc, studentId);
       } catch (e) {
         // só pra garantir que um erro aqui não quebre o fluxo de jogo
         console.error("Erro ao registrar pontuação do match:", e);
