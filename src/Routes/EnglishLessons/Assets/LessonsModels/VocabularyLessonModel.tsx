@@ -23,9 +23,10 @@ interface VocabularyLessonProps {
 
 type MatchState = {
   isMatchMode: boolean;
-  selectedFront: number | null;
-  matched: Set<number>;
-  shuffledIdx: number[];
+  selectedFront: number | null; // índice REAL em sentences
+  matched: Set<number>; // índices REAIS já acertados
+  frontIdx: number[]; // ordem embaralhada da coluna da esquerda
+  backIdx: number[]; // ordem embaralhada da coluna da direita
 };
 
 const pairColors = [
@@ -71,35 +72,13 @@ export default function VocabularyLesson({
     isMatchMode: false,
     selectedFront: null,
     matched: new Set(),
-    shuffledIdx: [],
+    frontIdx: [],
+    backIdx: [],
   });
 
   const sentences: any[] = Array.isArray(element?.sentences)
     ? element.sentences
     : [];
-
-  const shuffledBackIndices = useMemo(() => {
-    const base = sentences.map((_, i) => i);
-    return shuffleArray(base);
-  }, [sentences]);
-
-  const toggleMatchMode = () => {
-    if (!match.isMatchMode) {
-      setMatch({
-        isMatchMode: true,
-        selectedFront: null,
-        matched: new Set(),
-        shuffledIdx: shuffledBackIndices,
-      });
-    } else {
-      setMatch({
-        isMatchMode: false,
-        selectedFront: null,
-        matched: new Set(),
-        shuffledIdx: [],
-      });
-    }
-  };
 
   // Utilitário para pegar idiomas do front/back
   const getLanguages = (sentence: any) => {
@@ -110,13 +89,37 @@ export default function VocabularyLesson({
     };
   };
 
-  const onPickFront = (frontIndex: number) => {
-    if (match.matched.has(frontIndex)) return;
-    setMatch((prev) => ({ ...prev, selectedFront: frontIndex }));
+  const toggleMatchMode = () => {
+    if (!match.isMatchMode) {
+      const base = sentences.map((_, i) => i);
+      const shuffledFront = shuffleArray(base);
+      const shuffledBack = shuffleArray(base);
+
+      setMatch({
+        isMatchMode: true,
+        selectedFront: null,
+        matched: new Set(),
+        frontIdx: shuffledFront,
+        backIdx: shuffledBack,
+      });
+    } else {
+      setMatch({
+        isMatchMode: false,
+        selectedFront: null,
+        matched: new Set(),
+        frontIdx: [],
+        backIdx: [],
+      });
+    }
+  };
+
+  const onPickFront = (realIndex: number) => {
+    if (match.matched.has(realIndex)) return;
+    setMatch((prev) => ({ ...prev, selectedFront: realIndex }));
   };
 
   const onPickBack = (backSlotPosition: number) => {
-    const realBackIndex = match.shuffledIdx[backSlotPosition];
+    const realBackIndex = match.backIdx[backSlotPosition];
     const { selectedFront } = match;
 
     if (selectedFront === null) {
@@ -137,6 +140,7 @@ export default function VocabularyLesson({
         matched: newMatched,
       }));
       notifyAlert("✔ Par correto!", partnerColor());
+      // se quiser pontuar aqui no futuro, já tem selectedFront e realBackIndex
     } else {
       notifyAlert("❌ Não é o par correspondente.", "red");
       setMatch((prev) => ({ ...prev, selectedFront: null }));
@@ -412,17 +416,18 @@ export default function VocabularyLesson({
             gap: 12,
           }}
         >
-          {/* Coluna LEFT: FRONTS */}
+          {/* Coluna LEFT: FRONTS (AGORA EMBARALHADOS) */}
           <div style={{ display: "grid", gap: 10 }}>
-            {sentences.map((s, idx) => {
-              const isSelected = match.selectedFront === idx;
-              const isDone = match.matched.has(idx);
-              const color = pairColors[idx % pairColors.length];
+            {match.frontIdx.map((realIndex, slot) => {
+              const s = sentences[realIndex];
+              const isSelected = match.selectedFront === realIndex;
+              const isDone = match.matched.has(realIndex);
+              const color = pairColors[realIndex % pairColors.length];
               const { frontLang } = getLanguages(s);
 
               return (
                 <div
-                  key={`front-${idx}`}
+                  key={`front-${slot}`}
                   style={{
                     ...cardStyle,
                     border: `3px solid ${isDone ? color : "transparent"}`,
@@ -433,7 +438,7 @@ export default function VocabularyLesson({
                     ...(isDone ? { backgroundColor: `${color}20` } : {}),
                   }}
                   onClick={() => {
-                    onPickFront(idx);
+                    onPickFront(realIndex);
                     readText(s.english, true, frontLang, selectedVoice);
                   }}
                 >
@@ -499,9 +504,9 @@ export default function VocabularyLesson({
             })}
           </div>
 
-          {/* Coluna RIGHT: BACKS embaralhados */}
+          {/* Coluna RIGHT: BACKS embaralhados (como antes) */}
           <div style={{ display: "grid", gap: 10 }}>
-            {match.shuffledIdx.map((realIndex, slot) => {
+            {match.backIdx.map((realIndex, slot) => {
               const sentence = sentences[realIndex];
               const isDone = match.matched.has(realIndex);
               const color = pairColors[realIndex % pairColors.length];
@@ -578,8 +583,6 @@ export default function VocabularyLesson({
                         gap: 8,
                       }}
                     >
-                      {/* Áudio BACK no match (só se idioma != pt) */}
-
                       {isDone && (
                         <span
                           style={{
