@@ -26,37 +26,7 @@ export function Tokens({ id, headers, change }) {
     }
   }, [id, change]);
 
-  const Box = {
-    backgroundColor: "#ffffff",
-    padding: "5px 10px",
-    borderRadius: "10px",
-    fontSize: "14px",
-    fontWeight: "bold",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    position: "fixed",
-    bottom: 10,
-    right: 10,
-    zIndex: 9999,
-  };
-
-  return (
-    <>
-      {loading ? (
-        <></>
-      ) : (
-        <div
-          className="no-print"
-          onClick={() => {
-            fetchTokens();
-          }}
-          style={Box}
-          title={"Tokens"}
-        >
-          ✨ {tokens}
-        </div>
-      )}
-    </>
-  );
+  return <>{loading ? <></> : <>✨ {tokens}</>}</>;
 }
 
 export default Tokens;

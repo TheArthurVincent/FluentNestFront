@@ -19,6 +19,7 @@ import { RankingCard } from "../GridHomePageComponents/RankingCard";
 import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
 import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
+import Tokens from "../../Tokens";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -47,11 +48,12 @@ export function MyHomePage({
     "student" | "teacher" | "superadmin" | ""
   >("");
   const [studentPicture, setStudentPicture] = useState("");
-  const [studentPermissions, setStudentPermissions] = useState("");
   const [id, setId] = useState<string>("");
-
-  const [level, setLevel] = useState<number>(9);
   const [appLoaded, setAppLoaded] = useState<boolean>(false);
+  const [loadingReports, setLoadingReports] = useState<boolean>(true);
+  const [totalPaidSoFar, setTotalPaidSoFar] = useState<number>(0);
+  const [showMoney, setShowMoney] = useState<boolean>(false);
+
   const seeScore = async (id: string) => {
     try {
       updateInfo(id, headers);
@@ -60,27 +62,12 @@ export function MyHomePage({
       console.log(e);
     }
 
-    // Pega permissões do localStorage
-    const { permissions } = JSON.parse(
-      localStorage.getItem("loggedIn") || "{}"
-    );
-    setStudentPermissions(permissions || "");
-    setPERMISSIONS(permissions || "");
-    console.log("Score data response:", permissions);
-
     try {
       const response = await axios.get(`${backDomain}/api/v1/score/${id}`, {
         headers: headers ? { ...headers } : {},
       });
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
-      var newValue = updateScore(
-        response.data.totalScore,
-        response.data.flashcards25Reviews,
-        response.data.homeworkAssignmentsDone
-      );
-      const levelDone = newValue.level;
-      setLevel(levelDone - 1);
     } catch (error) {
       console.error(error);
     }
@@ -88,12 +75,13 @@ export function MyHomePage({
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const permissions = user.permissions;
     const id = user.id;
     setId(id);
+    setPERMISSIONS(permissions);
     seeScore(id);
   }, [change]);
 
-  // ====== LÓGICA DE PERMISSÕES ======
   const cards = [
     {
       showToStudent: true,
@@ -181,71 +169,40 @@ export function MyHomePage({
       ),
     },
   ];
-  const [financialReports, setFinancialReports] = useState<any[]>([]);
-  const [thereAreReports, setThereAreReports] = useState<boolean>(false);
-  const [loadingReports, setLoadingReports] = useState<boolean>(true);
 
   const seeReports = async () => {
-    //fórmula que pega a data atual e coloca no formato mm-yyyy
+    setLoadingReports(true);
     const currentDate = new Date();
-    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0"); // Meses são baseados em zero
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0");
     const currentYear = currentDate.getFullYear();
 
     try {
-      const response = await axios.get(`${backDomain}/api/v1/finance/${id}`, {
-        headers: headers ? { ...headers } : {},
-        params: { month: `${currentMonth}-${currentYear}` },
-      });
+      const response = await axios.get(
+        `${backDomain}/api/v1/finance-entries/${id}`,
+        {
+          headers: headers ? { ...headers } : {},
+          params: { month: `${currentMonth}-${currentYear}` },
+        }
+      );
       console.log("Financial reports response:", response.data);
-      if (response.data.financialReportsOfTheMonth?.length === 0) {
-        setFinancialReports(
-          response.data.financialReportsOfTheMonth?.length > 0
-            ? response.data.financialReportsOfTheMonth
-            : []
-        );
-        setThereAreReports(false);
-      } else {
-        setFinancialReports(response.data.financialReportsOfTheMonth || []);
-        setTimeout(() => {
-          setThereAreReports(true);
-        }, 500);
-      }
+      setTotalPaidSoFar(response.data.totalPaidSoFar || 0);
       setLoadingReports(false);
     } catch (error) {
       console.log("error", error);
     }
   };
-  const entradasRecebidas = financialReports
-    .filter(
-      (report) =>
-        report.accountFor &&
-        report.typeOfItem !== "debt" &&
-        (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
-    )
-    .reduce((total, report) => {
-      // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
-      if (report.paidSoFar && report.paidSoFar > 0) {
-        return total + Math.abs(report.paidSoFar);
-      } else if (report.paidFor) {
-        // Fallback para casos onde paidFor é true mas paidSoFar não está definido
-        return total + (Math.abs(report.amount || 0) - (report.discount || 0));
-      }
-      return total;
-    }, 0);
 
   useEffect(() => {
     seeReports();
-  }, [thereAreReports]);
+  }, [id, change]);
 
   const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
-    // Teacher e superadmin usam showToTeacher
     if (PERMISSIONS === "teacher" || PERMISSIONS === "superadmin") {
       return item.showToTeacher;
     }
-    // Qualquer outro caso (student / vazio) usa showToStudent
+
     return item.showToStudent;
   };
-  const [showMoney, setShowMoney] = useState<boolean>(false);
 
   return (
     <div
@@ -302,52 +259,53 @@ export function MyHomePage({
                   actualHeaders={actualHeaders}
                 />
               </span> */}
-              <span
-                onClick={() => {
-                  seeScore(id);
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  borderRadius: "80px",
-                  padding: "8px 12px",
-                  backgroundColor: `${partnerColor()}20`,
-                  border: `1px solid ${partnerColor()}50`,
-                }}
-              >
-                <i
-                  className="fa fa-trophy"
-                  style={{
-                    fontSize: "12px",
-                    left: "10px",
-                    top: "50%",
-                    color: partnerColor(),
-                    pointerEvents: "none",
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 600,
-                    fontStyle: "SemiBold",
-                    fontSize: "14px",
-                    color: partnerColor(),
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                  }}
-                >
-                  {monthlyScore} pts
-                </span>
-              </span>
-              {/* {studentPermissions == "student" ? (
-              ) : (
+              {PERMISSIONS == "student" && (
                 <span
                   onClick={() => {
                     seeScore(id);
                   }}
                   style={{
-                    display: loadingReports ? "flex" : "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "80px",
+                    padding: "8px 12px",
+                    backgroundColor: `${partnerColor()}20`,
+                    border: `1px solid ${partnerColor()}50`,
+                  }}
+                >
+                  <i
+                    className="fa fa-trophy"
+                    style={{
+                      fontSize: "12px",
+                      left: "10px",
+                      top: "50%",
+                      color: partnerColor(),
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 600,
+                      fontStyle: "SemiBold",
+                      fontSize: "14px",
+                      color: partnerColor(),
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                    }}
+                  >
+                    {monthlyScore} pts
+                  </span>
+                </span>
+              )}
+              {PERMISSIONS !== "student" && (
+                <span
+                  onClick={() => {
+                    seeScore(id);
+                  }}
+                  style={{
+                    display: !loadingReports ? "flex" : "none",
                     alignItems: "center",
                     gap: "6px",
                     borderRadius: "80px",
@@ -379,31 +337,71 @@ export function MyHomePage({
                       letterSpacing: "0%",
                     }}
                   >
-                    {!showMoney ? (
-                      <i
-                        style={{
-                          color: partnerColor(),
-                        }}
-                        className="fa fa-eye"
-                      />
-                    ) : (
-                      <span
-                        style={{
-                          fontFamily: "Plus Jakarta Sans",
-                          fontWeight: 600,
-                          color: partnerColor(),
-                          fontStyle: "SemiBold",
-                          fontSize: "14px",
-                          lineHeight: "100%",
-                          letterSpacing: "0%",
-                        }}
-                      >
-                        {formatNumber(entradasRecebidas)}
-                      </span>
-                    )}
+                    <span
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        color: partnerColor(),
+                        fontStyle: "SemiBold",
+                        fontSize: "14px",
+                        lineHeight: "100%",
+                        letterSpacing: "0%",
+                      }}
+                    >
+                      {formatNumber(totalPaidSoFar)}
+                    </span>
                   </span>
                 </span>
-              )} */}
+              )}{" "}
+              {PERMISSIONS !== "student" && (
+                <span
+                  onClick={() => {
+                    seeScore(id);
+                  }}
+                  style={{
+                    display: !loadingReports ? "flex" : "none",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "80px",
+                    padding: "8px 12px",
+                    backgroundColor: `${partnerColor()}20`,
+                    border: `1px solid ${partnerColor()}50`,
+                  }}
+                >
+                  <span
+                    onClick={() => setShowMoney(!showMoney)}
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 600,
+                      fontStyle: "SemiBold",
+                      fontSize: "14px",
+                      color: partnerColor(),
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        color: partnerColor(),
+                        fontStyle: "SemiBold",
+                        fontSize: "14px",
+                        lineHeight: "100%",
+                        letterSpacing: "0%",
+                      }}
+                    >
+                      {
+                        <Tokens
+                          id={id}
+                          headers={actualHeaders}
+                          change={change}
+                        />
+                      }
+                    </span>
+                  </span>
+                </span>
+              )}
               <img
                 onClick={() => {
                   window.location.assign("/my-profile");
@@ -427,7 +425,7 @@ export function MyHomePage({
       <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
       <div
         style={{
-          columnCount: isDesktop ? 2 : 1, // 2 colunas no desktop, 1 no celular
+          columnCount: isDesktop ? 2 : 1,
           columnGap: "16px",
           marginTop: "32px",
           paddingBottom: "64px",
@@ -441,7 +439,7 @@ export function MyHomePage({
               key={index}
               style={{
                 marginBottom: "16px",
-                breakInside: "avoid", // evita quebrar o card entre colunas
+                breakInside: "avoid",
                 backgroundColor: "white",
                 borderRadius: "16px",
                 border: "1px solid #E3E8F0",
