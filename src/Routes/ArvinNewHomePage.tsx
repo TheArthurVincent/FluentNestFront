@@ -452,6 +452,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           change={change}
           setChange={setChange}
           isDesktop={isDesktop}
+          id={_StudentId}
         />
       ),
     },
