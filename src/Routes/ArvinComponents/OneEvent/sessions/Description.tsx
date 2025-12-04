@@ -216,7 +216,7 @@ const Description: FC<DescriptionProps> = ({
                 />
                 <button
                   onClick={handleClassSummary}
-                  disabled={saving || loadingDescription}
+                  disabled={saving || loadingDescription || !description.trim()}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -225,8 +225,8 @@ const Description: FC<DescriptionProps> = ({
                     height: 32,
                     borderRadius: 6,
                     border: "1px solid #cbd5e1",
-                    backgroundColor: "#f8fafc",
-                    cursor: "pointer",
+                    backgroundColor: saving || loadingDescription || !description.trim() ? "grey" : "white",
+                    cursor: saving || loadingDescription || !description.trim() ? "not-allowed" : "pointer",
                   }}
                 >
                   ✨ (-10)
@@ -242,10 +242,8 @@ const Description: FC<DescriptionProps> = ({
                 }}
               >
                 <textarea
-                  disabled={saving || loadingDescription}
-                  value={
-                    loadingDescription ? "Carregando..." : teacherDescription
-                  }
+                  disabled={saving}
+                  value={teacherDescription}
                   onChange={(e) => setTeacherDescription(e.target.value)}
                   placeholder="Tome notas particulares sobre a aula aqui (invisível para o aluno). Esta área é útil para te lembrar de pontos importantes, dificuldades do aluno, ou qualquer outro detalhe que queira guardar para as próximas aulas."
                   style={{
