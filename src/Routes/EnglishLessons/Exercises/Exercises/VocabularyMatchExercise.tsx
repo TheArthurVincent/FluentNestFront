@@ -169,11 +169,7 @@ const finishedRowStyle: React.CSSProperties = {
   fontFamily: "Plus Jakarta Sans",
 };
 
-// ==== COMPONENTES E LÓGICA ====
-
-function Card({ children }: { children: React.ReactNode }) {
-  return <div style={cardContainerStyle}>{children}</div>;
-}
+// ==== COMPONENTES DE APOIO ====
 
 function HeaderBar({
   title,
@@ -201,6 +197,8 @@ function HeaderBar({
   );
 }
 
+// ==== COMPONENTE PRINCIPAL ====
+
 export default function VocabularyMatchExercise({
   sentences,
   labels,
@@ -218,17 +216,23 @@ export default function VocabularyMatchExercise({
     [sentences]
   );
 
+  // "seed" para reembaralhar
   const [seed, setSeed] = useState(0);
+
+  // índice REAL no pool atualmente selecionado na coluna da esquerda
   const [selectedFront, setSelectedFront] = useState<number | null>(null);
   const [matched, setMatched] = useState<Set<number>>(new Set());
 
   // tentativas por card (index do pool)
   const [attempts, setAttempts] = useState<Record<number, number>>({});
 
-  const shuffledIdx = useMemo(
+  // agora as DUAS colunas são embaralhadas, ambas baseadas em índices do pool
+  const frontOrder = useMemo(
     () => shuffle(pool.map((_, i) => i)),
     [pool, seed]
   );
+
+  const backOrder = useMemo(() => shuffle(pool.map((_, i) => i)), [pool, seed]);
 
   const total = pool.length;
   const done = matched.size === total;
@@ -248,9 +252,9 @@ export default function VocabularyMatchExercise({
     setAttempts({});
   }
 
-  function handlePickFront(i: number) {
-    if (matched.has(i)) return;
-    setSelectedFront(i);
+  function handlePickFront(realIndex: number) {
+    if (matched.has(realIndex)) return;
+    setSelectedFront(realIndex);
   }
 
   function incrementAttemptsFor(index: number) {
@@ -270,7 +274,7 @@ export default function VocabularyMatchExercise({
   }
 
   function handlePickBack(slot: number) {
-    const realIndex = shuffledIdx[slot];
+    const realIndex = backOrder[slot];
 
     if (matched.has(realIndex)) return;
 
@@ -286,7 +290,6 @@ export default function VocabularyMatchExercise({
       setMatched(next);
       setSelectedFront(null);
 
-      // calcula pontuação com base nas tentativas para esse card
       const points = getPointsForCard(realIndex);
 
       try {
@@ -315,7 +318,7 @@ export default function VocabularyMatchExercise({
   }
 
   return (
-    <div>
+    <div style={cardContainerStyle}>
       <HeaderBar
         title={L.title}
         right={
@@ -338,15 +341,16 @@ export default function VocabularyMatchExercise({
       <div style={gridWrapperStyle}>
         {/* LEFT: fronts (áudio, com highlight de par) */}
         <div style={columnStyle}>
-          {pool.map((s, i) => {
-            const isSelected = selectedFront === i;
-            const isDone = matched.has(i);
-            const color = pairColors[i % pairColors.length];
+          {frontOrder.map((realIndex, frontSlot) => {
+            const s = pool[realIndex];
+            const isSelected = selectedFront === realIndex;
+            const isDone = matched.has(realIndex);
+            const color = pairColors[realIndex % pairColors.length];
             const { frontLang } = getLanguages(s);
 
             return (
               <div
-                key={`front-${i}`}
+                key={`front-${frontSlot}`}
                 style={{
                   ...baseCardStyle,
                   border: `2px solid ${isDone ? color : "#e5e7eb"}`,
@@ -354,7 +358,7 @@ export default function VocabularyMatchExercise({
                   ...(isDone ? { backgroundColor: `${color}14` } : {}),
                 }}
                 onClick={() => {
-                  handlePickFront(i);
+                  handlePickFront(realIndex);
                   readText(s.english, true, frontLang, selectedVoice);
                 }}
                 onMouseEnter={(e) => {
@@ -403,7 +407,7 @@ export default function VocabularyMatchExercise({
 
         {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
         <div style={columnStyle}>
-          {shuffledIdx.map((realIndex, slot) => {
+          {backOrder.map((realIndex, slot) => {
             const s = pool[realIndex];
             const isDone = matched.has(realIndex);
             const color = pairColors[realIndex % pairColors.length];
