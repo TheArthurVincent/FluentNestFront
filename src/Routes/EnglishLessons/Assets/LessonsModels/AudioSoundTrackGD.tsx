@@ -119,7 +119,7 @@ export default function AudioFile({
               borderRadius: "4px",
             }}
           />
-          <div
+          {/* <div
             style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
           >
             Se o áudio não tocar no player acima,{" "}
@@ -139,7 +139,7 @@ export default function AudioFile({
             rel="noopener noreferrer"
           >
             Abrir arquivo de áudio
-          </a>
+          </a> */}
         </>
       )}
 

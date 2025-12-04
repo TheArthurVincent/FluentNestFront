@@ -689,7 +689,7 @@ export default function ImportElementsEditor({
                                         })
                                       }
                                     >
-                                      ✨ Importar
+                                      Importar de outra aula
                                     </button>
                                   </div>
                                 </div>
@@ -727,7 +727,7 @@ export default function ImportElementsEditor({
           whiteSpace: "nowrap",
         }}
       >
-        ✨ Importar
+        Importar de outra aula
       </button>
 
       {typeof document !== "undefined" &&

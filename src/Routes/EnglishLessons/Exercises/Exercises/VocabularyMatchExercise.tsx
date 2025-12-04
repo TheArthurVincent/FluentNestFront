@@ -69,10 +69,6 @@ const cardContainerStyle: React.CSSProperties = {
   borderRadius: 12,
   background: "#FFFFFF",
   boxSizing: "border-box",
-  padding: 16,
-  boxShadow:
-    "0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04)",
-  border: "1px solid #e5e7eb",
   display: "flex",
   flexDirection: "column",
   gap: 12,
