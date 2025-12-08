@@ -76,7 +76,7 @@ function isMobileDevice() {
   );
 }
 
-const InstallPWA = () => {
+const InstallPWA2 = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -169,4 +169,4 @@ const InstallPWA = () => {
   );
 };
 
-export default InstallPWA;
+export default InstallPWA2;

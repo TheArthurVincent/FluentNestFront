@@ -19,6 +19,7 @@ import { AvatarUpload } from "./Pic";
 import { HOne } from "../../Resources/Components/RouteBox";
 import RankingTimelineArvin from "./RankingHistory/RankingTimelineArvin";
 import { newArvinTitleStyle } from "../ArvinComponents/Groups/Groups";
+import InstallPWA2 from "../../Components/InstallPWA2";
 
 const styles = {
   container: {
@@ -858,6 +859,7 @@ export function MyProfile({
           )}
         </div>
       </div>
+      <InstallPWA2 />
     </div>
   );
 }
