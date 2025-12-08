@@ -165,7 +165,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
               id="new-course-title"
               style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}
             >
-              Criar novo curso
+              Criar Material Personalizado
             </h3>
             <button
               onClick={() => !loading && !uploading && setOpen(false)}
@@ -441,7 +441,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
     <>
       <button
         onClick={() => setOpen(true)}
-        title="Criar novo curso"
+        title="Criar Material Personalizado"
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -457,7 +457,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
         }}
       >
         <i className="fa fa-plus" aria-hidden="true" />
-        Novo curso
+        Material Personalizado
       </button>
 
       {renderModal()}
