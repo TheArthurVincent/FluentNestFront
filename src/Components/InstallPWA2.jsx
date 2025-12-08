@@ -142,9 +142,6 @@ const InstallPWA2 = () => {
     localStorage.setItem("pwa-install-dismissed", Date.now().toString());
   };
 
-  // só renderiza se:
-  // - for mobile
-  // - e tivermos permissão pra mostrar
   if (!isMobile || !showInstallPrompt) {
     return null;
   }
@@ -152,20 +149,12 @@ const InstallPWA2 = () => {
   if (typeof document === "undefined") return null;
 
   // PORTAL: cola o fixed direto no documento principal
-  return createPortal(
+  return (
     <div>
-      <div>
-        <strong>Instalar ARVIN</strong>
-        <p style={{ margin: "4px 0 0 0", fontSize: "14px" }}>
-          Instale o app para acesso rápido
-        </p>
-      </div>
       <div style={{ display: "flex", gap: "12px" }}>
-        <InstallButton onClick={handleInstallClick}>Instalar</InstallButton>
-        <DismissButton onClick={handleDismiss}>Agora não</DismissButton>
+        <button onClick={handleInstallClick}>Instalar Aplicativo ARVIN</button>
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
 

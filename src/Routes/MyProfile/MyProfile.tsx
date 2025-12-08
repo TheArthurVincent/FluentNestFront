@@ -16,7 +16,6 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
-import { HOne } from "../../Resources/Components/RouteBox";
 import RankingTimelineArvin from "./RankingHistory/RankingTimelineArvin";
 import { newArvinTitleStyle } from "../ArvinComponents/Groups/Groups";
 import InstallPWA2 from "../../Components/InstallPWA2";
@@ -810,7 +809,6 @@ export function MyProfile({
                       </button>
                     </div>
                   </div>
-
                   {user.askedToCancel && (
                     <div style={styles.modernSection}>
                       <div style={styles.container}>
@@ -859,7 +857,17 @@ export function MyProfile({
           )}
         </div>
       </div>
-      <InstallPWA2 />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "50vh",
+          color: "#6c757d",
+        }}
+      >
+        <InstallPWA2 />
+      </div>
     </div>
   );
 }
