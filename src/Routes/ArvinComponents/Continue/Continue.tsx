@@ -118,7 +118,7 @@ export const Continue: FC<ContinueProps> = ({
     if (!who) return "Próxima aula agendada";
     return thePermissions == "student"
       ? `Aula com ${teacher}`
-      : `Aula com ${who}`;
+      : `Aula com ${student}`;
   })();
 
   const timeLine = (() => {
