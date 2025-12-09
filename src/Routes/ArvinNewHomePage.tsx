@@ -55,6 +55,7 @@ import StudentPage from "./ArvinComponents/Students/TheStudent/TheStudent";
 import Event from "./ArvinComponents/OneEvent/OneEvent";
 import StudentClassesHistory from "./ArvinComponents/Students/TheStudent/StudentsClasses/StudentClassesHistory";
 import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
+import SubscriptionExpired from "./SubscriptionExpired";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -251,19 +252,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: <MyClasses headers={headers} />,
     },
-    // {
-    //   title: "Homework",
-    //   showLeftBar: true,
-    //   levelcard: false,
-    //   component: (
-    //     <Homework
-    //       isDesktop={isDesktop}
-    //       change={change}
-    //       setChange={setChange}
-    //       headers={headers}
-    //     />
-    //   ),
-    // },
     {
       path: "my-homework-and-lessons/:studentId",
       showLeftBar: true,

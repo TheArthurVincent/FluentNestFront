@@ -26,10 +26,6 @@ import {
   Grid,
   Switch,
   FormControlLabel,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  Tab,
   CircularProgress,
   TableContainer,
   Table,
@@ -38,6 +34,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   alwaysWhite,
   partnerColor,
@@ -68,7 +65,7 @@ export function FindTeacher({ headers, id, plan }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [googleDriveLink, setGoogleDriveLink] = useState("");
   const [picture, setPicture] = useState("");
-  const [fee, setFee] = useState("");
+  const [fee, setFee] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [goldVisible, setGoldVisible] = useState(false);
   const [seeConfirmDelete, setSeeConfirmDelete] = useState(false);
@@ -85,6 +82,23 @@ export function FindTeacher({ headers, id, plan }) {
   const [feeUpToDate, setFeeUpToDate] = useState(false);
   const [tutoree, setTutoree] = useState(false);
   const [isAdm, setIsAdm] = useState(false);
+  const [onHold, setOnHold] = useState(false);
+  const [replenish, setReplenish] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [disabled, setDisabled] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [seeFinanceHistory, setSeeFinanceHistory] = useState(false);
+  const [seeClassesHistory, setSeeClassesHistory] = useState(false);
+  const [seeGroupClassesHistory, setSeeGroupClassesHistory] = useState(false);
+  const [eventsList, setEventsList] = useState([]);
+  const [loadingEventsList, setLoadingEventsList] = useState(false);
+  const [loadingPermissions, setLoadingPermissions] = useState(false);
+
+  const [descSpecial, setDescSpecial] = useState("");
+  const [plusScore, setPlusScore] = useState(0);
+
+  const isMobile = window.innerWidth <= 700;
 
   const handleChangeEdit = (event, newValue) => {
     setValue(newValue);
@@ -93,6 +107,7 @@ export function FindTeacher({ headers, id, plan }) {
   const handleChange = (event) => {
     setPermissions(event.target.value);
   };
+
   const handleSeeModal = () => {
     setIsVisible(!isVisible);
     setValue("1");
@@ -103,48 +118,17 @@ export function FindTeacher({ headers, id, plan }) {
     setSeeConfirmDelete(!seeConfirmDelete);
   };
 
-  const seeEdition = async (id) => {
-    handleSeeModal();
+  const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
+      const response = await axios.get(`${backDomain}/api/v1/teachers/${id}`, {
         headers,
       });
-      setNewName(response.data.formattedStudentData.name);
-      setNewCpf(
-        response.data.formattedStudentData.doc
-          ? formatCpf(response.data.formattedStudentData.doc)
-          : ""
-      );
-      setNewLastName(response.data.formattedStudentData.lastname);
-      setNewUsername(response.data.formattedStudentData.username);
-      setNewPhone(response.data.formattedStudentData.phoneNumber);
-      setNewEmail(response.data.formattedStudentData.email);
-      setNewDateOfBirth(
-        response.data.formattedStudentData.dateOfBirth
-          ? response.data.formattedStudentData.dateOfBirth.split("T")[0]
-          : ""
-      );
-      setFeeUpToDate(response.data.formattedStudentData.feeUpToDate);
-      serReplenish(response.data.formattedStudentData.replenish);
-      setTutoree(response.data.formattedStudentData.tutoree);
-      setPermissions(response.data.formattedStudentData.permissions);
-      setWeeklyClasses(response.data.formattedStudentData.weeklyClasses);
-      setID(response.data.formattedStudentData.id);
-      setGoogleDriveLink(response.data.formattedStudentData.googleDriveLink);
-      setTotalScore(response.data.formattedStudentData.totalScore || 0);
-      setMonthlyScore(response.data.formattedStudentData.monthlyScore || 0);
-      setPicture(response.data.formattedStudentData.picture);
-      setFee(response.data.formattedStudentData.fee);
-      setNewAddress(response.data.formattedStudentData.address);
-      setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone || 0
-      );
-      setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews || 0
-      );
+
+      setStudents(response.data.listOfTeachers || []);
+      setLoading(false);
     } catch (error) {
-      notifyAlert(error);
-      console.error(error);
+      notifyAlert("Erro ao encontrar professores");
+      setLoading(false);
     }
   };
 
@@ -168,7 +152,6 @@ export function FindTeacher({ headers, id, plan }) {
   };
 
   const editStudent = async (id) => {
-    // Validar CPF antes de salvar
     if (newCpf && !validateCpf(newCpf)) {
       notifyAlert(
         "CPF inválido. Verifique o formato e tente novamente.",
@@ -185,21 +168,19 @@ export function FindTeacher({ headers, id, plan }) {
       name: newName,
       lastname: newLastName,
       phoneNumber: newPhone,
-      weeklyClasses,
+      weeklyClasses: Number(weeklyClasses),
       permissions: permissions,
       googleDriveLink: googleDriveLink,
       address: newAddress,
-      fee,
+      fee: Number(fee),
       picture: picture,
-      doc: newCpf.replace(/\D/g, ""), // Salva apenas números no banco
+      doc: newCpf.replace(/\D/g, ""),
     };
 
     try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/students/${id}`,
-        editedStudent,
-        { headers }
-      );
+      await axios.put(`${backDomain}/api/v1/students/${id}`, editedStudent, {
+        headers,
+      });
       notifyAlert("Usuário editado com sucesso!", partnerColor());
       setSelectedStudent(null);
       handleSeeModal();
@@ -215,14 +196,13 @@ export function FindTeacher({ headers, id, plan }) {
       permissions: permissions,
     };
     try {
-      const response = await axios.put(
+      await axios.put(
         `${backDomain}/api/v1/studentpermissions/${id}`,
         editedStudent,
         { headers }
       );
 
-      // Atualizar selectedStudent com as novas permissões
-      if (selectedStudent && selectedStudent._id === id) {
+      if (selectedStudent && selectedStudent.id === id) {
         setSelectedStudent({
           ...selectedStudent,
           permissions: permissions,
@@ -238,44 +218,19 @@ export function FindTeacher({ headers, id, plan }) {
     }
   };
 
-  const fetchStudents = async () => {
-    try {
-      const response = await axios.get(`${backDomain}/api/v1/teachers/${id}`, {
-        headers,
-      });
-      setStudents(response.data.listOfTeachers);
-      setLoading(false);
-    } catch (error) {
-      notifyAlert("Erro ao encontrar professores");
-    }
-  };
-
   const deleteStudent = async (id) => {
     try {
-      const response = await axios.delete(
-        `${backDomain}/api/v1/students/${id}`,
-        { headers }
-      );
+      await axios.delete(`${backDomain}/api/v1/students/${id}`, { headers });
       notifyAlert("Aluno excluído");
       fetchStudents();
       handleSeeModal();
       window.location.reload();
     } catch (error) {
       notifyAlert(error);
-
       handleSeeModal();
       console.error(error);
     }
   };
-  const [searchTerm, setSearchTerm] = useState("");
-  const [disabled, setDisabled] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [seeFinanceHistory, setSeeFinanceHistory] = useState(false);
-  const [seeClassesHistory, setSeeClassesHistory] = useState(false);
-  const [seeGroupClassesHistory, setSeeGroupClassesHistory] = useState(false);
-  const [eventsList, setEventsList] = useState([]);
-  const [loadingEventsList, setLoadingEventsList] = useState(false);
-  const [loadingPermissions, setLoadingPermissions] = useState(false);
 
   const handleSeeClassesHistory = async (id) => {
     setLoadingEventsList(true);
@@ -294,7 +249,6 @@ export function FindTeacher({ headers, id, plan }) {
       }, 100);
     } catch (error) {
       notifyAlert("Erro ao buscar histórico de aulas Individuais");
-      console.log(error, "Erro ao buscar histórico de aulas Individuais");
       setSeeClassesHistory(!seeClassesHistory);
       setLoadingEventsList(false);
     }
@@ -356,13 +310,14 @@ export function FindTeacher({ headers, id, plan }) {
       );
 
       setTutoree(response.data.tutoree);
-
       fetchStudents();
       setLoadingPermissions(false);
     } catch (error) {
       notifyAlert("Erro ao atualizar tutoria");
+      setLoadingPermissions(false);
     }
   };
+
   const updateFeeStatus = async (id) => {
     setLoadingPermissions(true);
 
@@ -376,7 +331,6 @@ export function FindTeacher({ headers, id, plan }) {
       );
 
       setFeeUpToDate(response.data.feeUpToDate);
-
       fetchStudents();
       setLoadingPermissions(false);
     } catch (error) {
@@ -384,8 +338,6 @@ export function FindTeacher({ headers, id, plan }) {
       console.error("error", error);
     }
   };
-  const [onHold, setOnHold] = useState(false);
-  const [replenish, setReplenish] = useState(false);
 
   const updateReplenish = async (id) => {
     setLoadingPermissions(true);
@@ -406,6 +358,7 @@ export function FindTeacher({ headers, id, plan }) {
       console.log("error", error);
     }
   };
+
   const updateOnHold = async (id) => {
     setLoadingPermissions(true);
     try {
@@ -425,30 +378,22 @@ export function FindTeacher({ headers, id, plan }) {
       console.log("error", error);
     }
   };
-  const isMobile = window.innerWidth <= 700;
+
   const handleSaveAll = () => {
     if (!ID) return;
     editStudent(ID);
     editStudentPermissions(ID);
-    // editStudentPassword(ID);
   };
 
   const handleDelete = () => {
     if (!ID) return;
     deleteStudent(ID);
   };
-  const [descSpecial, setDescSpecial] = useState("");
-  const [plusScore, setPlusScore] = useState(0);
 
-  // Função para validar e formatar CPF
   const formatCpf = (value) => {
-    // Remove tudo que não é dígito
     const onlyNumbers = value.replace(/\D/g, "");
-
-    // Limita a 11 dígitos
     const limitedNumbers = onlyNumbers.slice(0, 11);
 
-    // Aplica a máscara progressivamente
     if (limitedNumbers.length <= 3) {
       return limitedNumbers;
     } else if (limitedNumbers.length <= 6) {
@@ -463,26 +408,19 @@ export function FindTeacher({ headers, id, plan }) {
     }
   };
 
-  // Função para validar CPF
   const validateCpf = (cpf) => {
     const onlyNumbers = cpf.replace(/\D/g, "");
-
     if (onlyNumbers.length !== 11) return false;
-
-    // Verifica se todos os dígitos são iguais
     if (/^(\d)\1+$/.test(onlyNumbers)) return false;
 
-    // Validação do primeiro dígito verificador
     let sum = 0;
     for (let i = 0; i < 9; i++) {
       sum += parseInt(onlyNumbers[i]) * (10 - i);
     }
     let digit1 = 11 - (sum % 11);
     if (digit1 > 9) digit1 = 0;
-
     if (parseInt(onlyNumbers[9]) !== digit1) return false;
 
-    // Validação do segundo dígito verificador
     sum = 0;
     for (let i = 0; i < 10; i++) {
       sum += parseInt(onlyNumbers[i]) * (11 - i);
@@ -509,7 +447,7 @@ export function FindTeacher({ headers, id, plan }) {
         { headers }
       );
       notifyAlert("Pontuação atualizada com sucesso!", partnerColor());
-      await updateScoreNow(id); // ESSENCIAL!
+      await updateScoreNow(id);
       setDisabled(false);
     } catch (error) {
       notifyAlert("Erro ao atualizar pontuação", "red");
@@ -519,21 +457,47 @@ export function FindTeacher({ headers, id, plan }) {
 
   const editStudentPassword = async (id) => {
     if (newPassword === confirmPassword) {
+      try {
+        await axios.put(
+          `${backDomain}/api/v1/studentpassword/${id}`,
+          { newPassword },
+          { headers }
+        );
+        notifyAlert("Senha editada com sucesso!", partnerColor());
+        fetchStudents();
+        handleSeeModal();
+      } catch (error) {
+        notifyAlert("Erro ao editar senha", "red");
+        handleSeeModal();
+      }
     } else {
       notifyAlert("As senhas são diferentes");
     }
+  };
+
+  const getMaskedCardNumber = (number) => {
+    if (!number) return "N/A";
+    const digits = number.replace(/\s/g, "");
+    if (digits.length < 4) return "****";
+    return `**** **** **** ${digits.slice(-4)}`;
+  };
+
+  const formatBirthForDetails = (dob) => {
+    if (!dob) return "N/A";
+    // se vier ISO
+    if (typeof dob === "string" && dob.includes("T")) {
+      const d = new Date(dob);
+      if (isNaN(d.getTime())) return dob;
+      return formatDateBr(d);
+    }
+    // se vier já como dd/MM/yyyy
+    if (typeof dob === "string") return dob;
     try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/studentpassword/${id}`,
-        { newPassword },
-        { headers }
-      );
-      notifyAlert("Senha editada com sucesso!", partnerColor());
-      fetchStudents();
-      handleSeeModal();
-    } catch (error) {
-      notifyAlert("Erro ao editar senha", "red");
-      handleSeeModal();
+      const d = new Date(dob);
+      if (isNaN(d.getTime())) return "N/A";
+      return formatDateBr(d);
+    } catch {
+      return "N/A";
     }
   };
 
@@ -543,7 +507,7 @@ export function FindTeacher({ headers, id, plan }) {
 
   return (
     <>
-      {/* SEÇÃO DE INFORMAÇÕES DETALHADAS DO ALUNO SELECIONADO */}
+      {/* CARD DE DETALHES DO PROFESSOR SELECIONADO */}
       {selectedStudent && (
         <div
           style={{
@@ -583,7 +547,6 @@ export function FindTeacher({ headers, id, plan }) {
               />
               <div>
                 <div
-                  variant="h6"
                   style={{
                     fontWeight: "600",
                     color: "#2c3e50",
@@ -601,74 +564,99 @@ export function FindTeacher({ headers, id, plan }) {
                 >
                   {selectedStudent.email}
                 </div>
+                {selectedStudent.fullname && (
+                  <div
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "10px",
+                    }}
+                  >
+                    {selectedStudent.fullname}
+                  </div>
+                )}
               </div>
             </div>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => {
-                setID(selectedStudent.id);
-                setTutoree(selectedStudent.tutoree);
-                setFeeUpToDate(selectedStudent.feeUpToDate);
-                setNewName(selectedStudent.name);
-                setNewLastName(selectedStudent.lastname);
-                setNewCpf(selectedStudent.doc);
-                setNewEmail(selectedStudent.email);
-                setNewPhone(selectedStudent.phoneNumber);
-                setNewAddress(selectedStudent.address);
-                setWeeklyClasses(selectedStudent.weeklyClasses);
-                setNewDateOfBirth(
-                  selectedStudent.dateOfBirth
-                    ? selectedStudent.dateOfBirth.split("T")[0]
-                    : ""
-                );
-                setGoogleDriveLink(selectedStudent.googleDriveLink);
-                setPermissions(selectedStudent.permissions);
-                setFeeUpToDate(selectedStudent.feeUpToDate);
-                setOnHold(selectedStudent.onHold);
-                setReplenish(selectedStudent.replenish);
-                setTutoree(selectedStudent.tutoree);
-                setFee(selectedStudent.fee || 0);
-                setTotalScore(selectedStudent.totalScore || 0);
-                setMonthlyScore(selectedStudent.monthlyScore || 0);
-                setHomeworkAssignmentsDone(
-                  selectedStudent.homeworkAssignmentsDone || 0
-                );
-                setFlashcards25Reviews(
-                  selectedStudent.flashcards25Reviews || 0
-                );
-                handleSeeModal();
-              }}
-              style={{
-                minWidth: "auto",
-                padding: "8px 10px",
-                borderRadius: "4px",
-                color: partnerColor(),
-                borderColor: partnerColor(),
-                fontSize: "8px",
-                fontWeight: "500",
-              }}
-            >
-              ✏️ Editar
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => setSelectedStudent(null)}
-              style={{
-                minWidth: "auto",
-                padding: "8px",
-                borderRadius: "4px",
-                color: "#6c757d",
-                borderColor: "#e8eaed",
-                marginRight: "8px",
-              }}
-            >
-              ✕
-            </Button>
+
+            <div style={{ display: "flex", gap: 8 }}>
+              {selectedStudent.creditCardPayment && (
+                <div
+                  style={{
+                    padding: "4px 8px",
+                    borderRadius: 4,
+                    fontSize: 10,
+                    fontWeight: 500,
+                    backgroundColor: "#e3f2fd",
+                    color: "#1976d2",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <i className="fa fa-credit-card" />
+                  Cartão Ativo
+                </div>
+              )}
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => {
+                  setID(selectedStudent.id);
+                  setTutoree(selectedStudent.tutoree);
+                  setFeeUpToDate(selectedStudent.feeUpToDate);
+                  setNewName(selectedStudent.name);
+                  setNewLastName(selectedStudent.lastname);
+                  setNewCpf(selectedStudent.doc || "");
+                  setNewEmail(selectedStudent.email);
+                  setNewPhone(selectedStudent.phoneNumber);
+                  setNewAddress(selectedStudent.address);
+                  setWeeklyClasses(selectedStudent.weeklyClasses || 1);
+                  setNewDateOfBirth(
+                    selectedStudent.dateOfBirth &&
+                      selectedStudent.dateOfBirth.includes("T")
+                      ? selectedStudent.dateOfBirth.split("T")[0]
+                      : ""
+                  );
+                  setGoogleDriveLink(selectedStudent.googleDriveLink || "");
+                  setPermissions(selectedStudent.permissions);
+                  setOnHold(selectedStudent.onHold);
+                  setReplenish(selectedStudent.replenishTarget || false);
+                  setTutoree(selectedStudent.tutoree);
+                  setFee(selectedStudent.fee || 0);
+                  setTotalScore(selectedStudent.totalScore || 0);
+                  setMonthlyScore(selectedStudent.monthlyScore || 0);
+                  handleSeeModal();
+                }}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px 10px",
+                  borderRadius: "4px",
+                  color: partnerColor(),
+                  borderColor: partnerColor(),
+                  fontSize: "8px",
+                  fontWeight: "500",
+                }}
+              >
+                ✏️ Editar
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setSelectedStudent(null)}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  color: "#6c757d",
+                  borderColor: "#e8eaed",
+                }}
+              >
+                ✕
+              </Button>
+            </div>
           </div>
 
           <Grid container spacing={3}>
+            {/* Username */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -694,6 +682,7 @@ export function FindTeacher({ headers, id, plan }) {
               </div>
             </Grid>
 
+            {/* CPF */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -714,11 +703,12 @@ export function FindTeacher({ headers, id, plan }) {
                     fontSize: "11px",
                   }}
                 >
-                  {formatCPF(selectedStudent.doc) || "N/A"}
+                  {selectedStudent.doc ? formatCPF(selectedStudent.doc) : "N/A"}
                 </div>
               </div>
             </Grid>
 
+            {/* Telefone */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -739,11 +729,14 @@ export function FindTeacher({ headers, id, plan }) {
                     fontSize: "11px",
                   }}
                 >
-                  {formatPhoneNumber(selectedStudent.phoneNumber) || "N/A"}
+                  {selectedStudent.phoneNumber
+                    ? formatPhoneNumber(selectedStudent.phoneNumber)
+                    : "N/A"}
                 </div>
               </div>
             </Grid>
 
+            {/* Data de nascimento */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -764,17 +757,12 @@ export function FindTeacher({ headers, id, plan }) {
                     fontSize: "11px",
                   }}
                 >
-                  {selectedStudent.dateOfBirth
-                    ? formatDateBr(
-                        new Date(selectedStudent.dateOfBirth).setDate(
-                          new Date(selectedStudent.dateOfBirth).getDate() + 1
-                        )
-                      )
-                    : "N/A"}
+                  {formatBirthForDetails(selectedStudent.dateOfBirth)}
                 </div>
               </div>
             </Grid>
 
+            {/* Status Mensalidade */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -823,6 +811,7 @@ export function FindTeacher({ headers, id, plan }) {
               </div>
             </Grid>
 
+            {/* Status Matrícula */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -871,6 +860,7 @@ export function FindTeacher({ headers, id, plan }) {
               </div>
             </Grid>
 
+            {/* Permissões */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
                 <div
@@ -930,6 +920,308 @@ export function FindTeacher({ headers, id, plan }) {
               </div>
             </Grid>
 
+            {/* Weekly Classes */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Aulas por semana
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.weeklyClasses || 0}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Fee */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Valor Mensalidade
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.fee
+                    ? `R$ ${formatNumber(selectedStudent.fee)}`
+                    : "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Score */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Pontuação (Total / Mês)
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.totalScore || 0} /{" "}
+                  {selectedStudent.monthlyScore || 0}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Payment Method */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Método Pagamento
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.paymentMethod || "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Limit Date */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Acesso até
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.limitDate
+                    ? formatDateBr(new Date(selectedStudent.limitDate))
+                    : "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Limit Cancel Date */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Limite Cancelamento
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.limitCancelDate
+                    ? formatDateBr(new Date(selectedStudent.limitCancelDate))
+                    : "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Asaas IDs */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Asaas Customer ID
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.asaasCustomerId || "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Assinatura Asaas
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.subscriptionAsaas || "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Installment ID */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  ID Parcela
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  {selectedStudent.installmentId || "N/A"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Tutoria e Reposição */}
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <div
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "8px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Tutoria / Reposição
+                </div>
+                <div
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "11px",
+                  }}
+                >
+                  Tutoria: {selectedStudent.tutoree ? "Sim" : "Não"} |
+                  Reposição:
+                  {selectedStudent.replenishTarget ? " Sim" : " Não"}
+                </div>
+              </div>
+            </Grid>
+
+            {/* Cartão de crédito */}
+            {selectedStudent.creditCard && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <div
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "8px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Cartão de Crédito
+                  </div>
+                  <div
+                    style={{
+                      fontWeight: "500",
+                      color: "#2c3e50",
+                      fontSize: "11px",
+                    }}
+                  >
+                    {selectedStudent.creditCard.holderName || "N/A"}
+                    <br />
+                    {getMaskedCardNumber(selectedStudent.creditCard.number)}
+                    <br />
+                    {selectedStudent.creditCard.expiryMonth}/
+                    {selectedStudent.creditCard.expiryYear}
+                  </div>
+                </div>
+              </Grid>
+            )}
+
+            {/* Endereço */}
             {selectedStudent.address && (
               <Grid item xs={12}>
                 <div style={{ marginBottom: "16px" }}>
@@ -956,9 +1248,43 @@ export function FindTeacher({ headers, id, plan }) {
                 </div>
               </Grid>
             )}
+
+            {/* Google Drive */}
+            {selectedStudent.googleDriveLink && (
+              <Grid item xs={12}>
+                <div style={{ marginBottom: "16px" }}>
+                  <div
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "8px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Google Drive
+                  </div>
+                  <a
+                    href={selectedStudent.googleDriveLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      fontWeight: "500",
+                      color: partnerColor(),
+                      fontSize: "11px",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Abrir pasta do professor
+                  </a>
+                </div>
+              </Grid>
+            )}
           </Grid>
         </div>
       )}
+
+      {/* TÍTULO E PESQUISA */}
       <div
         style={{
           display: "flex",
@@ -986,13 +1312,12 @@ export function FindTeacher({ headers, id, plan }) {
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
           }}
           type="text"
-          placeholder="Pesquisar aluno..."
+          placeholder="Pesquisar professor..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={(e) => {
             e.target.style.borderColor = partnerColor();
             e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-            ("");
           }}
           onBlur={(e) => {
             e.target.style.borderColor = "#e8eaed";
@@ -1001,6 +1326,8 @@ export function FindTeacher({ headers, id, plan }) {
           }}
         />
       </div>
+
+      {/* TABELA */}
       {!loading ? (
         <div
           style={{
@@ -1016,14 +1343,6 @@ export function FindTeacher({ headers, id, plan }) {
             overflow: "hidden",
           }}
         >
-          <div
-            style={{
-              display: "grid",
-              marginBottom: "1rem",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          ></div>
           <TableContainer
             style={{
               maxHeight: "30rem",
@@ -1047,21 +1366,27 @@ export function FindTeacher({ headers, id, plan }) {
                   <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>Permissões</span>
                   </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
+                    <span style={cellTable}>Método Pagamento</span>
+                  </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
+                    <span style={cellTable}>Mensalidade</span>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {students
                   .filter((student) =>
-                    student.fullname
+                    (student.fullname || "")
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
                   .map((student, index) => (
                     <TableRow
-                      key={student._id || index}
+                      key={student.id || index}
                       onClick={() => {
                         setSelectedStudent(student);
-                        setReplenish(student.replenishTarget);
+                        setReplenish(student.replenishTarget || false);
                         setFeeUpToDate(student.feeUpToDate);
                         setTutoree(student.tutoree);
                         setOnHold(student.onHold);
@@ -1074,9 +1399,6 @@ export function FindTeacher({ headers, id, plan }) {
                       style={{
                         cursor: "pointer",
                         transition: "all 0.2s ease",
-                        "&:hover": {
-                          backgroundColor: "#f8f9fa",
-                        },
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "#f8f9fa";
@@ -1135,6 +1457,14 @@ export function FindTeacher({ headers, id, plan }) {
                           {student.permissions}
                         </span>
                       </TableCell>
+                      <TableCell style={cellTable}>
+                        {student.paymentMethod || "N/A"}
+                      </TableCell>
+                      <TableCell style={cellTable}>
+                        {student.fee
+                          ? `R$ ${formatNumber(student.fee)}`
+                          : "N/A"}
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -1155,6 +1485,8 @@ export function FindTeacher({ headers, id, plan }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
+
+      {/* MODAL DE EDIÇÃO */}
       <Dialog
         open={isVisible}
         onClose={handleSeeModal}
@@ -1182,7 +1514,6 @@ export function FindTeacher({ headers, id, plan }) {
           >
             <div>
               <div
-                variant="h5"
                 style={{
                   fontWeight: "600",
                   color: "#2c3e50",
@@ -1192,13 +1523,13 @@ export function FindTeacher({ headers, id, plan }) {
                 {newName} {newLastName}
               </div>
               <div
-                variant="body2"
                 style={{
                   color: "#6c757d",
                   fontWeight: "400",
+                  fontSize: "11px",
                 }}
               >
-                Gerenciar informações do aluno
+                Gerenciar informações do professor
               </div>
             </div>
             <Button
@@ -1216,7 +1547,7 @@ export function FindTeacher({ headers, id, plan }) {
         </DialogTitle>
 
         <DialogContent style={{ padding: "32px", backgroundColor: "#ffffff" }}>
-          {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
+          {/* INFORMAÇÕES BÁSICAS */}
           <div
             style={{
               backgroundColor: "#ffffff",
@@ -1229,7 +1560,6 @@ export function FindTeacher({ headers, id, plan }) {
             }}
           >
             <div
-              variant="h6"
               style={{
                 marginBottom: "20px",
                 fontWeight: "600",
@@ -1249,25 +1579,6 @@ export function FindTeacher({ headers, id, plan }) {
                   onChange={(e) => setNewName(e.target.value)}
                   variant="outlined"
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: partnerColor(),
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1278,25 +1589,6 @@ export function FindTeacher({ headers, id, plan }) {
                   onChange={(e) => setNewLastName(e.target.value)}
                   variant="outlined"
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: partnerColor(),
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1317,25 +1609,6 @@ export function FindTeacher({ headers, id, plan }) {
                   inputProps={{
                     maxLength: 14,
                   }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": {
-                        borderColor: !isCpfValid ? "#e74c3c" : "#e8eaed",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: !isCpfValid ? "#e74c3c" : "#c3c4c7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: !isCpfValid ? "#e74c3c" : partnerColor(),
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1346,19 +1619,6 @@ export function FindTeacher({ headers, id, plan }) {
                   onChange={(e) => setNewEmail(e.target.value)}
                   variant="outlined"
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": { borderColor: "#e8eaed" },
-                      "&:hover fieldset": { borderColor: "#c3c4c7" },
-                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1369,19 +1629,6 @@ export function FindTeacher({ headers, id, plan }) {
                   onChange={(e) => setNewPhone(e.target.value)}
                   variant="outlined"
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": { borderColor: "#e8eaed" },
-                      "&:hover fieldset": { borderColor: "#c3c4c7" },
-                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1392,23 +1639,10 @@ export function FindTeacher({ headers, id, plan }) {
                   onChange={(e) => setNewAddress(e.target.value)}
                   variant="outlined"
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& fieldset": { borderColor: "#e8eaed" },
-                      "&:hover fieldset": { borderColor: "#c3c4c7" },
-                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                  }}
                 />
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
                   type="date"
@@ -1419,6 +1653,40 @@ export function FindTeacher({ headers, id, plan }) {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Aulas por semana"
+                  type="number"
+                  value={weeklyClasses}
+                  onChange={(e) => setWeeklyClasses(e.target.value)}
+                  size="small"
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <TextField
+                  fullWidth
+                  label="Mensalidade (R$)"
+                  type="number"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Link Google Drive"
+                  value={googleDriveLink}
+                  onChange={(e) => setGoogleDriveLink(e.target.value)}
+                  variant="outlined"
+                  size="small"
                 />
               </Grid>
             </Grid>
@@ -1441,8 +1709,6 @@ export function FindTeacher({ headers, id, plan }) {
                   borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
-                  boxShadow:
-                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                 }}
               >
                 Salvar Informações
@@ -1450,7 +1716,7 @@ export function FindTeacher({ headers, id, plan }) {
             </div>
           </div>
 
-          {/* SEÇÃO 2: PERMISSÕES */}
+          {/* PERMISSÕES E FLAGS */}
           <div
             style={{
               backgroundColor: "#ffffff",
@@ -1463,7 +1729,6 @@ export function FindTeacher({ headers, id, plan }) {
             }}
           >
             <div
-              variant="h6"
               style={{
                 marginBottom: "20px",
                 fontWeight: "600",
@@ -1471,31 +1736,16 @@ export function FindTeacher({ headers, id, plan }) {
                 fontSize: "12px",
               }}
             >
-              Permissões
+              Permissões e Status
             </div>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth variant="outlined" size="small">
-                  <InputLabel style={{ color: "#6c757d", fontSize: "11px" }}>
-                    Permissões
-                  </InputLabel>
+                  <InputLabel>Permissões</InputLabel>
                   <Select
                     value={permissions}
                     label="Permissões"
                     onChange={(e) => setPermissions(e.target.value)}
-                    sx={{
-                      borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: partnerColor(),
-                      },
-                    }}
                   >
                     <MenuItem value="student">Aluno</MenuItem>
                     <MenuItem value="teacher">Professor</MenuItem>
@@ -1514,17 +1764,58 @@ export function FindTeacher({ headers, id, plan }) {
                     borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "11px",
-                    boxShadow:
-                      "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                   }}
                 >
                   Salvar Permissões
                 </Button>
               </Grid>
+
+              <Grid item xs={12} md={6}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={feeUpToDate}
+                      onChange={() => updateFeeStatus(ID)}
+                      size="small"
+                    />
+                  }
+                  label="Mensalidade em dia"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={onHold}
+                      onChange={() => updateOnHold(ID)}
+                      size="small"
+                    />
+                  }
+                  label="Matrícula trancada"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={tutoree}
+                      onChange={() => updateTutoree(ID)}
+                      size="small"
+                    />
+                  }
+                  label="Aluno de tutoria"
+                />
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={replenish}
+                      onChange={() => updateReplenish(ID)}
+                      size="small"
+                    />
+                  }
+                  label="Alvo de reposição"
+                />
+              </Grid>
             </Grid>
           </div>
 
-          {/* SEÇÃO 4: ALTERAR SENHA */}
+          {/* ALTERAR SENHA */}
           <div
             style={{
               backgroundColor: "#ffffff",
@@ -1537,7 +1828,6 @@ export function FindTeacher({ headers, id, plan }) {
             }}
           >
             <div
-              variant="h6"
               style={{
                 marginBottom: "20px",
                 fontWeight: "600",
@@ -1557,29 +1847,6 @@ export function FindTeacher({ headers, id, plan }) {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
-                      "& fieldset": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: partnerColor(),
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                    "& .MuiInputBase-input": {
-                      fontSize: "11px",
-                      color: "#2c3e50",
-                    },
-                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1590,29 +1857,6 @@ export function FindTeacher({ headers, id, plan }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   size="small"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
-                      "& fieldset": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: partnerColor(),
-                      },
-                    },
-                    "& .MuiInputLabel-root": {
-                      color: "#6c757d",
-                      fontSize: "11px",
-                    },
-                    "& .MuiInputBase-input": {
-                      fontSize: "11px",
-                      color: "#2c3e50",
-                    },
-                  }}
                 />
               </Grid>
             </Grid>
@@ -1636,14 +1880,14 @@ export function FindTeacher({ headers, id, plan }) {
                   borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
-                  boxShadow:
-                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                 }}
               >
                 Alterar Senha
               </Button>
             </div>
           </div>
+
+          {/* SEÇÃO EXCLUIR */}
           <div
             style={{
               backgroundColor: "#ffeaeaff",
@@ -1656,24 +1900,22 @@ export function FindTeacher({ headers, id, plan }) {
             }}
           >
             {!seeConfirmDelete ? (
-              <>
-                <Button
-                  color="error"
-                  variant="outlined"
-                  onClick={() => setSeeConfirmDelete(true)}
-                  style={{
-                    fontWeight: "500",
-                    padding: "10px 20px",
-                    borderRadius: "4px",
-                    textTransform: "none",
-                    fontSize: "11px",
-                    borderColor: "#dc3545",
-                    color: "#dc3545",
-                  }}
-                >
-                  Excluir Aluno
-                </Button>
-              </>
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={() => setSeeConfirmDelete(true)}
+                style={{
+                  fontWeight: "500",
+                  padding: "10px 20px",
+                  borderRadius: "4px",
+                  textTransform: "none",
+                  fontSize: "11px",
+                  borderColor: "#dc3545",
+                  color: "#dc3545",
+                }}
+              >
+                Excluir Professor
+              </Button>
             ) : (
               <div style={{ width: "100%", textAlign: "center" }}>
                 <div

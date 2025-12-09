@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import {
   backDomain,
@@ -80,7 +81,7 @@ const styles = {
 };
 
 /* ===============================
-   Hook responsivo igual ao padrão
+   Hook responsivo
    =============================== */
 const useIsDesktop = (bp = 700) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -94,6 +95,14 @@ const useIsDesktop = (bp = 700) => {
   return isDesktop;
 };
 
+/* ===============================
+   Portal para colar modal no body
+   =============================== */
+const ModalPortal: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  if (typeof document === "undefined") return null;
+  return ReactDOM.createPortal(children, document.body);
+};
+
 export function MyProfile({
   headers,
   change,
@@ -102,11 +111,10 @@ export function MyProfile({
   change: boolean;
   setChange: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  //@ts-ignore
+  // @ts-ignore
   const { UniversalTexts } = useUserContext();
   const isDesktop = useIsDesktop(700);
 
-  // base de botões (mesmo padrão do componente anterior)
   const baseBtnStyle: React.CSSProperties = {
     border: "1px solid #e5e7eb",
     background: "#fff",
@@ -131,6 +139,7 @@ export function MyProfile({
   const [loading, setLoading] = useState<boolean>(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [editData, setEditData] = useState({
     name: "",
@@ -161,6 +170,8 @@ export function MyProfile({
     setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const actualHeaders = headers || {};
+
   const saveEditProfile = async () => {
     try {
       await axios.put(
@@ -176,6 +187,46 @@ export function MyProfile({
       notifyAlert("Erro ao atualizar dados.");
     }
   };
+
+  const today = new Date();
+  const hasSubscription = !!(user.subscriptionAsaas || user.paymentId);
+  const isSubscriptionActive =
+    user.limitDate && new Date(user.limitDate) > today;
+
+  const subscriptionStatus = user.askedToCancel
+    ? "Cancelamento solicitado"
+    : isSubscriptionActive
+    ? "Ativa"
+    : "Inativa";
+
+  const subscriptionType = user.subscriptionAsaas
+    ? "Assinatura recorrente (cartão)"
+    : user.paymentId
+    ? "Pagamento único / plano à vista"
+    : "Nenhuma assinatura encontrada";
+
+  const subscriptionInfoList = [
+    {
+      title: "Status",
+      data: subscriptionStatus,
+    },
+    {
+      title: "Tipo de Assinatura",
+      data: subscriptionType,
+    },
+    {
+      title: "Data limite de acesso",
+      data: user.limitDate
+        ? formatDateBrWithHour(user.limitDate)
+        : "Não informado",
+    },
+    // {
+    //   title: "Data limite para cancelamento",
+    //   data: user.limitCancelDate
+    //     ? formatDateBrWithHour(user.limitCancelDate)
+    //     : "Não informado",
+    // },
+  ];
 
   const resizeAndConvertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -229,12 +280,8 @@ export function MyProfile({
     }
   };
 
-  const actualHeaders = headers || {};
-
   const editStudentPassword = async (): Promise<void> => {
-    if (newPassword === confirmPassword) {
-      setNewPassword(newPassword);
-    } else {
+    if (newPassword !== confirmPassword) {
       alert("As senhas são diferentes");
       return;
     }
@@ -284,8 +331,6 @@ export function MyProfile({
     },
   ];
 
-  const [showModal, setShowModal] = useState(false);
-
   const cancelSubscription = async () => {
     if (user.subscriptionAsaas) {
       try {
@@ -305,7 +350,7 @@ export function MyProfile({
       }
     } else if (user.paymentId) {
       notifyAlert(
-        "Fale comigo por WhatsApp, e prosseguiei com seu cancelamento. :)"
+        "Fale comigo por WhatsApp, e prosseguirei com seu cancelamento. :)"
       );
       setTimeout(() => {
         window.location.assign("https://wa.me/5511915857807");
@@ -315,6 +360,288 @@ export function MyProfile({
 
   return (
     <div>
+      {/* MODAIS NO BODY VIA PORTAL */}
+      {showPasswordModal && (
+        <ModalPortal>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1002,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                padding: "32px 24px",
+                borderRadius: "12px",
+                width: "90%",
+                maxWidth: "400px",
+              }}
+            >
+              <h2
+                style={{
+                  marginBottom: "18px",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                }}
+              >
+                Alterar Senha
+              </h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  editStudentPassword();
+                  setShowPasswordModal(false);
+                }}
+                style={{ display: "grid", gap: "14px" }}
+              >
+                <TextField
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                  label={UniversalTexts.newPassword}
+                  type="password"
+                  required
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  label={UniversalTexts.confirmNewPassword}
+                  type="password"
+                  required
+                  fullWidth
+                  size="small"
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: isDesktop ? "12px" : 0,
+                    marginTop: "10px",
+                    justifyContent: "center",
+                    flexDirection: isDesktop ? "row" : "column",
+                    width: "100%",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    style={{
+                      ...baseBtnStyle,
+                      background: "#6c757d",
+                      border: "1px solid #6c757d",
+                      color: "#fff",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                  <button type="submit" style={basePrimaryBtnStyle}>
+                    Salvar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {showEditModal && (
+        <ModalPortal>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1001,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                padding: "32px 24px",
+                borderRadius: "12px",
+                width: "90%",
+                maxWidth: "400px",
+              }}
+            >
+              <h2
+                style={{
+                  marginBottom: "18px",
+                  fontSize: "18px",
+                  fontWeight: 600,
+                }}
+              >
+                Editar Dados Pessoais
+              </h2>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  saveEditProfile();
+                }}
+                style={{ display: "grid", gap: "14px" }}
+              >
+                <TextField
+                  label="Nome"
+                  name="name"
+                  value={editData.name}
+                  onChange={handleEditChange}
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Sobrenome"
+                  name="lastname"
+                  value={editData.lastname}
+                  onChange={handleEditChange}
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Telefone"
+                  name="phoneNumber"
+                  value={editData.phoneNumber}
+                  onChange={handleEditChange}
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={editData.email}
+                  onChange={handleEditChange}
+                  fullWidth
+                  size="small"
+                />
+                <TextField
+                  label="Nascimento"
+                  name="dateOfBirth"
+                  type="date"
+                  value={editData.dateOfBirth}
+                  onChange={handleEditChange}
+                  fullWidth
+                  size="small"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: isDesktop ? "12px" : 0,
+                    marginTop: "10px",
+                    justifyContent: "center",
+                    flexDirection: isDesktop ? "row" : "column",
+                    width: "100%",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(false)}
+                    style={{
+                      ...baseBtnStyle,
+                      background: "#6c757d",
+                      border: "1px solid #6c757d",
+                      color: "#fff",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                  <button type="submit" style={basePrimaryBtnStyle}>
+                    Salvar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {showModal && (
+        <ModalPortal>
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                background: "#fff",
+                padding: "32px",
+                borderRadius: "12px",
+                width: "90%",
+                maxWidth: "400px",
+                textAlign: "center",
+              }}
+            >
+              <h2
+                style={{
+                  marginBottom: "24px",
+                  color: "#dc3545",
+                  fontSize: "18px",
+                  fontWeight: "600",
+                }}
+              >
+                Tem certeza que deseja cancelar sua assinatura?
+              </h2>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: isDesktop ? "12px" : 0,
+                  flexDirection: isDesktop ? "row" : "column",
+                  width: "100%",
+                }}
+              >
+                <button
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    ...baseBtnStyle,
+                    background: "#28a745",
+                    border: "1px solid #28a745",
+                    color: "#fff",
+                  }}
+                >
+                  Não
+                </button>
+                <button
+                  onClick={cancelSubscription}
+                  style={{
+                    ...baseBtnStyle,
+                    background: "#dc3545",
+                    border: "1px solid #dc3545",
+                    color: "#fff",
+                  }}
+                >
+                  Sim
+                </button>
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {/* CONTEÚDO PRINCIPAL */}
       {isDesktop && (
         <div
           style={{
@@ -335,11 +662,8 @@ export function MyProfile({
           </section>
         </div>
       )}
-      <div
-        style={{
-          fontFamily: "Plus Jakarta Sans",
-        }}
-      >
+
+      <div style={{ fontFamily: "Plus Jakarta Sans" }}>
         <div
           style={{
             margin: "auto",
@@ -349,99 +673,7 @@ export function MyProfile({
             fontSize: "14px",
           }}
         >
-          {/* Modal de alterar senha */}
-          {showPasswordModal && (
-            <div
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                zIndex: 1002,
-              }}
-            >
-              <div
-                style={{
-                  background: "#fff",
-                  padding: "32px 24px",
-                  borderRadius: "12px",
-                  width: "90%",
-                  maxWidth: "400px",
-                }}
-              >
-                <h2
-                  style={{
-                    marginBottom: "18px",
-                    fontSize: "18px",
-                    fontWeight: 600,
-                  }}
-                >
-                  Alterar Senha
-                </h2>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    editStudentPassword();
-                    setShowPasswordModal(false);
-                  }}
-                  style={{ display: "grid", gap: "14px" }}
-                >
-                  <TextField
-                    value={newPassword}
-                    onChange={(event) => setNewPassword(event.target.value)}
-                    label={UniversalTexts.newPassword}
-                    type="password"
-                    required
-                    fullWidth
-                    size="small"
-                  />
-                  <TextField
-                    value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
-                    label={UniversalTexts.confirmNewPassword}
-                    type="password"
-                    required
-                    fullWidth
-                    size="small"
-                  />
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: isDesktop ? "12px" : 0,
-                      marginTop: "10px",
-                      justifyContent: "center",
-                      flexDirection: isDesktop ? "row" : "column",
-                      width: "100%",
-                    }}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setShowPasswordModal(false)}
-                      style={{
-                        ...baseBtnStyle,
-                        background: "#6c757d",
-                        border: "1px solid #6c757d",
-                        color: "#fff",
-                      }}
-                    >
-                      Cancelar
-                    </button>
-                    <button type="submit" style={basePrimaryBtnStyle}>
-                      Salvar
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
           {headers ? (
-            // @ts-ignore
             <div
               style={{
                 padding: "16px 0",
@@ -462,6 +694,7 @@ export function MyProfile({
                 </div>
               ) : (
                 <>
+                  {/* Seção de perfil */}
                   <div style={styles.modernSection}>
                     <div
                       style={{
@@ -472,121 +705,6 @@ export function MyProfile({
                         flexDirection: isDesktop ? "row" : "column",
                       }}
                     >
-                      {showEditModal && (
-                        <div
-                          style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: "rgba(0,0,0,0.5)",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            zIndex: 1001,
-                          }}
-                        >
-                          <div
-                            style={{
-                              background: "#fff",
-                              padding: "32px 24px",
-                              borderRadius: "12px",
-                              width: "90%",
-                              maxWidth: "400px",
-                            }}
-                          >
-                            <h2
-                              style={{
-                                marginBottom: "18px",
-                                fontSize: "18px",
-                                fontWeight: 600,
-                              }}
-                            >
-                              Editar Dados Pessoais
-                            </h2>
-                            <form
-                              onSubmit={(e) => {
-                                e.preventDefault();
-                                saveEditProfile();
-                              }}
-                              style={{ display: "grid", gap: "14px" }}
-                            >
-                              <TextField
-                                label="Nome"
-                                name="name"
-                                value={editData.name}
-                                onChange={handleEditChange}
-                                fullWidth
-                                size="small"
-                              />
-                              <TextField
-                                label="Sobrenome"
-                                name="lastname"
-                                value={editData.lastname}
-                                onChange={handleEditChange}
-                                fullWidth
-                                size="small"
-                              />
-                              <TextField
-                                label="Telefone"
-                                name="phoneNumber"
-                                value={editData.phoneNumber}
-                                onChange={handleEditChange}
-                                fullWidth
-                                size="small"
-                              />
-                              <TextField
-                                label="Email"
-                                name="email"
-                                value={editData.email}
-                                onChange={handleEditChange}
-                                fullWidth
-                                size="small"
-                              />
-                              <TextField
-                                label="Nascimento"
-                                name="dateOfBirth"
-                                type="date"
-                                value={editData.dateOfBirth}
-                                onChange={handleEditChange}
-                                fullWidth
-                                size="small"
-                                InputLabelProps={{ shrink: true }}
-                              />
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: isDesktop ? "12px" : 0,
-                                  marginTop: "10px",
-                                  justifyContent: "center",
-                                  flexDirection: isDesktop ? "row" : "column",
-                                  width: "100%",
-                                }}
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() => setShowEditModal(false)}
-                                  style={{
-                                    ...baseBtnStyle,
-                                    background: "#6c757d",
-                                    border: "1px solid #6c757d",
-                                    color: "#fff",
-                                  }}
-                                >
-                                  Cancelar
-                                </button>
-                                <button
-                                  type="submit"
-                                  style={basePrimaryBtnStyle}
-                                >
-                                  Salvar
-                                </button>
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      )}
                       <div>
                         <p
                           style={{
@@ -599,7 +717,6 @@ export function MyProfile({
                         </p>
                       </div>
 
-                      {/* Botão Atualizar com o mesmo padrão responsivo */}
                       <div
                         style={{
                           display: "flex",
@@ -636,13 +753,12 @@ export function MyProfile({
                     />
                   </div>
 
-                  {/* Profile Information */}
+                  {/* Informações pessoais */}
                   <div style={styles.modernSection}>
                     <h2
                       style={{
                         fontSize: "16px",
                         fontWeight: "600",
-                        color: "#2c3e50",
                         margin: "0 0 20px 0",
                       }}
                     >
@@ -677,78 +793,7 @@ export function MyProfile({
                         </span>
                       </div>
 
-                      {showModal && (
-                        <div
-                          style={{
-                            position: "fixed",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: "rgba(0, 0, 0, 0.5)",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            zIndex: 1000,
-                          }}
-                        >
-                          <div
-                            style={{
-                              background: "#fff",
-                              padding: "32px",
-                              borderRadius: "12px",
-                              width: "90%",
-                              maxWidth: "400px",
-                              textAlign: "center",
-                            }}
-                          >
-                            <h2
-                              style={{
-                                marginBottom: "24px",
-                                color: "#dc3545",
-                                fontSize: "18px",
-                                fontWeight: "600",
-                              }}
-                            >
-                              Tem certeza que deseja cancelar sua assinatura?
-                            </h2>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: isDesktop ? "12px" : 0,
-                                flexDirection: isDesktop ? "row" : "column",
-                                width: "100%",
-                              }}
-                            >
-                              <button
-                                onClick={() => setShowModal(false)}
-                                style={{
-                                  ...baseBtnStyle,
-                                  background: "#28a745",
-                                  border: "1px solid #28a745",
-                                  color: "#fff",
-                                }}
-                              >
-                                Não
-                              </button>
-                              <button
-                                onClick={cancelSubscription}
-                                style={{
-                                  ...baseBtnStyle,
-                                  background: "#dc3545",
-                                  border: "1px solid #dc3545",
-                                  color: "#fff",
-                                }}
-                              >
-                                Sim
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {user.permissions == "teacher" && (
+                      {user.permissions === "teacher" && (
                         <div
                           style={{
                             ...styles.profileItem,
@@ -773,7 +818,7 @@ export function MyProfile({
                       )}
                     </div>
 
-                    {/* AÇÃO: Editar / Alterar Senha — mesmo padrão responsivo */}
+                    {/* Botões ações perfil */}
                     <div
                       style={{
                         display: "flex",
@@ -809,6 +854,7 @@ export function MyProfile({
                       </button>
                     </div>
                   </div>
+
                   {user.askedToCancel && (
                     <div style={styles.modernSection}>
                       <div style={styles.container}>
@@ -835,12 +881,119 @@ export function MyProfile({
                   )}
                 </>
               )}
-              <RankingTimelineArvin
-                headers={headers}
-                id={user.id}
-                name={user.name}
-                permissions={user.permissions}
-              />
+
+              {user.permissions === "students" && (
+                <RankingTimelineArvin
+                  headers={headers}
+                  id={user.id}
+                  name={user.name}
+                  permissions={user.permissions}
+                />
+              )}
+
+              {user.permissions !== "students" && (
+                <div style={styles.modernSection}>
+                  <h2
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      margin: "0 0 20px 0",
+                    }}
+                  >
+                    Informações De Assinatura
+                  </h2>
+
+                  {!hasSubscription ? (
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        color: "#6c757d",
+                        margin: 0,
+                      }}
+                    >
+                      Nenhuma assinatura ativa foi encontrada para este usuário.
+                    </p>
+                  ) : (
+                    <>
+                      <div>
+                        {subscriptionInfoList.map((item, index) => (
+                          <div key={index} style={styles.profileItem}>
+                            <span style={styles.profileLabel}>
+                              {item.title}
+                            </span>
+                            <span style={styles.profileValue}>{item.data}</span>
+                          </div>
+                        ))}
+
+                        <div style={styles.profileItem}>
+                          <span style={styles.profileLabel}>Situação</span>
+                          <span
+                            style={{
+                              ...styles.profileValue,
+                              padding: "4px 8px",
+                              borderRadius: "12px",
+                              fontSize: "12px",
+                              backgroundColor: user.askedToCancel
+                                ? "#fff3cd"
+                                : isSubscriptionActive
+                                ? "#e8f5e8"
+                                : "#f8d7da",
+                              color: user.askedToCancel
+                                ? "#856404"
+                                : isSubscriptionActive
+                                ? "#388e3c"
+                                : "#721c24",
+                            }}
+                          >
+                            {subscriptionStatus}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: isDesktop ? "flex-end" : "stretch",
+                          gap: isDesktop ? 6 : 10,
+                          marginTop: "16px",
+                          flexDirection: isDesktop ? "row" : "column",
+                          width: "100%",
+                        }}
+                      >
+                        {/* {isSubscriptionActive && !user.askedToCancel && (
+                          <button
+                            onClick={() => setShowModal(true)}
+                            style={{
+                              ...baseBtnStyle,
+                              background: "#dc3545",
+                              border: "1px solid #dc3545",
+                              color: "#fff",
+                            }}
+                          >
+                            Cancelar Assinatura
+                          </button>
+                        )} */}
+
+                        <button
+                          onClick={() =>
+                            window.location.assign(
+                              "https://wa.me/5511972369299"
+                            )
+                          }
+                          style={{
+                            ...basePrimaryBtnStyle,
+                            background: partnerColor(),
+                            border: `1px solid ${partnerColor()}`,
+                            color: textpartnerColorContrast(),
+                          }}
+                        >
+                          Falar com o suporte para cancelar Assinatura
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div
@@ -857,6 +1010,7 @@ export function MyProfile({
           )}
         </div>
       </div>
+
       <div
         style={{
           display: "flex",
