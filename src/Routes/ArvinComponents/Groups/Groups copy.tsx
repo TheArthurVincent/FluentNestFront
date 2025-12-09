@@ -1,23 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
+import {
+  backDomain,
+  updateInfo,
+  updateScore,
+} from "../../../Resources/UniversalComponents";
+import axios from "axios";
+import { partnerColor } from "../../../Styles/Styles";
 import ListOfGroupsToClick from "./ListOfGroupsToClick/ListOfGroupsToClick";
-import { Outlet } from "react-router-dom";
+import Groups from "../../Adm/AdmComponents/Groups/Groups";
 
 type TurmasProps = HeadersProps & {
   change?: boolean;
-  setChange?: (value: boolean) => void;
+  setChange?: any;
   isDesktop: boolean;
-  actualHeaders?: any | null;
+  actualHeaders?: any;
   id?: string | number;
 };
 
-export const newArvinTitleStyle = {
+export var newArvinTitleStyle = {
   fontFamily: "Plus Jakarta Sans",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
   letterSpacing: "0%",
-} as const;
+};
 
 export function Turmas({
   actualHeaders,
@@ -47,7 +54,7 @@ export function Turmas({
               justifyContent: "space-between",
               alignItems: "center",
               paddingLeft: "8px",
-              width: "100%",
+              margin: !isDesktop ? "12px" : "0px",
               fontSize: "1.5rem",
             }}
           >
@@ -55,41 +62,23 @@ export function Turmas({
           </section>
         </div>
       )}
-
-      {/* Card principal – igual ao Students */}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
-          fontWeight: 600,
-          fontStyle: "SemiBold",
-          fontSize: "14px",
-          backgroundColor: "#ffffff",
-          borderRadius: "12px",
-          margin: !isDesktop ? "12px" : "0px",
-          border: "1px solid #e8eaed",
-          padding: "10px",
+          columnCount: isDesktop ? 2 : 1, // 2 colunas no desktop, 1 no celular
+          columnGap: "16px",
+          marginTop: "32px",
+          paddingBottom: "64px",
         }}
       >
         <ListOfGroupsToClick
-          actualHeaders={actualHeaders || null}
+          actualHeaders={actualHeaders}
+          headers={actualHeaders}
           change={change}
           setChange={setChange}
           isDesktop={isDesktop}
-          id={id}
-          headers={null}
         />
+        <Groups id={id} headers={actualHeaders} />
       </div>
-
-      {isDesktop && (
-        <div
-          style={{
-            minHeight: 200,
-          }}
-        >
-          {/* se você quiser usar o Groups antigo como detalhe, pode colocar via rota aninhada */}
-          <Outlet />
-        </div>
-      )}
     </div>
   );
 }
