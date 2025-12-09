@@ -64,14 +64,6 @@ export function Adm({ headers }: HeadersProps) {
       ),
     },
     {
-      title: "Postagens",
-      displayArthur: "block",
-      value: "5",
-      tooltip:
-        "Crie novas postagens para serem exibidas na página inicial de todos os alunos. Compartilhe avisos, novidades, materiais extras ou mensagens importantes.",
-      component: <NewPost headers={headers} />,
-    },
-    {
       title: "Aparência",
       displayArthur: "block",
       value: "6",
