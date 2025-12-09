@@ -21,14 +21,14 @@ export const FlashcardsReview: FC<FlashcardsReviewProps> = ({
 
     if (student.id) {
       selectedStudentId = student.id;
-      updateInfo(selectedStudentId, actualHeaders);
+      updateInfo(student.id, actualHeaders);
     } else {
       return;
     }
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcards-today/${selectedStudentId}`,
+        `${backDomain}/api/v1/flashcards-today/${student.id}`,
         {
           headers: actualHeaders,
           params: { category: null, lang: "en" },

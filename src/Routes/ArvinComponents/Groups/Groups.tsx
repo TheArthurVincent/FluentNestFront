@@ -8,12 +8,14 @@ import {
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import ListOfGroupsToClick from "./ListOfGroupsToClick/ListOfGroupsToClick";
+import Groups from "../../Adm/AdmComponents/Groups/Groups";
 
 type TurmasProps = HeadersProps & {
   change?: boolean;
   setChange?: any;
   isDesktop: boolean;
   actualHeaders?: any;
+  id?: string | number;
 };
 
 export var newArvinTitleStyle = {
@@ -29,6 +31,7 @@ export function Turmas({
   change,
   setChange,
   isDesktop,
+  id,
 }: TurmasProps) {
   return (
     <div
@@ -74,6 +77,7 @@ export function Turmas({
           setChange={setChange}
           isDesktop={isDesktop}
         />
+        <Groups id={id} headers={actualHeaders} />
       </div>
     </div>
   );

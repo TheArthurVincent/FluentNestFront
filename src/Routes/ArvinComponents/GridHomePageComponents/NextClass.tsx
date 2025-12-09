@@ -1,10 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
-import {
-  backDomain,
-  formatDateBr,
-} from "../../../Resources/UniversalComponents";
+import { backDomain } from "../../../Resources/UniversalComponents";
 import { PresentationIcon } from "@phosphor-icons/react";
 
 interface NextClassProps {

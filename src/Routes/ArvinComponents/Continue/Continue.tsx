@@ -1,100 +1,133 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
-import { backDomain } from "../../../Resources/UniversalComponents";
-import { PlayIcon } from "@phosphor-icons/react";
-import InstallPWA from "../../../Components/InstallPWA";
+import {
+  backDomain,
+  formatDateBr,
+} from "../../../Resources/UniversalComponents";
+import { PresentationIcon } from "@phosphor-icons/react";
 
 interface ContinueProps {
   actualHeaders?: any;
+  studentId?: string;
   isDesktop?: boolean;
 }
 
-export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
-  const [courseTitle, setCourseTitle] = React.useState("");
-  const [courseId, setCourseId] = React.useState("");
-  const [classId, setClassId] = React.useState<string>("");
-  const [img, setImg] = React.useState(
-    "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512"
-  );
-  const [loadingLESSON, setLoadingLESSON] = React.useState(false);
-  const [hasData, setHasData] = React.useState(false);
-  const [isRealClass, setIsRealClass] = React.useState(false);
-  const [theLessonRenderID, setTheLessonRenderID] = React.useState<string>("");
+export const Continue: FC<ContinueProps> = ({
+  actualHeaders,
+  studentId,
+  isDesktop,
+}) => {
+  const [NXTCLASS, setNXTCLASS] = useState<any>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [now, setNow] = useState<Date>(new Date());
+  const [thePermissions, setPermissions] = useState<any>("");
+  const [NEXT3, setNEXT3] = useState<any[]>([]);
+  const [teacher, setTeacher] = useState<any>("");
+  const [student, setStudent] = useState<any>("");
 
-  const fetchLastClassId = async (classid: string) => {
-    setLoadingLESSON(true);
+  const fetchLastClassId = async () => {
+    setLoading(true);
+    const user = JSON.parse(localStorage.getItem("loggedIn") || '""');
+    setPermissions(user.permissions);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/lesson/${classid}`,
+        `${backDomain}/api/v1/next-event/${user.id}`,
         {
           headers: actualHeaders,
         }
       );
-
-      const courseTitleResp = response.data?.classDetails?.title
-        ? response.data?.classDetails?.title
-        : response.data?.classDetails?.student
-        ? response.data?.classDetails?.student
-        : "Última aula";
-      const isc = response.data?.isClass || false;
-      const courseResp = response.data?.classDetails?.courseId || "";
-      const theImg =
-        response.data?.classDetails?.image ||
-        "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
-
-      setImg(theImg);
-      setCourseTitle(courseTitleResp);
-      setCourseId(courseResp);
-      setClassId(classid);
-      setIsRealClass(isc);
-      if (!isc) {
-        setTheLessonRenderID(response.data?.classDetails?._id);
+      console.log("Response Next Event:", response);
+      if (response.data.nextEvent) {
+        setNXTCLASS(response.data.nextEvent);
+      } else {
+        setNXTCLASS("");
       }
-      setHasData(true);
-      setLoadingLESSON(false);
+
+      if (response.data.nextThreeEvents) {
+        setNEXT3(response.data.nextThreeEvents);
+      } else {
+        setNEXT3([]);
+      }
+
+      if (response.data.teacherName) {
+        setTeacher(response.data.teacherName);
+      }
+
+      if (response.data.nextEvent && response.data.nextEvent.student) {
+        setStudent(response.data.nextEvent.student);
+      }
     } catch (error) {
-      console.error("Erro ao buscar última aula:", error);
-      setHasData(false);
-      setLoadingLESSON(false);
+      console.error("Erro ao buscar próxima aula:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Buscar dados quando studentId/headers mudarem
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("loggedIn");
-      if (!stored) return;
+    console.log("studentId, actualHeaders", studentId, actualHeaders);
+    fetchLastClassId();
+  }, [studentId, actualHeaders]);
 
-      const parsed = JSON.parse(stored);
-      const lastClassId = parsed?.lastClassId;
-
-      if (lastClassId) {
-        console.log("loaded lastClassId:", lastClassId);
-        fetchLastClassId(lastClassId);
-      }
-    } catch (err) {
-      console.error("Erro ao ler lastClassId do localStorage:", err);
-    }
+  // Atualiza "now" periodicamente para o "ao vivo" funcionar em tempo real
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 30_000); // a cada 30s
+    return () => clearInterval(interval);
   }, []);
 
-  const theHref = () => {
-    if (hasData) {
-      if (courseId && classId && isRealClass) {
-        return `/teaching-materials/${courseId}/${classId}`;
-      } else if (!isRealClass && theLessonRenderID) {
-        return `/my-calendar/event/${theLessonRenderID}`;
-      }
-    } else {
-      return "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b";
-    }
+  const formatTime = (date: Date) => {
+    const h = String(date.getHours()).padStart(2, "0");
+    const m = String(date.getMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
   };
-  const href = theHref();
 
-  // hasData && courseId && classId && isRealClass
-  //   ? `/teaching-materials/${courseId}/${classId}`
-  //   : !isRealClass && classId && hasData
-  //   ? `/my-calendar/event/${classId}`
-  //
+  // Cálculos de horário e "ao vivo"
+  let isLive = false;
+  let endTimeStr = "";
+
+  if (NXTCLASS && NXTCLASS.date && NXTCLASS.time && NXTCLASS.duration != null) {
+    const [year, month, day] = NXTCLASS.date.split("-").map(Number);
+    const [hour, minute] = NXTCLASS.time.split(":").map(Number);
+
+    const start = new Date(year, month - 1, day, hour, minute);
+    const end = new Date(start.getTime() + NXTCLASS.duration * 60_000);
+
+    endTimeStr = formatTime(end);
+    isLive = now >= start && now <= end;
+  }
+
+  // Usa _id ou id, dependendo do que o backend mandar
+  const eventId = NXTCLASS?._id || NXTCLASS?.id;
+  const hasNextClass = !!eventId;
+
+  const href = hasNextClass ? `my-calendar/event/${eventId}` : "/my-calendar";
+
+  const buttonLabel = (() => {
+    if (loading) return "Carregando...";
+    if (!hasNextClass) return "Acessar calendário";
+    if (isLive) return "Entrar na aula ao vivo";
+    return "Acessar próxima aula";
+  })();
+
+  const titleLine = (() => {
+    if (!hasNextClass) return "Nenhuma próxima aula encontrada";
+    const who = thePermissions === "student" ? student : teacher;
+    if (!who) return "Próxima aula agendada";
+    return thePermissions == "student"
+      ? `Aula com ${teacher}`
+      : `Aula com ${who}`;
+  })();
+
+  const timeLine = (() => {
+    if (!hasNextClass || !NXTCLASS.date || !NXTCLASS.time) return "";
+    const dateBr = formatDateBr ? formatDateBr(NXTCLASS.date) : NXTCLASS.date;
+    return `${dateBr} • ${NXTCLASS.time}${
+      endTimeStr ? ` - ${endTimeStr}` : ""
+    }`;
+  })();
 
   return (
     <div
@@ -103,151 +136,193 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         backgroundImage: `linear-gradient(180deg, ${partnerColor()}15 70%, ${partnerColor()}05 100%)`,
         borderRadius: "16px",
         marginTop: isDesktop ? 0 : 16,
+        padding: "24px 24px 20px 24px",
         display: "flex",
-        justifyContent: "space-between",
+        flexDirection: "column",
+        gap: "16px",
       }}
     >
+      {/* Cabeçalho: ícone + título + live badge */}
       <div
         style={{
-          padding: "32px",
           display: "flex",
-          flexDirection: "column",
-          gap: "16px",
-          alignItems: "start",
           justifyContent: "space-between",
-          justifyItems: "center",
+          alignItems: "center",
+          gap: "12px",
         }}
       >
-        <p
+        <div
           style={{
-            fontFamily: "Plus Jakarta Sans",
-            fontWeight: 700,
-            fontStyle: "Bold",
-            fontSize: 14,
-            lineHeight: "100%",
-            letterSpacing: "4%",
-            textTransform: "uppercase",
-            color: partnerColor(),
+            display: "flex",
+            gap: "8px",
+            alignItems: "center",
           }}
         >
-          PLANO DO DIA
-        </p>
-
-        <div>
-          <p
+          <PresentationIcon size={20} color={"#030303"} weight="bold" />
+          <span
             style={{
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 700,
-              fontStyle: "Bold",
-              fontSize: isDesktop ? 28 : 20,
-              letterSpacing: "0%",
+              fontSize: 14,
+              textTransform: "uppercase",
+              letterSpacing: "4%",
               color: "#030303",
             }}
           >
-            Continue de onde parou
-          </p>
-          <p
+            {isLive ? "Ao vivo" : "Próxima aula"}
+          </span>
+        </div>
+
+        {isLive && (
+          <span
             style={{
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 600,
-              fontStyle: "SemiBold",
-              fontSize: 14,
-              marginTop: 8,
-              lineHeight: "100%",
-              letterSpacing: "0%",
-              color: "#65748C",
+              borderRadius: "999px",
+              fontSize: "12px",
+              backgroundColor: partnerColor(),
+              color: "white",
+              fontWeight: 500,
+              padding: "6px 12px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
             }}
           >
-            Retome sua última aula.
-          </p>
-
-          {loadingLESSON ? (
-            <p
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontSize: 12,
-                color: "#65748C",
-                marginTop: 12,
-              }}
-            >
-              Carregando última aula...
-            </p>
-          ) : (
-            <>
-              {hasData && (
-                <div
-                  style={{
-                    marginTop: 12,
-                    marginBottom: 8,
-                    fontFamily: "Plus Jakarta Sans",
-                    fontSize: 13,
-                    color: "#4B5563",
-                  }}
-                >
-                  {courseTitle && <div>{courseTitle}</div>}
-                </div>
-              )}
-
-              <a
-                href={href}
-                style={{
-                  textDecoration: "none",
-                  padding: "16px 11px",
-                  borderRadius: "8px",
-                  border: `1px solid ${partnerColor()}45`,
-                  marginTop: 16,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  textAlign: isDesktop ? "center" : "left",
-                  cursor: "pointer",
-                  width: isDesktop ? "fit-content" : "100%",
-                  backgroundColor: `${partnerColor()}30`,
-                }}
-              >
-                <PlayIcon color="#030303" weight="bold" size={16} />
-                <span
-                  style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 600,
-                    fontStyle: "SemiBold",
-                    fontSize: 14,
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
-                    color: "#030303",
-                    display: "flex",
-                  }}
-                >
-                  Última aula acessada
-                </span>
-              </a>
-            </>
-          )}
-        </div>
+            <i
+              className="fa fa-circle"
+              style={{ fontSize: 8, marginRight: 0 }}
+            />
+            Ao vivo
+          </span>
+        )}
       </div>
 
-      {isDesktop && (
-        <img
-          src={img}
-          alt={
-            courseTitle
-              ? `Imagem da aula ${courseTitle}`
-              : "Imagem da última aula"
-          }
+      {/* Informações da aula */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 6,
+        }}
+      >
+        <span
           style={{
-            borderRadius: "8px",
-            maxWidth: "150px",
-            width: "100%",
-            objectFit: "cover",
-            WebkitMaskImage:
-              "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
-            maskImage:
-              "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+            fontFamily: "Plus Jakarta Sans",
+            fontWeight: 700,
+            fontSize: isDesktop ? 18 : 16,
+            color: "#030303",
           }}
-        />
-      )}
-      <InstallPWA />
+        >
+          {loading ? "Carregando próxima aula..." : titleLine}
+        </span>
+
+        {timeLine && !loading && (
+          <span
+            style={{
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 500,
+              fontSize: 13,
+              color: "#606060",
+            }}
+          >
+            {timeLine}
+          </span>
+        )}
+      </div>
+
+      {/* Botão principal */}
+      <a
+        target={isDesktop ? "_blank" : "_self"}
+        href={href}
+        style={{
+          textDecoration: "none",
+          padding: "14px 12px",
+          borderRadius: "8px",
+          border: `1px solid ${partnerColor()}45`,
+          marginTop: 4,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          maxWidth: "fit-content",
+          gap: "8px",
+          textAlign: "center",
+          cursor: "pointer",
+          width: isDesktop ? "fit-content" : "100%",
+          backgroundColor: `${partnerColor()}30`,
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontSize: 14,
+          color: "#030303",
+        }}
+      >
+        {buttonLabel}
+        <i className="fa fa-chevron-right" />
+      </a>
+
+      {/* Próximos eventos (apenas para teacher/superadmin) */}
+      {(thePermissions === "teacher" || thePermissions === "superadmin") &&
+        NEXT3.length > 1 && (
+          <div style={{ marginTop: "8px" }}>
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontSize: 14,
+                color: "#030303",
+              }}
+            >
+              Próximos eventos
+            </span>
+
+            <div
+              style={{
+                marginTop: "8px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
+              {NEXT3.slice(1).map((ev, index) => {
+                const evId = ev._id || ev.id;
+
+                return (
+                  <div
+                    key={evId || index}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "2px",
+                    }}
+                  >
+                    <a
+                      target={isDesktop ? "_blank" : "_self"}
+                      href={`my-calendar/event/${evId}`}
+                      style={{
+                        textDecoration: "none",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 500,
+                        fontSize: 13,
+                        color: "#030303",
+                      }}
+                    >
+                      {ev.student || ev.teacherName || "Aluno"}
+                    </a>
+
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#606060",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {ev.date ? ev.date : ""} ({ev.time})
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
     </div>
   );
 };

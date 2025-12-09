@@ -83,17 +83,17 @@ export function MyHomePage({
   }, [change]);
 
   const cards = [
-    {
-      showToStudent: true,
-      showToTeacher: true,
-      component: (
-        <NextClass
-          isDesktop={isDesktop}
-          studentId={id}
-          actualHeaders={actualHeaders}
-        />
-      ),
-    },
+    // {
+    //   showToStudent: true,
+    //   showToTeacher: true,
+    //   component: (
+    //     <NextClass
+    //       isDesktop={isDesktop}
+    //       studentId={id}
+    //       actualHeaders={actualHeaders}
+    //     />
+    //   ),
+    // },
     {
       showToStudent: true,
       showToTeacher: false,

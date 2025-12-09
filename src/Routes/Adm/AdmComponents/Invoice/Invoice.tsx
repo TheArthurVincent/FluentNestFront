@@ -18,18 +18,18 @@ export function Invoice({ headers }: HeadersProps) {
 
   const [name, setName] = useState<string>("");
   const [doc, setDoc] = useState<string>("");
-  const [today, setDate] = useState<any>(
+  const [today, setDate] = useState<Date>(
     new Date(new Date().setDate(new Date().getDate()))
   );
-  const [thisMonth, setThisMonth] = useState<string>("Janeiro/2000");
   const [fee, setFee] = useState<number>(1000);
   const [comments, setComments] = useState<string>(
-    `Mensalidade de aulas particulares — referência: ${thisMonth}`
+    "Mensalidade de aulas particulares"
   );
   const [loading, setLoading] = useState<boolean>(false);
 
   const actualHeaders = headers || {};
   const MYID = localStorageLoggedIn?.id || "";
+  const primary = partnerColor();
 
   const handleStudentChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -73,10 +73,9 @@ export function Invoice({ headers }: HeadersProps) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-    //@ts-ignore
+    // @ts-ignore
     return `${day - 1}/${month}/${year}`;
   };
-  const generatePDF = () => window.print();
 
   const formatter = useMemo(
     () =>
@@ -86,26 +85,218 @@ export function Invoice({ headers }: HeadersProps) {
 
   const currency = (v: number) => formatter.format(isFinite(v) ? v : 0);
 
+  // Abre uma nova janela só com o recibo e manda imprimir
+  const generatePDF = () => {
+    const invoiceElement = document.querySelector(
+      ".invoice"
+    ) as HTMLElement | null;
+
+    if (!invoiceElement) {
+      window.print();
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "width=900,height=1000");
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+
+    const invoiceHTML = invoiceElement.outerHTML;
+
+    const styleForPrint = `
+      :root {
+        --primary: ${primary};
+        --ink: #111827;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --bg: #ffffff;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .invoice { 
+        max-width: 860px; 
+        margin: 1.5rem auto; 
+        background: var(--bg); 
+        color: var(--ink); 
+        border:1px solid var(--line); 
+        border-radius: 4px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,.05); 
+      }
+
+      .invoice__inner { padding: 2rem; }
+
+      .invoice__head { 
+        display:flex; 
+        align-items:center; 
+        justify-content:space-between; 
+        gap:1rem; 
+        border-bottom:1px solid var(--line); 
+        padding-bottom:1rem; 
+      }
+
+      .brand { display:grid; align-items:center; gap:1rem; }
+      .brand img { height: 28px; width:auto; border-radius: 4px; }
+      .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; color: var(--primary); }
+
+      .meta { text-align:right; }
+      .meta .title { font-weight:600; color:var(--muted); font-size:.85rem; }
+      .meta .value { font-size:1rem; }
+
+      .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+      .panel { border:1px solid var(--line); border-radius: 4px; padding:1rem; }
+      .panel h3 { margin:0 0 .5rem; font-size: .95rem; color: var(--muted); font-weight:600; letter-spacing:.02em; }
+      .panel p { margin:.15rem 0; }
+
+      .description-block {
+        margin-top: 1.25rem;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        padding: 1rem;
+        background: #fafafa;
+      }
+
+      .description-block label {
+        display:block;
+        font-size:.85rem;
+        color:var(--muted);
+        margin-bottom:.35rem;
+        font-weight:600;
+        letter-spacing:.02em;
+      }
+
+      .description-text {
+        font-size:.95rem;
+        line-height:1.5;
+      }
+
+      table { width:100%; border-collapse:collapse; margin-top:1.25rem; }
+      th, td { text-align:left; padding:.9rem 1rem; border-bottom:1px solid var(--line); }
+      th { font-size:.85rem; color:var(--muted); font-weight:600; letter-spacing:.03em; }
+      tfoot td { font-weight:700; }
+      .right { text-align:right; }
+
+      .signature { margin-top:3rem; text-align:center; }
+      .signature img { max-width: 10rem; display:block; margin:.5rem auto 0; }
+
+      .issuer { 
+        margin-top:1.5rem; 
+        border-top:1px solid var(--line); 
+        padding-top:1rem; 
+        text-align:center; 
+        color:var(--muted); 
+        font-size:.95rem; 
+      }
+
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        @page {
+          size: A4;
+          margin: 14mm 12mm;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .invoice__inner { padding: 1.25rem; }
+        .invoice__head { flex-direction: column; align-items:flex-start; }
+        .meta { text-align:left; }
+        .grid { grid-template-columns: 1fr; }
+      }
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Recibo de Pagamento</title>
+          <meta charSet="utf-8" />
+          <style>${styleForPrint}</style>
+        </head>
+        <body>
+          ${invoiceHTML}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
+
   return (
     <div>
+      {/* ESTILOS PARA A VERSÃO DENTRO DO APP */}
       <style>{`
         :root {
-          --primary: ${partnerColor()};
+          --primary: ${primary};
           --ink: #111827;
           --muted: #6b7280;
           --line: #e5e7eb;
           --bg: #ffffff;
         }
-        .toolbar { display:flex; gap:.75rem; align-items:center; padding:1rem; justify-content:center; }
-        .toolbar input, .toolbar select { padding:.5rem .6rem; border:1px solid var(--line); border-radius:.5rem; font-size:.95rem; }
-        .toolbar .btn-print { margin-left:.5rem; }
 
-        .invoice { max-width: 860px; margin: 2rem auto; background: var(--bg); color: var(--ink); border:1px solid var(--line); border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .invoice-toolbar {
+          display: grid;
+          gap: 10px;
+          align-items: center;
+          justify-items: center;
+          grid-template-columns: 1fr 1fr;
+          padding: 1rem;
+        }
+
+        .invoice-toolbar select,
+        .invoice-toolbar input {
+          padding: .5rem .6rem;
+          border: 1px solid var(--line);
+          border-radius: .5rem;
+          font-size: .95rem;
+          width: 100%;
+          max-width: 220px;
+        }
+
+        .invoice-toolbar .value-row {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .invoice { 
+          max-width: 860px; 
+          margin: 2rem auto; 
+          background: var(--bg); 
+          color: var(--ink); 
+          border:1px solid var(--line); 
+          border-radius: 4px; 
+          box-shadow: 0 10px 30px rgba(0,0,0,.05); 
+        }
+
         .invoice__inner { padding: 2rem; }
-        .invoice__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--line); padding-bottom:1rem; }
+
+        .invoice__head { 
+          display:flex; 
+          align-items:center; 
+          justify-content:space-between; 
+          gap:1rem; 
+          border-bottom:1px solid var(--line); 
+          padding-bottom:1rem; 
+        }
+
         .brand { display:grid; align-items:center; gap:1rem; }
         .brand img { height: 28px; width:auto; border-radius: 4px; }
-        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; }
+        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; color: var(--primary); }
+
         .meta { text-align:right; }
         .meta .title { font-weight:600; color:var(--muted); font-size:.85rem; }
         .meta .value { font-size:1rem; }
@@ -115,41 +306,67 @@ export function Invoice({ headers }: HeadersProps) {
         .panel h3 { margin:0 0 .5rem; font-size: .95rem; color: var(--muted); font-weight:600; letter-spacing:.02em; }
         .panel p { margin:.15rem 0; }
 
+        .description-block {
+          margin-top: 1.25rem;
+          border: 1px dashed var(--line);
+          border-radius: 12px;
+          padding: 1rem;
+          background: #fafafa;
+        }
+
+        .description-block label {
+          display:block;
+          font-size:.85rem;
+          color:var(--muted);
+          margin-bottom:.35rem;
+          font-weight:600;
+          letter-spacing:.02em;
+        }
+
+        .description-input {
+          width: 100%;
+          border: none;
+          background: transparent;
+          resize: vertical;
+          min-height: 48px;
+          font-size: .95rem;
+          line-height: 1.5;
+          outline: none;
+        }
+
         table { width:100%; border-collapse:collapse; margin-top:1.25rem; }
         th, td { text-align:left; padding:.9rem 1rem; border-bottom:1px solid var(--line); }
         th { font-size:.85rem; color:var(--muted); font-weight:600; letter-spacing:.03em; }
         tfoot td { font-weight:700; }
         .right { text-align:right; }
 
-        .notes { margin-top:1rem; border:1px dashed var(--line); padding:1rem; border-radius:12px; background:#fafafa; }
         .signature { margin-top:3rem; text-align:center; }
         .signature img { max-width: 10rem; display:block; margin:.5rem auto 0; }
-        .issuer { margin-top:1.5rem; border-top:1px solid var(--line); padding-top:1rem; text-align:center; color:var(--muted); font-size:.95rem; }
 
-        @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-          .no-print, .toolbar { display:none !important; }
-          .invoice { box-shadow:none; border:none; margin:0; max-width: 100%; }
-          .invoice__inner { padding: 0; }
-          @page { size: A4; margin: 14mm 12mm; }
+        .issuer { 
+          margin-top:1.5rem; 
+          border-top:1px solid var(--line); 
+          padding-top:1rem; 
+          text-align:center; 
+          color:var(--muted); 
+          font-size:.95rem; 
+        }
+
+        @media (max-width: 640px) {
+          .invoice__inner { padding: 1.25rem; }
+          .invoice__head { flex-direction: column; align-items:flex-start; }
+          .meta { text-align:left; }
+          .grid { grid-template-columns: 1fr; }
+          .invoice-toolbar { grid-template-columns: 1fr; }
         }
       `}</style>
 
       {loading ? (
         <div style={{ display: "grid", placeItems: "center", padding: "3rem" }}>
-          <CircularProgress style={{ color: partnerColor() }} />
+          <CircularProgress style={{ color: primary }} />
         </div>
       ) : (
-        <div
-          className="no-print"
-          style={{
-            display: "grid",
-            gap: "10px",
-            alignItems: "center",
-            justifyItems: "center",
-            gridTemplateColumns: " 1fr 1fr",
-          }}
-        >
+        <div className="no-print invoice-toolbar">
           <select onChange={handleStudentChange} name="students" value={newID}>
             <option value="" disabled>
               Selecione o aluno
@@ -160,10 +377,8 @@ export function Invoice({ headers }: HeadersProps) {
               </option>
             ))}
           </select>
+
           <input
-            style={{
-              maxWidth: "150px",
-            }}
             type="date"
             onChange={(e) => {
               const value = e.target.value;
@@ -174,28 +389,9 @@ export function Invoice({ headers }: HeadersProps) {
             }}
           />
 
-          <input
-            style={{
-              maxWidth: "150px",
-            }}
-            value={thisMonth}
-            type="text"
-            placeholder="Mês/Ano (ex.: Agosto/2025)"
-            onChange={(e) => setThisMonth(e.target.value)}
-            aria-label="Referência do mês"
-          />
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              alignItems: "center",
-            }}
-          >
+          <div className="value-row">
             <label>Valor</label>
             <input
-              style={{
-                maxWidth: "150px",
-              }}
               value={fee}
               type="number"
               step="0.01"
@@ -203,16 +399,6 @@ export function Invoice({ headers }: HeadersProps) {
               aria-label="Valor"
             />
           </div>
-          <input
-            style={{
-              maxWidth: "150px",
-            }}
-            value={comments}
-            placeholder="Observações"
-            type="text"
-            onChange={(e) => setComments(e.target.value)}
-            aria-label="Observações"
-          />
 
           <MyButton className="btn-print" onClick={generatePDF}>
             Imprimir / PDF
@@ -220,7 +406,7 @@ export function Invoice({ headers }: HeadersProps) {
         </div>
       )}
 
-      {/* INVOICE */}
+      {/* RECIBO */}
       <div className="invoice">
         <div className="invoice__inner">
           <div className="invoice__head">
@@ -234,13 +420,7 @@ export function Invoice({ headers }: HeadersProps) {
                   alt="Logo"
                 />
               )}
-              <h1
-                style={{
-                  color: partnerColor(),
-                }}
-              >
-                Recibo de Pagamento
-              </h1>
+              <h1>Recibo de Pagamento</h1>
             </div>
             <div className="meta">
               <div className="title">Recibo Nº</div>
@@ -277,6 +457,17 @@ export function Invoice({ headers }: HeadersProps) {
             </div>
           </div>
 
+          {/* DESCRIÇÃO DENTRO DO RECIBO */}
+          <div className="description-block">
+            <label>Descrição / Observações</label>
+            <textarea
+              className="description-input"
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              placeholder="Ex.: Mensalidade de aulas particulares — referência: Agosto/2025"
+            />
+          </div>
+
           <table>
             <thead>
               <tr>
@@ -286,13 +477,7 @@ export function Invoice({ headers }: HeadersProps) {
             </thead>
             <tbody>
               <tr>
-                <td>
-                  {comments && (
-                    <div className="notes">
-                      <p style={{ marginTop: ".35rem" }}>{comments}</p>
-                    </div>
-                  )}
-                </td>
+                <td>{comments}</td>
                 <td className="right">{currency(fee)}</td>
               </tr>
             </tbody>
