@@ -58,6 +58,7 @@ import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
 import SubscriptionExpired from "./SubscriptionExpired";
 import GroupPage from "./ArvinComponents/Groups/theGroup/TheGroup";
 import GroupClassesHistory from "./ArvinComponents/Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
+import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -417,6 +418,26 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: headers ? (
         <StudentClassesHistory isDesktop={isDesktop} headers={headers} />
+      ) : (
+        <div>Loading...</div>
+      ),
+    },
+    {
+      title: "Aulas",
+      path: "/classes/:studentId",
+      showLeftBar: true,
+      component: headers ? (
+        <StudentClassesHistory isDesktop={isDesktop} headers={headers} />
+      ) : (
+        <div>Loading...</div>
+      ),
+    },
+    {
+      title: "Aulas",
+      path: "/classes",
+      showLeftBar: true,
+      component: headers ? (
+        <CLSSUP isDesktop={isDesktop} headers={headers} />
       ) : (
         <div>Loading...</div>
       ),

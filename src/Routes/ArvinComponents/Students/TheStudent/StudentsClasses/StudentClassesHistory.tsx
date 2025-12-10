@@ -434,7 +434,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                             event.category == "Established Group Class"
                               ? "#000"
                               : partnerColor(),
-
                           marginRight: 8,
                         }}
                       >
