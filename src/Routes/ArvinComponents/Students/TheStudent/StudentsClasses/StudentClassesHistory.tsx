@@ -10,7 +10,10 @@ import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/Functio
 import { newArvinTitleStyle } from "../../Students";
 import { partnerColor } from "../../../../../Styles/Styles";
 import { NotebookIcon } from "@phosphor-icons/react";
-import { getEmbedUrl } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
+import {
+  categoryList,
+  getEmbedUrl,
+} from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
 import { cardBase, cardTitle, pillStatus } from "../types/studentPage.styles";
 
@@ -419,6 +422,28 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       gap: 8,
                     }}
                   >
+                    {event.category && (
+                      <div
+                        style={{
+                          ...pillStatus,
+                          backgroundColor:
+                            event.category == "Established Group Class"
+                              ? "#E0E7FF"
+                              : `${partnerColor()}20`,
+                          color:
+                            event.category == "Established Group Class"
+                              ? "#000"
+                              : partnerColor(),
+
+                          marginRight: 8,
+                        }}
+                      >
+                        {categoryList.find(
+                          (cat) => cat.value === event.category
+                        )?.text || event.category}
+                      </div>
+                    )}
+
                     {typeof event.duration === "number" && (
                       <span
                         style={{
