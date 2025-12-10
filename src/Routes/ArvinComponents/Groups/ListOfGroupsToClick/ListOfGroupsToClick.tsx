@@ -4,12 +4,13 @@ import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { Link } from "react-router-dom";
+import NewGroupModal from "./NewGroupModal";
 
 type ListOfGroupsToClickProps = HeadersProps & {
   change?: boolean;
   setChange?: (value: boolean) => void;
   isDesktop: boolean;
-  actualHeaders?: any | null;
+  actualHeaders?: Record<string, string> | null;
   id?: string | number;
 };
 
@@ -30,8 +31,7 @@ export const newArvinTitleStyle = {
 
 export function ListOfGroupsToClick({
   actualHeaders,
-  change,
-  setChange,
+  headers,
   isDesktop,
   id,
 }: ListOfGroupsToClickProps) {
@@ -55,7 +55,7 @@ export function ListOfGroupsToClick({
       const response = await axios.get(
         `${backDomain}/api/v1/groups/${teacherId}`,
         {
-          headers: actualHeaders,
+          headers: actualHeaders || undefined,
         }
       );
 
@@ -92,7 +92,7 @@ export function ListOfGroupsToClick({
       {!loading && groups.length === 0 && <p>No groups found.</p>}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-        {/* Barra de busca */}
+        {/* Barra de busca + NOVA TURMA */}
         <div
           style={{
             display: "flex",
@@ -120,7 +120,12 @@ export function ListOfGroupsToClick({
               outline: "none",
             }}
           />
-          {/* Se depois você criar um NewGroupModal, encaixa aqui */}
+
+          <NewGroupModal
+            headers={actualHeaders}
+            teacherId={id}
+            onCreated={fetchGroups}
+          />
         </div>
 
         {/* Lista de turmas */}

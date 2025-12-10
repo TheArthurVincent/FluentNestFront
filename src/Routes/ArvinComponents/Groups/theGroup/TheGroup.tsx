@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -38,97 +38,10 @@ type GroupClassEvent = {
   importantLink?: string;
 };
 
-const statusTokens = (status?: string) => {
-  switch (status) {
-    case "realizada":
-      return {
-        leftBorder: "#28a745",
-        pillBg: "#d4edda",
-        pillFg: "#155724",
-        neutralFg: "#495057",
-        neutralBg: "#e9ecef",
-      };
-    case "desmarcado":
-      return {
-        leftBorder: "#dc3545",
-        pillBg: "#f8d7da",
-        pillFg: "#721c24",
-        neutralFg: "#495057",
-        neutralBg: "#e9ecef",
-      };
-    case "reagendado":
-      return {
-        leftBorder: "#ffc107",
-        pillBg: "#fff3cd",
-        pillFg: "#856404",
-        neutralFg: "#495057",
-        neutralBg: "#e9ecef",
-      };
-    default:
-      return {
-        leftBorder: "#6c757d",
-        pillBg: "#e9ecef",
-        pillFg: "#495057",
-        neutralFg: "#495057",
-        neutralBg: "#e9ecef",
-      };
-  }
-};
-
-const historyStyles = {
-  card: {
-    backgroundColor: "#ffffff",
-    margin: "auto",
-    marginTop: "0px",
-    borderRadius: "12px",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
-    border: "1px solid #e8eaed",
-    padding: "16px 18px",
-    gap: "10px",
-  } as React.CSSProperties,
-  h3: {
-    color: "#2c3e50",
-    fontSize: "16px",
-    fontWeight: 600,
-    marginBottom: "16px",
-    borderBottom: "2px solid #e8eaed",
-    paddingBottom: "6px",
-  } as React.CSSProperties,
-  item: (borderColor: string): React.CSSProperties => ({
-    backgroundColor: "#fff",
-    border: "1px solid #e9ecef",
-    borderRadius: "8px",
-    padding: "16px",
-    transition: "all 0.3s ease",
-    borderLeft: `4px solid ${borderColor}`,
-  }),
-  listHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "12px",
-    flexWrap: "wrap",
-    gap: "8px",
-  } as React.CSSProperties,
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "12px",
-  } as React.CSSProperties,
-  label: {
-    fontSize: "11px",
-    color: "#6c757d",
-    marginBottom: "4px",
-  } as React.CSSProperties,
-  link: {
-    color: "#007bff",
-    textDecoration: "none",
-    fontSize: "13px",
-  } as React.CSSProperties,
-};
-
 const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
   const { groupId } = useParams<{ groupId: string }>();
+  const navigate = useNavigate();
+
   const [group, setGroup] = useState<GroupItem | null>(null);
   const [students, setStudents] = useState<StudentItem[]>([]);
   const [arrayOfIds, setArrayOfIds] = useState<string[]>([]);
@@ -173,7 +86,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
             : [];
         setArrayOfIds(ids);
 
-        // Histórico
+        // Histórico da turma (só pra resumo)
         setLoadingHistory(true);
         const resHistory = await axios.get(
           `${backDomain}/api/v1/grouphistory/${groupId}`,
@@ -252,7 +165,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
         headers: headers as any,
       });
       notifyAlert("Turma excluída com sucesso.");
-      // aqui você pode usar useNavigate pra voltar para /turmas, por ex.
+      navigate("/groups");
     } catch (error) {
       console.error(error);
       notifyAlert("Erro ao excluir turma.");
@@ -296,6 +209,28 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
 
   const totalStudents = arrayOfIds.length;
   const totalClasses = classesGroup.length;
+
+  // última aula só pra mostrar um resuminho
+  const lastClass =
+    classesGroup && classesGroup.length > 0
+      ? [...classesGroup].sort(
+          (a, b) =>
+            new Date(b.date || "").getTime() - new Date(a.date || "").getTime()
+        )[0]
+      : undefined;
+
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "-";
+    try {
+      return new Date(dateStr).toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
 
   return (
     <div
@@ -523,143 +458,133 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
           </div>
         </div>
 
-        {/* COLUNA CENTRAL – HISTÓRICO DE AULAS */}
+        {/* COLUNA CENTRAL – RESUMO DO HISTÓRICO + LINK */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <div style={historyStyles.card}>
-            <h3 style={historyStyles.h3}>📚 Histórico de aulas em grupo</h3>
-            {loadingHistory && (
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              margin: "auto",
+              marginTop: "0px",
+              borderRadius: "12px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
+              border: "1px solid #e8eaed",
+              padding: "16px 18px",
+            }}
+          >
+            <h3
+              style={{
+                color: "#2c3e50",
+                fontSize: "16px",
+                fontWeight: 600,
+                marginBottom: "12px",
+                borderBottom: "2px solid #e8eaed",
+                paddingBottom: "6px",
+              }}
+            >
+              📚 Histórico de aulas em grupo
+            </h3>
+
+            {loadingHistory ? (
               <div style={{ fontSize: 13, color: "#64748b" }}>
                 Carregando histórico...
               </div>
-            )}
+            ) : (
+              <>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "#4b5563",
+                    marginBottom: 8,
+                  }}
+                >
+                  Esta turma possui{" "}
+                  <strong>
+                    {totalClasses} aula
+                    {totalClasses === 1 ? "" : "s"} em grupo
+                  </strong>{" "}
+                  registradas.
+                </p>
 
-            {!loadingHistory && totalClasses === 0 && (
-              <div style={{ fontSize: 13, color: "#64748b" }}>
-                Nenhuma aula registrada para esta turma.
-              </div>
-            )}
-
-            {!loadingHistory &&
-              (classesGroup && classesGroup.length > 0
-                ? [...classesGroup].sort(
-                    (a, b) =>
-                      new Date(b.date || "").getTime() -
-                      new Date(a.date || "").getTime()
-                  )
-                : []
-              ).map((event, idx) => {
-                const t = statusTokens(event?.status);
-                const key = event?._id || `${event?.date}-${idx}`;
-                const time = event?.time ? ` às ${event.time}` : "";
-
-                return (
+                {lastClass && (
                   <div
-                    key={key + idx}
                     style={{
-                      marginBottom: "1rem",
-                      ...historyStyles.item(t.leftBorder),
+                      borderRadius: 8,
+                      border: "1px solid #e5e7eb",
+                      padding: 10,
+                      marginBottom: 10,
+                      fontSize: 12,
+                      color: "#111827",
+                      backgroundColor: "#f9fafb",
                     }}
                   >
-                    <div style={historyStyles.listHeader}>
-                      <div style={{ fontWeight: 600, color: "#2c3e50" }}>
-                        # {idx + 1}
-                      </div>
-
+                    <div
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "#6b7280",
+                        marginBottom: 4,
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Última aula registrada
+                    </div>
+                    <div>
+                      <strong>
+                        {formatDate(lastClass.date)}{" "}
+                        {lastClass.time && `• ${lastClass.time}`}
+                      </strong>
+                    </div>
+                    {lastClass.status && (
                       <div
                         style={{
-                          display: "flex",
-                          gap: "8px",
-                          alignItems: "center",
+                          marginTop: 2,
+                          fontSize: 11,
+                          color: "#4b5563",
                         }}
                       >
-                        <span
-                          style={{
-                            backgroundColor: t.pillBg,
-                            color: t.pillFg,
-                            padding: "4px 10px",
-                            borderRadius: "4px",
-                            fontSize: "11px",
-                            textTransform: "uppercase",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {event?.status || "—"}
-                        </span>
-
-                        <span
-                          style={{
-                            backgroundColor: "#f1f3f5",
-                            color: "#495057",
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                            fontSize: "11px",
-                          }}
-                        >
-                          {event?.category || "—"}
-                        </span>
+                        Status: <strong>{lastClass.status}</strong>
                       </div>
-
-                      <div style={{ fontSize: "13px", color: "#6c757d" }}>
-                        🕒 {event?.duration ?? "—"} min
+                    )}
+                    {lastClass.description && (
+                      <div
+                        style={{
+                          marginTop: 4,
+                          color: "#4b5563",
+                        }}
+                      >
+                        {lastClass.description}
                       </div>
-                    </div>
-
-                    <div style={historyStyles.grid}>
-                      <div>
-                        <div style={historyStyles.label}>📅 Data & horário</div>
-                        <div style={{ color: "#333" }}>
-                          {event?.date
-                            ? new Date(
-                                new Date(event.date).setDate(
-                                  new Date(event.date).getDate() + 1
-                                )
-                              ).toLocaleDateString("pt-BR")
-                            : "—"}
-                          {time}
-                        </div>
-                      </div>
-
-                      {event?.description &&
-                        event.description.trim() !== "" && (
-                          <div style={{ gridColumn: "1 / -1" }}>
-                            <div style={historyStyles.label}>📝 Descrição</div>
-                            <div style={{ color: "#333", lineHeight: 1.5 }}>
-                              {event.description}
-                            </div>
-                          </div>
-                        )}
-
-                      {event?.video && (
-                        <div>
-                          <div style={historyStyles.label}>🎥 Vídeo</div>
-                          <a
-                            href={event.video}
-                            rel="noopener noreferrer"
-                            style={historyStyles.link}
-                          >
-                            Assista no YouTube
-                          </a>
-                        </div>
-                      )}
-
-                      {event?.importantLink && (
-                        <div>
-                          <div style={historyStyles.label}>
-                            🔗 Link importante
-                          </div>
-                          <a
-                            href={event.importantLink}
-                            rel="noopener noreferrer"
-                            style={historyStyles.link}
-                          >
-                            Abrir material
-                          </a>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
-                );
-              })}
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => navigate(`/groups/${group._id}/history`)}
+                  style={{
+                    width: "100%",
+                    marginTop: 4,
+                    padding: "10px 0",
+                    borderRadius: 999,
+                    border: "1px solid #0ea5e9",
+                    backgroundColor: "#0ea5e9",
+                    color: "#ffffff",
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                >
+                  Ver histórico completo
+                  <i className="fa fa-chevron-right" />
+                </button>
+              </>
+            )}
           </div>
         </div>
 
