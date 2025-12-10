@@ -25,8 +25,8 @@ export const pillStatus: React.CSSProperties = {
   fontWeight: 600,
   padding: "4px 10px",
   borderRadius: 8,
-  backgroundColor: `${partnerColor()}20`,
-  color: partnerColor(),
+  // backgroundColor: `${partnerColor()}20`,
+  // color: partnerColor(),
 };
 
 export const statCardBase: React.CSSProperties = {

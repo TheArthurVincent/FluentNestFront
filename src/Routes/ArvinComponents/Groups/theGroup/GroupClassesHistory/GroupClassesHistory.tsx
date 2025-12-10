@@ -412,8 +412,21 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                       </span>
                     )}
 
-                    <span style={pillStatus}>{event.status}</span>
-
+                    <span
+                      style={{
+                        ...pillStatus,
+                        backgroundColor:
+                          event.status !== "desmarcado"
+                            ? `${partnerColor()}20`
+                            : "rgba(255, 221, 221, 0.41)",
+                        color:
+                          event.status !== "desmarcado"
+                            ? partnerColor()
+                            : "rgba(220, 38, 38, 0.8)",
+                      }}
+                    >
+                      {event.status}
+                    </span>
                     <span
                       style={{
                         transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
