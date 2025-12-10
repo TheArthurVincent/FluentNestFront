@@ -6,7 +6,6 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../Students";
 import { StudentHeader } from "./sections/StudentHeader";
 import { StudentTodayClassesCard } from "./sections/StudentTodayClassesCard";
-import { StudentStatsStrip } from "./sections/StudentStatsStrip";
 import { StudentLessonsCard } from "./sections/StudentLessons";
 import { StudentScoresCard } from "./sections/StudentScoresCard";
 import { StudentFinancialReportsCard } from "./sections/StudentFinancialReportsCard";

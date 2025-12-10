@@ -1,23 +1,19 @@
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import { Outlet, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { HeadersProps } from "../../../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  truncateString,
-} from "../../../../../Resources/UniversalComponents";
+import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { newArvinTitleStyle } from "../../Students";
 import { partnerColor } from "../../../../../Styles/Styles";
-import { NotebookIcon } from "@phosphor-icons/react";
-import {
-  categoryList,
-  getEmbedUrl,
-} from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
+import { getEmbedUrl } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
-import { cardBase, cardTitle, pillStatus } from "../types/studentPage.styles";
+import { newArvinTitleStyle } from "../../Groups";
+import {
+  cardBase,
+  pillStatus,
+} from "../../../Students/TheStudent/types/studentPage.styles";
 
-type StudentClassesHistoryProps = HeadersProps & {
+type GroupClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
 };
 
@@ -53,67 +49,47 @@ interface EventFromApi {
   [key: string]: unknown;
 }
 
-interface HomeworkFromApi {
-  _id: string;
-  title?: string;
-  content?: string;
-  homework?: string;
-  board?: string;
-  status?: string;
-  studentName?: string;
-  [key: string]: unknown;
+interface GroupEventsResponse {
+  classesGroup: EventFromApi[];
+  groupName?: string;
+  limit?: number;
+  total?: number;
 }
 
-interface EventsResponse {
-  events: EventFromApi[];
-  total: number;
-  page: number;
-  studentName?: string;
-  limit: number;
-  totalPages: number;
-  homeworkByEvent?: {
-    [eventId: string]: HomeworkFromApi[];
-  };
-}
-
-export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
+export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   headers,
   isDesktop,
 }) => {
-  const { studentId } = useParams<{ studentId: string }>();
+  const { groupId } = useParams<{ groupId: string }>();
 
   const [eventsList, setEventsList] = useState<EventFromApi[]>([]);
-  const [homeworkByEvent, setHomeworkByEvent] = useState<
-    Record<string, HomeworkFromApi[]>
-  >({});
   const [loadingEventsList, setLoadingEventsList] = useState<boolean>(false);
 
   const [pageSize, setPageSize] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [openEventId, setOpenEventId] = useState<string | null>(null);
-  const [studentName, setStudentName] = useState<string>("");
+  const [groupName, setGroupName] = useState<string>("");
 
-  // 🔍 NOVO: termo de busca por descrição
+  // 🔍 termo de busca por descrição
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSeeClassesHistory = async (): Promise<void> => {
-    if (!studentId) return;
+    if (!groupId) return;
 
     setLoadingEventsList(true);
     setEventsList([]);
-    setHomeworkByEvent({});
 
     try {
-      const response = await axios.get<EventsResponse>(
-        `${backDomain}/api/v1/event-one-student-pag/${studentId}`,
+      const response = await axios.get<GroupEventsResponse>(
+        `${backDomain}/api/v1/grouphistory/${groupId}`,
         {
           headers: headers as any,
         }
       );
-      setStudentName(response.data.studentName || "");
-      console.log(response.data);
-      setEventsList(response.data.events || []);
-      setHomeworkByEvent(response.data.homeworkByEvent || {});
+
+      setGroupName(response.data.groupName || "");
+      const list = response.data.classesGroup || [];
+      setEventsList(list);
       setCurrentPage(0);
       setOpenEventId(null);
 
@@ -121,17 +97,17 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         setLoadingEventsList(false);
       }, 100);
     } catch (error) {
-      notifyAlert("Erro ao buscar histórico de aulas Individuais");
-      console.log(error, "Erro ao buscar histórico de aulas Individuais");
+      notifyAlert("Erro ao buscar histórico de aulas da turma");
+      console.log(error, "Erro ao buscar histórico de aulas da turma");
       setLoadingEventsList(false);
     }
   };
 
   useEffect(() => {
-    if (!studentId) return;
+    if (!groupId) return;
     handleSeeClassesHistory();
-    console.log("studentId mudou:", studentId);
-  }, [studentId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [groupId]);
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
@@ -146,7 +122,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     }
   };
 
-  // 🔍 NOVO: eventos filtrados pela descrição
+  // 🔍 eventos filtrados pela descrição
   const filteredEvents = useMemo(() => {
     if (!searchTerm.trim()) return eventsList;
     const term = searchTerm.toLowerCase();
@@ -186,15 +162,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     setOpenEventId((prev) => (prev === id ? null : id));
   };
 
-  const getHomeworkHtml = (hw: HomeworkFromApi): string => {
-    return (
-      (hw.homework as string) ||
-      (hw.content as string) ||
-      (hw.board as string) ||
-      ""
-    );
-  };
-
   return (
     <div
       style={{
@@ -220,7 +187,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             }}
           >
             <span style={newArvinTitleStyle}>
-              Histórico de Aulas {studentName && `de ${studentName}`}
+              Histórico de Aulas {groupName && `da turma "${groupName}"`}
             </span>
           </section>
         </div>
@@ -236,7 +203,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         }}
       >
         <a
-          href={`/students/${studentId}`}
+          href={`/groups/${groupId}`}
           style={{
             marginTop: 14,
             display: "block",
@@ -249,7 +216,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             gap: 6,
           }}
         >
-          Ver aluno
+          Ver turma
           <i
             style={{
               marginLeft: 8,
@@ -373,7 +340,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
             const isOpen = openEventId === event._id;
-            const homeworks = homeworkByEvent[event._id] || [];
 
             return (
               <div
@@ -413,6 +379,18 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     >
                       {formatDate(event.date)} — {event.time || "--:--"}
                     </span>
+                    {event.category && (
+                      <span
+                        style={{
+                          fontFamily: "Plus Jakarta Sans",
+                          fontWeight: 500,
+                          fontSize: 12,
+                          color: "#6B7280",
+                        }}
+                      >
+                        {event.category}
+                      </span>
+                    )}
                   </div>
 
                   <div
@@ -422,28 +400,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       gap: 8,
                     }}
                   >
-                    {event.category && (
-                      <div
-                        style={{
-                          ...pillStatus,
-                          backgroundColor:
-                            event.category == "Established Group Class"
-                              ? "#E0E7FF"
-                              : `${partnerColor()}20`,
-                          color:
-                            event.category == "Established Group Class"
-                              ? "#000"
-                              : partnerColor(),
-
-                          marginRight: 8,
-                        }}
-                      >
-                        {categoryList.find(
-                          (cat) => cat.value === event.category
-                        )?.text || event.category}
-                      </div>
-                    )}
-
                     {typeof event.duration === "number" && (
                       <span
                         style={{
@@ -471,7 +427,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     >
                       {event.status}
                     </span>
-
                     <span
                       style={{
                         transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
@@ -503,12 +458,14 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         marginBottom: 8,
                         justifyContent: "space-between",
                         alignItems: "center",
+                        gap: 8,
                       }}
                     >
                       <p
                         style={{
                           margin: 0,
                           color: "#4B5563",
+                          flex: 1,
                         }}
                       >
                         <strong>Descrição: </strong>
@@ -525,6 +482,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           textTransform: "uppercase",
                           alignItems: "center",
                           gap: 6,
+                          whiteSpace: "nowrap",
                         }}
                       >
                         Ver Evento
@@ -548,99 +506,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         >
                           <IFrameVideoBlog src={getEmbedUrl(event.video)} />
                         </div>
-                      </div>
-                    )}
-
-                    {/* HOMEWORK */}
-                    {homeworks.length > 0 && (
-                      <div
-                        style={{
-                          borderTop: "1px solid #E5E7EB",
-                          paddingTop: 10,
-                          display: "grid",
-                          gap: 8,
-                        }}
-                      >
-                        <div style={cardTitle}>
-                          <NotebookIcon
-                            size={20}
-                            color={"#111827"}
-                            weight="bold"
-                          />
-                          <span>Trabalhos de casa</span>
-                        </div>
-
-                        <div
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            color: "#030303",
-                            maxWidth: "100%",
-                            maxHeight: 150,
-                            padding: "4px 0",
-                            overflowY: "auto",
-                            scrollbarColor: `${partnerColor()}50 #FFFFFF`,
-                            scrollbarWidth: "thin",
-                          }}
-                        >
-                          {homeworks.map((hw) => {
-                            const html = getHomeworkHtml(hw);
-
-                            return (
-                              <div key={hw._id} style={{ marginBottom: 12 }}>
-                                {hw.title && (
-                                  <div
-                                    style={{
-                                      fontWeight: 600,
-                                      marginBottom: 4,
-                                    }}
-                                  >
-                                    {hw.title}
-                                  </div>
-                                )}
-
-                                {html ? (
-                                  <div
-                                    dangerouslySetInnerHTML={{ __html: html }}
-                                  />
-                                ) : (
-                                  <pre
-                                    style={{
-                                      whiteSpace: "pre-wrap",
-                                      color: "#6B7280",
-                                    }}
-                                  >
-                                    <div
-                                      dangerouslySetInnerHTML={{
-                                        __html: hw?.description || "",
-                                      }}
-                                    />{" "}
-                                  </pre>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <a
-                          href={`/my-calendar/event/${event._id}`}
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 700,
-                            lineHeight: "100%",
-                            textTransform: "uppercase",
-                            cursor: "pointer",
-                            textDecoration: "none",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                            gap: 8,
-                            color: partnerColor(),
-                          }}
-                        >
-                          <span>Acessar</span>
-                          <i className="fa fa-chevron-right" />
-                        </a>
                       </div>
                     )}
                   </div>
@@ -699,18 +564,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           </div>
         )}
       </div>
-
-      {isDesktop && (
-        <div
-          style={{
-            minHeight: 200,
-          }}
-        >
-          <Outlet />
-        </div>
-      )}
     </div>
   );
 };
 
-export default StudentClassesHistory;
+export default GroupClassesHistory;

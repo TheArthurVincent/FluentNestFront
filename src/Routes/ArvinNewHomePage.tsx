@@ -56,6 +56,8 @@ import Event from "./ArvinComponents/OneEvent/OneEvent";
 import StudentClassesHistory from "./ArvinComponents/Students/TheStudent/StudentsClasses/StudentClassesHistory";
 import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
 import SubscriptionExpired from "./SubscriptionExpired";
+import GroupPage from "./ArvinComponents/Groups/theGroup/TheGroup";
+import GroupClassesHistory from "./ArvinComponents/Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -404,7 +406,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       path: "/students/:studentId",
       showLeftBar: true,
       component: headers ? (
-        <StudentPage isDesktop={isDesktop} headers={headers} />
+        <StudentPage isDesktop={isDesktop} headers={headers || undefined} />
       ) : (
         <div>Loading...</div>
       ),
@@ -435,15 +437,30 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: (
         <Turmas
-          headers={headers}
-          actualHeaders={headers}
+          actualHeaders={headers || undefined}
           change={change}
           setChange={setChange}
           isDesktop={isDesktop}
           id={_StudentId}
+          headers={null}
         />
       ),
     },
+    {
+      title: "Turmas",
+      path: "/groups/:groupId",
+      showLeftBar: true,
+      component: <GroupPage headers={headers} isDesktop={isDesktop} />,
+    },
+    {
+      title: "Turmas",
+      path: "/groups/:groupId/history",
+      showLeftBar: true,
+      component: (
+        <GroupClassesHistory headers={headers} isDesktop={isDesktop} />
+      ),
+    },
+
     {
       title: "Posts",
       showLeftBar: true,

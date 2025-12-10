@@ -193,6 +193,8 @@ export const formatTimeRange = (startTime, durationMinutes = 60) => {
 
   return `${startFormatted} - ${endFormatted}`;
 };
+
+
 export const categoryList = [
   {
     text: "Aula Experimental",
