@@ -516,8 +516,8 @@ export default function EditLesson({
           </div>
 
           {/* CABEÇALHO E METADADOS */}
-          {!fetchEventData && (
-            <div style={{ ...sectionCard, marginBottom: 12 }}>
+          <div style={{ ...sectionCard, marginBottom: 12 }}>
+            {!fetchEventData && (
               <div
                 style={{
                   display: "grid",
@@ -560,24 +560,27 @@ export default function EditLesson({
                   </select>
                 </div>
               </div>
+            )}
 
+            {!fetchEventData && (
               <TagsEditor
                 value={tags}
                 onChange={setTags}
                 helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
               />
+            )}
+            <div style={{ marginTop: 10 }}>
+              <div style={labelStyle}>Description</div>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                placeholder="Descrição da aula"
+                style={{ ...inputBase, resize: "vertical" }}
+              />
+            </div>
 
-              <div style={{ marginTop: 10 }}>
-                <div style={labelStyle}>Description</div>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  placeholder="Descrição da aula"
-                  style={{ ...inputBase, resize: "vertical" }}
-                />
-              </div>
-
+            {!fetchEventData && (
               <div style={{ marginTop: 10 }}>
                 <div style={labelStyle}>Imagem da aula</div>
                 <input
@@ -631,8 +634,8 @@ export default function EditLesson({
                   </div>
                 )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* TOOLBAR: Import + tipo + add início/fim */}
           <div
