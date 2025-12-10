@@ -78,7 +78,6 @@ interface ClassDetails {
   description: string;
   elements: ElementItem[];
   image: string;
-  language: string;
   module: string;
   moduleId?: string;
   order: number; // só aqui continua
@@ -203,6 +202,8 @@ export default function EditLesson({
     getClass();
   }, [change]);
 
+  const [theLanguage, setTheLanguage] = useState<string>("en");
+
   // ===================== SALVAR AULA (persiste tudo, inclusive os importados) =====================
   const handleSave = async () => {
     if (!lesson) return;
@@ -224,6 +225,7 @@ export default function EditLesson({
       ...lesson,
       title,
       description,
+      language: theLanguage,
       image,
       order: Number(order), // order só na aula
       tags,
@@ -685,6 +687,8 @@ export default function EditLesson({
             <ImportElementsEditor
               lessonId={classId}
               studentId={studentId}
+              setTheLanguage={setTheLanguage}
+              theLanguage={theLanguage}
               headers={headers}
               onChange={handleImportChange}
               fetchEventData={fetchEventData}
