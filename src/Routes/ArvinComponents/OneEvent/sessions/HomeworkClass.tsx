@@ -96,7 +96,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
       // 1. EDITAR HOMEWORK EXISTENTE
       if (homeworkID) {
         await axios.put(
-          `${backDomain}/api/v1/edithomeworkdescription/${homeworkID}`,
+          `${backDomain}/api/v1 /${homeworkID}`,
           {
             description: descriptionHtml || "",
           },

@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from "react";
+import axios from "axios";
 import { readText } from "../../Assets/Functions/FunctionLessons";
 import { HOne } from "../../../../Resources/Components/RouteBox";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+
 export type ImageItem = {
   img: string;
   text?: string;
@@ -35,6 +38,7 @@ function optionLabel(img: ImageItem) {
 function hasValidLabel(img: ImageItem) {
   return optionLabel(img).length > 0;
 }
+
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -91,6 +95,7 @@ export default function ImageToWordExercise({
   selectedVoice,
   exerciseScore,
   language,
+  courseId,
 }: {
   images: ImageItem[];
   labels?: Partial<Labels>;
@@ -98,7 +103,8 @@ export default function ImageToWordExercise({
   language?: string;
   studentId?: string;
   selectedVoice?: string;
-  exerciseScore: any;
+  exerciseScore: (points: number, label?: string) => void;
+  courseId?: string; // id da aula para /exercise-done/:id
 }) {
   const merged = { ...defaultLabels, ...(labels || {}) };
   const safeImgs = useMemo(
@@ -131,15 +137,18 @@ export default function ImageToWordExercise({
   const [seed, setSeed] = useState(0);
   const pool = useMemo(() => shuffle(safeImgs.slice()), [safeImgs, seed]);
 
+  // index == posição atual; quando index >= pool.length => exercício finalizado
   const [index, setIndex] = useState(0);
   const [answeredIndex, setAnsweredIndex] = useState<number | null>(null);
 
-  const [earnedPoints, setEarnedPoints] = useState(0); // opcional (acumula)
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [performanceDescription, setPerformanceDescription] = useState("");
 
-  const current = pool[index];
+  const finished = index >= pool.length;
+  const current = !finished ? pool[index] : null;
 
   // Validação adicional: verificar se a imagem atual tem label válido
-  if (!current || !hasValidLabel(current)) {
+  if (!finished && (!current || !hasValidLabel(current))) {
     console.error(
       "ImageToWordExercise: Imagem atual sem texto válido",
       current
@@ -157,11 +166,14 @@ export default function ImageToWordExercise({
   function resetExercise() {
     setIndex(0);
     setAnsweredIndex(null);
-    setEarnedPoints(0);
     setSeed((v) => v + 1); // força reembaralhar
+    setTotalPoints(0);
+    setPerformanceDescription("");
   }
 
   const options = useMemo(() => {
+    if (finished || !current) return [];
+
     // Garantir que temos pelo menos 3 imagens válidas para fazer o exercício
     if (pool.length < 3) {
       console.warn(
@@ -190,17 +202,18 @@ export default function ImageToWordExercise({
     }
 
     return shuffle([current, ...others]);
-  }, [index, pool, current]);
+  }, [index, pool, current, finished]);
 
   const correctIdx = useMemo(
-    () => options.findIndex((o) => o === current),
-    [options, current]
+    () => (finished ? -1 : options.findIndex((o) => o === current)),
+    [options, current, finished]
   );
 
   // Validação final: verificar se todas as opções têm labels válidos
-  const hasInvalidOptions = options.some((opt) => !hasValidLabel(opt));
+  const hasInvalidOptions =
+    !finished && options.some((opt) => !hasValidLabel(opt));
 
-  if (hasInvalidOptions) {
+  if (!finished && hasInvalidOptions) {
     console.error(
       "ImageToWordExercise: Opções com labels inválidos detectadas",
       options
@@ -223,23 +236,80 @@ export default function ImageToWordExercise({
   const hasAnswered = answeredIndex !== null;
   const isCorrect = hasAnswered && answeredIndex === correctIdx;
 
-  function handleChoose(i: number, language?: string) {
-    if (hasAnswered) return;
-    const correct = i === correctIdx;
-    setAnsweredIndex(i);
-    readText(optionLabel(options[i]), true, language, selectedVoice);
-    if (correct) setEarnedPoints((p) => p + 3);
-    exerciseScore(
-      correct ? 3 : 0,
-      `Image to Word Exercise - ${optionLabel(current)}`
-    );
+  async function handleScoreStamp(
+    pointsToSend: number,
+    descriptionToSend: string
+  ) {
+    if (!courseId || !studentId) return; // segurança básica
+
+    try {
+      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const studentName =
+        (loggedIn?.name && loggedIn?.lastname
+          ? `${loggedIn.name} ${loggedIn.lastname}`
+          : "Student") || "Student";
+
+      await axios.put(`${backDomain}/api/v1/exercise-done/${courseId}`, {
+        type: "images",
+        points: pointsToSend,
+        student: studentId,
+        description: descriptionToSend,
+        studentName,
+      });
+    } catch (error) {
+      console.log(error, "Erro ao atualizar dados (image-to-word)");
+    }
   }
 
-  function goNext() {
-    setAnsweredIndex(null);
-    if (index + 1 < pool.length) setIndex((i) => i + 1);
-    else onNext?.();
+  function handleChoose(i: number, lang?: string) {
+    if (hasAnswered || finished || !current) return;
+
+    setAnsweredIndex(i);
+    readText(optionLabel(options[i]), true, lang, selectedVoice);
+    // score/descrição agora são atualizados em goNext, não aqui
   }
+
+  async function goNext() {
+    if (!hasAnswered || finished || !current) return;
+
+    const label = optionLabel(current);
+    const correct = answeredIndex === correctIdx;
+    const increment = correct ? 3 : 0;
+
+    const snippet = correct
+      ? `Imagem "${label}": acertou e ganhou 3 pontos.`
+      : `Imagem "${label}": errou e não ganhou pontos.`;
+
+    const newDescription = performanceDescription
+      ? `${performanceDescription} ${snippet}`
+      : snippet;
+
+    const newTotal = totalPoints + increment;
+
+    setPerformanceDescription(newDescription);
+    setTotalPoints(newTotal);
+
+    // callback para ranking/score em tempo real
+    exerciseScore(increment, `Image to Word Exercise - ${label}`);
+
+    const isLast = index === pool.length - 1;
+
+    if (isLast) {
+      // terminou o exercício: marca exercise-done e mostra tela de resumo
+      await handleScoreStamp(newTotal, newDescription);
+      setIndex(pool.length); // força finished === true
+      setAnsweredIndex(null);
+      return;
+    }
+
+    // ainda há próximas imagens
+    setAnsweredIndex(null);
+    setIndex((i) => i + 1);
+  }
+
+  const progressText = finished
+    ? `${pool.length} ${merged.of} ${pool.length}`
+    : `${index + 1} ${merged.of} ${pool.length}`;
 
   return (
     <Card>
@@ -247,60 +317,122 @@ export default function ImageToWordExercise({
         title={merged.imageToWordTitle}
         right={
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span>
-              {index + 1} {merged.of} {pool.length}
-            </span>
+            <span>{progressText}</span>
           </div>
         }
       />
-      {hasAnswered && (
-        <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
-          <button
-            onClick={goNext}
+
+      {/* ESTADO FINALIZADO: resumo + reiniciar */}
+      {finished ? (
+        <div
+          style={{
+            marginTop: 16,
+            borderRadius: 12,
+            border: "1px solid #E5E7EB",
+            padding: 16,
+            background: "#F9FAFB",
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            fontFamily: "Plus Jakarta Sans",
+          }}
+        >
+          <div
             style={{
-              padding: "10px 16px",
-              borderRadius: 6,
-              color: "#FFFFFF",
-              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-              border: "1px solid #0B1220",
-              cursor: "pointer",
+              fontSize: 14,
               fontWeight: 700,
+              color: "#065F46",
             }}
           >
-            {merged.next} ▶︎
-          </button>
-        </div>
-      )}
-      {/* Layout principal: imagem à esquerda, botões à direita */}
+            ✅ Você concluiu o exercício de imagens!
+          </div>
 
-      {index + 1 == pool.length ? (
-        <button
-          onClick={resetExercise}
-          style={{
-            padding: "6px 10px",
-            borderRadius: 6,
-            background: "#FFFFFF",
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-          title="Reiniciar exercício"
-        >
-          Reiniciar
-        </button>
+          <div
+            style={{
+              fontSize: 13,
+              color: "#374151",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {performanceDescription ||
+              "Seu desempenho foi registrado para este exercício de imagens."}
+          </div>
+
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#111827",
+            }}
+          >
+            Total de pontos: {totalPoints}
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: 8,
+            }}
+          >
+            <button
+              onClick={resetExercise}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              🔁 Reiniciar exercício
+            </button>
+          </div>
+        </div>
       ) : (
         <>
+          {hasAnswered && (
+            <div
+              style={{
+                marginTop: 20,
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <button
+                onClick={goNext}
+                style={{
+                  padding: "10px 16px",
+                  borderRadius: 6,
+                  color: "#FFFFFF",
+                  background:
+                    "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+                  border: "1px solid #0B1220",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                }}
+              >
+                {merged.next} ▶︎
+              </button>
+            </div>
+          )}
+
+          {/* Layout principal: imagem à esquerda, botões à direita */}
           <div
             style={{
               display: "flex",
               gap: 24,
               alignItems: "flex-start",
               marginBottom: 16,
+              marginTop: 16,
             }}
           >
             {/* Imagem */}
             <div style={{ flex: "0 0 auto" }}>
               <img
-                src={current.img}
+                src={current!.img}
                 alt="quiz"
                 loading="lazy"
                 style={{
@@ -323,7 +455,7 @@ export default function ImageToWordExercise({
               }}
             >
               {options.map((opt, i) => {
-                let style: React.CSSProperties = {
+                const baseStyle: React.CSSProperties = {
                   textAlign: "left",
                   padding: "10px 14px",
                   borderRadius: 6,
@@ -339,17 +471,19 @@ export default function ImageToWordExercise({
                   minHeight: "44px",
                 };
 
+                let computedStyle = { ...baseStyle };
+
                 if (hasAnswered) {
                   if (i === correctIdx) {
-                    style = {
-                      ...style,
+                    computedStyle = {
+                      ...computedStyle,
                       background: "#D1FAE5",
                       border: "2px solid #2dffb2ff",
                     };
                   }
                   if (i === answeredIndex && i !== correctIdx) {
-                    style = {
-                      ...style,
+                    computedStyle = {
+                      ...computedStyle,
                       background: "#FEE2E2",
                       border: "2px solid #ff6969ff",
                     };
@@ -357,72 +491,70 @@ export default function ImageToWordExercise({
                 }
 
                 return (
-                  index + 1 !== pool.length && (
-                    <div
-                      key={i}
-                      style={{ display: "flex", gap: 8, alignItems: "center" }}
+                  <div
+                    key={i}
+                    style={{ display: "flex", gap: 8, alignItems: "center" }}
+                  >
+                    <button
+                      onClick={() =>
+                        readText(
+                          optionLabel(opt),
+                          true,
+                          language,
+                          selectedVoice
+                        )
+                      }
+                      style={{
+                        padding: "8px",
+                        borderRadius: 4,
+                        background: "#F3F4F6",
+                        border: "1px solid #D1D5DB",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        minWidth: "32px",
+                        height: "32px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      title="Ouvir"
                     >
-                      <button
-                        onClick={() =>
-                          readText(
-                            optionLabel(opt),
-                            true,
-                            language,
-                            selectedVoice
-                          )
-                        }
-                        style={{
-                          padding: "8px",
-                          borderRadius: 4,
-                          background: "#F3F4F6",
-                          border: "1px solid #D1D5DB",
-                          cursor: "pointer",
-                          fontSize: "12px",
-                          minWidth: "32px",
-                          height: "32px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                        title="Ouvir"
-                      >
-                        <i className="fa fa-volume-up" aria-hidden="true" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleChoose(i, language);
-                        }}
-                        disabled={hasAnswered}
-                        style={{
-                          ...style,
-                          flex: 1,
-                        }}
-                      >
-                        <span>{hasAnswered ? optionLabel(opt) : i + 1}</span>
-                      </button>
-                    </div>
-                  )
+                      <i className="fa fa-volume-up" aria-hidden="true" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleChoose(i, language);
+                      }}
+                      disabled={hasAnswered}
+                      style={{
+                        ...computedStyle,
+                        flex: 1,
+                      }}
+                    >
+                      <span>{hasAnswered ? optionLabel(opt) : i + 1}</span>
+                    </button>
+                  </div>
                 );
               })}
             </div>
           </div>
-        </>
-      )}
 
-      {hasAnswered && isCorrect && (
-        <div
-          style={{
-            marginTop: 12,
-            fontSize: 14,
-            fontWeight: 700,
-            color: "#065F46",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          ✅ {merged.plusPoints}
-        </div>
+          {hasAnswered && isCorrect && (
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 14,
+                fontWeight: 700,
+                color: "#065F46",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              ✅ {merged.plusPoints}
+            </div>
+          )}
+        </>
       )}
     </Card>
   );

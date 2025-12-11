@@ -10,6 +10,8 @@ interface ImportElementsEditorProps {
   studentId: string; // aluno logado (pra limitar o que pode ver)
   headers?: any; // headers de auth
   fetchEventData?: any;
+  setTheLanguage?: any;
+  theLanguage?: any;
   onChange?: (info: {
     mode: "one" | "all";
     fromClassId: string;
@@ -39,6 +41,8 @@ type LessonFromApi = {
 export default function ImportElementsEditor({
   lessonId,
   studentId,
+  setTheLanguage,
+  theLanguage,
   headers,
   onChange,
   fetchEventData,
@@ -424,7 +428,10 @@ export default function ImportElementsEditor({
           <div style={{ fontSize: 13 }}>Idioma:</div>
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value as any)}
+            onChange={(e) => {
+              setLanguage(e.target.value as any);
+              setTheLanguage(e.target.value as any);
+            }}
             style={{
               padding: "6px 10px",
               borderRadius: 6,

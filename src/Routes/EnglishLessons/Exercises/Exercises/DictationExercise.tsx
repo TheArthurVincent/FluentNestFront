@@ -1,7 +1,11 @@
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { defaultLabels, HeaderBar, shuffle } from "../Exercises";
-import React, { useEffect, useMemo, useState } from "react";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+
+// ===================== HELPERS =====================
 
 function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
@@ -85,7 +89,12 @@ function hasTTS(): boolean {
   );
 }
 
-// ===== ESTILOS NO CLIMA DO CARD ARVIN =====
+// ===================== ESTILOS (CLIMA CALENDAR CARD) =====================
+
+const cardContainerStyle: React.CSSProperties = {
+  backgroundColor: "#FFFFFF",
+  marginTop: 16,
+};
 
 const mainWrapperStyle: React.CSSProperties = {
   position: "relative",
@@ -112,7 +121,7 @@ const metricsChipStyle: React.CSSProperties = {
   borderRadius: 999,
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
-  fontSize: 13,
+  fontSize: 12,
   fontFamily: "Plus Jakarta Sans",
 };
 
@@ -121,8 +130,8 @@ const metricsWrapperStyle: React.CSSProperties = {
   flexWrap: "wrap",
   alignItems: "center",
   gap: 8,
-  fontSize: 13,
-  marginBottom: 12,
+  fontSize: 12,
+  marginBottom: 8,
 };
 
 const labelStyle: React.CSSProperties = {
@@ -149,7 +158,7 @@ const textareaStyle: React.CSSProperties = {
 const primaryButtonStyle: React.CSSProperties = {
   padding: "8px 14px",
   borderRadius: 999,
-  background: "#111827",
+  background: partnerColor(),
   color: "#FFFFFF",
   border: "none",
   cursor: "pointer",
@@ -182,26 +191,33 @@ const finishedContinueTextStyle: React.CSSProperties = {
   fontFamily: "Plus Jakarta Sans",
 };
 
+// ===================== COMPONENTE =====================
+
+type DictationExerciseProps = {
+  sentences: SentenceItem[]; // já limitado/filtrado pelo pai
+  studentId?: string;
+  labels: typeof defaultLabels;
+  exerciseScore?: (points: number, desc?: string) => void;
+  selectedVoice?: string;
+  language?: string;
+  courseId?: string; // id da aula para /exercise-done/:id
+};
+
 export function DictationExercise({
   sentences,
-  itemsCount,
   exerciseScore,
   labels,
   studentId,
   selectedVoice,
   language,
-}: {
-  sentences: SentenceItem[];
-  itemsCount: number;
-  studentId?: string;
-  labels: typeof defaultLabels;
-  exerciseScore?: any;
-  selectedVoice?: string;
-  language?: string;
-}) {
+  courseId,
+}: DictationExerciseProps) {
+  // pool: embaralha apenas o que veio do pai (pai já limita quantidade)
+  const [seed, setSeed] = useState(0);
   const pool = useMemo(
-    () => shuffle(sentences).slice(0, Math.min(itemsCount, sentences.length)),
-    [sentences, itemsCount]
+    () => shuffle(sentences),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sentences, seed]
   );
 
   const [index, setIndex] = useState(0);
@@ -209,9 +225,27 @@ export function DictationExercise({
   const [checked, setChecked] = useState(false);
   const [showKey, setShowKey] = useState(false);
 
-  const current = pool[index];
+  // acumulo de pontos e descrição para exercise-done
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [performanceDescription, setPerformanceDescription] = useState("");
+
+  const finished = index >= pool.length;
+
+  const current = !finished ? pool[index] : null;
   const target = current?.english || "";
   const targetTr = current?.portuguese || "";
+
+  // reseta quando o pai mudar o conjunto de sentenças (ex.: limit diferente)
+  useEffect(() => {
+    setIndex(0);
+    setAnswer("");
+    setChecked(false);
+    setShowKey(false);
+    setTotalPoints(0);
+    setPerformanceDescription("");
+    setSeed((s) => s + 1); // reembaralha
+    if (hasTTS()) window.speechSynthesis.cancel();
+  }, [sentences.length]);
 
   useEffect(() => {
     return () => {
@@ -219,37 +253,98 @@ export function DictationExercise({
     };
   }, []);
 
-  if (!pool.length || !target) {
+  // CASO NÃO TENHA FRASES MESMO (exercício não disponível)
+  if (!pool.length) {
     return (
-      <div>
+      <div style={cardContainerStyle}>
         <HeaderBar title={labels.dictationTitle} />
-        <div className="text-sm text-gray-500">{labels.loadingSentences}</div>
+        <div
+          style={{
+            fontFamily: "Plus Jakarta Sans",
+            fontSize: 12,
+            color: "#6B7280",
+          }}
+        >
+          {labels.loadingSentences}
+        </div>
       </div>
     );
   }
 
-  // métricas
-  const wordsExpected = wordCount(target);
-  const wordsTyped = wordCount(answer);
-  const similarity = similarityPercentage(target, answer);
-  // arredondar para baixo para nota de 0 a 10 * numero de palavras
-  const roundedSimilarity =
-    similarity >= 70 ? Math.floor(similarity / 20) * wordsExpected : 0;
-  const { matches, total, perWordCorrect, atTokens } = countPositionMatches(
-    target,
-    answer
-  );
+  // ===================== exercise-done =====================
 
-  const progressPct = Math.round((index / pool.length) * 100);
+  const handleScoreStamp = async (
+    pointsToSend: number,
+    descriptionToSend: string
+  ) => {
+    if (!courseId || !studentId) return; // segurança básica
+
+    try {
+      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const studentName =
+        (loggedIn?.name && loggedIn?.lastname
+          ? `${loggedIn.name} ${loggedIn.lastname}`
+          : "Student") || "Student";
+
+      await axios.put(`${backDomain}/api/v1/exercise-done/${courseId}`, {
+        type: "sentences",
+        points: pointsToSend,
+        student: studentId,
+        description: descriptionToSend,
+        studentName,
+      });
+    } catch (error) {
+      console.log(error, "Erro ao atualizar dados (dictation)");
+    }
+  };
+
+  // métricas (só fazem sentido enquanto não terminou)
+  const wordsExpected = finished ? 0 : wordCount(target);
+  const wordsTyped = finished ? 0 : wordCount(answer);
+  const similarity = finished ? 0 : similarityPercentage(target, answer);
+
+  const { matches, total, perWordCorrect, atTokens } = finished
+    ? { matches: 0, total: 0, perWordCorrect: [] as boolean[], atTokens: [] as string[] }
+    : countPositionMatches(target, answer);
+
+  const roundedSimilarity =
+    !finished && similarity >= 70
+      ? Math.floor(similarity / 20) * wordsExpected
+      : 0;
+
+  const progressPct = finished
+    ? 100
+    : Math.round((index / pool.length) * 100);
+
+  const displayIndex = finished ? pool.length : index + 1;
+  const isLastItem = index === pool.length - 1;
+
+  function handleRestart() {
+    setIndex(0);
+    setAnswer("");
+    setChecked(false);
+    setShowKey(false);
+    setTotalPoints(0);
+    setPerformanceDescription("");
+    setSeed((s) => s + 1);
+    if (hasTTS()) window.speechSynthesis.cancel();
+  }
 
   return (
-    <div>
+    <div style={cardContainerStyle}>
       <div style={mainWrapperStyle}>
         <HeaderBar
           title={labels.dictationTitle}
           right={
-            <span style={{ fontFamily: "Plus Jakarta Sans", fontSize: 13 }}>
-              {index + 1} {labels.of} {pool.length}
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#6B7280",
+              }}
+            >
+              {displayIndex} {labels.of} {pool.length}
             </span>
           }
         />
@@ -260,233 +355,345 @@ export function DictationExercise({
             style={{
               height: 8,
               width: `${progressPct}%`,
-              background: "#111827",
+              background: partnerColor(),
               transition: "width 240ms ease",
               borderRadius: 999,
             }}
           />
         </div>
 
-        {/* Modo de resposta */}
-        {!checked && (
-          <>
-            <label style={labelStyle}>{labels.yourAnswer}</label>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginBottom: 8,
-              }}
-            >
-              <button
-                style={ghostButtonStyle}
-                onClick={() => {
-                  readText(target, true, language, selectedVoice);
-                }}
-                disabled={!target || !hasTTS()}
-                aria-label={labels.play}
-                title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
-              >
-                🔊 {labels.play || "Ouvir"}
-              </button>
-            </div>
-
-            <textarea
-              value={answer}
-              onChange={(e) => {
-                setAnswer(e.target.value);
-                setChecked(false);
-                setShowKey(false);
-              }}
-              onKeyDown={(e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-                  setChecked(true);
-                  return;
-                }
-                const isPasteCombo =
-                  ((e.ctrlKey || e.metaKey) &&
-                    (e.key === "v" || e.key === "V")) ||
-                  (e.shiftKey && e.key === "Insert");
-                if (isPasteCombo) {
-                  e.preventDefault();
-                  notifyAlert(
-                    "Colar texto não é permitido aqui.",
-                    partnerColor()
-                  );
-                }
-              }}
-              onPaste={(e) => {
-                e.preventDefault();
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-              }}
-              onContextMenu={(e) => {
-                e.preventDefault();
-              }}
-              rows={4}
-              placeholder="Digite exatamente o que ouviu…"
-              style={textareaStyle}
-            />
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 12,
-                marginTop: 16,
-              }}
-            >
-              <button
-                onClick={() => setChecked(true)}
-                style={primaryButtonStyle}
-              >
-                ✅ {labels.check || "Conferir"}
-              </button>
-            </div>
-          </>
-        )}
-
-        {/* Resultado após conferir */}
-        {checked && (
+        {/* ======= ESTADO FINALIZADO ======= */}
+        {finished && (
           <div
             style={{
-              marginTop: 20,
-              borderRadius: 10,
+              marginTop: 16,
+              borderRadius: 12,
               border: "1px solid #E5E7EB",
               padding: 16,
               background: "#F9FAFB",
               display: "flex",
               flexDirection: "column",
-              gap: 16,
+              gap: 12,
             }}
           >
-            {/* Métricas */}
-            <div style={metricsWrapperStyle}>
-              <span style={metricsChipStyle}>
-                🧮 Palavras:{" "}
-                <strong>
-                  {wordsTyped}/{wordsExpected}
-                </strong>
-              </span>
-
-              <span style={metricsChipStyle}>
-                🎯 Corretas por posição:{" "}
-                <strong>
-                  {matches}/{total}
-                </strong>
-              </span>
-
-              <span style={metricsChipStyle}>
-                📊 Similaridade: <strong>{similarity}%</strong>
-              </span>
-
-              <span style={metricsChipStyle}>
-                🏆 Sua nota: <strong>{roundedSimilarity}</strong>
-              </span>
+            <div style={finishedContinueTextStyle}>
+              ✅ Você concluiu o ditado!
             </div>
 
-            {/* Tokens digitados */}
-            <div style={{ display: "grid", gap: 8 }}>
-              <div style={{ fontSize: 12, color: "#6B7280" }}>Sua resposta</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {atTokens.map((w, i) => (
-                  <span
-                    key={`at-${i}-${w}-${index}`}
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: 999,
-                      border: `1px solid ${
-                        perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
-                      }`,
-                      background: perWordCorrect[i] ? "#D1FAE5" : "#FEE2E2",
-                      fontFamily: "Plus Jakarta Sans",
-                      fontSize: 13,
-                    }}
-                  >
-                    {w}
-                  </span>
-                ))}
-              </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: "#374151",
+                fontFamily: "Plus Jakarta Sans",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {performanceDescription ||
+                "Seu desempenho foi registrado para esta atividade."}
             </div>
 
-            {/* Gabarito + áudio */}
-            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4 }}>
-              Gabarito:
-            </div>
             <div
               style={{
                 display: "flex",
-                gap: 12,
-                alignItems: "center",
-                flexWrap: "wrap",
+                justifyContent: "flex-end",
+                marginTop: 8,
               }}
             >
-              <button
-                style={ghostButtonStyle}
-                onClick={() => {
-                  readText(target, true, language, selectedVoice);
-                }}
-                disabled={!target || !hasTTS()}
-                aria-label={labels.play}
-                title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
-              >
-                🔊 {labels.play || "Ouvir"}
+              <button onClick={handleRestart} style={ghostButtonStyle}>
+                🔁 Reiniciar exercício
               </button>
-              <div style={{ display: "grid", gap: 4 }}>
-                <b style={{ fontFamily: "Plus Jakarta Sans" }}>
-                  {target && target}
-                </b>
-                <i style={{ color: "#6B7280" }}>({targetTr})</i>
-              </div>
             </div>
           </div>
         )}
 
-        {/* Gabarito literal extra (se quiser manter) */}
-        {checked && showKey && (
-          <div
-            style={{
-              marginTop: 16,
-              padding: 10,
-              borderRadius: 8,
-              background: "#FFFBEB",
-              border: "1px solid #FDE68A",
-              fontSize: 14,
-              color: "#1F2937",
-              fontFamily: "Plus Jakarta Sans",
-            }}
-          >
-            <strong>Gabarito:</strong> {target}
-            {current.portuguese && (
-              <div style={{ color: "#6B7280", marginTop: 6 }}>
-                {current.portuguese}
+        {/* ======= ESTADO EM ANDAMENTO ======= */}
+        {!finished && (
+          <>
+            {/* Modo de resposta */}
+            {!checked && (
+              <>
+                <label style={labelStyle}>{labels.yourAnswer}</label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  <button
+                    style={ghostButtonStyle}
+                    onClick={() => {
+                      readText(target, true, language, selectedVoice);
+                    }}
+                    disabled={!target || !hasTTS()}
+                    aria-label={labels.play}
+                    title={
+                      target ? "Ouvir" : "Sem texto em inglês para ouvir"
+                    }
+                  >
+                    🔊 {labels.play || "Ouvir"}
+                  </button>
+                </div>
+
+                <textarea
+                  value={answer}
+                  onChange={(e) => {
+                    setAnswer(e.target.value);
+                    setChecked(false);
+                    setShowKey(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                      setChecked(true);
+                      return;
+                    }
+                    const isPasteCombo =
+                      ((e.ctrlKey || e.metaKey) &&
+                        (e.key === "v" || e.key === "V")) ||
+                      (e.shiftKey && e.key === "Insert");
+                    if (isPasteCombo) {
+                      e.preventDefault();
+                      notifyAlert(
+                        "Colar texto não é permitido aqui.",
+                        partnerColor()
+                      );
+                    }
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                  }}
+                  rows={4}
+                  placeholder="Digite exatamente o que ouviu…"
+                  style={textareaStyle}
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 12,
+                    marginTop: 16,
+                  }}
+                >
+                  <button
+                    onClick={() => setChecked(true)}
+                    style={primaryButtonStyle}
+                  >
+                    ✅ {labels.check || "Conferir"}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* Resultado após conferir */}
+            {checked && (
+              <div
+                style={{
+                  marginTop: 16,
+                  borderRadius: 12,
+                  border: "1px solid #E5E7EB",
+                  padding: 14,
+                  background: "#F9FAFB",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 16,
+                }}
+              >
+                {/* Métricas */}
+                <div style={metricsWrapperStyle}>
+                  <span style={metricsChipStyle}>
+                    🧮 Palavras:{" "}
+                    <strong>
+                      {wordsTyped}/{wordsExpected}
+                    </strong>
+                  </span>
+
+                  <span style={metricsChipStyle}>
+                    🎯 Corretas por posição:{" "}
+                    <strong>
+                      {matches}/{total}
+                    </strong>
+                  </span>
+
+                  <span style={metricsChipStyle}>
+                    📊 Similaridade: <strong>{similarity}%</strong>
+                  </span>
+
+                  <span style={metricsChipStyle}>
+                    🏆 Sua nota: <strong>{roundedSimilarity}</strong>
+                  </span>
+                </div>
+
+                {/* Tokens digitados */}
+                <div style={{ display: "grid", gap: 8 }}>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "#6B7280",
+                      fontFamily: "Plus Jakarta Sans",
+                    }}
+                  >
+                    Sua resposta
+                  </div>
+                  <div
+                    style={{ display: "flex", flexWrap: "wrap", gap: 8 }}
+                  >
+                    {atTokens.map((w, i) => (
+                      <span
+                        key={`at-${i}-${w}-${index}`}
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          border: `1px solid ${
+                            perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
+                          }`,
+                          background: perWordCorrect[i]
+                            ? "#D1FAE5"
+                            : "#FEE2E2",
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 12,
+                        }}
+                      >
+                        {w}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Gabarito + áudio */}
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#6B7280",
+                    marginTop: 4,
+                    fontFamily: "Plus Jakarta Sans",
+                  }}
+                >
+                  Gabarito:
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 12,
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <button
+                    style={ghostButtonStyle}
+                    onClick={() => {
+                      readText(target, true, language, selectedVoice);
+                    }}
+                    disabled={!target || !hasTTS()}
+                    aria-label={labels.play}
+                    title={
+                      target ? "Ouvir" : "Sem texto em inglês para ouvir"
+                    }
+                  >
+                    🔊 {labels.play || "Ouvir"}
+                  </button>
+                  <div style={{ display: "grid", gap: 4 }}>
+                    <b
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 13,
+                        color: "#111827",
+                      }}
+                    >
+                      {target && target}
+                    </b>
+                    <i
+                      style={{
+                        color: "#6B7280",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 12,
+                      }}
+                    >
+                      ({targetTr})
+                    </i>
+                  </div>
+                </div>
               </div>
             )}
-          </div>
-        )}
 
-        {/* Navegação / Próxima frase */}
-        <div
-          style={{
-            marginTop: 24,
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          {index < pool.length ? (
-            <>
+            {/* Gabarito literal extra (opcional) */}
+            {checked && showKey && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: 10,
+                  borderRadius: 8,
+                  background: "#FFFBEB",
+                  border: "1px solid #FDE68A",
+                  fontSize: 13,
+                  color: "#1F2937",
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              >
+                <strong>Gabarito:</strong> {target}
+                {current?.portuguese && (
+                  <div style={{ color: "#6B7280", marginTop: 6 }}>
+                    {current.portuguese}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Navegação / Próxima frase */}
+            <div
+              style={{
+                marginTop: 20,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              {/* Reiniciar no meio do exercício */}
+              <button onClick={handleRestart} style={ghostButtonStyle}>
+                🔁 Reiniciar exercício
+              </button>
+
               {checked && (
                 <button
                   onClick={() => {
+                    // descrição dessa frase
+                    const snippet = `Ditado "${target}" | Resposta: "${answer}" | nota: ${roundedSimilarity}.`;
+
+                    const newDescription = performanceDescription
+                      ? `${performanceDescription} ${snippet}`
+                      : snippet;
+
+                    const newTotalPoints =
+                      roundedSimilarity > 0
+                        ? totalPoints + roundedSimilarity
+                        : totalPoints;
+
+                    setPerformanceDescription(newDescription);
+                    if (roundedSimilarity > 0) {
+                      setTotalPoints(newTotalPoints);
+                    }
+
+                    // callback legacy
                     exerciseScore?.(
                       roundedSimilarity,
                       `Ditado: ${target} / Resposta: ${answer}`
                     );
+
+                    // se for a ÚLTIMA frase, dispara exercise-done
+                    if (isLastItem) {
+                      handleScoreStamp(newTotalPoints, newDescription);
+                    }
+
+                    // avança
                     setIndex((i) => i + 1);
                     setAnswer("");
                     setChecked(false);
@@ -498,13 +705,9 @@ export function DictationExercise({
                   {defaultLabels.next} ▶︎
                 </button>
               )}
-            </>
-          ) : (
-            <span style={finishedContinueTextStyle}>
-              {defaultLabels.continue}
-            </span>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

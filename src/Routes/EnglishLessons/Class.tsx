@@ -102,7 +102,6 @@ export default function EnglishClassCourse2({
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
   const [boardZoom, setBoardZoom] = useState<number>(100); // Estado para controlar o zoom da lousa em %
-  const [seeOptions, setSeeOptions] = useState<boolean>(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
     setConfirm(true);
     setNewHWDescription(htmlContent);
@@ -291,67 +290,6 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao obter aulas");
       setLoading(false);
     }
-  };
-
-  const downloadBoardPDF = () => {
-    const iframe = document.createElement("iframe");
-    iframe.style.position = "absolute";
-    iframe.style.left = "-9999px";
-    document.body.appendChild(iframe);
-    iframe.contentDocument!.open();
-    iframe.contentDocument!.write(`
-<html>
-  <head>
-    <title>Board PDF</title>
-    <style>
-              @import url("https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Athiti&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
-                body {padding: 24px; }
-                h1, h2, h3 { color: ${partnerColor()}; }
-                img { max-width: 100%; border-radius: 4px; margin-bottom: 1rem; }
-                p { font-size: 18px; margin-bottom: 1rem; }
-    </style>
-  </head>
-  <body>
-    <div
-      style="display: flex; justify-content: space-between; align-items: center"
-    >
-      <span style="font-size: 12px; color: gray"
-        >${formatDateBrWithHour(new Date())}</span
-      >
-              <span style="font-size: 12px; color: gray"
-        >${studentName}</span
-      >
-      <img src="${logoPartner()}" alt="logo" style="max-width: 70px" />
-    </div>
-    <div>${newHWDescription}</div>
-  
-  
-    </body>
-</html>
-  `);
-    iframe.contentDocument!.close();
-    setTimeout(() => {
-      iframe.contentWindow!.focus();
-      iframe.contentWindow!.print();
-      document.body.removeChild(iframe);
-    }, 500);
   };
 
   const handleToggle = async () => {
@@ -2832,7 +2770,6 @@ export default function EnglishClassCourse2({
     );
   };
 
-  const [comment, setComment] = useState("");
   const [seeCheck, setSeeCheck] = useState(false);
   const [boardDate, setBoardDate] = useState<Date | any>(null);
 
@@ -2895,22 +2832,20 @@ export default function EnglishClassCourse2({
   const generateInitialBoardContent = () => {
     const p = (html: string) => `<p>${html}</p>`;
     const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
-    const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
+    const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`; // ainda disponível se quiser
 
     let content = "";
 
-    // Título da aula (como título -> negrito)
-    content += p(b(sanitizeText(classTitle || "Aula de Inglês", 100)));
-
-    // Data (apenas <p>)
-    content += p(`Data: ${new Date().toLocaleDateString("pt-BR")}`);
-
     if (theclass.elements && Array.isArray(theclass.elements)) {
-      const sortedElements = theclass.elements.sort(
+      // ordena
+      const sortedElements = [...theclass.elements].sort(
         (a: any, b: any) => (a.order || 0) - (b.order || 0)
       );
 
       sortedElements.forEach((element: any) => {
+        // 🔹 LIMITADO APENAS AO TYPE "exercise"
+        if (element.type !== "exercise") return;
+
         // Subtítulo (título -> negrito)
         if (element.subtitle) {
           content += p(`<b>${sanitizeText(element.subtitle, 100)}</b></br>`);
@@ -2921,131 +2856,11 @@ export default function EnglishClassCourse2({
           content += p(sanitizeText(element.description, 300));
         }
 
-        switch (element.type) {
-          case "text":
-            if (element.text) {
-              content += p(sanitizeText(element.text, 2000));
-            }
-            break;
-
-          case "sentences":
-          case "nfsentences":
-            if (Array.isArray(element.sentences)) {
-              element.sentences.forEach((s: any) => {
-                if (s.english) content += p(sanitizeText(s.english, 200));
-              });
-            }
-            break;
-
-          case "exercise":
-            if (Array.isArray(element.items)) {
-              content += p(b("Exercícios:"));
-              element.items.forEach((item: any, idx: number) => {
-                content += p(`${idx + 1}. ${sanitizeText(item, 300)}`);
-              });
-            }
-            break;
-
-          case "html":
-            // Mantém apenas texto plano para respeitar "somente <p>"
-            if (element.text) {
-              const plain = sanitizeText(
-                element.text.replace(/<[^>]+>/g, " "),
-                2000
-              );
-              content += p(plain);
-            }
-            break;
-
-          case "audio":
-            if (element.text) {
-              content += p(b("Áudio:"));
-              const plain = sanitizeText(
-                element.text.replace(/<[^>]+>/g, " "),
-                2000
-              );
-              content += p(plain);
-            }
-            if (Array.isArray(element.sentences)) {
-              content += p(b("Frases do Áudio:"));
-              element.sentences.forEach((s: any) => {
-                if (s.english) content += p(sanitizeText(s.english, 200));
-                if (s.portuguese) content += p(i(s.portuguese));
-              });
-            }
-            break;
-
-          case "audiosoundtrack":
-            if (element.text) {
-              content += p(b("Conteúdo do Áudio:"));
-              const plain = sanitizeText(
-                element.text.replace(/<[^>]+>/g, " "),
-                2000
-              );
-              content += p(plain);
-            }
-            if (Array.isArray(element.sentences)) {
-              content += p(b("Frases do Áudio:"));
-              element.sentences.forEach((s: any) => {
-                if (s.english) content += p(sanitizeText(s.english, 200));
-                if (s.portuguese) content += p(i(s.portuguese));
-              });
-            }
-            break;
-
-          case "images":
-          case "singleimages":
-            // Imagens omitidas para manter apenas <p>; se houver legendas, mostramos:
-            if (Array.isArray((element as any).images)) {
-              (element.images as any[]).forEach((imgItem: any) => {
-                if (imgItem?.english)
-                  content += p(sanitizeText(imgItem.english, 100));
-                if (imgItem?.portuguese) content += p(i(imgItem.portuguese));
-              });
-            }
-            break;
-
-          case "explanation":
-            if (Array.isArray(element.explanation)) {
-              element.explanation.forEach((ex: any) => {
-                if (ex.title) content += p(b(ex.title));
-                if (Array.isArray(ex.list)) {
-                  ex.list.forEach((li: string) => {
-                    content += p(`• ${sanitizeText(li, 400)}`);
-                  });
-                }
-              });
-            }
-            break;
-
-          case "vocabulary":
-            if (Array.isArray(element.sentences)) {
-              content += p(b("Vocabulário:"));
-              element.sentences.forEach((v: any) => {
-                if (v.english && v.portuguese) {
-                  content += p(
-                    `${sanitizeText(v.english, 100)} - ${i(v.portuguese)}`
-                  );
-                } else if (v.english) {
-                  content += p(sanitizeText(v.english, 100));
-                } else if (v.portuguese) {
-                  content += p(i(v.portuguese));
-                }
-              });
-            }
-            break;
-
-          case "dialogue":
-            if (Array.isArray(element.dialogue)) {
-              content += p(b("Diálogo:"));
-              element.dialogue.forEach((line: string, idx: number) => {
-                const speaker = idx % 2 === 0 ? "A" : "B";
-                content += p(`${speaker}: ${sanitizeText(line, 200)}`);
-              });
-            }
-            break;
-          default:
-            break;
+        // Lista de exercícios
+        if (Array.isArray(element.items)) {
+          element.items.forEach((item: any, idx: number) => {
+            content += p(`${idx + 1}. ${sanitizeText(item, 300)}`);
+          });
         }
       });
     }
@@ -3221,31 +3036,94 @@ export default function EnglishClassCourse2({
           </>
           {!seeEdit && (
             <>
-              {!seeBoard ? (
-                <>
-                  <div
+              <>
+                <div
+                  style={{
+                    display: "grid",
+                    zIndex: 2,
+                    top: "-10px",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <span
                     style={{
-                      display: "grid",
-                      zIndex: 2,
-                      top: "-10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      margin: "0.5rem 0",
+                      marginBottom: "0",
                       boxSizing: "border-box",
+                      padding: "4px 8px",
+                      background: "rgba(255,255,255)",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                      backdropFilter: "saturate(1.1) blur(2px)",
                     }}
                   >
-                    <span
+                    <div
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        margin: "0.5rem 0",
-                        marginBottom: "0",
-                        boxSizing: "border-box",
-                        padding: "4px 8px",
-                        background: "rgba(255,255,255)",
-                        flexWrap: "wrap",
                         gap: "8px",
-                        backdropFilter: "saturate(1.1) blur(2px)",
                       }}
                     >
+                      {!mainStudentID && (
+                        <select
+                          onChange={(e) => handleStudentChange(e)}
+                          value={studentID}
+                          style={{
+                            borderRadius: "4px",
+                            border: "1px solid #e2e8f0",
+                            backgroundColor: "#f8fafc",
+                            fontSize: "11px",
+                            fontWeight: "400",
+                            color: "#64748b",
+                            padding: "4px 6px",
+                            height: "28px",
+                            maxWidth: "70px",
+                            outline: "none",
+                            cursor: "pointer",
+                            display:
+                              thePermissions === "superadmin" ||
+                              thePermissions === "teacher"
+                                ? "block"
+                                : "none",
+                          }}
+                          onFocus={(e) =>
+                            (e.currentTarget.style.borderColor = partnerColor())
+                          }
+                          onBlur={(e) =>
+                            (e.currentTarget.style.borderColor = "#e2e8f0")
+                          }
+                        >
+                          {studentsList.map((student: any, index: number) => (
+                            <option key={index} value={student.id}>
+                              {truncateString(
+                                student.name + " " + student.lastname,
+                                15
+                              )}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <span
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        {theclass?.elements?.length > 0 && (
+                          <Voice
+                            maxW="70px"
+                            changeB={changeNumber}
+                            setChangeB={setChangeNumber}
+                            chosenLanguage={classLanguage}
+                          />
+                        )}
+                      </span>
+                    </div>
+                    {theclass?.elements?.length > 0 && !fetchEventData && (
                       <div
                         style={{
                           display: "flex",
@@ -3253,1097 +3131,930 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        {!mainStudentID && (
-                          <select
-                            onChange={(e) => handleStudentChange(e)}
-                            value={studentID}
-                            style={{
-                              borderRadius: "4px",
-                              border: "1px solid #e2e8f0",
-                              backgroundColor: "#f8fafc",
-                              fontSize: "11px",
-                              fontWeight: "400",
-                              color: "#64748b",
-                              padding: "4px 6px",
-                              height: "28px",
-                              maxWidth: "70px",
-                              outline: "none",
-                              cursor: "pointer",
-                              display:
-                                thePermissions === "superadmin" ||
-                                thePermissions === "teacher"
-                                  ? "block"
-                                  : "none",
-                            }}
-                            onFocus={(e) =>
-                              (e.currentTarget.style.borderColor =
-                                partnerColor())
-                            }
-                            onBlur={(e) =>
-                              (e.currentTarget.style.borderColor = "#e2e8f0")
-                            }
-                          >
-                            {studentsList.map((student: any, index: number) => (
-                              <option key={index} value={student.id}>
-                                {truncateString(
-                                  student.name + " " + student.lastname,
-                                  15
-                                )}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                          }}
-                        >
-                          {theclass?.elements?.length > 0 && (
-                            <Voice
-                              maxW="70px"
-                              changeB={changeNumber}
-                              setChangeB={setChangeNumber}
-                              chosenLanguage={classLanguage}
-                            />
-                          )}
-                        </span>
-                      </div>
-                      {theclass?.elements?.length > 0 && !fetchEventData && (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                          }}
-                        >
-                          <button
-                            onClick={() => setExercise(!exercise)}
-                            style={{
-                              borderRadius: "4px",
-                              border: "1px solid #e2e8f0",
-                              backgroundColor: partnerColor(),
-                              fontSize: "11px",
-                              fontWeight: "400",
-                              color: "white",
-                              padding: "4px 6px",
-                              height: "28px",
-                              outline: "none",
-                              cursor: "pointer",
-                              display: "block",
-                            }}
-                          >
-                            {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
-                          </button>
-                          {!exercise && (
-                            <div
-                              className="isMobileDisapear"
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <button
-                                title="Gerar PowerPoint"
-                                style={{
-                                  all: "unset",
-                                  cursor: "pointer",
-                                  padding: "4px 6px",
-                                  backgroundColor: "#f8fafc",
-                                  borderRadius: "4px",
-                                }}
-                                onClick={generatePPT}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f1f5f9";
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f8fafc";
-                                }}
-                              >
-                                <img
-                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                                  alt="PowerPoint"
-                                  style={{ width: "12px", height: "12px" }}
-                                />
-                              </button>
-                              <button
-                                title="Gerar Word"
-                                style={{
-                                  all: "unset",
-                                  cursor: "pointer",
-                                  padding: "4px 6px",
-                                  backgroundColor: "#f8fafc",
-                                  borderRadius: "4px",
-                                }}
-                                onClick={generateWord}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f1f5f9";
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f8fafc";
-                                }}
-                              >
-                                <img
-                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                                  alt="Word"
-                                  style={{ width: "12px", height: "12px" }}
-                                />
-                              </button>
-                              <button
-                                title="Gerar PDF"
-                                style={{
-                                  all: "unset",
-                                  cursor: "pointer",
-                                  padding: "4px 6px",
-                                  backgroundColor: "#f8fafc",
-                                  borderRadius: "4px",
-                                }}
-                                onClick={generatePDF}
-                                onMouseEnter={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f1f5f9";
-                                }}
-                                onMouseLeave={(e) => {
-                                  const target = e.target as HTMLElement;
-                                  target.style.background = "#f8fafc";
-                                }}
-                              >
-                                <img
-                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                                  alt="PDF"
-                                  style={{ width: "12px", height: "12px" }}
-                                />
-                              </button>
-                              <label
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "6px",
-                                  cursor: "pointer",
-                                  fontSize: "11px",
-                                  fontWeight: "400",
-                                  color: "#64748b",
-                                }}
-                              >
-                                <input
-                                  style={{
-                                    cursor: "pointer",
-                                    width: "12px",
-                                    height: "12px",
-                                    accentColor: partnerColor(),
-                                  }}
-                                  type="checkbox"
-                                  checked={isCompleted}
-                                  onChange={handleToggle}
-                                  disabled={loading}
-                                />
-                              </label>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </span>
-
-                    {!seeBoard &&
-                      !exercise &&
-                      theclass?.elements?.length > 0 && (
-                        <span
-                          style={{
-                            backgroundColor: "#fff",
-                            padding: "2px ",
-                            display: "block",
-                            width: "100%",
-                            boxSizing: "border-box",
-                            borderRadius: "6px",
-                            overflowX: "auto",
-                          }}
-                        >
-                          <span
-                            style={{
-                              display: "block",
-                            }}
-                          >
-                            <div
-                              ref={scrollerRef}
-                              onMouseDown={onMouseDown}
-                              onMouseLeave={onMouseLeave}
-                              onMouseUp={onMouseUp}
-                              onMouseMove={onMouseMove}
-                              onWheel={onWheel}
-                              style={{
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                alignItems: "center",
-                                overflowX: "auto",
-                                minWidth: 0, // ⬅️ permite encolher e criar overflow
-                                gap: "5px",
-                                padding: "2px",
-                                scrollbarWidth: "none",
-                                msOverflowStyle: "none",
-                                touchAction: "pan-x", // ⬅️ melhora no touch
-                                overscrollBehaviorX: "contain", // ⬅️ evita “puxar” a página
-                              }}
-                              className="topbar-sections"
-                            >
-                              <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
-                              {sectionElems.map((s: any, i: number) => {
-                                // Só renderiza se tiver subtitle e não for exercise/selectexercise
-                                if (!s.subtitle || s.type === "selectexercise")
-                                  return null;
-
-                                const id = makeId(s.subtitle, i);
-                                const isActive = id === activeId;
-
-                                return (
-                                  <button
-                                    key={i}
-                                    style={{
-                                      all: "unset", // ok manter
-                                      display: "inline-flex", // importante p/ flex container
-                                      alignItems: "center",
-                                      flex: "0 0 auto", // não encolher (gera overflow)
-                                      cursor: "pointer",
-                                      fontWeight: isActive ? "600" : "500",
-                                      borderBottom: isActive
-                                        ? `1px solid ${partnerColor()}`
-                                        : "1px solid transparent",
-                                      color: isActive ? "grey" : "#64748b",
-                                      padding: "4px 6px", // área de clique
-                                      textTransform: "uppercase",
-                                      fontSize: "10px", // (8px pode ficar minúsculo)
-                                    }}
-                                    onMouseOver={(e) => {
-                                      (e.target as HTMLElement).style.color =
-                                        partnerColor();
-                                      (
-                                        e.target as HTMLElement
-                                      ).style.backgroundColor = "#eeeeeeb4";
-                                    }}
-                                    onMouseOut={(e) => {
-                                      (e.target as HTMLElement).style.color =
-                                        isActive ? "grey" : "#64748b";
-                                      (
-                                        e.target as HTMLElement
-                                      ).style.backgroundColor = "transparent";
-                                    }}
-                                    onClick={() => scrollToSection(id)}
-                                  >
-                                    {truncateString(s.subtitle, 12)}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </span>
-                        </span>
-                      )}
-                  </div>
-                  {!exercise ? (
-                    <>
-                      {theclass?.elements?.length > 0 && (
-                        <div
-                          style={{
-                            maxWidth: "780%",
-                            margin: "0 auto",
-                            background: "#ffffff",
-                            position: "relative",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              background: `${partnerColor()}05`,
-                              borderRadius: "50%",
-                              zIndex: 0,
-                              opacity: 0.3,
-                            }}
-                          />
-                          {theclass.image && (
-                            <ImgLesson
-                              src={theclass.image}
-                              alt={theclass.subtitle}
-                            />
-                          )}
-
-                          {theclass.description && (
-                            <div
-                              style={{
-                                margin: "1rem auto",
-                                maxWidth: "800px",
-                                fontSize: "16px",
-                                textAlign: "center",
-                                color: darkGreyColor(),
-                                lineHeight: 1.5,
-                              }}
-                            >
-                              {theclass.description}
-                            </div>
-                          )}
-                          {theclass.video && isArthurVincent && (
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                marginTop: "1rem",
-                              }}
-                            >
-                              <IFrameVideoBlog
-                                src={getVideoEmbedUrl(theclass.video)}
-                              />
-                            </div>
-                          )}
-                          <div
-                            style={{
-                              position: "relative",
-                              zIndex: 1,
-                              paddingBottom: "40px",
-                            }}
-                          >
-                            {theclass.elements &&
-                              theclass.elements
-                                .sort((a: any, b: any) => a.order - b.order)
-                                .map((element: any, index: number) => (
-                                  <div
-                                    key={index}
-                                    id={makeId(element.subtitle, index)}
-                                    style={{
-                                      margin: "24px 0",
-                                      position: "relative",
-                                      scrollMarginTop: `${barOffset + 4}px`,
-                                    }}
-                                  >
-                                    {element.subtitle &&
-                                      element.type !== "selectexercise" && (
-                                        <div
-                                          style={{
-                                            // position: "sticky",
-                                            display: element.subtitle
-                                              ? "block"
-                                              : "none",
-                                            top: "4rem",
-                                            zIndex: 4,
-                                            marginBottom: 8,
-                                            background:
-                                              "rgba(255,255,255,0.98)",
-                                            backdropFilter:
-                                              "saturate(1.1) blur(6px)",
-                                            borderBottom: `2px solid ${partnerColor()}15`,
-                                            borderRadius: 4,
-                                          }}
-                                        >
-                                          <h2
-                                            style={{
-                                              margin: 0,
-                                              padding: "10px",
-                                              fontSize: "18px",
-                                              fontWeight: 600,
-                                              color: partnerColor(),
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {element.subtitle}
-                                          </h2>
-                                        </div>
-                                      )}
-                                    {element.image && element.subtitle && (
-                                      <ImgLesson
-                                        src={element.image}
-                                        alt={element.subtitle}
-                                      />
-                                    )}
-                                    {element.video && element.subtitle && (
-                                      <VideoLessonModel element={element} />
-                                    )}
-
-                                    {element.comments && (
-                                      <p
-                                        style={{
-                                          padding: "0.5rem",
-                                          textAlign: "center",
-                                          backgroundColor: "#f6f6f6",
-                                          borderRadius: "4px",
-                                          margin: "0.5rem 0",
-                                          fontStyle: "italic",
-                                        }}
-                                      >
-                                        {element.comments}
-                                      </p>
-                                    )}
-                                    {element.type === "sentences" ? (
-                                      <SentenceLessonModel
-                                        mainTag={theclass.mainTag}
-                                        element={element}
-                                        studentId={mainStudentID || studentID}
-                                        headers={headers}
-                                        selectedVoice={selectedVoice}
-                                      />
-                                    ) : element.type === "vocabulary" ? (
-                                      <VocabularyLesson
-                                        exerciseScore={exerciseScore}
-                                        mainTag={theclass.mainTag}
-                                        element={element}
-                                        studentId={mainStudentID || studentID}
-                                        headers={headers}
-                                        selectedVoice={selectedVoice}
-                                      />
-                                    ) : element.type === "nfsentences" ? (
-                                      <NoFlashcardsSentenceLessonModel
-                                        element={element}
-                                        selectedVoice={selectedVoice}
-                                      />
-                                    ) : element.type === "audio" ? (
-                                      <AudioFile
-                                        selectedVoice={selectedVoice}
-                                        element={element}
-                                      />
-                                    ) : element.type === "text" ? (
-                                      <TextLessonModel
-                                        headers={headers}
-                                        text={element.text ? element.text : ""}
-                                        image={
-                                          element.image ? element.image : ""
-                                        }
-                                      />
-                                    ) : element.type === "html" ? (
-                                      <div
-                                        style={{
-                                          padding: "1rem",
-                                          justifyContent: "center",
-                                        }}
-                                      >
-                                        <div
-                                          dangerouslySetInnerHTML={{
-                                            __html: element.text,
-                                          }}
-                                        />
-                                      </div>
-                                    ) : element.type === "multipletexts" ? (
-                                      <MultipleTextsLessonModel
-                                        headers={headers}
-                                        element={element}
-                                      />
-                                    ) : // ) : element.type === "selectexercise" ? (
-                                    //   <SelectExercise
-                                    //     headers={headers}
-                                    //     element={element}
-                                    //     selectedVoice={selectedVoice}
-                                    //   />
-                                    element.type === "images" ? (
-                                      <ImageLessonModel
-                                        studentId={studentID}
-                                        mainTag={theclass.mainTag}
-                                        id={myId}
-                                        headers={headers}
-                                        element={element}
-                                        selectedVoice={selectedVoice}
-                                      />
-                                    ) : element.type === "explanation" ? (
-                                      <ExplanationLesson
-                                        headers={headers}
-                                        element={element}
-                                      />
-                                    ) : element.type === "audiosoundtrack" ? (
-                                      <AudioSoundTrack
-                                        headers={headers}
-                                        text={element.text}
-                                        src={element.src}
-                                        studentId={studentID}
-                                        mainTag={theclass.mainTag}
-                                        element={element}
-                                        link={element.link}
-                                        subtitle={element.subtitle}
-                                        selectedVoice={selectedVoice}
-                                      />
-                                    ) : element.type === "dialogue" ? (
-                                      <DialogueLessonModel
-                                        headers={headers}
-                                        element={element}
-                                        language={classLanguage}
-                                      />
-                                    ) : element.type === "singleimages" ? (
-                                      <SingleImageLessonModel
-                                        headers={headers}
-                                        element={element}
-                                      />
-                                    ) : element.type === "exercise" ? (
-                                      <ExerciseLessonModel
-                                        headers={headers}
-                                        item={element.items}
-                                      />
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </div>
-                                ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <ExerciseRunner
-                      key={`exercises-${studentID}`} // Force re-render when student changes
-                      classId={theclass._id}
-                      exerciseScore={exerciseScore}
-                      elements={theclass.elements}
-                      count={1000000}
-                      dictationItems={10000000}
-                      studentId={studentID}
-                      headers={headers}
-                      selectedVoice={selectedVoice}
-                      language={classLanguage}
-                    />
-                  )}
-                </>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: 8,
-                      padding: 10,
-                      maxWidth: "99%",
-                      margin: "0 auto",
-                      boxSizing: "border-box",
-                    }}
-                  >
-                    {/* Header */}
-                    <div
-                      style={{
-                        // position: "sticky",
-                        top: 0,
-                        zIndex: 5,
-                        display: "flex",
-                        flexDirection: isDesktop ? "row" : "column",
-                        alignItems: isDesktop ? "center" : "stretch",
-                        justifyContent: "space-between",
-                        gap: isDesktop ? 12 : 8,
-                        padding: isDesktop ? 10 : 8,
-                        background:
-                          "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.9) 100%)",
-                        borderBottom: "1px solid #eef0f2",
-                        backdropFilter: "saturate(1.1) blur(6px)",
-                        borderRadius: isDesktop ? 12 : 8,
-                        boxSizing: "border-box",
-                      }}
-                    >
-                      {/* Lado esquerdo: ações principais */}
-                      <div
-                        style={{
-                          display: "flex",
-                          flex: 1,
-                          flexWrap: "wrap",
-                          alignItems: "center",
-                          gap: isDesktop ? 8 : 6,
-                        }}
-                      >
-                        {hasAudioElement && (
-                          <button
-                            onClick={() => setSeeAudios((v) => !v)}
-                            style={{
-                              ...baseBtnStyle,
-                              padding: isDesktop ? "6px 10px" : "5px 8px",
-                              fontSize: 12,
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Áudios
-                          </button>
-                        )}
-
                         <button
-                          onClick={downloadBoardPDF}
-                          title="Baixar PDF"
+                          onClick={() => setExercise(!exercise)}
                           style={{
-                            all: "unset",
+                            borderRadius: "4px",
+                            border: "1px solid #e2e8f0",
+                            backgroundColor: partnerColor(),
+                            fontSize: "11px",
+                            fontWeight: "400",
+                            color: "white",
+                            padding: "4px 6px",
+                            height: "28px",
+                            outline: "none",
                             cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: 4,
-                            borderRadius: 8,
-                            border: "1px solid #e5e7eb",
-                            backgroundColor: "#f9fafb",
+                            display: "block",
                           }}
                         >
-                          <img
-                            src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                            alt="PDF"
-                            style={{ width: 18, height: 18 }}
-                          />
+                          {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
                         </button>
-
-                        <button
-                          style={{
-                            ...baseBtnStyle,
-                            padding: isDesktop ? "6px 10px" : "5px 8px",
-                            fontSize: 12,
-                            whiteSpace: "nowrap",
-                          }}
-                          onClick={() => {
-                            setSeeOptions(!seeOptions);
-                          }}
-                        >
-                          {seeOptions ? "Ocultar Opções" : "Mostrar Opções"}
-                        </button>
-
-                        {/* Grupo Restaurar/Salvar + check + data */}
-                        <div
-                          style={{
-                            display: "flex",
-                            flex: 1,
-                            flexWrap: "wrap",
-                            alignItems: "center",
-                            justifyContent: isDesktop
-                              ? "flex-end"
-                              : "flex-start",
-                            gap: isDesktop ? 8 : 6,
-                          }}
-                        >
-                          <button
-                            onClick={() => {
-                              const template = generateInitialBoardContent();
-                              setEditorKey((v) => v + 1);
-                              setNewHWDescription(template);
-                              setEditorContent(template);
-                              setConfirm(true);
-                            }}
-                            title="Restaurar"
-                            style={{
-                              ...baseBtnStyle,
-                              padding: isDesktop ? "6px 10px" : "5px 8px",
-                              fontSize: 12,
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            Restaurar
-                          </button>
-
-                          {confirm && (
-                            <button
-                              onClick={handleSaveBoard}
-                              style={{
-                                ...baseBtnStyle,
-                                padding: isDesktop ? "6px 14px" : "5px 10px",
-                                fontSize: 12,
-                                border: `1px solid ${
-                                  partnerColor?.() || "#2563eb"
-                                }`,
-                                background: partnerColor?.() || "#2563eb",
-                                color: "#fff",
-                                fontWeight: 600,
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Salvar
-                            </button>
-                          )}
-
-                          {seeCheck && (
-                            <i
-                              className="fa fa-check"
-                              style={{
-                                padding: 6,
-                                borderRadius: "999px",
-                                backgroundColor: "#fff",
-                                color: "green",
-                                fontSize: 12,
-                                border: "1px solid #e5e7eb",
-                              }}
-                            />
-                          )}
-
-                          {boardDate && (
-                            <span
-                              style={{
-                                color: "#6b7280",
-                                fontSize: 11,
-                                fontStyle: "italic",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              Última edição:{" "}
-                              <strong>{formatDateBrWithHour(boardDate)}</strong>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Lado direito: fechar / confirmação */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: isDesktop ? "flex-end" : "flex-start",
-                          gap: 8,
-                        }}
-                      >
-                        {seeConfirm ? (
+                        {!exercise && (
                           <div
+                            className="isMobileDisapear"
                             style={{
-                              display: "flex",
-                              flexDirection: isDesktop ? "row" : "column",
-                              gap: 6,
-                            }}
-                          >
-                            <button
-                              onClick={() => {
-                                setSeeAudios(false);
-                                setSeeConfirm(false);
-                              }}
-                              style={{
-                                background: "#fff",
-                                color: "#111827",
-                                fontSize: 12,
-                                cursor: "pointer",
-                                padding: "4px 8px",
-                                borderRadius: 6,
-                                border: "1px solid #e5e7eb",
-                              }}
-                            >
-                              Cancelar
-                            </button>
-                            <button
-                              onClick={() => {
-                                setSeeAudios(false);
-                                setSeeConfirm(false);
-                                setSeeBoard(false);
-                                const template = generateInitialBoardContent();
-                                setEditorContent(template);
-                                setNewHWDescription(template);
-                              }}
-                              style={{
-                                background: "#fee2e2",
-                                color: "#b91c1c",
-                                padding: "6px 10px",
-                                borderRadius: 6,
-                                fontSize: 12,
-                                cursor: "pointer",
-                                border: "1px solid #fecaca",
-                              }}
-                            >
-                              Fechar sem salvar
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => {
-                              setSeeAudios(false);
-                              if (confirm) setSeeConfirm(true);
-                              else setSeeBoard(false);
-                            }}
-                            aria-label="Fechar"
-                            style={{
-                              all: "unset",
-                              background: "#fff",
-                              cursor: "pointer",
-                              color: "#b91c1c",
-                              width: 18,
-                              height: 18,
                               display: "flex",
                               alignItems: "center",
-                              justifyContent: "center",
-                              borderRadius: 999,
-                              border: "1px solid #fecaca",
-                              fontSize: 12,
+                              gap: "8px",
                             }}
                           >
-                            ✕
-                          </button>
+                            <button
+                              title="Gerar PowerPoint"
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
+                              }}
+                              onClick={generatePPT}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                                alt="PowerPoint"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <button
+                              title="Gerar Word"
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
+                              }}
+                              onClick={generateWord}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                                alt="Word"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <button
+                              title="Gerar PDF"
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
+                              }}
+                              onClick={generatePDF}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                                alt="PDF"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <label
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                fontSize: "11px",
+                                fontWeight: "400",
+                                color: "#64748b",
+                              }}
+                            >
+                              <input
+                                style={{
+                                  cursor: "pointer",
+                                  width: "12px",
+                                  height: "12px",
+                                  accentColor: partnerColor(),
+                                }}
+                                type="checkbox"
+                                checked={isCompleted}
+                                onChange={handleToggle}
+                                disabled={loading}
+                              />
+                            </label>
+                          </div>
                         )}
                       </div>
-                    </div>
+                    )}
+                  </span>
 
-                    {/* Controles de zoom */}
-                    <div
+                  {!seeBoard && !exercise && theclass?.elements?.length > 0 && (
+                    <span
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        borderRadius: 8,
-                        fontSize: 12,
-                        backgroundColor: "#f9fafb",
+                        backgroundColor: "#fff",
+                        padding: "2px ",
+                        display: "block",
+                        width: "100%",
+                        boxSizing: "border-box",
+                        borderRadius: "6px",
+                        overflowX: "auto",
                       }}
                     >
-                      <button
-                        onClick={() =>
-                          setBoardZoom((prev) => Math.max(prev - 10, 100))
-                        }
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          padding: "4px 10px",
-                          background: "#f3f4f6",
-                          borderRadius: 6,
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          lineHeight: 1,
-                        }}
-                        title="Diminuir zoom (Ctrl + -)"
-                      >
-                        -
-                      </button>
                       <span
                         style={{
-                          minWidth: 48,
-                          textAlign: "center",
-                          fontVariantNumeric: "tabular-nums",
-                          fontSize: 12,
-                          color: "#4b5563",
+                          display: "block",
                         }}
                       >
-                        {Math.round(boardZoom)}%
-                      </span>
-                      <button
-                        onClick={() =>
-                          setBoardZoom((prev) => Math.min(prev + 10, 200))
-                        }
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          padding: "4px 10px",
-                          background: "#f3f4f6",
-                          borderRadius: 6,
-                          fontSize: 14,
-                          fontWeight: "bold",
-                          lineHeight: 1,
-                        }}
-                        title="Aumentar zoom (Ctrl + +)"
-                      >
-                        +
-                      </button>
-                    </div>
+                        <div
+                          ref={scrollerRef}
+                          onMouseDown={onMouseDown}
+                          onMouseLeave={onMouseLeave}
+                          onMouseUp={onMouseUp}
+                          onMouseMove={onMouseMove}
+                          onWheel={onWheel}
+                          style={{
+                            display: "flex",
+                            flexWrap: "nowrap",
+                            alignItems: "center",
+                            overflowX: "auto",
+                            minWidth: 0, // ⬅️ permite encolher e criar overflow
+                            gap: "5px",
+                            padding: "2px",
+                            scrollbarWidth: "none",
+                            msOverflowStyle: "none",
+                            touchAction: "pan-x", // ⬅️ melhora no touch
+                            overscrollBehaviorX: "contain", // ⬅️ evita “puxar” a página
+                          }}
+                          className="topbar-sections"
+                        >
+                          <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
+                          {sectionElems.map((s: any, i: number) => {
+                            // Só renderiza se tiver subtitle e não for exercise/selectexercise
+                            if (!s.subtitle || s.type === "selectexercise")
+                              return null;
 
-                    {/* Editor / Read-only */}
-                    <div
-                      style={{
-                        position: "relative",
-                        backgroundColor: "#ffffff",
-                      }}
-                    >
-                      {!loadingBoard ? (
+                            const id = makeId(s.subtitle, i);
+                            const isActive = id === activeId;
+
+                            return (
+                              <button
+                                key={i}
+                                style={{
+                                  all: "unset", // ok manter
+                                  display: "inline-flex", // importante p/ flex container
+                                  alignItems: "center",
+                                  flex: "0 0 auto", // não encolher (gera overflow)
+                                  cursor: "pointer",
+                                  fontWeight: isActive ? "600" : "500",
+                                  borderBottom: isActive
+                                    ? `1px solid ${partnerColor()}`
+                                    : "1px solid transparent",
+                                  color: isActive ? "grey" : "#64748b",
+                                  padding: "4px 6px", // área de clique
+                                  textTransform: "uppercase",
+                                  fontSize: "10px", // (8px pode ficar minúsculo)
+                                }}
+                                onMouseOver={(e) => {
+                                  (e.target as HTMLElement).style.color =
+                                    partnerColor();
+                                  (
+                                    e.target as HTMLElement
+                                  ).style.backgroundColor = "#eeeeeeb4";
+                                }}
+                                onMouseOut={(e) => {
+                                  (e.target as HTMLElement).style.color =
+                                    isActive ? "grey" : "#64748b";
+                                  (
+                                    e.target as HTMLElement
+                                  ).style.backgroundColor = "transparent";
+                                }}
+                                onClick={() => scrollToSection(id)}
+                              >
+                                {truncateString(s.subtitle, 12)}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </span>
+                    </span>
+                  )}
+                </div>
+                {!exercise ? (
+                  <>
+                    {theclass?.elements?.length > 0 && (
+                      <div
+                        style={{
+                          maxWidth: "780%",
+                          margin: "0 auto",
+                          background: "#ffffff",
+                          position: "relative",
+                        }}
+                      >
                         <div
                           style={{
-                            height: isDesktop ? "70vh" : "60vh",
-                            overflow: "auto",
-                            width: "100%",
-                            padding: isDesktop ? 16 : 10,
-                            boxSizing: "border-box",
+                            width: "40px",
+                            height: "40px",
+                            background: `${partnerColor()}05`,
+                            borderRadius: "50%",
+                            zIndex: 0,
+                            opacity: 0.3,
                           }}
-                        >
+                        />
+                        {theclass.image && (
+                          <ImgLesson
+                            src={theclass.image}
+                            alt={theclass.subtitle}
+                          />
+                        )}
+
+                        {theclass.description && (
+                          <div
+                            style={{
+                              margin: "1rem auto",
+                              maxWidth: "800px",
+                              fontSize: "16px",
+                              textAlign: "center",
+                              color: darkGreyColor(),
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {theclass.description}
+                          </div>
+                        )}
+                        {theclass.video && isArthurVincent && (
                           <div
                             style={{
                               display: "flex",
                               justifyContent: "center",
-                              transform: `scale(${boardZoom / 100})`,
-                              transformOrigin: "top center",
-                              transition: "transform 0.15s ease-in-out",
+                              marginTop: "1rem",
                             }}
                           >
-                            <div
-                              style={{
-                                width: "75vw",
-                              }}
-                            >
-                              <HTMLEditor
-                                key={editorKey}
-                                initialContent={editorContent}
-                                onChange={handleHWDescriptionChange}
-                              />
-                            </div>
+                            <IFrameVideoBlog
+                              src={getVideoEmbedUrl(theclass.video)}
+                            />
                           </div>
-                        </div>
-                      ) : (
+                        )}
                         <div
                           style={{
-                            height: isDesktop ? "70vh" : "60vh",
-                            display: "grid",
-                            placeItems: "center",
+                            position: "relative",
+                            zIndex: 1,
+                            paddingBottom: "40px",
                           }}
                         >
-                          <CircularProgress
-                            style={{ color: partnerColor?.() || "#2563eb" }}
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Áudios */}
-                    {hasAudioElement && seeAudios && (
-                      <div
-                        style={{
-                          borderRadius: isDesktop ? 12 : 10,
-                          padding: isDesktop ? 12 : 10,
-                          overflow: "hidden",
-                          display: "grid",
-                          gridTemplateRows: "auto 1fr",
-                          minHeight: 0,
-                          backgroundColor: "#f9fafb",
-                          border: "1px solid #e5e7eb",
-                          gap: 4,
-                        }}
-                      >
-                        <div style={{ overflow: "auto", paddingTop: 4 }}>
-                          {(() => {
-                            const audioElements =
-                              (theclass?.elements || []).filter(
-                                (el: any) =>
-                                  el.type === "audio" ||
-                                  el.type === "audiosoundtrack"
-                              ) || [];
-                            const currentAudio =
-                              audioElements[currentAudioIndex];
-                            if (!currentAudio) return null;
-
-                            const total = audioElements.length;
-
-                            return (
-                              <div style={{ display: "grid", gap: 6 }}>
+                          {theclass.elements &&
+                            theclass.elements
+                              .sort((a: any, b: any) => a.order - b.order)
+                              .map((element: any, index: number) => (
                                 <div
+                                  key={index}
+                                  id={makeId(element.subtitle, index)}
                                   style={{
-                                    display: "flex",
-                                    flexDirection: isDesktop ? "row" : "column",
-                                    alignItems: isDesktop
-                                      ? "center"
-                                      : "flex-start",
-                                    justifyContent: "space-between",
-                                    gap: 6,
+                                    margin: "24px 0",
+                                    position: "relative",
+                                    scrollMarginTop: `${barOffset + 4}px`,
                                   }}
                                 >
-                                  {currentAudio.subtitle && (
-                                    <h4
-                                      style={{
-                                        margin: 0,
-                                        fontSize: 13,
-                                        color: partnerColor?.() || "#111827",
-                                      }}
-                                    >
-                                      {currentAudio.subtitle}
-                                    </h4>
+                                  {element.subtitle &&
+                                    element.type !== "selectexercise" && (
+                                      <div
+                                        style={{
+                                          // position: "sticky",
+                                          display: element.subtitle
+                                            ? "block"
+                                            : "none",
+                                          top: "4rem",
+                                          zIndex: 4,
+                                          marginBottom: 8,
+                                          background: "rgba(255,255,255,0.98)",
+                                          backdropFilter:
+                                            "saturate(1.1) blur(6px)",
+                                          borderBottom: `2px solid ${partnerColor()}15`,
+                                          borderRadius: 4,
+                                        }}
+                                      >
+                                        <h2
+                                          style={{
+                                            margin: 0,
+                                            padding: "10px",
+                                            fontSize: "18px",
+                                            fontWeight: 600,
+                                            color: partnerColor(),
+                                            textAlign: "center",
+                                          }}
+                                        >
+                                          {element.subtitle}
+                                        </h2>
+                                      </div>
+                                    )}
+                                  {element.image && element.subtitle && (
+                                    <ImgLesson
+                                      src={element.image}
+                                      alt={element.subtitle}
+                                    />
+                                  )}
+                                  {element.video && element.subtitle && (
+                                    <VideoLessonModel element={element} />
                                   )}
 
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: 8,
-                                      paddingBottom: 4,
-                                    }}
-                                  >
-                                    <button
-                                      onClick={() =>
-                                        setCurrentAudioIndex((i) =>
-                                          Math.max(0, i - 1)
-                                        )
-                                      }
-                                      disabled={currentAudioIndex === 0}
+                                  {element.comments && (
+                                    <p
                                       style={{
-                                        all: "unset",
-                                        cursor:
-                                          currentAudioIndex === 0
-                                            ? "not-allowed"
-                                            : "pointer",
-                                        color:
-                                          currentAudioIndex === 0
-                                            ? "#cbd5e1"
-                                            : partnerColor?.() || "#111827",
-                                        fontSize: 16,
-                                        padding: 4,
-                                      }}
-                                      aria-label="Anterior"
-                                      title="Anterior"
-                                    >
-                                      ←
-                                    </button>
-                                    <span
-                                      style={{
-                                        fontSize: 12,
-                                        color: "#6b7280",
-                                        minWidth: 40,
+                                        padding: "0.5rem",
                                         textAlign: "center",
+                                        backgroundColor: "#f6f6f6",
+                                        borderRadius: "4px",
+                                        margin: "0.5rem 0",
+                                        fontStyle: "italic",
                                       }}
                                     >
-                                      {Math.min(currentAudioIndex + 1, total)} /{" "}
-                                      {total}
-                                    </span>
-                                    <button
-                                      onClick={() =>
-                                        setCurrentAudioIndex((i) =>
-                                          Math.min(total - 1, i + 1)
-                                        )
-                                      }
-                                      disabled={currentAudioIndex >= total - 1}
+                                      {element.comments}
+                                    </p>
+                                  )}
+                                  {element.type === "sentences" ? (
+                                    <SentenceLessonModel
+                                      mainTag={theclass.mainTag}
+                                      element={element}
+                                      studentId={mainStudentID || studentID}
+                                      headers={headers}
+                                      selectedVoice={selectedVoice}
+                                    />
+                                  ) : element.type === "vocabulary" ? (
+                                    <VocabularyLesson
+                                      exerciseScore={exerciseScore}
+                                      mainTag={theclass.mainTag}
+                                      element={element}
+                                      studentId={mainStudentID || studentID}
+                                      headers={headers}
+                                      selectedVoice={selectedVoice}
+                                    />
+                                  ) : element.type === "nfsentences" ? (
+                                    <NoFlashcardsSentenceLessonModel
+                                      element={element}
+                                      selectedVoice={selectedVoice}
+                                    />
+                                  ) : element.type === "audio" ? (
+                                    <AudioFile
+                                      selectedVoice={selectedVoice}
+                                      element={element}
+                                    />
+                                  ) : element.type === "text" ? (
+                                    <TextLessonModel
+                                      headers={headers}
+                                      text={element.text ? element.text : ""}
+                                      image={element.image ? element.image : ""}
+                                    />
+                                  ) : element.type === "html" ? (
+                                    <div
                                       style={{
-                                        all: "unset",
-                                        cursor:
-                                          currentAudioIndex >= total - 1
-                                            ? "not-allowed"
-                                            : "pointer",
-                                        color:
-                                          currentAudioIndex >= total - 1
-                                            ? "#cbd5e1"
-                                            : partnerColor?.() || "#111827",
-                                        fontSize: 16,
-                                        padding: 4,
-                                      }}
-                                      aria-label="Próximo"
-                                      title="Próximo"
-                                    >
-                                      →
-                                    </button>
-                                    <button
-                                      style={{
-                                        all: "unset",
-                                        cursor: "pointer",
-                                        color: "#933232ff",
-                                        fontSize: 12,
-                                        padding: 4,
-                                        borderRadius: 999,
-                                      }}
-                                      onClick={() => {
-                                        setSeeAudios(false);
+                                        padding: "1rem",
+                                        justifyContent: "center",
                                       }}
                                     >
-                                      ✕
-                                    </button>
-                                  </div>
+                                      <div
+                                        dangerouslySetInnerHTML={{
+                                          __html: element.text,
+                                        }}
+                                      />
+                                    </div>
+                                  ) : element.type === "multipletexts" ? (
+                                    <MultipleTextsLessonModel
+                                      headers={headers}
+                                      element={element}
+                                    />
+                                  ) : // ) : element.type === "selectexercise" ? (
+                                  //   <SelectExercise
+                                  //     headers={headers}
+                                  //     element={element}
+                                  //     selectedVoice={selectedVoice}
+                                  //   />
+                                  element.type === "images" ? (
+                                    <ImageLessonModel
+                                      studentId={studentID}
+                                      mainTag={theclass.mainTag}
+                                      id={myId}
+                                      headers={headers}
+                                      element={element}
+                                      selectedVoice={selectedVoice}
+                                    />
+                                  ) : element.type === "explanation" ? (
+                                    <ExplanationLesson
+                                      headers={headers}
+                                      element={element}
+                                    />
+                                  ) : element.type === "audiosoundtrack" ? (
+                                    <AudioSoundTrack
+                                      headers={headers}
+                                      text={element.text}
+                                      src={element.src}
+                                      studentId={studentID}
+                                      mainTag={theclass.mainTag}
+                                      element={element}
+                                      link={element.link}
+                                      subtitle={element.subtitle}
+                                      selectedVoice={selectedVoice}
+                                    />
+                                  ) : element.type === "dialogue" ? (
+                                    <DialogueLessonModel
+                                      headers={headers}
+                                      element={element}
+                                      language={classLanguage}
+                                    />
+                                  ) : element.type === "singleimages" ? (
+                                    <SingleImageLessonModel
+                                      headers={headers}
+                                      element={element}
+                                    />
+                                  ) : element.type === "exercise" ? (
+                                    <ExerciseLessonModel
+                                      headers={headers}
+                                      item={element.items}
+                                    />
+                                  ) : (
+                                    <></>
+                                  )}
                                 </div>
-
-                                {currentAudio.type === "audio" ? (
-                                  <AudioFile
-                                    hideText
-                                    element={currentAudio}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : (
-                                  <AudioSoundTrack
-                                    headers={headers}
-                                    text={currentAudio.text}
-                                    hideText
-                                    src={currentAudio.src}
-                                    studentId={studentID}
-                                    mainTag={theclass.mainTag}
-                                    element={currentAudio}
-                                    link={currentAudio.link}
-                                    subtitle={currentAudio.subtitle}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                )}
-                              </div>
-                            );
-                          })()}
+                              ))}
                         </div>
                       </div>
                     )}
-                  </div>
-                </>
-              )}
+                  </>
+                ) : (
+                  <ExerciseRunner
+                    elements={theclass.elements}
+                    classId={theclass._id}
+                    exercisesDone={theclass.exercisesDone}
+                    exerciseScore={exerciseScore}
+                    dictationItems={10000000}
+                    studentId={studentID}
+                    headers={headers}
+                    selectedVoice={selectedVoice}
+                    language={classLanguage}
+                    boardInitialContent={editorContent}
+                    onBoardChange={handleHWDescriptionChange}
+                    renderBoardEditor={({ initialContent, onChange }) => (
+                      <>
+                        <div
+                          style={{
+                            display: "grid",
+                            gap: 8,
+                            padding: 10,
+                            maxWidth: "99%",
+                            margin: "0 auto",
+                            boxSizing: "border-box",
+                          }}
+                        >
+                          {/* Header */}
+                          <div
+                            style={{
+                              top: 0,
+                              zIndex: 5,
+                              display: "flex",
+                              flexDirection: isDesktop ? "row" : "column",
+                              alignItems: isDesktop ? "center" : "stretch",
+                              justifyContent: "space-between",
+                              gap: isDesktop ? 12 : 8,
+                              padding: isDesktop ? 10 : 8,
+                              backdropFilter: "saturate(1.1) blur(6px)",
+                              borderRadius: isDesktop ? 12 : 8,
+                              boxSizing: "border-box",
+                            }}
+                          >
+                            {/* Lado esquerdo: ações principais */}
+                            <div
+                              style={{
+                                display: "flex",
+                                flex: 1,
+                                flexWrap: "wrap",
+                                alignItems: "center",
+                                gap: isDesktop ? 8 : 6,
+                              }}
+                            >
+                              {hasAudioElement && (
+                                <button
+                                  onClick={() => setSeeAudios((v) => !v)}
+                                  style={{
+                                    ...baseBtnStyle,
+                                    padding: isDesktop ? "6px 10px" : "5px 8px",
+                                    fontSize: 12,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Áudios
+                                </button>
+                              )}
+
+                              {/* Grupo Restaurar/Salvar + check + data */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flex: 1,
+                                  flexWrap: "wrap",
+                                  alignItems: "center",
+                                  justifyContent: isDesktop
+                                    ? "flex-end"
+                                    : "flex-start",
+                                  gap: isDesktop ? 8 : 6,
+                                }}
+                              >
+                                <button
+                                  onClick={() => {
+                                    const template =
+                                      generateInitialBoardContent();
+                                    setEditorKey((v) => v + 1);
+                                    setNewHWDescription(template);
+                                    setEditorContent(template);
+                                    setConfirm(true);
+                                  }}
+                                  title="Restaurar"
+                                  style={{
+                                    ...baseBtnStyle,
+                                    padding: isDesktop ? "6px 10px" : "5px 8px",
+                                    fontSize: 12,
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  Restaurar
+                                </button>
+
+                                {confirm && (
+                                  <button
+                                    onClick={handleSaveBoard}
+                                    style={{
+                                      ...baseBtnStyle,
+                                      padding: isDesktop
+                                        ? "6px 14px"
+                                        : "5px 10px",
+                                      fontSize: 12,
+                                      border: `1px solid ${
+                                        partnerColor?.() || "#2563eb"
+                                      }`,
+                                      background: "black  ",
+                                      color: "#fff",
+                                      fontWeight: 600,
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    Salvar sem enviar
+                                  </button>
+                                )}
+
+                                {seeCheck && (
+                                  <i
+                                    className="fa fa-check"
+                                    style={{
+                                      padding: 6,
+                                      borderRadius: "999px",
+                                      backgroundColor: "#fff",
+                                      color: "green",
+                                      fontSize: 12,
+                                      border: "1px solid #e5e7eb",
+                                    }}
+                                  />
+                                )}
+
+                                {boardDate && (
+                                  <span
+                                    style={{
+                                      color: "#6b7280",
+                                      fontSize: 11,
+                                      fontStyle: "italic",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    Última edição:{" "}
+                                    <strong>
+                                      {formatDateBrWithHour(boardDate)}
+                                    </strong>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Controles de zoom */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              gap: 8,
+                              borderRadius: 8,
+                              fontSize: 12,
+                            }}
+                          >
+                            <button
+                              onClick={() =>
+                                setBoardZoom((prev) => Math.max(prev - 10, 100))
+                              }
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 10px",
+                                background: "#f3f4f6",
+                                borderRadius: 6,
+                                fontSize: 14,
+                                fontWeight: "bold",
+                                lineHeight: 1,
+                              }}
+                              title="Diminuir zoom (Ctrl + -)"
+                            >
+                              -
+                            </button>
+                            <span
+                              style={{
+                                minWidth: 48,
+                                textAlign: "center",
+                                fontVariantNumeric: "tabular-nums",
+                                fontSize: 12,
+                                color: "#4b5563",
+                              }}
+                            >
+                              {Math.round(boardZoom)}%
+                            </span>
+                            <button
+                              onClick={() =>
+                                setBoardZoom((prev) => Math.min(prev + 10, 200))
+                              }
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 10px",
+                                background: "#f3f4f6",
+                                borderRadius: 6,
+                                fontSize: 14,
+                                fontWeight: "bold",
+                                lineHeight: 1,
+                              }}
+                              title="Aumentar zoom (Ctrl + +)"
+                            >
+                              +
+                            </button>
+                          </div>
+
+                          {/* Editor / Read-only */}
+                          <div
+                            style={{
+                              position: "relative",
+                              backgroundColor: "#ffffff",
+                            }}
+                          >
+                            {!loadingBoard ? (
+                              <div
+                                style={{
+                                  height: isDesktop ? "70vh" : "60vh",
+                                  overflow: "auto",
+                                  width: "100%",
+                                  padding: isDesktop ? 16 : 10,
+                                  boxSizing: "border-box",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    transformOrigin: "top center",
+                                    transition: "transform 0.15s ease-in-out",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      overflow: "hidden",
+                                      width: "75vw",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        width: "75vw",
+                                        transform: `scale(${boardZoom / 100})`,
+                                        transformOrigin: "top left",
+                                        boxSizing: "border-box",
+                                      }}
+                                    >
+                                      <HTMLEditor
+                                        key={editorKey}
+                                        initialContent={editorContent}
+                                        onChange={handleHWDescriptionChange}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  height: isDesktop ? "70vh" : "60vh",
+                                  display: "grid",
+                                  placeItems: "center",
+                                }}
+                              >
+                                <CircularProgress
+                                  style={{
+                                    color: partnerColor?.() || "#2563eb",
+                                  }}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Áudios */}
+                          {hasAudioElement && seeAudios && (
+                            <div
+                              style={{
+                                borderRadius: isDesktop ? 12 : 10,
+                                padding: isDesktop ? 12 : 10,
+                                overflow: "hidden",
+                                display: "grid",
+                                gridTemplateRows: "auto 1fr",
+                                minHeight: 0,
+                                backgroundColor: "#f9fafb",
+                                border: "1px solid #e5e7eb",
+                                gap: 4,
+                              }}
+                            >
+                              <div style={{ overflow: "auto", paddingTop: 4 }}>
+                                {(() => {
+                                  const audioElements =
+                                    (theclass?.elements || []).filter(
+                                      (el: any) =>
+                                        el.type === "audio" ||
+                                        el.type === "audiosoundtrack"
+                                    ) || [];
+                                  const currentAudio =
+                                    audioElements[currentAudioIndex];
+                                  if (!currentAudio) return null;
+
+                                  const total = audioElements.length;
+
+                                  return (
+                                    <div style={{ display: "grid", gap: 6 }}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          flexDirection: isDesktop
+                                            ? "row"
+                                            : "column",
+                                          alignItems: isDesktop
+                                            ? "center"
+                                            : "flex-start",
+                                          justifyContent: "space-between",
+                                          gap: 6,
+                                        }}
+                                      >
+                                        {currentAudio.subtitle && (
+                                          <h4
+                                            style={{
+                                              margin: 0,
+                                              fontSize: 13,
+                                              color:
+                                                partnerColor?.() || "#111827",
+                                            }}
+                                          >
+                                            {currentAudio.subtitle}
+                                          </h4>
+                                        )}
+
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 8,
+                                            paddingBottom: 4,
+                                          }}
+                                        >
+                                          <button
+                                            onClick={() =>
+                                              setCurrentAudioIndex((i) =>
+                                                Math.max(0, i - 1)
+                                              )
+                                            }
+                                            disabled={currentAudioIndex === 0}
+                                            style={{
+                                              all: "unset",
+                                              cursor:
+                                                currentAudioIndex === 0
+                                                  ? "not-allowed"
+                                                  : "pointer",
+                                              color:
+                                                currentAudioIndex === 0
+                                                  ? "#cbd5e1"
+                                                  : partnerColor?.() ||
+                                                    "#111827",
+                                              fontSize: 16,
+                                              padding: 4,
+                                            }}
+                                            aria-label="Anterior"
+                                            title="Anterior"
+                                          >
+                                            ←
+                                          </button>
+                                          <span
+                                            style={{
+                                              fontSize: 12,
+                                              color: "#6b7280",
+                                              minWidth: 40,
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {Math.min(
+                                              currentAudioIndex + 1,
+                                              total
+                                            )}{" "}
+                                            / {total}
+                                          </span>
+                                          <button
+                                            onClick={() =>
+                                              setCurrentAudioIndex((i) =>
+                                                Math.min(total - 1, i + 1)
+                                              )
+                                            }
+                                            disabled={
+                                              currentAudioIndex >= total - 1
+                                            }
+                                            style={{
+                                              all: "unset",
+                                              cursor:
+                                                currentAudioIndex >= total - 1
+                                                  ? "not-allowed"
+                                                  : "pointer",
+                                              color:
+                                                currentAudioIndex >= total - 1
+                                                  ? "#cbd5e1"
+                                                  : partnerColor?.() ||
+                                                    "#111827",
+                                              fontSize: 16,
+                                              padding: 4,
+                                            }}
+                                            aria-label="Próximo"
+                                            title="Próximo"
+                                          >
+                                            →
+                                          </button>
+                                          <button
+                                            style={{
+                                              all: "unset",
+                                              cursor: "pointer",
+                                              color: "#933232ff",
+                                              fontSize: 12,
+                                              padding: 4,
+                                              borderRadius: 999,
+                                            }}
+                                            onClick={() => {
+                                              setSeeAudios(false);
+                                            }}
+                                          >
+                                            ✕
+                                          </button>
+                                        </div>
+                                      </div>
+
+                                      {currentAudio.type === "audio" ? (
+                                        <AudioFile
+                                          hideText
+                                          element={currentAudio}
+                                          selectedVoice={selectedVoice}
+                                        />
+                                      ) : (
+                                        <AudioSoundTrack
+                                          headers={headers}
+                                          text={currentAudio.text}
+                                          hideText
+                                          src={currentAudio.src}
+                                          studentId={studentID}
+                                          mainTag={theclass.mainTag}
+                                          element={currentAudio}
+                                          link={currentAudio.link}
+                                          subtitle={currentAudio.subtitle}
+                                          selectedVoice={selectedVoice}
+                                        />
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  />
+                )}
+              </>
+
               {!exercise && (
                 <div
                   style={{

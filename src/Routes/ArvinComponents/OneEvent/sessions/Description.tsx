@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import {
@@ -225,8 +225,14 @@ const Description: FC<DescriptionProps> = ({
                     height: 32,
                     borderRadius: 6,
                     border: "1px solid #cbd5e1",
-                    backgroundColor: saving || loadingDescription || !description.trim() ? "grey" : "white",
-                    cursor: saving || loadingDescription || !description.trim() ? "not-allowed" : "pointer",
+                    backgroundColor:
+                      saving || loadingDescription || !description.trim()
+                        ? "grey"
+                        : "white",
+                    cursor:
+                      saving || loadingDescription || !description.trim()
+                        ? "not-allowed"
+                        : "pointer",
                   }}
                 >
                   ✨ (-10)

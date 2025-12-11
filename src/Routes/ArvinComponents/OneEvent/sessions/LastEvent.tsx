@@ -150,7 +150,7 @@ const LastClass: FC<LastClassProps> = ({
                     Link importante
                   </a>
                 )}
-                {/* {allowedToEdit && replicateLastEvent && (
+                {allowedToEdit && replicateLastEvent && (
                   <button
                     style={{
                       marginTop: 8,
@@ -167,7 +167,7 @@ const LastClass: FC<LastClassProps> = ({
                   >
                     Replicar conteúdo da última aula
                   </button>
-                )}{" "} */}
+                )}{" "}
               </div>
             </div>
           )}

@@ -2,6 +2,8 @@ import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { Card, defaultLabels, HeaderBar } from "../Exercises";
 import React, { useState } from "react";
+import axios from "axios";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 
 type OptionItem = {
   option: string;
@@ -31,13 +33,15 @@ export function SelectExercise({
   labels,
   selectedVoice,
   language,
+  courseId,
 }: {
-  exercise: any;
+  exercise: (points: number, label?: string) => void;
   exerciseElement: ElementSelectExercise;
   studentId: string;
   labels: typeof defaultLabels;
   selectedVoice?: string;
   language?: string;
+  courseId?: string; // id da aula para /exercise-done/:id
 }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string>("");
@@ -48,6 +52,9 @@ export function SelectExercise({
   const [score, setScore] = useState(0);
   const [showText, setShowText] = useState(false);
   const [textRevealed, setTextRevealed] = useState(false);
+
+  // resumo geral para o exercise-done
+  const [performanceDescription, setPerformanceDescription] = useState("");
 
   const currentQuestion = exerciseElement.options[currentQuestionIndex];
   const totalQuestions = exerciseElement.options.length;
@@ -76,7 +83,32 @@ export function SelectExercise({
     setTextRevealed(true);
   };
 
-  const checkAnswer = () => {
+  async function handleScoreStamp(
+    pointsToSend: number,
+    descriptionToSend: string
+  ) {
+    if (!courseId || !studentId) return;
+
+    try {
+      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const studentName =
+        (loggedIn?.name && loggedIn?.lastname
+          ? `${loggedIn.name} ${loggedIn.lastname}`
+          : "Student") || "Student";
+
+      await axios.put(`${backDomain}/api/v1/exercise-done/${courseId}`, {
+        type: "selectexercise",
+        points: pointsToSend,
+        student: studentId,
+        description: descriptionToSend,
+        studentName,
+      });
+    } catch (error) {
+      console.log(error, "Erro ao atualizar dados (select-exercise)");
+    }
+  }
+
+  const checkAnswer = async () => {
     if (!selectedOption) {
       notifyAlert("Selecione uma opção primeiro!", "#ff6b6b");
       return;
@@ -86,22 +118,41 @@ export function SelectExercise({
     setIsCorrect(correct);
     setShowResult(true);
 
-    if (correct) {
-      const points = textRevealed ? 3 : 6; // 6 pontos sem ver texto, 3 com texto
-      setScore(score + points);
-      if (exercise && typeof exercise === "function") {
-        exercise(
-          points,
-          `Exercício de seleção: ${
-            exerciseElement.subtitle || "Select Exercise"
-          } - Pergunta ${currentQuestionIndex + 1} (${
-            textRevealed ? "com texto" : "só áudio"
-          })`
-        );
-      }
+    // pontos: 6 se não viu texto, 3 se viu
+    const points = correct ? (textRevealed ? 3 : 6) : 0;
+
+    const snippet = correct
+      ? `Pergunta ${currentQuestionIndex + 1}: acertou (${
+          textRevealed ? "com texto" : "só áudio"
+        }) e ganhou ${points} pontos.`
+      : `Pergunta ${currentQuestionIndex + 1}: errou e não ganhou pontos.`;
+
+    const newScore = score + points;
+    const newDescription = performanceDescription
+      ? `${performanceDescription} ${snippet}`
+      : snippet;
+
+    setScore(newScore);
+    setPerformanceDescription(newDescription);
+
+    if (correct && exercise && typeof exercise === "function") {
+      exercise(
+        points,
+        `Exercício de seleção: ${
+          exerciseElement.subtitle || "Select Exercise"
+        } - Pergunta ${currentQuestionIndex + 1} (${
+          textRevealed ? "com texto" : "só áudio"
+        })`
+      );
     }
 
-    setCompleted(completed + 1);
+    const newCompleted = completed + 1;
+    setCompleted(newCompleted);
+
+    // terminou TODAS as questões -> registra exercise-done
+    if (newCompleted === totalQuestions) {
+      await handleScoreStamp(newScore, newDescription);
+    }
   };
 
   const nextQuestion = () => {
@@ -122,6 +173,7 @@ export function SelectExercise({
     setScore(0);
     setShowText(false);
     setTextRevealed(false);
+    setPerformanceDescription("");
   };
 
   if (!exerciseElement.options || exerciseElement.options.length === 0) {
@@ -154,6 +206,18 @@ export function SelectExercise({
             >
               Concluído!
             </h4>
+            {/* descrição detalhada do desempenho */}
+            <p
+              style={{
+                color: "#4B5563",
+                marginBottom: "8px",
+                fontSize: "12px",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {performanceDescription ||
+                "Seu desempenho foi registrado neste exercício de seleção."}
+            </p>
             <p
               style={{
                 color: "#6B7280",
@@ -161,7 +225,7 @@ export function SelectExercise({
                 fontSize: "12px",
               }}
             >
-              {score} pontos
+              Total: {score} pontos
             </p>
             <button
               onClick={resetExercise}
