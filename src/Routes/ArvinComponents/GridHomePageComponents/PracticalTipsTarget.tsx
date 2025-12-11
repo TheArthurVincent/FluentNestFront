@@ -25,7 +25,7 @@ const tipsFlashcards = [
 
 const tipsHomework = [
   "Já fez sua última Lição de Casa para a próxima aula?",
-  "Revisite suas últimas 3 Lições de Casa.",
+  "Revisite suas últimas 3 a.",
   "Anote dúvidas ao revisar suas Lições de Casa e pergunte ao professor.",
 ];
 
