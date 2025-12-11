@@ -644,45 +644,9 @@ export default function ExerciseRunner({
   if (!available.length) {
     return (
       <Card>
-        <HeaderBar title="Sem exercícios disponíveis" />
         <p style={{ color: "#4B5563", marginTop: 0 }}>
-          Esta aula não possui conteúdo suficiente para gerar exercícios
-          automáticos.
+          Esta aula não possui exercícios automáticos.
         </p>
-        <ul
-          style={{
-            marginTop: 12,
-            paddingLeft: 18,
-            color: "#4B5563",
-            fontSize: 14,
-            listStyleType: "disc",
-          }}
-        >
-          <li>
-            Adicione pelo menos um bloco <code>sentences</code> para habilitar o
-            ditado.
-          </li>
-          <li>
-            Ou adicione um bloco <code>images</code> para habilitar os quizzes
-            de imagem.
-          </li>
-          <li>
-            Ou adicione um bloco <code>exercise</code> para habilitar as
-            perguntas.
-          </li>
-          <li>
-            Ou adicione um bloco <code>listinenglish</code> para habilitar os
-            exercícios de listening.
-          </li>
-          <li>
-            Ou adicione um bloco <code>selectexercise</code> para habilitar os
-            exercícios de seleção múltipla.
-          </li>
-          <li>
-            Ou adicione um bloco <code>vocabulary</code> para habilitar os
-            matches de vocabulário.
-          </li>
-        </ul>
       </Card>
     );
   }
@@ -816,9 +780,7 @@ export default function ExerciseRunner({
                   padding: "8px 14px",
                   borderRadius: 999,
                   border: "none",
-                  background: boardFinishing
-                    ? "#9CA3AF"
-                    : "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+                  background: boardFinishing ? "#9CA3AF" : partnerColor(),
                   color: "#FFFFFF",
                   cursor:
                     boardFinishing || !studentId ? "not-allowed" : "pointer",
@@ -826,7 +788,9 @@ export default function ExerciseRunner({
                   fontWeight: 600,
                 }}
               >
-                {boardFinishing ? "Enviando..." : "Finalizar exercício"}
+                {boardFinishing
+                  ? "Enviando..."
+                  : "Enviar exercícios de escrita"}
               </button>
             </div>
             <div style={{ marginTop: 8 }}>
@@ -856,7 +820,7 @@ export default function ExerciseRunner({
                 marginBottom: 8,
               }}
             >
-              Histórico de exercícios feitos
+              Histórico de exercícios feitos nesta aula
             </h2>
             <div
               style={{

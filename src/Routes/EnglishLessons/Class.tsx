@@ -3703,7 +3703,7 @@ export default function EnglishClassCourse2({
                                       border: `1px solid ${
                                         partnerColor?.() || "#2563eb"
                                       }`,
-                                      background: partnerColor?.() || "#2563eb",
+                                      background: "black  ",
                                       color: "#fff",
                                       fontWeight: 600,
                                       whiteSpace: "nowrap",
