@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   truncateString,
   backDomain,
@@ -12,6 +12,8 @@ export type DialogueBlock = {
   dialogue: string[]; // posições ímpares = voz masculina; pares = voz feminina
 };
 
+type HeadersLike = Record<string, string>;
+
 type Props = {
   value: DialogueBlock;
   studentId: any;
@@ -20,6 +22,7 @@ type Props = {
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+  headers?: HeadersLike | null;
 };
 
 const ghostBtnStyle: React.CSSProperties = {
@@ -65,9 +68,10 @@ export default function DialogueEditor({
   onChange,
   onRemove,
   onMoveUp,
+  onMoveDown,
   studentId,
   language,
-  onMoveDown,
+  headers,
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
@@ -78,6 +82,11 @@ export default function DialogueEditor({
     onChange({ ...value, ...patch, type: "dialogue" });
 
   const lines = useMemo(() => value.dialogue ?? [], [value.dialogue]);
+
+  // mantém bulkText sincronizado quando o parent atualiza o diálogo (ex: import, reload)
+  useEffect(() => {
+    setBulkText((value.dialogue ?? []).join("\n"));
+  }, [value.dialogue]);
 
   const setLineAt = (idx: number, text: string) => {
     const next = [...lines];
@@ -167,12 +176,7 @@ export default function DialogueEditor({
     // 2) objeto com chaves conhecidas
     if (raw && typeof raw === "object") {
       const inner =
-        raw.dialogue ??
-        raw.lines ??
-        raw.items ??
-        raw.list ??
-        raw.sentences ??
-        null;
+        raw.dialogue ?? raw.lines ?? raw.items ?? raw.list ?? raw.sentences;
 
       if (Array.isArray(inner)) {
         return inner
@@ -180,7 +184,7 @@ export default function DialogueEditor({
           .filter(Boolean);
       }
 
-      // envelopes { data | result | json }
+      // envelopes { data | result | json | response }
       const wrapped =
         raw.data ?? raw.result ?? raw.json ?? raw.response ?? null;
       if (wrapped) return normalizeDialoguePayload(parseMaybeJson(wrapped));
@@ -217,7 +221,6 @@ export default function DialogueEditor({
     const dialogue = normalizeDialoguePayload(json);
 
     if (!dialogue.length) {
-      // feedback suave (sem notifyAlert aqui pra manter o comp isolado)
       console.warn(
         "IA (dialogue) não reconheceu lista de falas. Retorne string[], { dialogue: string[] } ou um texto com quebras de linha."
       );
@@ -227,6 +230,7 @@ export default function DialogueEditor({
     update({ dialogue });
     setShowConfig(true);
     setBulkText(dialogue.join("\n"));
+    // 🔥 Nada de setChange aqui → não recarrega a aula do backend
   };
 
   return (
@@ -291,7 +295,7 @@ export default function DialogueEditor({
                 ↓
               </button>
             )}
-          </div>{" "}
+          </div>
           <button
             style={primaryBtnStyle}
             onClick={() => setAiOpen(true)}
@@ -494,7 +498,7 @@ export default function DialogueEditor({
         type="dialogue"
         onClose={() => setAiOpen(false)}
         postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
-        headers={undefined}
+        headers={headers || undefined}
         onReceiveJson={handleReceiveJson}
         title="Gerar Dialogue por IA"
       />

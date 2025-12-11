@@ -41,7 +41,7 @@ type Props = {
   onMoveDown?: () => void;
   studentId: any;
   headers?: HeadersLike | null;
-  setChange?: any;
+  setChange?: any; // mantido por compatibilidade, mas não usado pra reload automático
   change?: any;
   language: string;
 };
@@ -108,7 +108,8 @@ const SentencesEditor: React.FC<Props> = ({
       }));
       onChange({ ...value, type: "sentences", sentences: fixed });
     }
-  }, [value.sentences, defaultLang1, defaultLang2]); // eslint-disable-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value.sentences, defaultLang1, defaultLang2]);
 
   /* ===================== UPDATERS ===================== */
   const updateSubtitle = (subtitle: string) =>
@@ -195,7 +196,8 @@ const SentencesEditor: React.FC<Props> = ({
         portuguese: backText,
       }));
 
-      setChange?.(!change);
+      // 🔥 antes chamava setChange?.(!change), o que disparava getClass() e resetava a aula
+      // agora a IA só atualiza o estado local do bloco
     } catch (error: any) {
       console.error(error);
       const msg =
@@ -310,8 +312,9 @@ const SentencesEditor: React.FC<Props> = ({
       type: "sentences",
       sentences: mapped,
     });
+
     setShowConfig(true);
-    setChange?.(!change);
+    // 🔥 removido setChange?.(!change) aqui também, para não recarregar a aula do back
   };
 
   /* ===================== RENDER HELPERS ===================== */
@@ -531,8 +534,6 @@ const SentencesEditor: React.FC<Props> = ({
         </strong>
 
         <span className="se-actions">
-          {/* IA: abre modal */}
-
           {titleRightExtra}
 
           <div
@@ -569,7 +570,6 @@ const SentencesEditor: React.FC<Props> = ({
               className="se-btn se-btn--primary"
               onClick={() => {
                 setAiOpen(true);
-                console.log("clicou");
               }}
             >
               ✨ IA

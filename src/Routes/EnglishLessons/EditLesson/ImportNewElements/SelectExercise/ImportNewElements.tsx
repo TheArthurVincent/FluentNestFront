@@ -6,12 +6,12 @@ import { partnerColor } from "../../../../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
 
 interface ImportElementsEditorProps {
-  lessonId: string; // aula que está sendo editada (destino) – pode nem usar, mas deixei
-  studentId: string; // aluno logado (pra limitar o que pode ver)
-  headers?: any; // headers de auth
+  lessonId: string;
+  studentId: string;
+  headers?: any;
   fetchEventData?: any;
-  setTheLanguage?: any;
-  theLanguage?: any;
+  setTheLanguage?: (lang: string) => void;
+  theLanguage?: string;
   onChange?: (info: {
     mode: "one" | "all";
     fromClassId: string;
@@ -49,7 +49,9 @@ export default function ImportElementsEditor({
 }: ImportElementsEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [language, setLanguage] = useState<"en" | "pt" | "fr" | "es">("en");
+  const [language, setLanguage] = useState<"en" | "pt" | "fr" | "es">(
+    (theLanguage as any) || "en"
+  );
   const [search, setSearch] = useState("");
 
   const [lessons, setLessons] = useState<LessonFromApi[]>([]);
@@ -57,7 +59,6 @@ export default function ImportElementsEditor({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [openClassId, setOpenClassId] = useState<string | null>(null);
-
   const [importMsg, setImportMsg] = useState<string | null>(null);
 
   const openModal = () => setIsOpen(true);
@@ -72,6 +73,13 @@ export default function ImportElementsEditor({
     setImportMsg(null);
     fetchEventData?.();
   };
+
+  // Sincroniza idioma interno quando prop mudar
+  useEffect(() => {
+    if (theLanguage) {
+      setLanguage(theLanguage as any);
+    }
+  }, [theLanguage]);
 
   // ============================================
   // Preview de cada elemento (cartãozinho)
@@ -429,8 +437,9 @@ export default function ImportElementsEditor({
           <select
             value={language}
             onChange={(e) => {
-              setLanguage(e.target.value as any);
-              setTheLanguage(e.target.value as any);
+              const lang = e.target.value as any;
+              setLanguage(lang);
+              setTheLanguage?.(lang);
             }}
             style={{
               padding: "6px 10px",
