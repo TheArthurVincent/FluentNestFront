@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { readText, notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/SearchMaterials";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import axios from "axios";
 
 export type SentenceItem = {
   english: string;
@@ -16,6 +18,7 @@ type Props = {
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
   selectedVoice?: string;
+  courseId?: string;
   language?: string; // mantido por compatibilidade, mas agora priorizamos languages.language1/2
   exerciseScore: (points: number, label?: string) => void;
 };
@@ -60,14 +63,12 @@ const pairColors = [
   "#37b24d",
 ];
 
-// ==== ESTILOS NO MESMO CLIMA DO RANKING / ARVIN ====
+// ==== ESTILOS NO CLIMA DO CALENDÁRIO / ARVIN ====
 
 const cardContainerStyle: React.CSSProperties = {
   width: "100%",
-  maxWidth: 900,
   margin: "0 auto",
-  borderRadius: 12,
-  background: "#FFFFFF",
+  paddingTop: 16,
   boxSizing: "border-box",
   display: "flex",
   flexDirection: "column",
@@ -87,7 +88,8 @@ const headerRightStyle: React.CSSProperties = {
   alignItems: "center",
   gap: 8,
   fontFamily: "Plus Jakarta Sans",
-  fontSize: 13,
+  fontSize: 12,
+  color: "#4B5563",
 };
 
 const restartButtonStyle: React.CSSProperties = {
@@ -98,7 +100,7 @@ const restartButtonStyle: React.CSSProperties = {
   fontWeight: 600,
   border: "1px solid #E5E7EB",
   fontFamily: "Plus Jakarta Sans",
-  fontSize: 12,
+  fontSize: 11,
 };
 
 const gridWrapperStyle: React.CSSProperties = {
@@ -113,19 +115,19 @@ const columnStyle: React.CSSProperties = {
 };
 
 const baseCardStyle: React.CSSProperties = {
-  border: "1px solid #e3e6ea",
-  borderRadius: 8,
+  border: "1px solid #E5E7EB",
+  borderRadius: 10,
   padding: "10px 12px",
   position: "relative",
-  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.08)",
+  boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
   minHeight: "40px",
   display: "flex",
   flexDirection: "column",
-  background: "#fff",
+  background: "#FFFFFF",
   justifyContent: "flex-start",
   cursor: "pointer",
   transition:
-    "background 0.15s ease, transform 0.08s ease, box-shadow 0.1s ease",
+    "background 0.15s ease, transform 0.08s ease, box-shadow 0.1s ease, border-color 0.12s ease",
 };
 
 const selectedStyle: React.CSSProperties = {
@@ -139,9 +141,9 @@ const audioButtonStyle: React.CSSProperties = {
   background: "#F3F4F6",
   border: "1px solid #D1D5DB",
   cursor: "pointer",
-  fontSize: "12px",
-  minWidth: "32px",
-  height: "32px",
+  fontSize: 12,
+  minWidth: 32,
+  height: 32,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -149,13 +151,14 @@ const audioButtonStyle: React.CSSProperties = {
 
 const checkTagStyle: React.CSSProperties = {
   fontSize: 12,
-  color: "#16a34a",
+  color: "#16A34A",
   fontWeight: 600,
+  fontFamily: "Plus Jakarta Sans",
 };
 
 const finishedRowStyle: React.CSSProperties = {
   marginTop: 12,
-  fontSize: 14,
+  fontSize: 13,
   fontWeight: 600,
   color: "#065F46",
   display: "flex",
@@ -179,7 +182,7 @@ function HeaderBar({
       <h1
         style={{
           ...newArvinTitleStyle,
-          fontSize: 20,
+          fontSize: 18,
           margin: 0,
           display: "flex",
           alignItems: "center",
@@ -195,10 +198,14 @@ function HeaderBar({
 
 // ==== COMPONENTE PRINCIPAL ====
 
+const BATCH_SIZE = 5;
+
 export default function VocabularyMatchExercise({
   sentences,
   labels,
+  studentId,
   selectedVoice,
+  courseId,
   language, // mantido caso alguma chamada ainda use
   exerciseScore,
 }: Props) {
@@ -212,8 +219,10 @@ export default function VocabularyMatchExercise({
     [sentences]
   );
 
-  // "seed" para reembaralhar
+  // "seed" para reembaralhar (dentro do lote)
   const [seed, setSeed] = useState(0);
+  // início do lote atual de até 5 itens
+  const [batchStart, setBatchStart] = useState(0);
 
   // índice REAL no pool atualmente selecionado na coluna da esquerda
   const [selectedFront, setSelectedFront] = useState<number | null>(null);
@@ -222,16 +231,84 @@ export default function VocabularyMatchExercise({
   // tentativas por card (index do pool)
   const [attempts, setAttempts] = useState<Record<number, number>>({});
 
-  // agora as DUAS colunas são embaralhadas, ambas baseadas em índices do pool
+  // total de pontos e descrição de performance
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [description, setDescription] = useState<string>("");
+
+  const handleScoreStamp = async (
+    pointsToSend: number,
+    descriptionToSend: string
+  ) => {
+    try {
+      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const studentName =
+        (loggedIn?.name && loggedIn?.lastname
+          ? `${loggedIn.name} ${loggedIn.lastname}`
+          : "Student") || "Student";
+
+      await axios.put(`${backDomain}/api/v1/exercise-done/${courseId}`, {
+        type: "vocabulary",
+        points: pointsToSend,
+        student: studentId,
+        description: descriptionToSend,
+        studentName,
+      });
+    } catch (error) {
+      console.log(error, "Erro ao atualizar dados");
+    }
+  };
+
+  // Índices do pool visíveis no exercício atual (no máx. BATCH_SIZE)
+  const visibleIndices = useMemo(() => {
+    const len = pool.length;
+    if (len === 0) return [];
+
+    // todos os índices possíveis no pool
+    const allIndices = pool.map((_, i) => i);
+
+    // se tiver menos de 5 no total, não tem como inventar mais:
+    // usa todos (comportamento antigo)
+    if (len <= BATCH_SIZE) {
+      return allIndices;
+    }
+
+    // fatia principal (como antes)
+    const end = Math.min(batchStart + BATCH_SIZE, len);
+    const base: number[] = [];
+    for (let i = batchStart; i < end; i++) {
+      base.push(i);
+    }
+
+    // se já temos 5, beleza
+    if (base.length >= BATCH_SIZE) {
+      return base;
+    }
+
+    // 👇 AQUI entra a correção:
+    // faltam alguns para fechar 5 → completa com índices aleatórios
+    // que NÃO estão em `base`.
+    const need = BATCH_SIZE - base.length;
+    const candidates = allIndices.filter((i) => !base.includes(i));
+
+    // embaralha os candidatos e pega só o que falta
+    const fillers = shuffle(candidates).slice(0, need);
+
+    return [...base, ...fillers];
+  }, [pool, batchStart]);
+
+  // agora as DUAS colunas são embaralhadas, ambas baseadas nos índices visíveis do pool
   const frontOrder = useMemo(
-    () => shuffle(pool.map((_, i) => i)),
-    [pool, seed]
+    () => shuffle(visibleIndices),
+    [visibleIndices, seed]
   );
 
-  const backOrder = useMemo(() => shuffle(pool.map((_, i) => i)), [pool, seed]);
+  const backOrder = useMemo(
+    () => shuffle(visibleIndices),
+    [visibleIndices, seed]
+  );
 
-  const total = pool.length;
-  const done = matched.size === total;
+  const total = visibleIndices.length;
+  const done = total > 0 && matched.size === total;
 
   function getLanguages(sentence: SentenceItem) {
     const languages = sentence?.languages || {};
@@ -242,10 +319,20 @@ export default function VocabularyMatchExercise({
   }
 
   function reset() {
+    // Próximo lote de até BATCH_SIZE itens
+    setBatchStart((prev) => {
+      const len = pool.length;
+      if (len <= BATCH_SIZE) return 0;
+      const next = prev + BATCH_SIZE;
+      return next >= len ? 0 : next;
+    });
+
     setSeed((v) => v + 1);
     setSelectedFront(null);
     setMatched(new Set());
     setAttempts({});
+    setTotalPoints(0);
+    setDescription("");
   }
 
   function handlePickFront(realIndex: number) {
@@ -269,6 +356,41 @@ export default function VocabularyMatchExercise({
     return 0; // depois disso não pontua
   }
 
+  function buildPerformanceDescriptionOnHit(
+    sentence: SentenceItem,
+    cardIndex: number,
+    points: number
+  ) {
+    const tries = attempts[cardIndex] ?? 0;
+
+    let attemptText = "";
+    if (tries === 0) attemptText = "acertou de primeira";
+    else if (tries === 1) attemptText = "acertou na segunda tentativa";
+    else if (tries === 2) attemptText = "acertou na terceira tentativa";
+    else attemptText = "acertou após várias tentativas";
+
+    let pointsText =
+      points === 0
+        ? "e não ganhou pontos"
+        : points === 1
+        ? "e ganhou 1 ponto"
+        : `e ganhou ${points} pontos`;
+
+    const base = `Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.`;
+
+    setDescription((prev) => (prev ? `${prev} ${base}` : base));
+  }
+
+  function buildPerformanceDescriptionOnError(
+    frontIndex: number,
+    backIndex: number
+  ) {
+    const front = pool[frontIndex];
+    const back = pool[backIndex];
+    const base = `Errou o par entre "${front?.english}" e "${back?.portuguese}".`;
+    setDescription((prev) => (prev ? `${prev} ${base}` : base));
+  }
+
   function handlePickBack(slot: number) {
     const realIndex = backOrder[slot];
 
@@ -281,17 +403,51 @@ export default function VocabularyMatchExercise({
 
     if (selectedFront === realIndex) {
       // ✅ ACERTOU
-      const next = new Set(matched);
-      next.add(realIndex);
-      setMatched(next);
-      setSelectedFront(null);
-
+      const sentence = pool[realIndex];
       const points = getPointsForCard(realIndex);
 
+      // calcula nova descrição e novos pontos (sincronizados)
+      let newDescription = "";
+      let newTotalPoints = totalPoints;
+
+      buildPerformanceDescriptionOnHit(sentence, realIndex, points);
+
+      // como setDescription é assíncrono, montamos também localmente:
+      const tries = attempts[realIndex] ?? 0;
+      let attemptText = "";
+      if (tries === 0) attemptText = "acertou de primeira";
+      else if (tries === 1) attemptText = "acertou na segunda tentativa";
+      else if (tries === 2) attemptText = "acertou na terceira tentativa";
+      else attemptText = "acertou após várias tentativas";
+
+      let pointsText =
+        points === 0
+          ? "e não ganhou pontos"
+          : points === 1
+          ? "e ganhou 1 ponto"
+          : `e ganhou ${points} pontos`;
+
+      const baseSnippet = `Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.`;
+
+      newDescription = description
+        ? `${description} ${baseSnippet}`
+        : baseSnippet;
+
+      if (points > 0) {
+        newTotalPoints = totalPoints + points;
+        setTotalPoints(newTotalPoints);
+      }
+
+      // atualiza matched
+      const nextMatched = new Set(matched);
+      nextMatched.add(realIndex);
+      setMatched(nextMatched);
+      setSelectedFront(null);
+
       try {
-        const frontText = pool[realIndex]?.english || "";
-        const backText = pool[realIndex]?.portuguese || "";
-        const desc = `Match Vocabulary: ${frontText} ⇄ ${backText}`;
+        const frontText = sentence?.english || "";
+        const backText = sentence?.portuguese || "";
+        const desc = `Match Vocabulary: ${frontText} ⇄ ${backText} (+${points} pts)`;
 
         if (points > 0) {
           exerciseScore?.(points, desc);
@@ -300,12 +456,15 @@ export default function VocabularyMatchExercise({
         console.error("Erro ao registrar pontuação do match:", e);
       }
 
-      const pointsMsg =
-        points > 0 ? ` (+${points} ponto${points > 1 ? "s" : ""})` : "";
-      notifyAlert(`${L.correct}${pointsMsg}`, "green");
+      // ✅ se terminou TODOS os pares visíveis, chama handleScoreStamp
+      const totalVisible = visibleIndices.length;
+      if (totalVisible > 0 && nextMatched.size === totalVisible) {
+        handleScoreStamp(newTotalPoints, newDescription);
+      }
     } else {
       // ❌ ERROU – conta uma tentativa para o card selecionado
       if (selectedFront !== null && !matched.has(selectedFront)) {
+        buildPerformanceDescriptionOnError(selectedFront, realIndex);
         incrementAttemptsFor(selectedFront);
       }
       notifyAlert(L.wrong, "red");
@@ -322,6 +481,7 @@ export default function VocabularyMatchExercise({
             <span>
               {matched.size} {L.of} {total}
             </span>
+            <span style={{ fontWeight: 600 }}>Pontos: {totalPoints}</span>
             <button
               onClick={reset}
               style={restartButtonStyle}
@@ -334,152 +494,194 @@ export default function VocabularyMatchExercise({
       />
 
       {/* layout duas colunas */}
-      <div style={gridWrapperStyle}>
-        {/* LEFT: fronts (áudio, com highlight de par) */}
-        <div style={columnStyle}>
-          {frontOrder.map((realIndex, frontSlot) => {
-            const s = pool[realIndex];
-            const isSelected = selectedFront === realIndex;
-            const isDone = matched.has(realIndex);
-            const color = pairColors[realIndex % pairColors.length];
-            const { frontLang } = getLanguages(s);
+      {!done && (
+        <div style={gridWrapperStyle}>
+          {/* LEFT: fronts (áudio, com highlight de par) */}
+          <div style={columnStyle}>
+            {frontOrder.map((realIndex, frontSlot) => {
+              const s = pool[realIndex];
+              const isSelected = selectedFront === realIndex;
+              const isDone = matched.has(realIndex);
+              const color = pairColors[realIndex % pairColors.length];
+              const { frontLang } = getLanguages(s);
 
-            return (
-              <div
-                key={`front-${frontSlot}`}
-                style={{
-                  ...baseCardStyle,
-                  border: `2px solid ${isDone ? color : "#e5e7eb"}`,
-                  ...(isSelected ? selectedStyle : {}),
-                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
-                }}
-                onClick={() => {
-                  handlePickFront(realIndex);
-                  readText(s.english, true, frontLang, selectedVoice);
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}1F`
-                    : "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}14`
-                    : "#fff";
-                }}
-              >
+              return (
                 <div
+                  key={`front-${frontSlot}`}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    justifyContent: "space-between",
+                    ...baseCardStyle,
+                    border: `2px solid ${isDone ? color : "#E5E7EB"}`,
+                    ...(isSelected ? selectedStyle : {}),
+                    ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                  }}
+                  onClick={() => {
+                    handlePickFront(realIndex);
+                    readText(s.english, true, frontLang, selectedVoice);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? `${color}1F`
+                      : "#F9FAFB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? `${color}14`
+                      : "#FFFFFF";
                   }}
                 >
-                  <span
+                  <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 12,
+                      gap: 8,
+                      justifyContent: "space-between",
                     }}
                   >
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        readText(s.english, true, frontLang, selectedVoice);
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
                       }}
-                      style={audioButtonStyle}
-                      title="Ouvir"
                     >
                       <i className="fa fa-volume-up" aria-hidden="true" />
-                    </button>
-                  </span>
-                  {isDone && <span style={checkTagStyle}>✔</span>}
+                    </span>
+                    {isDone && <span style={checkTagStyle}>✔</span>}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
 
-        {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
-        <div style={columnStyle}>
-          {backOrder.map((realIndex, slot) => {
-            const s = pool[realIndex];
-            const isDone = matched.has(realIndex);
-            const color = pairColors[realIndex % pairColors.length];
-            const { backLang } = getLanguages(s);
+          {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
+          <div style={columnStyle}>
+            {backOrder.map((realIndex, slot) => {
+              const s = pool[realIndex];
+              const isDone = matched.has(realIndex);
+              const color = pairColors[realIndex % pairColors.length];
+              const { backLang } = getLanguages(s);
 
-            return (
-              <div
-                key={`back-${slot}`}
-                style={{
-                  ...baseCardStyle,
-                  border: `2px solid ${isDone ? color : "#e5e7eb"}`,
-                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
-                }}
-                onClick={() => {
-                  if (!isDone) handlePickBack(slot);
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}1F`
-                    : "#f9fafb";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}14`
-                    : "#fff";
-                }}
-              >
+              return (
                 <div
+                  key={`back-${slot}`}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    justifyContent: "space-between",
+                    ...baseCardStyle,
+                    border: `2px solid ${isDone ? color : "#E5E7EB"}`,
+                    ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                  }}
+                  onClick={() => {
+                    if (!isDone) handlePickBack(slot);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? `${color}1F`
+                      : "#F9FAFB";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? `${color}14`
+                      : "#FFFFFF";
                   }}
                 >
-                  <span
-                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      justifyContent: "space-between",
+                    }}
                   >
-                    {backLang !== "pt" && s?.portuguese && (
-                      <button
-                        style={audioButtonStyle}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          readText(s.portuguese, true, backLang, selectedVoice);
-                        }}
-                        title="Ouvir definição"
-                      >
-                        <i className="fa fa-volume-up" aria-hidden="true" />
-                      </button>
-                    )}
-                    <div style={{ marginLeft: 4 }}>
-                      <div
-                        style={{
-                          color: "#4b5563",
-                          fontStyle: "italic",
-                          fontSize: "13px",
-                          wordBreak: "break-word",
-                          fontFamily: "Plus Jakarta Sans",
-                        }}
-                      >
-                        {s.portuguese}
+                    <span
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      {backLang !== "pt" && s?.portuguese && (
+                        <button
+                          style={audioButtonStyle}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            readText(
+                              s.portuguese,
+                              true,
+                              backLang,
+                              selectedVoice
+                            );
+                          }}
+                          title="Ouvir definição"
+                        >
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </button>
+                      )}
+                      <div style={{ marginLeft: 4 }}>
+                        <div
+                          style={{
+                            color: "#4B5563",
+                            fontStyle: "italic",
+                            fontSize: 13,
+                            wordBreak: "break-word",
+                            fontFamily: "Plus Jakarta Sans",
+                          }}
+                        >
+                          {s.portuguese}
+                        </div>
                       </div>
-                    </div>
-                  </span>
-                  {isDone && <span style={checkTagStyle}>✔</span>}
+                    </span>
+                    {isDone && <span style={checkTagStyle}>✔</span>}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {done && (
-        <div style={finishedRowStyle}>
-          <span>✅ {L.finished}</span>
-          <span>{L.plusPoints}</span>
+        <div
+          style={{
+            marginTop: 12,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+            fontFamily: "Plus Jakarta Sans",
+          }}
+        >
+          {/* Linha de status + pontos */}
+          <div style={finishedRowStyle}>
+            <span>✅ {L.finished}</span>
+            <span>
+              {L.plusPoints} | Total: {totalPoints} pontos
+            </span>
+          </div>
+
+          {/* Descrição de performance + botão Reiniciar lado a lado */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <span
+              style={{
+                fontSize: 12,
+                color: "#374151",
+                flex: 1,
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {description ||
+                "Seu desempenho foi registrado para este exercício de vocabulário."}
+            </span>
+
+            <button
+              onClick={reset}
+              style={restartButtonStyle}
+              title={L.restart}
+            >
+              🔁 {L.restart}
+            </button>
+          </div>
         </div>
       )}
     </div>

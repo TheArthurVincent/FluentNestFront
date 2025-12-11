@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import axios from "axios";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
@@ -8,6 +9,12 @@ import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
 import { newArvinTitleStyle } from "../../ArvinComponents/SearchMaterials/SearchMaterials";
+import { partnerColor } from "../../../Styles/Styles";
+import { backDomain } from "../../../Resources/UniversalComponents";
+// ajusta o path se necessário
+// import { notifyAlert } from "../Assets/Functions/FunctionLessons";
+
+// ===================== TIPOS =====================
 
 type SentenceItem = { portuguese: string; english?: string };
 
@@ -102,11 +109,22 @@ type ElementItem =
   | ElementListenInEnglish
   | ElementSelectExercise;
 
+// tipo para exercícios já feitos
+type ExerciseDoneItem = {
+  date: string;
+  description: string;
+  points: number;
+  studentID: string;
+  studentName: string;
+  type: string;
+};
+
 function safeElements(el?: ElementItem[]): ElementItem[] {
   return Array.isArray(el) ? el : [];
 }
 
-// AGORA: em vez de juntar tudo, pegamos os blocos vocabulary separadamente
+// ===================== HELPERS DE ELEMENTS =====================
+
 function getVocabularyElements(elements?: ElementItem[]): ElementVocabulary[] {
   const list: ElementVocabulary[] = [];
   const els = safeElements(elements);
@@ -208,6 +226,8 @@ function getSelectExerciseElements(
   return list;
 }
 
+// ===================== UI BÁSICA =====================
+
 export function Card({
   children,
 }: {
@@ -260,6 +280,8 @@ export function HeaderBar({
   );
 }
 
+// ===================== TIPOS EXERCISERUNNER =====================
+
 type CatalogCtx = {
   elements?: ElementItem[];
   labels: typeof defaultLabels;
@@ -280,6 +302,7 @@ type ExerciseRunnerProps = {
   count?: number;
   exerciseScore?: any;
   flag?: boolean;
+  exercisesDone?: ExerciseDoneItem[];
   dictationItems?: number;
   classId: string;
   labels?: Partial<typeof defaultLabels>;
@@ -287,6 +310,14 @@ type ExerciseRunnerProps = {
   headers?: MyHeadersType | null;
   selectedVoice?: string;
   language?: string;
+
+  // slot para editor do Board
+  renderBoardEditor?: (params: {
+    initialContent: string;
+    onChange: (html: string) => void;
+  }) => React.ReactNode;
+  boardInitialContent?: string;
+  onBoardChange?: (html: string) => void;
 };
 
 export const defaultLabels = {
@@ -321,21 +352,75 @@ export function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// formata a data do histórico
+function formatExerciseDate(dateStr?: string): string {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// capitaliza o tipo (vocabulary -> Vocabulary)
+function prettifyTypeLabel(type: string): string {
+  if (!type) return "";
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
+// ===================== COMPONENTE PRINCIPAL =====================
+
 export default function ExerciseRunner({
   elements = [],
   dictationItems = 10000,
   labels: labelsProp,
   studentId,
+  exercisesDone,
   classId,
   exerciseScore = () => {},
   headers,
   selectedVoice,
   language,
+  renderBoardEditor,
+  boardInitialContent,
+  onBoardChange,
 }: ExerciseRunnerProps) {
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
 
-  // AGORA: um bloco vocabulary por exercício
+  // estado da lousa (Board)
+  const [boardVisible, setBoardVisible] = useState(true);
+  const [boardSubmitted, setBoardSubmitted] = useState(false);
+  const [boardContent, setBoardContent] = useState(boardInitialContent || "");
+  const [boardSaving, setBoardSaving] = useState(false);
+  const [boardFinishing, setBoardFinishing] = useState(false);
+
+  // histórico agrupado por tipo
+  const historyByType = useMemo(() => {
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const { permissions, id } = logged || {};
+
+    const isStudent = permissions === "student";
+
+    const map: Record<string, ExerciseDoneItem[]> = {};
+
+    (exercisesDone || []).forEach((item) => {
+      // Se for estudante, só adiciona exercícios próprios
+      if (isStudent && item.studentID !== id) return;
+
+      const t = item.type || "outros";
+      if (!map[t]) map[t] = [];
+      map[t].push(item);
+    });
+
+    return map;
+  }, [exercisesDone]);
+
+  // blocos vocabulary
   const vocabularyElements = useMemo(
     () => getVocabularyElements(safeEls),
     [safeEls]
@@ -356,6 +441,22 @@ export default function ExerciseRunner({
     [safeEls]
   );
 
+  const hasExerciseBlocks = exerciseElements.length > 0;
+
+  // ===================== DITADO: limite controlado pelo PAI (máx 10) =====================
+
+  const dictationSentences = useMemo(() => {
+    if (!sentences.length) return [];
+    const requested =
+      typeof dictationItems === "number" && dictationItems > 0
+        ? dictationItems
+        : sentences.length;
+    const limit = Math.min(requested, 10, sentences.length); // máx. 10
+    return shuffle(sentences).slice(0, limit);
+  }, [sentences, dictationItems]);
+
+  // ===================== CATÁLOGO DE EXERCÍCIOS =====================
+
   const exerciseCatalog: ExerciseEntry[] = [
     // VOCABULARY: um exercício por bloco vocabulary
     ...vocabularyElements.map((vocabEl, index) => ({
@@ -368,8 +469,10 @@ export default function ExerciseRunner({
       render: () => (
         <VocabularyMatchExercise
           sentences={vocabEl.sentences}
+          courseId={classId}
           selectedVoice={selectedVoice}
           language={language}
+          studentId={studentId || ""}
           exerciseScore={exerciseScore}
         />
       ),
@@ -377,19 +480,19 @@ export default function ExerciseRunner({
 
     // DITADO
     {
-      key: "dictation_from_sentences",
+      key: `dictation_from_sentences_${dictationSentences.length}`,
       title: "Ditado",
-      render: ({ labels, dictationItems, selectedVoice }) => {
-        if (!sentences.length) return null;
+      render: ({ labels, selectedVoice }) => {
+        if (!dictationSentences.length) return null;
         return (
           <DictationExercise
             exerciseScore={exerciseScore}
             studentId={studentId || ""}
             selectedVoice={selectedVoice}
             language={language}
-            sentences={sentences}
-            itemsCount={dictationItems}
+            sentences={dictationSentences}
             labels={labels}
+            courseId={classId}
           />
         );
       },
@@ -409,6 +512,7 @@ export default function ExerciseRunner({
             labels={labels}
             selectedVoice={selectedVoice}
             language={language}
+            courseId={classId}
           />
         );
       },
@@ -425,6 +529,8 @@ export default function ExerciseRunner({
             exerciseScore={exerciseScore}
             images={imgs}
             labels={labels}
+            studentId={studentId || ""}
+            courseId={classId}
           />
         );
       },
@@ -458,19 +564,82 @@ export default function ExerciseRunner({
           labels={labels}
           selectedVoice={selectedVoice}
           language={language}
+          courseId={classId}
         />
       ),
     })),
   ];
 
   const available = exerciseCatalog.filter((e) => {
-    if (e.key === "dictation_from_sentences") return sentences.length > 0;
+    if (e.key.startsWith("dictation_from_sentences"))
+      return dictationSentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
     if (e.key === "questions_unified") return exerciseElements.length > 0; // legado
-    // vocabulary_match_*, listen_*, select_* já foram filtrados pela própria montagem
     return true;
   });
+
+  // ===================== AÇÕES DA BOARD =====================
+
+  const handleBoardChange = (html: string) => {
+    setBoardContent(html);
+    onBoardChange && onBoardChange(html);
+  };
+
+  const handleBoardSave = () => {
+    if (!boardContent?.trim()) {
+      // notifyAlert?.("Escreva algo na lousa antes de salvar.", "#f97316");
+      return;
+    }
+    setBoardSaving(true);
+    try {
+      onBoardChange && onBoardChange(boardContent);
+      // notifyAlert?.("Lousa salva com sucesso!", partnerColor());
+    } finally {
+      setBoardSaving(false);
+    }
+  };
+
+  const handleBoardFinish = async () => {
+    if (!studentId) return;
+
+    if (!boardContent?.trim()) {
+      // se quiser obrigar o aluno a escrever algo antes de enviar, pode checar aqui
+      // notifyAlert?.("Escreva sua resposta na lousa antes de finalizar.", "#f97316");
+      return;
+    }
+
+    setBoardFinishing(true);
+    try {
+      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+      const studentName =
+        (loggedIn?.name && loggedIn?.lastname
+          ? `${loggedIn.name} ${loggedIn.lastname}`
+          : "Student") || "Student";
+
+      // AGORA: o HTML da lousa vira o description
+      const description = boardContent;
+
+      await axios.put(`${backDomain}/api/v1/exercise-done/${classId}`, {
+        type: "board",
+        points: 0,
+        student: studentId,
+        description,
+        studentName,
+      });
+
+      setBoardSubmitted(true);
+      setBoardVisible(false);
+      // notifyAlert?.("Exercício de escrita submetido!", partnerColor());
+    } catch (error) {
+      console.error("Erro ao finalizar exercício de escrita:", error);
+      // notifyAlert?.("Erro ao finalizar exercício de escrita.", "#ef4444");
+    } finally {
+      setBoardFinishing(false);
+    }
+  };
+
+  // ===================== SEM EXERCÍCIOS =====================
 
   if (!available.length) {
     return (
@@ -518,6 +687,8 @@ export default function ExerciseRunner({
     );
   }
 
+  // ===================== RENDER =====================
+
   return (
     <div
       style={{
@@ -540,6 +711,7 @@ export default function ExerciseRunner({
       >
         <HeaderBar title="Exercícios desta aula" />
 
+        {/* LISTA DE EXERCÍCIOS */}
         <div
           style={{
             width: "100%",
@@ -580,6 +752,182 @@ export default function ExerciseRunner({
             </div>
           ))}
         </div>
+
+        {/* BOTÃO PARA REABRIR BOARD QUANDO ESCONDIDA */}
+        {hasExerciseBlocks && renderBoardEditor && !boardVisible && (
+          <div style={{ marginTop: 8 }}>
+            <button
+              onClick={() => setBoardVisible(true)}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 999,
+                border: "1px solid #E5E7EB",
+                background: "#F9FAFB",
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+              }}
+            >
+              {boardSubmitted
+                ? "🔁 Reabrir exercícios de escrita"
+                : "📝 Mostrar exercícios de escrita"}
+            </button>
+            {}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: boardContent,
+              }}
+            />
+          </div>
+        )}
+
+        {/* BOARD – só renderiza se houver bloco exercise, slot vier e estiver visível */}
+        {hasExerciseBlocks && renderBoardEditor && boardVisible && (
+          <div
+            style={{
+              marginTop: 8,
+              borderTop: "1px solid #E5E7EB",
+              paddingTop: 16,
+            }}
+          >
+            <h1
+              style={{
+                ...newArvinTitleStyle,
+                fontSize: 20,
+                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              #{available.length + 1} Exercícios de Escrita
+            </h1>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 8,
+              }}
+            >
+              <button
+                onClick={handleBoardFinish}
+                disabled={boardFinishing || !studentId}
+                style={{
+                  padding: "8px 14px",
+                  borderRadius: 999,
+                  border: "none",
+                  background: boardFinishing
+                    ? "#9CA3AF"
+                    : "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+                  color: "#FFFFFF",
+                  cursor:
+                    boardFinishing || !studentId ? "not-allowed" : "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {boardFinishing ? "Enviando..." : "Finalizar exercício"}
+              </button>
+            </div>
+            <div style={{ marginTop: 8 }}>
+              {renderBoardEditor({
+                initialContent: boardInitialContent || "",
+                onChange: handleBoardChange,
+              })}
+            </div>
+
+            {/* AÇÕES: SALVAR + FINALIZAR */}
+          </div>
+        )}
+
+        {/* HISTÓRICO AGRUPADO POR TIPO */}
+        {Object.keys(historyByType).length > 0 && (
+          <div
+            style={{
+              padding: 6,
+              borderRadius: 8,
+            }}
+          >
+            <h2
+              style={{
+                ...newArvinTitleStyle,
+                fontSize: 14,
+                margin: 0,
+                marginBottom: 8,
+              }}
+            >
+              Histórico de exercícios feitos
+            </h2>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+                color: "#374151",
+              }}
+            >
+              {Object.entries(historyByType).map(([type, items]) => (
+                <div key={type}>
+                  <div
+                    style={{
+                      fontWeight: 600,
+                      marginBottom: 4,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {prettifyTypeLabel(type)}
+                  </div>
+                  <ul
+                    style={{
+                      fontSize: 10,
+                      margin: 0,
+                      marginTop: 10,
+                      paddingLeft: 18,
+                      listStyleType: "disc",
+                    }}
+                  >
+                    {items.map((item, idx) => (
+                      <li key={idx} style={{ marginBottom: 2 }}>
+                        <span
+                          style={{
+                            fontWeight: 500,
+                            fontStyle: "12",
+                            color: partnerColor(),
+                            marginTop: 12,
+                          }}
+                        >
+                          {item.studentName || "Aluno"}:
+                        </span>{" "}
+                        <span
+                          style={{
+                            color: partnerColor(),
+                          }}
+                        >
+                          ({formatExerciseDate(item.date)})
+                        </span>
+                        {" -  "}
+                        <span
+                          style={{
+                            fontWeight: 400,
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.description,
+                              }}
+                            />
+                          }{" "}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
