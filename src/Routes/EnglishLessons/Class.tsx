@@ -3607,7 +3607,12 @@ export default function EnglishClassCourse2({
                     boardInitialContent={editorContent}
                     onBoardChange={handleHWDescriptionChange}
                     renderBoardEditor={({ initialContent, onChange }) => (
-                      <>
+                      <div
+                      style={
+                        {
+                          display:"flex"
+                        }
+                      }>
                         <div
                           style={{
                             display: "grid",
@@ -3814,46 +3819,48 @@ export default function EnglishClassCourse2({
                             }}
                           >
                             {!loadingBoard ? (
-                              <div
-                                style={{
-                                  height: isDesktop ? "70vh" : "60vh",
-                                  overflow: "auto",
-                                  width: "100%",
-                                  padding: isDesktop ? 16 : 10,
-                                  boxSizing: "border-box",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    transformOrigin: "top center",
-                                    transition: "transform 0.15s ease-in-out",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      overflow: "hidden",
-                                      width: "75vw",
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        width: "75vw",
-                                        transform: `scale(${boardZoom / 100})`,
-                                        transformOrigin: "top left",
-                                        boxSizing: "border-box",
-                                      }}
-                                    >
-                                      <HTMLEditor
-                                        key={editorKey}
-                                        initialContent={editorContent}
-                                        onChange={handleHWDescriptionChange}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                      <div
+  style={{
+    height: isDesktop ? "70vh" : "60vh",
+    overflow: "auto",
+    width: "100%",
+    padding: isDesktop ? 16 : 10,
+    boxSizing: "border-box",
+    overflowX: "hidden", // só pra garantir
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+    }}
+  >
+    <div
+      style={{
+        overflow: "hidden",
+        width: "100%",
+        maxWidth: isDesktop ? 1200 : "100%", // limite opcional
+        margin: "0 auto",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          transform: `scale(${boardZoom / 100})`,
+          transformOrigin: "top center",
+          boxSizing: "border-box",
+        }}
+      >
+        <HTMLEditor
+          key={editorKey}
+          initialContent={editorContent}
+          onChange={handleHWDescriptionChange}
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
                             ) : (
                               <div
                                 style={{
@@ -4049,7 +4056,7 @@ export default function EnglishClassCourse2({
                             </div>
                           )}
                         </div>
-                      </>
+                      </div>
                     )}
                   />
                 )}
