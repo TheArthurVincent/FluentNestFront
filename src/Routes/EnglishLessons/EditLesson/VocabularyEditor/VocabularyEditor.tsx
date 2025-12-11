@@ -88,10 +88,6 @@ export default function VocabularyEditor({
   // Modal IA (gerador isolado)
   const [aiOpen, setAiOpen] = useState(false);
 
-  // helper p/ disparar re-render no pai, compatível com props novos e legados
-  const toggleChange = () =>
-    (setChange ?? setChangeTokens)?.(!(change ?? changeTokens));
-
   /* ====== sincroniza idiomas padrão quando props mudam ====== */
   useEffect(() => {
     if (
@@ -207,7 +203,8 @@ export default function VocabularyEditor({
         portuguese: backText,
       }));
 
-      toggleChange();
+      // 🔥 REMOVIDO: não dispara mais reload global da aula aqui
+      // (antes chamava toggleChange / setChange e o EditLesson fazia getClass())
     } catch (error: any) {
       console.error(error);
       const msg =
@@ -324,9 +321,10 @@ export default function VocabularyEditor({
       sentences: mapped,
     });
 
-    // 4) abre a seção e força re-render do pai (compat: change ou changeTokens)
+    // 4) abre a seção
     setShowConfig(true);
-    (setChange ?? setChangeTokens)?.(!(change ?? changeTokens));
+
+    // 🔥 REMOVIDO: não força mais re-render global via setChange / setChangeTokens aqui
   };
 
   /* ===================== RENDER HELPERS ===================== */
@@ -715,7 +713,6 @@ const dangerBtnStyle: React.CSSProperties = {
   backgroundColor: "#ef4444",
   color: "white",
   padding: "6px 10px",
-  cursor: "pointer",
   fontSize: 13,
   fontWeight: 600,
 };

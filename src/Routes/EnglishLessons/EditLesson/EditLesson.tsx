@@ -83,6 +83,7 @@ interface ClassDetails {
   order: number; // só aqui continua
   title?: string;
   tags?: string[];
+  language?: string;
   [k: string]: any;
 }
 
@@ -139,6 +140,9 @@ export default function EditLesson({
   const [newType, setNewType] = useState<NewBlockType>("sentences");
   const [isValid, setIsValid] = useState(true);
 
+  // idioma da aula (usado no payload)
+  const [theLanguage, setTheLanguage] = useState<string>("en");
+
   // --- Responsividade simples (mobile)
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -185,6 +189,7 @@ export default function EditLesson({
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
       setElements(sanitizedElements);
+      setTheLanguage(data.language || language || "en");
       setOpen(true);
     } catch (err: any) {
       console.error(err);
@@ -200,11 +205,10 @@ export default function EditLesson({
     if (!classId) return;
     if (change === undefined) return;
     getClass();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [change]);
 
-  const [theLanguage, setTheLanguage] = useState<string>("en");
-
-  // ===================== SALVAR AULA (persiste tudo, inclusive os importados) =====================
+  // ===================== SALVAR AULA =====================
   const handleSave = async () => {
     if (!lesson) return;
     if (!isValid) {
@@ -365,7 +369,7 @@ export default function EditLesson({
     );
   };
 
-  // ===================== Import de elementos (sem salvar no back) =====================
+  // ===================== Import de elementos (no front) =====================
   const handleImportChange = (info: {
     mode: "one" | "all";
     fromClassId: string;
@@ -380,7 +384,6 @@ export default function EditLesson({
         return rest as ElementItem;
       });
 
-      // pode mudar estratégia se quiser (no início, só no final, etc.)
       return [...prev, ...cleanImported];
     });
   };
@@ -542,12 +545,14 @@ export default function EditLesson({
                 <div>
                   <div style={labelStyle}>Language</div>
                   <select
-                    value={lesson?.language ?? "en"}
-                    onChange={(e) =>
+                    value={theLanguage}
+                    onChange={(e) => {
+                      const lang = e.target.value;
+                      setTheLanguage(lang);
                       setLesson((prev) =>
-                        prev ? { ...prev, language: e.target.value } : prev
-                      )
-                    }
+                        prev ? { ...prev, language: lang } : prev
+                      );
+                    }}
                     style={{
                       ...inputBase,
                       background: "white",
@@ -557,6 +562,7 @@ export default function EditLesson({
                     <option value="en">English (en)</option>
                     <option value="es">Spanish (es)</option>
                     <option value="fr">French (fr)</option>
+                    <option value="pt">Portuguese (pt)</option>
                   </select>
                 </div>
               </div>
@@ -837,6 +843,7 @@ export default function EditLesson({
                       value={el as DialogueBlock}
                       language={language}
                       studentId={studentId}
+                      headers={headers}
                       onChange={(next) => updateElementAt(idx, next)}
                       onRemove={() => removeElementAt(idx)}
                       onMoveUp={() => moveElementUp(idx)}

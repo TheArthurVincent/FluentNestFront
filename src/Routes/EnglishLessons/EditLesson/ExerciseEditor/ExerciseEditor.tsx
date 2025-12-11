@@ -22,15 +22,15 @@ type Props = {
   onChange: (next: ExerciseBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: React.ReactNode;
-  onMoveUp?: () => void; // NOVO
-  onMoveDown?: () => void; // NOVO
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 
   // IA (opcional)
   studentId?: string;
   headers?: HeadersLike | null;
   setChange?: any;
   change?: any;
-  type: string;
+  type: string; // "exercises" etc (para o prompt da IA)
   language: string;
 };
 
@@ -49,12 +49,11 @@ export default function ExerciseEditor({
   setChange,
   change,
 }: Props) {
+  const [showConfig, setShowConfig] = React.useState(false);
+  const [aiOpen, setAiOpen] = React.useState(false);
+
   const setSubtitle = (subtitle: string) =>
     onChange({ ...value, subtitle, type: "exercise" });
-  const setOrder = (order?: number) =>
-    onChange({ ...value, order, type: "exercise" });
-  const setGrid = (grid?: number) =>
-    onChange({ ...value, grid, type: "exercise" });
 
   const updateItem = (idx: number, nextText: string) => {
     const next = value.items.slice();
@@ -85,40 +84,35 @@ export default function ExerciseEditor({
     onChange({ ...value, items: next, type: "exercise" });
   };
 
-  const trimAll = () => {
-    onChange({
-      ...value,
-      subtitle: (value.subtitle || "").trim(),
-      items: value.items.map((q) => (q || "").trim()),
-      type: "exercise",
-    });
-  };
-
   const pasteBulk = (bulkText: string) => {
     const lines = (bulkText || "")
       .split(/\r?\n/)
       .map((l) => l.trim())
-      .filter(Boolean);
+      .filter(Boolean)
+      .map((line) => line.replace(/^\d+[\).\-\s]+/, "")); // remove "1. ", "2) " etc
+
     if (!lines.length) return;
-    onChange({ ...value, items: value.items.concat(lines), type: "exercise" });
+    onChange({
+      ...value,
+      items: value.items.concat(lines),
+      type: "exercise",
+    });
   };
 
-  const [showConfig, setShowConfig] = React.useState(false);
+  // ===== IA helpers =====
 
-  // ===== IA: abrir/fechar modal
-  const [aiOpen, setAiOpen] = React.useState(false);
-
-  // ===== IA: normalizador de JSON (tolerante a code fences/envelopes)
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
     if (typeof input !== "string") return input;
+
     const cleaned = input
       .trim()
       .replace(/^```json/i, "")
       .replace(/^```/i, "")
       .replace(/```$/, "")
       .trim();
+
     try {
       return JSON.parse(cleaned);
     } catch {
@@ -126,67 +120,99 @@ export default function ExerciseEditor({
     }
   }
 
-  const handleReceiveJson = (raw: any) => {
-    const json = parseMaybeJson(raw);
+  function splitTextIntoQuestions(text: string): string[] {
+    if (!text || !text.trim()) return [];
 
-    // 1) extrair lista tolerante a envelopes
-    let arr: any[] = [];
-    if (Array.isArray(json)) {
-      arr = json;
-    } else if (json && typeof json === "object") {
-      const candidate =
-        json.items ||
-        json.questions ||
-        json.list ||
-        json.data ||
-        json.exercises ||
-        null;
+    // 1) tenta por quebras de linha
+    const byLines = text
+      .split(/\r?\n/)
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((line) => line.replace(/^\d+[\).\-\s]+/, ""));
 
-      if (Array.isArray(candidate)) {
-        arr = candidate;
-      } else if (
-        typeof json.result === "string" ||
-        typeof json.json === "string"
-      ) {
-        const inner = parseMaybeJson(json.result ?? json.json);
-        if (Array.isArray(inner)) arr = inner;
-        else if (inner && typeof inner === "object") {
-          const innerCandidate =
-            inner.items ||
-            inner.questions ||
-            inner.list ||
-            inner.data ||
-            inner.exercises;
-          if (Array.isArray(innerCandidate)) arr = innerCandidate;
-        }
-      }
-    } else if (typeof json === "string") {
-      const maybe = parseMaybeJson(json);
-      if (Array.isArray(maybe)) arr = maybe;
+    if (byLines.length > 1) return byLines;
+
+    // 2) fallback: separa por "?" (mantendo o caractere)
+    const chunks = text
+      .split(/(?<=\?)/)
+      .map((c) => c.trim())
+      .filter(Boolean);
+
+    return chunks.map((c) => c.replace(/^\d+[\).\-\s]+/, ""));
+  }
+
+  function normalizeExercisesPayload(raw: any): string[] {
+    // 1) já é array
+    if (Array.isArray(raw)) {
+      return raw
+        .map((it) => {
+          if (typeof it === "string") return it.trim();
+          if (!it || typeof it !== "object") return "";
+          return (
+            it.text ??
+            it.question ??
+            it.q ??
+            it.item ??
+            it.prompt ??
+            it.value ??
+            ""
+          );
+        })
+        .map((s) => String(s ?? "").trim())
+        .filter(Boolean);
     }
 
-    if (!Array.isArray(arr) || arr.length === 0) {
+    // 2) objeto
+    if (raw && typeof raw === "object") {
+      const candidateArr =
+        raw.items ||
+        raw.questions ||
+        raw.list ||
+        raw.data ||
+        raw.exercises ||
+        raw.sentences ||
+        null;
+
+      if (Array.isArray(candidateArr)) {
+        return normalizeExercisesPayload(candidateArr);
+      }
+
+      // envelopes: result/json/response
+      const wrapped =
+        raw.result ?? raw.json ?? raw.response ?? raw.payload ?? null;
+      if (wrapped) return normalizeExercisesPayload(parseMaybeJson(wrapped));
+
+      // texto único
+      const text =
+        raw.text ??
+        raw.body ??
+        raw.content ??
+        raw.transcript ??
+        raw.dialog ??
+        "";
+      if (typeof text === "string" && text.trim()) {
+        return splitTextIntoQuestions(text);
+      }
+    }
+
+    // 3) string solta
+    if (typeof raw === "string" && raw.trim()) {
+      return splitTextIntoQuestions(raw);
+    }
+
+    return [];
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+    const mapped = normalizeExercisesPayload(json);
+
+    if (!mapped.length) {
       notifyAlert(
-        "Esperado um ARRAY de questões (strings) ou objetos com {text|question|q|item}.",
+        "Esperado um ARRAY de questões ou um texto com uma pergunta por linha.",
         partnerColor()
       );
       console.warn("Conteúdo (bruto) recebido para exercises:", raw);
-      return;
-    }
-
-    // 2) mapear para strings
-    const mapped: string[] = arr
-      .map((it: any) => {
-        if (typeof it === "string") return it;
-        return (
-          it?.text ?? it?.question ?? it?.q ?? it?.item ?? it?.prompt ?? "" // fallback
-        );
-      })
-      .map((s) => String(s ?? "").trim())
-      .filter(Boolean);
-
-    if (mapped.length === 0) {
-      notifyAlert("Nada útil para adicionar aos exercícios.", partnerColor());
       return;
     }
 
@@ -211,6 +237,7 @@ export default function ExerciseEditor({
         gap: 12,
       }}
     >
+      {/* HEADER */}
       <div
         style={{
           display: "flex",
@@ -250,27 +277,32 @@ export default function ExerciseEditor({
           }}
         >
           <div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMoveUp?.();
-              }}
-              style={ghostBtnStyle}
-              title="Mover bloco para cima"
-            >
-              ↑
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMoveDown?.();
-              }}
-              style={ghostBtnStyle}
-              title="Mover bloco para baixo"
-            >
-              ↓
-            </button>
+            {onMoveUp && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveUp();
+                }}
+                style={ghostBtnStyle}
+                title="Mover bloco para cima"
+              >
+                ↑
+              </button>
+            )}
+            {onMoveDown && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveDown();
+                }}
+                style={ghostBtnStyle}
+                title="Mover bloco para baixo"
+              >
+                ↓
+              </button>
+            )}
           </div>
+
           {/* IA */}
           <button
             style={primaryBtnStyle}
@@ -287,7 +319,13 @@ export default function ExerciseEditor({
           </button>
 
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtnStyle}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemove();
+              }}
+              style={dangerBtnStyle}
+            >
               <i className="fa fa-trash" />
             </button>
           )}
@@ -296,7 +334,7 @@ export default function ExerciseEditor({
 
       {showConfig && (
         <>
-          {/* Header */}
+          {/* SUBTITLE / AÇÕES EXTRAS */}
           <div
             style={{
               display: "grid",
@@ -315,15 +353,10 @@ export default function ExerciseEditor({
             </div>
             <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
               {titleRightExtra}
-              {onRemove && (
-                <button onClick={onRemove} style={dangerBtnStyle}>
-                  <i className="fa fa-trash" />
-                </button>
-              )}
             </div>
           </div>
 
-          {/* Ferramentas de lista */}
+          {/* FERRAMENTAS DE LISTA */}
           <div
             style={{
               display: "grid",
@@ -343,12 +376,6 @@ export default function ExerciseEditor({
                   placeholder={"Cole cada pergunta em uma linha..."}
                   rows={5}
                   style={textareaStyle}
-                  onPaste={(e) => {
-                    setTimeout(
-                      () => pasteBulk((e.target as HTMLTextAreaElement).value),
-                      0
-                    );
-                  }}
                   onBlur={(e) => {
                     const v = e.currentTarget.value;
                     if (v.trim()) pasteBulk(v);
@@ -356,8 +383,8 @@ export default function ExerciseEditor({
                   }}
                 />
                 <small style={{ color: "#64748b" }}>
-                  Dica: cole linhas e feche/saia do campo para adicionar à
-                  lista.
+                  Dica: cole linhas, revise, e depois saia do campo para
+                  adicionar à lista.
                 </small>
               </div>
             </details>
@@ -368,12 +395,14 @@ export default function ExerciseEditor({
             </div>
           </div>
 
+          {/* LISTA DE ITENS */}
           <div style={{ display: "grid", gap: 8 }}>
             {value.items.length === 0 && (
               <div style={emptyStyle}>
                 Nenhum item. Use “Adicionar item” ou ✨ IA.
               </div>
             )}
+
             {value.items.map((q, idx) => (
               <div
                 key={idx}
@@ -418,14 +447,14 @@ export default function ExerciseEditor({
         </>
       )}
 
-      {/* Modal IA */}
+      {/* MODAL IA */}
       <SimpleAIGenerator
         visible={aiOpen}
         language1={language}
-        type="exercises"
+        type={type || "exercises"}
         onClose={() => setAiOpen(false)}
         postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
-        headers={headers}
+        headers={headers || undefined}
         onReceiveJson={handleReceiveJson}
         title="Gerar Exercises por IA"
       />
@@ -469,6 +498,7 @@ const ghostBtnStyle: React.CSSProperties = {
   cursor: "pointer",
   fontSize: 13,
 };
+
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
