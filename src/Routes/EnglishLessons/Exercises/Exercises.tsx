@@ -586,20 +586,6 @@ export default function ExerciseRunner({
     onBoardChange && onBoardChange(html);
   };
 
-  const handleBoardSave = () => {
-    if (!boardContent?.trim()) {
-      // notifyAlert?.("Escreva algo na lousa antes de salvar.", "#f97316");
-      return;
-    }
-    setBoardSaving(true);
-    try {
-      onBoardChange && onBoardChange(boardContent);
-      // notifyAlert?.("Lousa salva com sucesso!", partnerColor());
-    } finally {
-      setBoardSaving(false);
-    }
-  };
-
   const handleBoardFinish = async () => {
     if (!studentId) return;
 
@@ -750,6 +736,7 @@ export default function ExerciseRunner({
           <div
             style={{
               marginTop: 8,
+              width: "80%",
               borderTop: "1px solid #E5E7EB",
               paddingTop: 16,
             }}

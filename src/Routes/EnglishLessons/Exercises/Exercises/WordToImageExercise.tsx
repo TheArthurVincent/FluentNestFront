@@ -395,8 +395,8 @@ export default function WordToImageExercise({
                     alt="quiz"
                     loading="lazy"
                     style={{
-                      width: "15vw",
-                      height: "15vw",
+                      width: "200px",
+                      height: "200px",
                       objectFit: "cover",
                       display: "block",
                     }}

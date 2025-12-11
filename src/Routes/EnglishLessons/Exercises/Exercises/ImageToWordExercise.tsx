@@ -440,7 +440,6 @@ export default function ImageToWordExercise({
                   height: "200px",
                   border: "1px solid #eee",
                   objectFit: "cover",
-                  borderRadius: 6,
                 }}
               />
             </div>

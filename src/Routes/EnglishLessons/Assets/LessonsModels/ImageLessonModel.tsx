@@ -139,7 +139,7 @@ export default function ImageLessonModel({
             <div
               key={i}
               style={{
-                width: 100,
+                width: 200,
                 height: 200,
                 borderRadius: 6,
                 padding: 4,
@@ -160,8 +160,8 @@ export default function ImageLessonModel({
                   alt={label || `image-${i}`}
                   loading="lazy"
                   style={{
-                    width: "100%",
-                    height: "100%",
+                    width: "200px",
+                    height: "200px",
                     objectFit: "cover",
                     display: "block",
                   }}

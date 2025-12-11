@@ -66,7 +66,7 @@ const pairColors = [
 // ==== ESTILOS NO CLIMA DO CALENDÁRIO / ARVIN ====
 
 const cardContainerStyle: React.CSSProperties = {
-  width: "100%",
+  width: "90%",
   margin: "0 auto",
   paddingTop: 16,
   boxSizing: "border-box",
