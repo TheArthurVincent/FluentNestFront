@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
@@ -89,6 +90,35 @@ const iconBtn: React.CSSProperties = {
   gap: 6,
 };
 
+function BodyPortal({
+  children,
+  open,
+}: {
+  children: React.ReactNode;
+  open: boolean;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    if (!open) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, mounted]);
+
+  if (!mounted) return null;
+  return ReactDOM.createPortal(children, document.body);
+}
+
 const ModuleActions: React.FC<Props> = ({
   moduleId,
   initialTitle,
@@ -106,6 +136,17 @@ const ModuleActions: React.FC<Props> = ({
     setConfirmDelete(false);
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (!openEdit) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeAll();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [openEdit]);
 
   const handleSave = async () => {
     if (!title.trim() || loading) return;
@@ -149,6 +190,7 @@ const ModuleActions: React.FC<Props> = ({
         }}
         onClick={() => {
           setTitle(initialTitle || "");
+          setConfirmDelete(false);
           setOpenEdit(true);
         }}
         title="Editar nome do módulo"
@@ -156,13 +198,14 @@ const ModuleActions: React.FC<Props> = ({
         <i className="fa fa-pencil" aria-hidden="true" />
       </button>
 
-      {openEdit && (
-        <div style={overlayStyle}>
-          <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={headerStyle}>Editar módulo</div>
-            <div style={bodyStyle}>
-              {!confirmDelete ? (
-                <>
+      <BodyPortal open={openEdit}>
+        {openEdit ? (
+          <div style={overlayStyle} onClick={closeAll}>
+            <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+              <div style={headerStyle}>Editar módulo</div>
+
+              <div style={bodyStyle}>
+                {!confirmDelete ? (
                   <label style={{ display: "grid", gap: 6 }}>
                     <span style={{ fontSize: 12, color: "#64748b" }}>
                       Nome do módulo
@@ -186,61 +229,66 @@ const ModuleActions: React.FC<Props> = ({
                       }
                     />
                   </label>
-                </>
-              ) : (
-                <>
-                  <p>
-                    Tem certeza que deseja excluir este módulo?
-                    <br />
-                    <small style={{ color: "#64748b" }}>
-                      Esta ação é irreversível e removerá o módulo.
-                    </small>
-                  </p>
-                </>
-              )}
-            </div>
+                ) : (
+                  <>
+                    <p>
+                      Tem certeza que deseja excluir este módulo?
+                      <br />
+                      <small style={{ color: "#64748b" }}>
+                        Esta ação é irreversível e removerá o módulo.
+                      </small>
+                    </p>
+                  </>
+                )}
+              </div>
 
-            <div style={footerStyle}>
-              {!confirmDelete ? (
-                <>
-                  <button style={danger} onClick={() => setConfirmDelete(true)}>
-                    Excluir módulo
-                  </button>
-                  <div>
-                    <button style={btn} onClick={closeAll} disabled={loading}>
-                      Cancelar
+              <div style={footerStyle}>
+                {!confirmDelete ? (
+                  <>
+                    <button
+                      style={danger}
+                      onClick={() => setConfirmDelete(true)}
+                      disabled={loading}
+                    >
+                      Excluir módulo
+                    </button>
+
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button style={btn} onClick={closeAll} disabled={loading}>
+                        Cancelar
+                      </button>
+                      <button
+                        style={btnPrimary}
+                        onClick={handleSave}
+                        disabled={loading || !title.trim()}
+                      >
+                        {loading ? "Salvando..." : "Salvar"}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      style={btn}
+                      onClick={() => setConfirmDelete(false)}
+                      disabled={loading}
+                    >
+                      Voltar
                     </button>
                     <button
-                      style={btnPrimary}
-                      onClick={handleSave}
-                      disabled={loading || !title.trim()}
+                      style={{ ...danger, fontWeight: 600 }}
+                      onClick={handleDelete}
+                      disabled={loading}
                     >
-                      {loading ? "Salvando..." : "Salvar"}
+                      {loading ? "Excluindo..." : "Confirmar exclusão"}
                     </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <button
-                    style={btn}
-                    onClick={() => setConfirmDelete(false)}
-                    disabled={loading}
-                  >
-                    Voltar
-                  </button>
-                  <button
-                    style={{ ...danger, fontWeight: 600 }}
-                    onClick={handleDelete}
-                    disabled={loading}
-                  >
-                    {loading ? "Excluindo..." : "Confirmar exclusão"}
-                  </button>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        ) : null}
+      </BodyPortal>
     </span>
   );
 };
