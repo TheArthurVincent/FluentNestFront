@@ -176,7 +176,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
           fontFamily: "Plus Jakarta Sans",
         }}
       >
-        Turma não encontrada.
+        {/* Turma não encontrada. */}
       </div>
     );
   }
