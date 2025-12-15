@@ -520,28 +520,27 @@ export default function EditLesson({
 
           {/* CABEÇALHO E METADADOS */}
           <div style={{ ...sectionCard, marginBottom: 12 }}>
-            {!fetchEventData && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1fr"
-                    : "minmax(0, 2fr) minmax(0, 1fr)",
-                  gap: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <div>
-                  <div style={labelStyle}>Título da aula</div>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Ex.: Business Essentials — Vocabulary & Usage"
-                    style={inputBase}
-                  />
-                </div>
-
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "minmax(0, 2fr) minmax(0, 1fr)",
+                gap: 10,
+                marginBottom: 10,
+              }}
+            >
+              <div>
+                <div style={labelStyle}>Título da aula</div>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Ex.: Business Essentials — Vocabulary & Usage"
+                  style={inputBase}
+                />
+              </div>
+              {!fetchEventData && (
                 <div>
                   <div style={labelStyle}>Language</div>
                   <select
@@ -565,8 +564,8 @@ export default function EditLesson({
                     <option value="pt">Portuguese (pt)</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {!fetchEventData && (
               <TagsEditor
