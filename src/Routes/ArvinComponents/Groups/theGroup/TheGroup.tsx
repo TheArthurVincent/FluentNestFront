@@ -14,6 +14,7 @@ import { GroupStudentsCard } from "./ComponentsGroup/GroupStudentsCard";
 import { GroupMainInfoCard } from "./ComponentsGroup/GroupMainInfoCard";
 import { GroupDangerZoneCard } from "./ComponentsGroup/GroupDangerZoneCard";
 import { GroupSummaryCard } from "./ComponentsGroup/GroupSummaryClass";
+import { GroupTodayClassesCard } from "./ComponentsGroup/GroupTodayClassesCard";
 
 type GroupPageProps = {
   headers: MyHeadersType | any;
@@ -260,11 +261,16 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
             onNavigateHistory={handleNavigateHistory}
             formatDate={formatDate}
           />
+          <GroupTodayClassesCard
+            group={group || ""}
+            actualHeaders={headers}
+          />
         </div>
 
         {/* COLUNA DIREITA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <GroupSummaryCard
+            group={group || ""}
             totalStudents={totalStudents}
             totalClasses={totalClasses}
           />

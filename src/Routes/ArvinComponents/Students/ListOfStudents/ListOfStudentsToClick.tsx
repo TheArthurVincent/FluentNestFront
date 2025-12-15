@@ -63,27 +63,6 @@ export function ListOfStudentsToClick({
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
   const [ID, setID] = useState("");
-  const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]); // se não precisar, pode apagar isso também
-
-  // ====== BUSCAR EVENTOS DO DIA (opcional, não usado no filtro) ======
-  const getDayEvents = async (userid: string, date: Date) => {
-    const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/students-events-today/${userid}`,
-        {
-          headers: actualHeaders ? { ...actualHeaders } : {},
-          params: { today: dateStr },
-        }
-      );
-
-      const events: EventToday[] = response.data.events || response.data || [];
-      setEventsForToday(events || []);
-    } catch (error) {
-      console.log("Erro ao buscar eventos do dia:", error);
-    }
-  };
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -100,9 +79,6 @@ export function ListOfStudentsToClick({
       );
 
       setStudents(response.data.listOfStudents || response.data || []);
-      if (userId) {
-        getDayEvents(userId, new Date()); // se não quiser nem buscar eventos, pode remover esta linha
-      }
     } catch (error) {
       console.error(error);
       notifyAlert("Erro ao encontrar alunos");

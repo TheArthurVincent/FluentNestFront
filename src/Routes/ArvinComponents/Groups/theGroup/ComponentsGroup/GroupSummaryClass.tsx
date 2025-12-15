@@ -1,6 +1,6 @@
 // Routes/ArvinComponents/Groups/GroupSummaryCard.tsx
-import React, { FC } from "react";
-import { ClipboardText } from "@phosphor-icons/react";
+import React, { FC, useEffect } from "react";
+import { ClipboardTextIcon } from "@phosphor-icons/react";
 import {
   cardBase,
   cardTitle,
@@ -8,13 +8,18 @@ import {
 
 export const GroupSummaryCard: FC<{
   totalStudents: number;
+  group: any;
   totalClasses: number;
-}> = ({ totalStudents, totalClasses }) => {
+}> = ({ totalStudents, group, totalClasses }) => {
+  useEffect(() => {
+    console.log("Group in SummaryCard:", group.studentIds);
+  }, [group]);
+
   return (
     <div style={cardBase}>
       {/* Header padrão Arvin */}
       <div style={cardTitle}>
-        <ClipboardText size={18} weight="bold" color="#111827" />
+        <ClipboardTextIcon size={18} weight="bold" color="#111827" />
         <span>Resumo da turma</span>
       </div>
 
