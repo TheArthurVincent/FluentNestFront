@@ -31,6 +31,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
   const [arrayOfIds, setArrayOfIds] = useState<string[]>([]);
   const [classesGroup, setClassesGroup] = useState<GroupClassEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [TRIGGER, setTRIGGER] = useState(true);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
 
@@ -87,7 +88,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
     };
 
     fetchAll();
-  }, [groupId, headers, id]);
+  }, [groupId, headers, id, TRIGGER]);
 
   const handleCheckboxChange = async (studentId: string) => {
     if (!group || !group._id) return;
@@ -154,18 +155,18 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
     }
   };
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          padding: 16,
-          fontFamily: "Plus Jakarta Sans",
-        }}
-      >
-        Carregando turma...
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         padding: 16,
+  //         fontFamily: "Plus Jakarta Sans",
+  //       }}
+  //     >
+  //       Carregando turma...
+  //     </div>
+  //   );
+  // }
 
   if (!group) {
     return (
@@ -245,6 +246,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
             onChangeDescription={handleChangeDescription}
           />
           <GroupStudentsCard
+            setTRIGGER={setTRIGGER}
             students={students}
             selectedIds={arrayOfIds}
             loading={loadingStudents}
@@ -255,6 +257,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <GroupSummaryCard
+            TRIGGER={TRIGGER}
             group={group?._id || ""}
             totalStudents={totalStudents}
             totalClasses={totalClasses}

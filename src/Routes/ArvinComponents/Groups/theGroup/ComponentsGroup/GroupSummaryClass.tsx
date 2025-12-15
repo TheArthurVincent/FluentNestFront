@@ -19,9 +19,10 @@ type StudentItem = {
 export const GroupSummaryCard: FC<{
   totalStudents: number;
   group: string; // groupId
+  TRIGGER?: any;
   totalClasses: number;
   actualHeaders?: any;
-}> = ({ totalStudents, group, totalClasses, actualHeaders }) => {
+}> = ({ totalStudents, group, totalClasses, actualHeaders, TRIGGER }) => {
   const [loadingStudents, setLoadingStudents] = React.useState(false);
   const [students, setStudents] = React.useState<StudentItem[]>([]);
 
@@ -52,8 +53,13 @@ export const GroupSummaryCard: FC<{
 
   useEffect(() => {
     fetchGroupStudents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [group, actualHeaders]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchGroupStudents();
+    }, 2000);
+  }, [TRIGGER]);
 
   return (
     <div style={cardBase}>
