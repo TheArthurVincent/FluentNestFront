@@ -153,13 +153,42 @@ export default function EditLesson({
         const response = await axios.put(
           `${backDomain}/api/v1/ai-title-class/${myId}`,
           {
-            classID: classId || "",
+            elements: elements || {},
+            language: language || "en",
+            studentId: studentId || "",
           },
           { headers: headers as any }
         );
         const adapted = response.data.titleAdapted;
         console.log(adapted);
         setTitle(adapted);
+        setLoadingTitle(false);
+      } catch (error) {
+        setLoadingTitle(false);
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      }
+    }
+  };
+  const handleDescription = async () => {
+    setLoadingTitle(true);
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description-class/${myId}`,
+          {
+            elements: elements || {},
+            language: language || "en",
+            studentId: studentId || "",
+          },
+          { headers: headers as any }
+        );
+        const adapted = response.data.descriptionAdapted;
+        console.log(adapted);
+        setDescription(adapted);
         setLoadingTitle(false);
       } catch (error) {
         setLoadingTitle(false);
@@ -621,12 +650,25 @@ export default function EditLesson({
             <div style={{ marginTop: 10 }}>
               <div style={labelStyle}>Description</div>
               <textarea
+                disabled={loadingTitle}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Descrição da aula"
                 style={{ ...inputBase, resize: "vertical" }}
               />
+              <button
+                onClick={handleDescription}
+                style={{
+                  display: "flex",
+                  width: "100px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexWrap: "nowrap",
+                }}
+              >
+                ✨ -2
+              </button>
             </div>
 
             {!fetchEventData && (
