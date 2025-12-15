@@ -404,6 +404,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       gap: 2,
                     }}
                   >
+                    {/* <span>{event.title ? event.title : "Aula Individual"}</span> */}
                     <span
                       style={{
                         fontFamily: "Plus Jakarta Sans",
