@@ -254,25 +254,23 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
 
         {/* COLUNA CENTRAL */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
+          <GroupSummaryCard
+            group={group?._id || ""}
+            totalStudents={totalStudents}
+            totalClasses={totalClasses}
+            actualHeaders={headers}
+          />
+          <GroupTodayClassesCard group={group || ""} actualHeaders={headers} />
+        </div>
+
+        {/* COLUNA DIREITA */}
+        <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <GroupHistoryCard
             totalClasses={totalClasses}
             lastClass={lastClass}
             loadingHistory={loadingHistory}
             onNavigateHistory={handleNavigateHistory}
             formatDate={formatDate}
-          />
-          <GroupTodayClassesCard
-            group={group || ""}
-            actualHeaders={headers}
-          />
-        </div>
-
-        {/* COLUNA DIREITA */}
-        <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
-          <GroupSummaryCard
-            group={group || ""}
-            totalStudents={totalStudents}
-            totalClasses={totalClasses}
           />
           <GroupDangerZoneCard onDeleteGroup={deleteGroup} />
         </div>
