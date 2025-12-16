@@ -8,7 +8,6 @@ import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../../Styles/Styles";
-import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 type BoardProps = {
   headers: MyHeadersType;
