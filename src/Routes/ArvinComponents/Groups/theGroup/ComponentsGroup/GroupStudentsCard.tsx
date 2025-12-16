@@ -1,6 +1,6 @@
 // Routes/ArvinComponents/Groups/GroupStudentsCard.tsx
 import React, { FC, useMemo, useState } from "react";
-import { UsersThree } from "@phosphor-icons/react";
+import { UsersThree, UsersThreeIcon } from "@phosphor-icons/react";
 import {
   cardBase,
   cardTitle,
@@ -17,12 +17,14 @@ interface GroupStudentsCardProps {
   students: StudentItem[];
   selectedIds: string[];
   loading: boolean;
+  setTRIGGER: any;
   onToggleStudent: (id: string) => void;
 }
 
 export const GroupStudentsCard: FC<GroupStudentsCardProps> = ({
   students,
   selectedIds,
+  setTRIGGER,
   loading,
   onToggleStudent,
 }) => {
@@ -43,7 +45,7 @@ export const GroupStudentsCard: FC<GroupStudentsCardProps> = ({
     <div style={cardBase}>
       {/* Header padrão Arvin */}
       <div style={cardTitle}>
-        <UsersThree size={18} weight="bold" color="#111827" />
+        <UsersThreeIcon size={18} weight="bold" color="#111827" />
         <span>Alunos da turma</span>
         <span
           style={{
@@ -116,7 +118,10 @@ export const GroupStudentsCard: FC<GroupStudentsCardProps> = ({
                 <input
                   type="checkbox"
                   checked={checked}
-                  onChange={() => onToggleStudent(sid)}
+                  onChange={() => {
+                    onToggleStudent(sid);
+                    setTRIGGER((prev: boolean) => !prev);
+                  }}
                   style={{ marginRight: 8 }}
                 />
                 <span>

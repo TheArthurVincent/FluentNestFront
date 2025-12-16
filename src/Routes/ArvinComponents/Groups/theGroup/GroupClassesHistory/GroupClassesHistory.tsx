@@ -34,6 +34,7 @@ interface EventFromApi {
   emailSent?: boolean;
   flashcardsAdded?: boolean;
   homeworkAdded?: boolean;
+  lessonTitle?: string;
   link?: string;
   notificationSent?: boolean;
   showToAny?: boolean;
@@ -377,6 +378,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                         color: "#111827",
                       }}
                     >
+                      {event?.lessonTitle ? event.lessonTitle : "Aula de Grupo"}{" "}
                       {formatDate(event.date)} — {event.time || "--:--"}
                     </span>
                     {event.category && (

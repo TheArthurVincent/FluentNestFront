@@ -49,19 +49,6 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
     return d.toLocaleDateString("pt-BR");
   };
 
-  const formatDay = (day: string) => {
-    const map: Record<string, string> = {
-      Mon: "Seg",
-      Tue: "Ter",
-      Wed: "Qua",
-      Thu: "Qui",
-      Fri: "Sex",
-      Sat: "Sáb",
-      Sun: "Dom",
-    };
-    return map[day] || day;
-  };
-
   if (loading) {
     return (
       <div
@@ -87,19 +74,6 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
       </div>
     );
   }
-
-  const mockTodayClasses: TodayClass[] =
-    student.tutoree && student.tutoringDays?.length
-      ? student.tutoringDays.map((td) => ({
-          id: td.id,
-          title: "Tutoria de Inglês",
-          time: td.time,
-          day: formatDay(td.day),
-          type: "Tutoria",
-          status: "Agendada",
-          link: td.link,
-        }))
-      : [];
 
   return (
     <div

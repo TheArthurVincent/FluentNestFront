@@ -1,22 +1,25 @@
-// Routes/ArvinComponents/Students/sections/StudentTodayClassesCard.tsx
+// Routes/ArvinComponents/Students/sections/GroupTodayClassesCard.tsx
 import React, { FC, useEffect, useState } from "react";
 import { GraduationCapIcon } from "@phosphor-icons/react";
-import { cardBase, cardTitle } from "../types/studentPage.styles";
 import { partnerColor } from "../../../../../Styles/Styles";
 import axios from "axios";
 import {
   backDomain,
   formatDateBr,
 } from "../../../../../Resources/UniversalComponents";
-import { StudentTutoringEditorModal } from "./StudentsRecurringTutorings/StudentTutoringEditorModal";
+import {
+  cardBase,
+  cardTitle,
+} from "../../../Students/TheStudent/types/studentPage.styles";
+import { ModalEditClassesGroup } from "./ModalEditClassesGroup/ModalEditClassesGroup";
 
-interface StudentTodayClassesCardProps {
-  student?: any;
+interface GroupTodayClassesCardProps {
+  group?: any;
   actualHeaders?: any;
 }
 
-export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
-  student,
+export const GroupTodayClassesCard: FC<GroupTodayClassesCardProps> = ({
+  group,
   actualHeaders,
 }) => {
   const [NXTCLASS, setNXTCLASS] = useState<any>("");
@@ -24,17 +27,17 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
   const [teacher, setTeacher] = useState<any>("");
   const [now, setNow] = useState<Date>(new Date());
 
-  const tutoringDays = student?.tutoringDays || [];
+  const tutoringDays = group?.tutoringDays || [];
 
   // ================================
   //  Buscar próxima aula (next-event)
   // ================================
   const fetchLastClassId = async () => {
-    if (!student?.id) return;
+    if (!group?._id) return;
     setLoadingNext(true);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/next-event/${student.id}`,
+        `${backDomain}/api/v1/next-event/${group._id}`,
         {
           headers: actualHeaders,
         }
@@ -56,7 +59,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
 
   useEffect(() => {
     fetchLastClassId();
-  }, [student?.id]);
+  }, [group?.id]);
 
   // Atualiza “now” para o selo "Ao vivo"
   useEffect(() => {
@@ -258,10 +261,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
           </span>
         )}
       </>
-      <StudentTutoringEditorModal
-        student={student}
-        actualHeaders={actualHeaders}
-      />
+      <ModalEditClassesGroup group={group} actualHeaders={actualHeaders} />
     </div>
   );
 };

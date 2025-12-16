@@ -29,6 +29,7 @@ import SingleImagesEditor, {
 import { partnerColor } from "../../../Styles/Styles";
 import DeleteClassButton from "./DeleteLesson/DeleteLesson";
 import ImportElementsEditor from "./ImportNewElements/SelectExercise/ImportNewElements";
+import { notifyAlert } from "../Assets/Functions/FunctionLessons";
 
 type ElementBase = {
   subtitle?: string;
@@ -139,6 +140,63 @@ export default function EditLesson({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [newType, setNewType] = useState<NewBlockType>("sentences");
   const [isValid, setIsValid] = useState(true);
+
+  const [loadingTitle, setLoadingTitle] = useState(false);
+
+  const handleTitle = async () => {
+    setLoadingTitle(true);
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-title-class/${myId}`,
+          {
+            elements: elements || {},
+            language: language || "en",
+            studentId: studentId || "",
+          },
+          { headers: headers as any }
+        );
+        const adapted = response.data.titleAdapted;
+        console.log(adapted);
+        setTitle(adapted);
+        setLoadingTitle(false);
+      } catch (error) {
+        setLoadingTitle(false);
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      }
+    }
+  };
+  const handleDescription = async () => {
+    setLoadingTitle(true);
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description-class/${myId}`,
+          {
+            elements: elements || {},
+            language: language || "en",
+            studentId: studentId || "",
+          },
+          { headers: headers as any }
+        );
+        const adapted = response.data.descriptionAdapted;
+        console.log(adapted);
+        setDescription(adapted);
+        setLoadingTitle(false);
+      } catch (error) {
+        setLoadingTitle(false);
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      }
+    }
+  };
 
   // idioma da aula (usado no payload)
   const [theLanguage, setTheLanguage] = useState<string>("en");
@@ -448,6 +506,7 @@ export default function EditLesson({
           disabled={loading}
           style={{
             borderRadius: 6,
+            width: "150px",
             backgroundColor: partnerColor(),
             color: "#fff",
             fontSize: 12,
@@ -457,10 +516,9 @@ export default function EditLesson({
             outline: "none",
             cursor: "pointer",
             display: "block",
-            maxWidth: isMobile ? "100%" : 120,
           }}
         >
-          {loading ? "Carregando..." : buttonText || "Editar Conteúdo"}
+          {loading ? "Carregando..." : buttonText || "Adaptar Conteúdo"}
         </button>
       )}
 
@@ -476,7 +534,7 @@ export default function EditLesson({
                 color: "#0f172a",
               }}
             >
-              {buttonText || "Editar Conteúdo"}
+              {buttonText || "Adaptar Conteúdo"}
             </h2>
 
             {error && (
@@ -520,28 +578,42 @@ export default function EditLesson({
 
           {/* CABEÇALHO E METADADOS */}
           <div style={{ ...sectionCard, marginBottom: 12 }}>
-            {!fetchEventData && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: isMobile
-                    ? "1fr"
-                    : "minmax(0, 2fr) minmax(0, 1fr)",
-                  gap: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <div>
-                  <div style={labelStyle}>Título da aula</div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "minmax(0, 2fr) minmax(0, 1fr)",
+                gap: 10,
+                marginBottom: 10,
+              }}
+            >
+              <div>
+                <div style={labelStyle}>Título da aula</div>
+                <div style={{ display: "flex", gap: 8 }}>
                   <input
+                    disabled={loadingTitle}
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Ex.: Business Essentials — Vocabulary & Usage"
                     style={inputBase}
                   />
+                  <button
+                    onClick={handleTitle}
+                    style={{
+                      display: "flex",
+                      width: "100px",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexWrap: "nowrap",
+                    }}
+                  >
+                    ✨ -2
+                  </button>
                 </div>
-
+              </div>
+              {!fetchEventData && (
                 <div>
                   <div style={labelStyle}>Language</div>
                   <select
@@ -565,8 +637,8 @@ export default function EditLesson({
                     <option value="pt">Portuguese (pt)</option>
                   </select>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {!fetchEventData && (
               <TagsEditor
@@ -578,12 +650,25 @@ export default function EditLesson({
             <div style={{ marginTop: 10 }}>
               <div style={labelStyle}>Description</div>
               <textarea
+                disabled={loadingTitle}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Descrição da aula"
                 style={{ ...inputBase, resize: "vertical" }}
               />
+              <button
+                onClick={handleDescription}
+                style={{
+                  display: "flex",
+                  width: "100px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexWrap: "nowrap",
+                }}
+              >
+                ✨ -2
+              </button>
             </div>
 
             {!fetchEventData && (

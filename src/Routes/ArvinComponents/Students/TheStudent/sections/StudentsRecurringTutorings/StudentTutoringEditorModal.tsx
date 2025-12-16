@@ -10,7 +10,6 @@ interface StudentTutoringEditorModalProps {
   student?: any;
   actualHeaders?: any;
 }
-
 export const StudentTutoringEditorModal: FC<
   StudentTutoringEditorModalProps
 > = ({ student, actualHeaders }) => {

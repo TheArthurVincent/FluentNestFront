@@ -38,6 +38,7 @@ interface EventFromApi {
   emailSent?: boolean;
   flashcardsAdded?: boolean;
   homeworkAdded?: boolean;
+  lessonTitle?: string;
   link?: string;
   notificationSent?: boolean;
   showToAny?: boolean;
@@ -111,7 +112,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         }
       );
       setStudentName(response.data.studentName || "");
-      console.log(response.data);
+      console.log(response.data.events, "Histórico de aulas Individuais");
       setEventsList(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
@@ -404,6 +405,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       gap: 2,
                     }}
                   >
+                    {/* <span>{event.title ? event.title : "Aula Individual"}</span> */}
                     <span
                       style={{
                         fontFamily: "Plus Jakarta Sans",
@@ -411,7 +413,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         color: "#111827",
                       }}
                     >
-                      {formatDate(event.date)} — {event.time || "--:--"}
+                      {event?.lessonTitle
+                        ? event.lessonTitle
+                        : "Aula Individual"}{" "}
+                      - {formatDate(event.date)} — {event.time || "--:--"}
                     </span>
                   </div>
 
