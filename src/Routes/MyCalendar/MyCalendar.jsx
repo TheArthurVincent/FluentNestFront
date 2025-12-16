@@ -1910,10 +1910,11 @@ function MyCalendar({
                               border: "#ddd",
                             };
                             return (
-                              <div
+                              <a
                                 key={`${event._id}-${eventIndex}`}
                                 style={{
                                   marginBottom: "5px",
+                                  textDecoration: "none",
                                   borderRadius: "4px",
                                   overflow: "hidden",
                                   transition: "all 0.2s ease",
@@ -1933,116 +1934,12 @@ function MyCalendar({
                                     "0 2px 8px rgba(0,0,0,0.1)";
                                 }}
                                 // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}         // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}         // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}               // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => handleSeeModal(event)}
-                                onClick={() => {
-                                  window.location.assign(
-                                    `my-calendar/event/${event._id}`
-                                  );
-                                }}
+                                // onClick={() => {
+                                //   window.location.assign(
+                                //     `my-calendar/event/${event._id}`
+                                //   );
+                                // }}
+                                href={`my-calendar/event/${event._id}`}
                               >
                                 {/* Live Event Indicator */}
                                 {event.status !== "desmarcado" &&
@@ -2186,7 +2083,7 @@ function MyCalendar({
                                     </>
                                   )}
                                 </div>
-                              </div>
+                              </a>
                             );
                           })}
 

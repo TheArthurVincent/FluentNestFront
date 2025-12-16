@@ -92,11 +92,10 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     console.log("saving homework", { homeworkID, descriptionHtml });
     try {
       setSaving(true);
-
       // 1. EDITAR HOMEWORK EXISTENTE
       if (homeworkID) {
         await axios.put(
-          `${backDomain}/api/v1 /${homeworkID}`,
+          `${backDomain}/api/v1/edithomeworkdescription/${homeworkID}`,
           {
             description: descriptionHtml || "",
           },
