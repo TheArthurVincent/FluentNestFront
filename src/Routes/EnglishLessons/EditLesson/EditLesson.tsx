@@ -506,6 +506,7 @@ export default function EditLesson({
           disabled={loading}
           style={{
             borderRadius: 6,
+            width: "150px",
             backgroundColor: partnerColor(),
             color: "#fff",
             fontSize: 12,
@@ -515,7 +516,6 @@ export default function EditLesson({
             outline: "none",
             cursor: "pointer",
             display: "block",
-            maxWidth: isMobile ? "100%" : 120,
           }}
         >
           {loading ? "Carregando..." : buttonText || "Adaptar Conteúdo"}
@@ -534,7 +534,7 @@ export default function EditLesson({
                 color: "#0f172a",
               }}
             >
-              {buttonText || "Editar Conteúdo"}
+              {buttonText || "Adaptar Conteúdo"}
             </h2>
 
             {error && (

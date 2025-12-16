@@ -3037,7 +3037,7 @@ export default function EnglishClassCourse2({
                 setChange={setChange}
                 change={change}
                 studentId={myId}
-                buttonText={"Editar Conteúdo"}
+                buttonText={"Adaptar Conteúdo"}
                 setSeeEdit={setSeeEdit}
                 headers={actualHeaders}
                 classId={classId}
