@@ -244,23 +244,21 @@ export default function VocabularyLesson({
             />
           </button>
         )}
-
-        <button
+      <button
           onClick={toggleMatchMode}
           style={{
             border: `1px solid ${partnerColor()}`,
-            background: match.isMatchMode ? partnerColor() : "#ffffff",
-            color: match.isMatchMode
-              ? textpartnerColorContrast()
-              : partnerColor(),
+            background: partnerColor(),
+            color: "#fff",
+            fontWeight: "700",
             padding: "6px 10px",
             borderRadius: 6,
-            fontSize: 13,
+            fontSize: 12,
             cursor: "pointer",
             transition: "all .2s",
           }}
         >
-          {match.isMatchMode ? "Ver definições" : "Modo Match"}
+          {match.isMatchMode ? "Close Match Mode" : "Match Mode"}
         </button>
       </div>
 
