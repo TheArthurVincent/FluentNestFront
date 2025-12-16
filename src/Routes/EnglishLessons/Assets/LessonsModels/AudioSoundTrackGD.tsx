@@ -165,33 +165,6 @@ export default function AudioFile({
             }}
           >
             <span>
-              {/* Botão PLAY (TTS) */}
-              {/* <button
-                style={{
-                  all: "unset",
-                  cursor: "pointer",
-                  margin: "0 4px",
-                  fontSize: "0.8rem",
-                  color: partnerColor(),
-                }}
-                onClick={handlePlayText}
-              >
-                <i className="fa fa-volume-up" />
-              </button> */}
-
-              {/* Botão PAUSE (para qualquer áudio controlado globalmente) */}
-              {/* <button
-                style={{
-                  all: "unset",
-                  cursor: "pointer",
-                  margin: "0 8px",
-                  fontSize: "0.8rem",
-                  color: "#555",
-                }}
-                onClick={handlePause}
-              >
-                <i className="fa fa-pause" />
-              </button> */}
               {element.text}
             </span>
           </div>
