@@ -299,7 +299,7 @@ export function MyHomePage({
                   </span>
                 </span>
               )}
-              {PERMISSIONS !== "student" && (
+              {/* {PERMISSIONS !== "student" && (
                 <span
                   onClick={() => {
                     seeScore(id);
@@ -352,7 +352,7 @@ export function MyHomePage({
                     </span>
                   </span>
                 </span>
-              )}{" "}
+              )}{" "} */}
               {PERMISSIONS !== "student" && (
                 <span
                   onClick={() => {

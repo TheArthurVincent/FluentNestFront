@@ -175,7 +175,7 @@ export const menuItems: MenuItem[] = [
   {
     showInBottomBar: !!studentId,
     justBottom: false,
-    label: "Aulas",
+    label: "Aulas Passadas",
     orderSideBar: 5,
     Icon: ScreencastIcon,
     isJustStudent: true,
