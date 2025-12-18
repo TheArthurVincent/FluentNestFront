@@ -470,9 +470,16 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           </div>
         </div>
         {/* Botão para abrir o modal de edição */}
-        {allowedToEdit && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
           <button
-            onClick={openModal}
+            // onClick={openModal}
             style={{
               padding: "8px 16px",
               backgroundColor: partnerColor(),
@@ -486,9 +493,28 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               fontWeight: 600,
             }}
           >
-            Editar informações
+            Reagendar evento
           </button>
-        )}
+          {allowedToEdit && (
+            <button
+              onClick={openModal}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: partnerColor(),
+                color: "#fff",
+                maxWidth: "fit-content",
+                border: "none",
+                marginLeft: "auto",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Editar informações
+            </button>
+          )}{" "}
+        </div>
       </div>
 
       {renderModal()}
