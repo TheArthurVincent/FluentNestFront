@@ -178,23 +178,16 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   const rescheduleEvent = async (
     id: string,
-    forced?: { date: string; time: string }
+    forced?: { date: string; time: string; idNew?: string }
   ) => {
     try {
-      setRescheduling(true);
-
-      const payload: any = {
-        date: forced?.date ?? newDate,
-        time: forced?.time ?? newTime,
-      };
-
       const response = await axios.put(
-        `${backDomain}/api/v1/eventmaininfo/${id}`,
-        payload,
+        `${backDomain}/api/v1/event-reschedule/${id}`,
+        { forced },
         { headers: headers as any }
       );
 
-      if (response) fetchEventData();
+      console.log(response.data);
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
     } finally {
@@ -589,6 +582,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                           await rescheduleEvent(evendId, {
                             date: selectedFreeEvent.date,
                             time: selectedFreeEvent.time,
+                            idNew: selectedFreeEvent._id,
                           });
                           setIsRescheduleOpen(false);
                         }}

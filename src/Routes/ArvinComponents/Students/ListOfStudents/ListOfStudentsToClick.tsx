@@ -23,36 +23,13 @@ export const newArvinTitleStyle = {
 };
 
 type StudentItem = {
+  classesToReplenish: number;
   id: string;
   name: string;
   lastname: string;
   email: string;
   picture: string;
   username: string;
-};
-
-type EventToday = {
-  event: {
-    _id: string;
-    studentID: string;
-    tutoringID?: string;
-    edited?: boolean;
-    duration?: number;
-    student?: string;
-    status?: string;
-    link?: string;
-    description?: string | null;
-    category?: string;
-    date: string; // "2025-11-20"
-    time: string; // "08:00"
-  };
-  student?: {
-    _id: string;
-    name: string;
-    lastname: string;
-    picture?: string;
-    email?: string;
-  };
 };
 
 export function ListOfStudentsToClick({
@@ -78,6 +55,7 @@ export function ListOfStudentsToClick({
         }
       );
 
+      console.log(response.data.listOfStudents || response.data || []);
       setStudents(response.data.listOfStudents || response.data || []);
     } catch (error) {
       console.error(error);
@@ -86,10 +64,120 @@ export function ListOfStudentsToClick({
       setLoading(false);
     }
   };
+  const fetchStudentsNoLoading = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+      const userId = user.id || user._id;
+      setID(userId || "");
+      const response = await axios.get(
+        `${backDomain}/api/v1/students-ids/${userId}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      setStudents(response.data.listOfStudents || []);
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    }
+  };
+  const [loadingButton, setLoadingButton] = useState(false);
+
+  const handleReplenishPlus = async (id: string) => {
+    setLoadingButton(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/handle-replenish-plus/${id}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      fetchStudentsNoLoading();
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    } finally {
+      setLoadingButton(false);
+    }
+  };
+  const handleReplenishMinus = async (id: string) => {
+    setLoadingButton(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/handle-replenish-minus/${id}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      fetchStudentsNoLoading();
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    } finally {
+      setLoadingButton(false);
+    }
+  };
+  const RESETRESCHEDULE = async () => {
+    const userId = JSON.parse(localStorage.getItem("loggedIn") || "{}").id;
+    setLoadingButton(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/handle-replenish-reset/${userId}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      fetchStudentsNoLoading();
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    } finally {
+      setLoadingButton(false);
+    }
+  };
+  const handleReplenishALLPlus = async () => {
+    setLoadingButton(true);
+    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const userId = user.id || user._id;
+    setID(userId || "");
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/handle-replenish-all-plus/${userId}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      fetchStudentsNoLoading();
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    } finally {
+      setLoadingButton(false);
+    }
+  };
+  const handleReplenishALLMinus = async () => {
+    setLoadingButton(true);
+    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const userId = user.id || user._id;
+    setID(userId || "");
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/handle-replenish-all-minus/${userId}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      fetchStudentsNoLoading();
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao encontrar alunos");
+    } finally {
+      setLoadingButton(false);
+    }
+  };
 
   useEffect(() => {
     fetchStudents();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ====== FILTRO DE BUSCA ======
@@ -150,48 +238,155 @@ export function ListOfStudentsToClick({
               outline: "none",
             }}
           />
-          <NewStudentModal id={ID} headers={actualHeaders} />
+          <div
+            style={{
+              justifySelf: "flex-end",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: 8,
+              marginLeft: "auto",
+              fontSize: 12,
+            }}
+          >
+            {" "}
+            <button
+              style={{
+                fontSize: 12,
+                borderRadius: 10,
+                backgroundColor: "#f0f0f0",
+                border: "none",
+              }}
+              disabled={loadingButton}
+              onClick={RESETRESCHEDULE}
+            >
+              Zerar reagendamentos
+            </button>
+            <div
+              style={{
+                fontSize: 12,
+                borderRadius: 10,
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              <button
+                style={{
+                  padding: "0 0.5rem",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  margin: "0 0.5rem",
+                }}
+                disabled={loadingButton}
+                onClick={handleReplenishALLMinus}
+              >
+                -
+              </button>
+              Reagendamentos
+              <button
+                style={{
+                  padding: "0 0.5rem",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  margin: "0 0.5rem",
+                }}
+                disabled={loadingButton}
+                onClick={handleReplenishALLPlus}
+              >
+                +
+              </button>
+            </div>
+            <NewStudentModal id={ID} headers={actualHeaders} />
+          </div>
         </div>
 
         {/* Lista de alunos (sem filtro por aula de hoje) */}
         {listToRender.map((st) => (
-          <Link
+          <div
             key={st.id}
-            to={`/students/${st.id}`}
             style={{
-              textDecoration: "none",
               color: "#222",
               background: "white",
               padding: "12px 16px",
               borderRadius: 12,
               border: "1px solid #e4e6ea",
-              display: myId !== st.id ? "flex" : "none",
+              display: myId !== st.id ? "grid" : "none",
               alignItems: "center",
+              gridTemplateColumns: isDesktop ? "2fr 1fr" : "1fr",
+              justifyContent: "space-between",
               gap: 12,
               transition: "0.2s",
               fontFamily: "Plus Jakarta Sans",
             }}
           >
-            <img
-              src={
-                st.picture ||
-                "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-              }
-              alt={st.name}
+            <Link
+              to={`/students/${st.id}`}
               style={{
-                width: 42,
-                height: 42,
-                borderRadius: "50%",
-                objectFit: "cover",
+                display: "flex",
+                background: "#f9f9f9",
+                padding: 8,
+                borderRadius: 8,
+                color: "inherit",
+                textDecoration: "none",
+                alignItems: "center",
+                gap: 12,
               }}
-            />
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 15, fontWeight: 600 }}>
-                {st.name} {st.lastname}
-              </span>
-              <span style={{ fontSize: 12, opacity: 0.7 }}>{st.email}</span>
+            >
+              <img
+                src={
+                  st.picture ||
+                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                }
+                alt={st.name}
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{ fontSize: 15, fontWeight: 600 }}>
+                  {st.name} {st.lastname}
+                </span>
+                <span style={{ fontSize: 12, opacity: 0.7 }}>{st.email}</span>
+              </div>
+            </Link>
+            <div
+              style={{
+                justifySelf: "flex-end",
+                marginLeft: "auto",
+                fontSize: 12,
+              }}
+            >
+              {st.classesToReplenish !== 0 && (
+                <button
+                  style={{
+                    padding: "0 0.5rem",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    margin: "0 0.5rem",
+                  }}
+                  disabled={loadingButton}
+                  onClick={() => handleReplenishMinus(st.id)}
+                >
+                  -
+                </button>
+              )}
+              Reagendamentos: {st.classesToReplenish}
+              <button
+                disabled={loadingButton}
+                style={{
+                  padding: "0 0.5rem",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  margin: "0 0.5rem",
+                }}
+                onClick={() => handleReplenishPlus(st.id)}
+              >
+                +
+              </button>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </>
