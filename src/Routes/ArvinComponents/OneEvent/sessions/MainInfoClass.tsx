@@ -187,7 +187,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         { headers: headers as any }
       );
 
-      console.log(response.data);
+      window.location.reload();
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
     } finally {
@@ -195,6 +195,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     }
   };
 
+  const [allowedToReschedule, setAllowedToReschedule] = useState(false);
   const fetchEventsFree = async () => {
     const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "false");
     if (!loggedIn) return;
@@ -208,6 +209,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       );
 
       const arr = (response.data?.events || []) as FreeEventItem[];
+      setAllowedToReschedule(response.data?.allowedToReschedule || false);
       setEventsFreeArray(arr);
     } catch (error) {
       console.error(error);
@@ -478,155 +480,165 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               </button>
             </div>
           )}
-
-          <div style={{ padding: 12, display: "grid", gap: 12 }}>
-            {rescheduleTab === "fixed" ? (
-              <>
-                <div style={{ fontSize: 13, color: "#334155" }}>
-                  Selecione um horário disponível abaixo.
-                </div>
-
-                {loadingEventsFree ? (
-                  <div
-                    style={{
-                      border: "1px dashed #e2e8f0",
-                      borderRadius: 10,
-                      padding: 14,
-                      color: "#64748b",
-                      fontSize: 13,
-                    }}
-                  >
-                    Carregando horários...
+          {!allowedToReschedule ? (
+            <div
+              style={{
+                padding: 12,
+              }}
+            >
+              Você excedeu o limite de reagendamentos.
+            </div>
+          ) : (
+            <div style={{ padding: 12, display: "grid", gap: 12 }}>
+              {rescheduleTab === "fixed" ? (
+                <>
+                  <div style={{ fontSize: 13, color: "#334155" }}>
+                    Selecione um horário disponível abaixo.
                   </div>
-                ) : eventsFreeArray.length === 0 ? (
-                  <div
-                    style={{
-                      border: "1px dashed #e2e8f0",
-                      borderRadius: 10,
-                      padding: 14,
-                      color: "#64748b",
-                      fontSize: 13,
-                    }}
-                  >
-                    Nenhum horário disponível encontrado.
-                  </div>
-                ) : (
-                  <div style={{ display: "grid", gap: 10 }}>
-                    {eventsFreeArray.map((it) => (
-                      <FreeEventItemButton
-                        key={it._id}
-                        item={it}
-                        selected={selectedFreeEvent?._id === it._id}
-                        onClick={() => setSelectedFreeEvent(it)}
-                      />
-                    ))}
-                  </div>
-                )}
 
-                {/* confirmação irreversível */}
-                {selectedFreeEvent && (
-                  <div
-                    style={{
-                      marginTop: 6,
-                      border: "1px solid rgba(239,68,68,0.25)",
-                      background: "rgba(239,68,68,0.06)",
-                      borderRadius: 10,
-                      padding: 12,
-                      display: "grid",
-                      gap: 10,
-                    }}
-                  >
+                  {loadingEventsFree ? (
                     <div
                       style={{
+                        border: "1px dashed #e2e8f0",
+                        borderRadius: 10,
+                        padding: 14,
+                        color: "#64748b",
                         fontSize: 13,
-                        fontWeight: 800,
-                        color: "#7f1d1d",
                       }}
                     >
-                      Reagendar para esse horário (esta ação não pode ser
-                      desfeita)
+                      Carregando horários...
                     </div>
-                    <div style={{ fontSize: 13, color: "#0f172a" }}>
-                      <b>{selectedFreeEvent.date}</b> às{" "}
-                      <b>{selectedFreeEvent.time}</b>
-                    </div>
+                  ) : eventsFreeArray.length === 0 ? (
                     <div
                       style={{
-                        display: "flex",
-                        gap: 8,
-                        marginTop: 6,
-                        marginLeft: "auto",
+                        border: "1px dashed #e2e8f0",
+                        borderRadius: 10,
+                        padding: 14,
+                        color: "#64748b",
+                        fontSize: 13,
                       }}
                     >
-                      <button
-                        type="button"
-                        disabled={rescheduling}
-                        onClick={async () => {
-                          setSelectedFreeEvent(null);
-                        }}
-                        style={{
-                          ...primaryBtnStyle,
-                          border: "1px solid #eee",
-                          color: "#555",
-                          background: "#fff",
-                          opacity: rescheduling ? 0.7 : 1,
-                        }}
-                      >
-                        Cancelar
-                      </button>{" "}
-                      <button
-                        type="button"
-                        disabled={rescheduling}
-                        onClick={async () => {
-                          // ação irreversível: reage na hora
-                          await rescheduleEvent(evendId, {
-                            date: selectedFreeEvent.date,
-                            time: selectedFreeEvent.time,
-                            idNew: selectedFreeEvent._id,
-                          });
-                          setIsRescheduleOpen(false);
-                        }}
-                        style={{
-                          ...primaryBtnStyle,
-                          background: partnerColor(),
-                          opacity: rescheduling ? 0.7 : 1,
-                        }}
-                      >
-                        {rescheduling ? "Reagendando..." : "REAGENDAR AGORA"}
-                      </button>
+                      Nenhum horário disponível encontrado.
                     </div>
+                  ) : (
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {eventsFreeArray.map((it) => (
+                        <FreeEventItemButton
+                          key={it._id}
+                          item={it}
+                          selected={selectedFreeEvent?._id === it._id}
+                          onClick={() => setSelectedFreeEvent(it)}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* confirmação irreversível */}
+                  {selectedFreeEvent && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        border: "1px solid rgba(239,68,68,0.25)",
+                        background: "rgba(239,68,68,0.06)",
+                        borderRadius: 10,
+                        padding: 12,
+                        display: "grid",
+                        gap: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 800,
+                          color: "#7f1d1d",
+                        }}
+                      >
+                        Reagendar para esse horário (esta ação não pode ser
+                        desfeita)
+                      </div>
+                      <div style={{ fontSize: 13, color: "#0f172a" }}>
+                        <b>{selectedFreeEvent.date}</b> às{" "}
+                        <b>{selectedFreeEvent.time}</b>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          marginTop: 6,
+                          marginLeft: "auto",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          disabled={rescheduling}
+                          onClick={async () => {
+                            setSelectedFreeEvent(null);
+                          }}
+                          style={{
+                            ...primaryBtnStyle,
+                            border: "1px solid #eee",
+                            color: "#555",
+                            background: "#fff",
+                            opacity: rescheduling ? 0.7 : 1,
+                          }}
+                        >
+                          Cancelar
+                        </button>{" "}
+                        <button
+                          type="button"
+                          disabled={rescheduling}
+                          onClick={async () => {
+                            // ação irreversível: reage na hora
+                            await rescheduleEvent(evendId, {
+                              date: selectedFreeEvent.date,
+                              time: selectedFreeEvent.time,
+                              idNew: selectedFreeEvent._id,
+                            });
+                            setIsRescheduleOpen(false);
+                          }}
+                          style={{
+                            ...primaryBtnStyle,
+                            background: partnerColor(),
+                            opacity: rescheduling ? 0.7 : 1,
+                          }}
+                        >
+                          {rescheduling ? "Reagendando..." : "REAGENDAR AGORA"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <label style={{ fontSize: 12, color: "#334155" }}>
+                      Data
+                    </label>
+                    <input
+                      type="date"
+                      disabled={rescheduling}
+                      value={newDate}
+                      onChange={(e) => setNewDate(e.target.value)}
+                      style={inputStyle}
+                    />
                   </div>
-                )}
-              </>
-            ) : (
-              <>
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>Data</label>
-                  <input
-                    type="date"
-                    disabled={rescheduling}
-                    value={newDate}
-                    onChange={(e) => setNewDate(e.target.value)}
-                    style={inputStyle}
-                  />
-                </div>
 
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Horário
-                  </label>
-                  <input
-                    type="time"
-                    disabled={rescheduling}
-                    value={newTime}
-                    onChange={(e) => setNewTime(e.target.value)}
-                    style={inputStyle}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <label style={{ fontSize: 12, color: "#334155" }}>
+                      Horário
+                    </label>
+                    <input
+                      type="time"
+                      disabled={rescheduling}
+                      value={newTime}
+                      onChange={(e) => setNewTime(e.target.value)}
+                      style={inputStyle}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          )}
           {/* Footer com Salvar (não faz nada) e Cancelar */}
           <div
             style={{
@@ -780,7 +792,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   fontWeight: 600,
                 }}
               >
-                Reagendar evento
+                Reagendar
               </button>
             )}
 
