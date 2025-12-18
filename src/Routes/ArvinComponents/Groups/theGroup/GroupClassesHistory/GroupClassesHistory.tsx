@@ -57,6 +57,9 @@ interface GroupEventsResponse {
   total?: number;
 }
 
+type ClassStatus = "realizada" | "desmarcada" | "reagendada";
+type StatusFilter = ClassStatus | "all";
+
 export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   headers,
   isDesktop,
@@ -71,8 +74,11 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string>("");
 
-  // 🔍 termo de busca por descrição
+  // 🔍 busca por descrição
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // ✅ filtro por status (padrão: realizada)
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
 
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!groupId) return;
@@ -83,20 +89,15 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
     try {
       const response = await axios.get<GroupEventsResponse>(
         `${backDomain}/api/v1/grouphistory/${groupId}`,
-        {
-          headers: headers as any,
-        }
+        { headers: headers as any }
       );
 
       setGroupName(response.data.groupName || "");
-      const list = response.data.classesGroup || [];
-      setEventsList(list);
+      setEventsList(response.data.classesGroup || []);
       setCurrentPage(0);
       setOpenEventId(null);
 
-      setTimeout(() => {
-        setLoadingEventsList(false);
-      }, 100);
+      setTimeout(() => setLoadingEventsList(false), 100);
     } catch (error) {
       notifyAlert("Erro ao buscar histórico de aulas da turma");
       console.log(error, "Erro ao buscar histórico de aulas da turma");
@@ -123,19 +124,48 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
     }
   };
 
-  // 🔍 eventos filtrados pela descrição
-  const filteredEvents = useMemo(() => {
-    if (!searchTerm.trim()) return eventsList;
-    const term = searchTerm.toLowerCase();
-    return eventsList.filter((e) =>
-      (e.description || "").toLowerCase().includes(term)
-    );
-  }, [eventsList, searchTerm]);
+  const normalizeStatus = (raw?: unknown): string => {
+    return String(raw || "")
+      .trim()
+      .toLowerCase();
+  };
 
-  // quando mudar o filtro, volta pra página 0
+  // contador por status (baseado na lista completa)
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      realizada: 0,
+      desmarcada: 0,
+      reagendada: 0,
+    };
+    for (const e of eventsList) {
+      const s = normalizeStatus(e.status);
+      if (counts[s] !== undefined) counts[s] += 1;
+    }
+    return counts;
+  }, [eventsList]);
+
+  // ✅ filtro: status + descrição
+  const filteredEvents = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const sf = statusFilter;
+
+    return eventsList.filter((e) => {
+      const eStatus = normalizeStatus(e.status);
+
+      const statusOk = sf === "all" ? true : eStatus === normalizeStatus(sf);
+
+      const searchOk = !term
+        ? true
+        : (e.description || "").toLowerCase().includes(term);
+
+      return statusOk && searchOk;
+    });
+  }, [eventsList, searchTerm, statusFilter]);
+
+  // quando mudar busca OU filtro de status, volta pra página 0
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchTerm]);
+  }, [searchTerm, statusFilter]);
 
   const totalEvents = filteredEvents.length;
   const totalPages = totalEvents === 0 ? 1 : Math.ceil(totalEvents / pageSize);
@@ -164,11 +194,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   };
 
   return (
-    <div
-      style={{
-        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
-      }}
-    >
+    <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
       {isDesktop && (
         <div
           style={{
@@ -194,12 +220,11 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
         </div>
       )}
 
-      {/* CARD PRINCIPAL USANDO cardBase */}
       <div
         style={{
           ...cardBase,
           fontFamily: "Plus Jakarta Sans",
-          fontWeight: 600,
+
           margin: !isDesktop ? 12 : 0,
         }}
       >
@@ -208,7 +233,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           style={{
             marginTop: 14,
             display: "block",
-            fontWeight: 700,
+
             textAlign: "right",
             color: partnerColor(),
             textDecoration: "none",
@@ -218,16 +243,12 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           }}
         >
           Ver turma
-          <i
-            style={{
-              marginLeft: 8,
-            }}
-            className="fa fa-chevron-right"
-          />
+          <i style={{ marginLeft: 8 }} className="fa fa-chevron-right" />
         </a>
+
         <br />
 
-        {/* Controles de paginação + filtro */}
+        {/* Controles: busca + status + pageSize */}
         <div
           style={{
             display: "flex",
@@ -235,7 +256,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
             justifyContent: "space-between",
             alignItems: isDesktop ? "center" : "flex-start",
             marginBottom: 10,
-            gap: 8,
+            gap: 10,
           }}
         >
           <div
@@ -246,18 +267,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               flex: 1,
             }}
           >
-            <span
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                color: "#4B5563",
-              }}
-            >
-              Aulas exibidas: {paginatedEvents.length}{" "}
-              {searchTerm && `(filtrado de ${totalEvents})`}
-            </span>
-
-            {/* 🔍 Input de busca por descrição */}
             <input
               type="text"
               value={searchTerm}
@@ -265,7 +274,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               placeholder="Buscar por descrição da aula..."
               style={{
                 fontFamily: "Plus Jakarta Sans",
-                fontWeight: 400,
                 fontSize: 14,
                 borderRadius: 8,
                 border: "1px solid #E5E7EB",
@@ -279,45 +287,84 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           <div
             style={{
               display: "flex",
+              flexWrap: "wrap",
               alignItems: "center",
-              gap: 8,
+              gap: 10,
             }}
           >
-            <span
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                color: "#4B5563",
-              }}
-            >
-              Mostrar:
-            </span>
-            <select
-              value={pageSize}
-              onChange={(e) => handleChangePageSize(Number(e.target.value))}
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                borderRadius: 8,
-                border: "1px solid #E5E7EB",
-                padding: "4px 8px",
-                backgroundColor: "#F9FAFB",
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
+            {/* ✅ filtro status */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  color: "#4B5563",
+                }}
+              >
+                Status:
+              </span>
+
+              <select
+                value={statusFilter}
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as StatusFilter)
+                }
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  borderRadius: 8,
+                  border: "1px solid #E5E7EB",
+                  padding: "6px 10px",
+                  backgroundColor: "#F9FAFB",
+                }}
+              >
+                <option value="realizada">
+                  Realizada ({statusCounts.realizada})
+                </option>
+                <option value="desmarcada">
+                  Desmarcada ({statusCounts.desmarcada})
+                </option>
+                <option value="reagendada">
+                  Reagendada ({statusCounts.reagendada})
+                </option>
+                <option value="all">Todas</option>
+              </select>
+            </div>
+
+            {/* pageSize */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  color: "#4B5563",
+                }}
+              >
+                Mostrar:
+              </span>
+
+              <select
+                value={pageSize}
+                onChange={(e) => handleChangePageSize(Number(e.target.value))}
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  borderRadius: 8,
+                  border: "1px solid #E5E7EB",
+                  padding: "4px 8px",
+                  backgroundColor: "#F9FAFB",
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Lista de eventos com acordeon */}
         {loadingEventsList && (
           <p
             style={{
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
-              fontWeight: 400,
+
               color: "#4B5563",
             }}
           >
@@ -330,7 +377,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
             style={{
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
-              fontWeight: 400,
+
               color: "#4B5563",
             }}
           >
@@ -341,6 +388,14 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
             const isOpen = openEventId === event._id;
+            const s = normalizeStatus(event.status);
+
+            const statusBg =
+              s !== "desmarcada"
+                ? `${partnerColor()}20`
+                : "rgba(255, 221, 221, 0.41)";
+            const statusColor =
+              s !== "desmarcada" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
 
             return (
               <div
@@ -352,7 +407,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   marginBottom: 4,
                 }}
               >
-                {/* Cabeçalho do acordeon */}
                 <button
                   type="button"
                   onClick={() => toggleAccordion(event._id)}
@@ -365,27 +419,21 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: 2,
-                    }}
-                  >
+                  <div style={{ display: "grid", gap: 2 }}>
                     <span
                       style={{
                         fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
                         color: "#111827",
                       }}
                     >
                       {event?.lessonTitle ? event.lessonTitle : "Aula de Grupo"}{" "}
-                      {formatDate(event.date)} — {event.time || "--:--"}
+                      - {formatDate(event.date)} — {event.time || "--:--"}
                     </span>
+
                     {event.category && (
                       <span
                         style={{
                           fontFamily: "Plus Jakarta Sans",
-                          fontWeight: 500,
                           fontSize: 12,
                           color: "#6B7280",
                         }}
@@ -396,17 +444,12 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   </div>
 
                   <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
                   >
                     {typeof event.duration === "number" && (
                       <span
                         style={{
                           fontFamily: "Plus Jakarta Sans",
-                          fontWeight: 500,
                           color: "#4B5563",
                         }}
                       >
@@ -417,18 +460,13 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                     <span
                       style={{
                         ...pillStatus,
-                        backgroundColor:
-                          event.status !== "desmarcado"
-                            ? `${partnerColor()}20`
-                            : "rgba(255, 221, 221, 0.41)",
-                        color:
-                          event.status !== "desmarcado"
-                            ? partnerColor()
-                            : "rgba(220, 38, 38, 0.8)",
+                        backgroundColor: statusBg,
+                        color: statusColor,
                       }}
                     >
                       {event.status}
                     </span>
+
                     <span
                       style={{
                         transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
@@ -440,7 +478,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   </div>
                 </button>
 
-                {/* Conteúdo do acordeon */}
                 {isOpen && (
                   <div
                     style={{
@@ -450,7 +487,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                       display: "grid",
                       gap: 10,
                       fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 400,
                       color: "#111827",
                     }}
                   >
@@ -463,21 +499,15 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                         gap: 8,
                       }}
                     >
-                      <p
-                        style={{
-                          margin: 0,
-                          color: "#4B5563",
-                          flex: 1,
-                        }}
-                      >
+                      <p style={{ margin: 0, color: "#4B5563", flex: 1 }}>
                         <strong>Descrição: </strong>
                         {event.description ? event.description : "-"}
                       </p>
+
                       <a
                         href={`/my-calendar/event/${event._id}`}
                         style={{
                           display: "block",
-                          fontWeight: 700,
                           textAlign: "right",
                           color: partnerColor(),
                           textDecoration: "none",
@@ -489,9 +519,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                       >
                         Ver Evento
                         <i
-                          style={{
-                            marginLeft: 8,
-                          }}
+                          style={{ marginLeft: 8 }}
                           className="fa fa-chevron-right"
                         />
                       </a>
@@ -516,7 +544,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
             );
           })}
 
-        {/* Paginação (anterior / próxima) */}
         {totalEvents > 0 && (
           <div
             style={{
@@ -525,13 +552,14 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               justifyContent: "space-between",
               alignItems: "center",
               fontFamily: "Plus Jakarta Sans",
-              fontWeight: 400,
+
               color: "#4B5563",
             }}
           >
             <span>
               Página {currentPage + 1} de {totalPages}
             </span>
+
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 type="button"
@@ -547,6 +575,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               >
                 Anterior
               </button>
+
               <button
                 type="button"
                 onClick={handleNextPage}

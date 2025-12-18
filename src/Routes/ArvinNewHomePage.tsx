@@ -55,7 +55,6 @@ import StudentPage from "./ArvinComponents/Students/TheStudent/TheStudent";
 import Event from "./ArvinComponents/OneEvent/OneEvent";
 import StudentClassesHistory from "./ArvinComponents/Students/TheStudent/StudentsClasses/StudentClassesHistory";
 import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
-import SubscriptionExpired from "./SubscriptionExpired";
 import GroupPage from "./ArvinComponents/Groups/theGroup/TheGroup";
 import GroupClassesHistory from "./ArvinComponents/Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
 import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
