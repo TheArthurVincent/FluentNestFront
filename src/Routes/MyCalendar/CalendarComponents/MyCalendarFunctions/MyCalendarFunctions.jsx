@@ -226,7 +226,7 @@ export const categoryList = [
     forStudent: true,
   },
   {
-    text: "Aula De Tutoria",
+    text: "Aula Particular Individual",
     value: "Tutoring",
     forStudent: true,
   },

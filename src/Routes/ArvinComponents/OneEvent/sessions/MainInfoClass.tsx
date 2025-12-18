@@ -238,12 +238,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     if (!rescheduling) setIsRescheduleOpen(false);
   };
 
-  const handleRescheduleSave = async () => {
-    // tab livre (mantém o comportamento anterior)
-    await rescheduleEvent(evendId);
-    setIsRescheduleOpen(false);
-  };
-
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -701,7 +695,22 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         >
           <span>Informações do Evento</span>
         </div>
-
+        {event.rescheduledDescription && event.rescheduled && (
+          <div
+            style={{
+              display: "grid",
+              background: `linear-gradient(to right, ${partnerColor()}bb, ${partnerColor()}ff)`,
+              color: "#fff",
+              textAlign: "center",
+              padding: 8,
+              borderRadius: 6,
+            }}
+          >
+            <span style={{ fontWeight: 600, fontSize: 14 }}>
+              {event.rescheduledDescription}
+            </span>
+          </div>
+        )}
         {event.link && (
           <a
             href={event.link}

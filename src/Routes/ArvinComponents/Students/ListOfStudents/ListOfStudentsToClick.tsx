@@ -254,7 +254,7 @@ export function ListOfStudentsToClick({
               style={{
                 fontSize: 12,
                 borderRadius: 10,
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#f5f5f5",
                 border: "none",
               }}
               disabled={loadingButton}
@@ -266,7 +266,7 @@ export function ListOfStudentsToClick({
               style={{
                 fontSize: 12,
                 borderRadius: 10,
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#f5f5f5",
               }}
             >
               <button
@@ -306,9 +306,9 @@ export function ListOfStudentsToClick({
             style={{
               color: "#222",
               background: "white",
-              padding: "12px 16px",
+              padding: "8px",
               borderRadius: 12,
-              border: "1px solid #e4e6ea",
+              border: "1px solid #f5f5f5",
               display: myId !== st.id ? "grid" : "none",
               alignItems: "center",
               gridTemplateColumns: isDesktop ? "2fr 1fr" : "1fr",
@@ -322,7 +322,7 @@ export function ListOfStudentsToClick({
               to={`/students/${st.id}`}
               style={{
                 display: "flex",
-                background: "#f9f9f9",
+                background: "linear-gradient(to right, #f5f5f5, #ffffff)",
                 padding: 8,
                 borderRadius: 8,
                 color: "inherit",
