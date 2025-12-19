@@ -479,7 +479,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             Reagendar aula
           </div>
 
-          {allowedToEdit && (
+          {/* {allowedToEdit && (
             <div style={tabsRowStyle}>
               <button
                 type="button"
@@ -498,7 +498,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 Horário livre
               </button>
             </div>
-          )}
+          )} */}
           {!allowedToReschedule ? (
             <div
               style={{
