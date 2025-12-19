@@ -72,7 +72,10 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
       setEventData(res.data.event);
-      setReplicateLastEvent(res.data.event.replicateLastEvent);
+      setReplicateLastEvent(
+        res.data.event.replicateLastEvent &&
+          res.data.event.category !== "Established Group Class"
+      );
     } catch (err) {
       console.error("Error fetching event data", err);
     }
