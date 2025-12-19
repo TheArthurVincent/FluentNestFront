@@ -21,8 +21,12 @@ type StudentClassesHistoryProps = HeadersProps & {
 interface EventFromApi {
   _id: string;
   board?: string;
-  rescheduled?: boolean;
+
+  // ✅ campos de reagendamento (podem variar no backend)
+  replenish?: boolean; // <- o que você quer filtrar
+  rescheduled?: boolean; // fallback (se existir)
   rescheduledDescription?: string;
+
   category?: string;
   createdAt?: string;
   date: string;
@@ -98,6 +102,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   // ✅ filtro por status (padrão: realizada)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
 
+  // ✅ filtro extra: todas vs só replenish=true
+  const [onlyReplenish, setOnlyReplenish] = useState<boolean>(false);
+
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!studentId) return;
 
@@ -113,7 +120,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
       setStudentName(response.data.studentName || "");
       setEventsList(response.data.events || []);
-      console.log(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
       setOpenEventId(null);
@@ -129,6 +135,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   useEffect(() => {
     if (!studentId) return;
     handleSeeClassesHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
   const formatDate = (dateStr?: string) => {
@@ -148,9 +155,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     const s = String(raw || "")
       .trim()
       .toLowerCase();
-    if (!s) return "";
-    // se vier "Realizada", "REALIZADA", etc.
-    return s;
+    return s || "";
   };
 
   const getHomeworkHtml = (hw: HomeworkFromApi): string => {
@@ -162,7 +167,20 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     );
   };
 
-  // 🔎 aplica: status + busca
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      realizada: 0,
+      desmarcado: 0,
+      reagendada: 0,
+    };
+    for (const e of eventsList) {
+      const s = normalizeStatus(e.status);
+      if (counts[s] !== undefined) counts[s] += 1;
+    }
+    return counts;
+  }, [eventsList]);
+
+  // 🔎 aplica: status + busca + replenish
   const filteredEvents = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     const status = statusFilter;
@@ -177,14 +195,19 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         ? true
         : (e.description || "").toLowerCase().includes(term);
 
-      return statusOk && searchOk;
-    });
-  }, [eventsList, searchTerm, statusFilter]);
+      // ✅ filtro de reagendadas:
+      // prioridade no .replenish, com fallback no .rescheduled
+      const replenishValue = Boolean(e.replenish) || Boolean(e.rescheduled);
+      const replenishOk = onlyReplenish ? replenishValue : true;
 
-  // quando mudar busca OU filtro, volta pra página 0
+      return statusOk && searchOk && replenishOk;
+    });
+  }, [eventsList, searchTerm, statusFilter, onlyReplenish]);
+
+  // quando mudar busca OU filtros, volta pra página 0
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, onlyReplenish]);
 
   const totalEvents = filteredEvents.length;
   const totalPages = totalEvents === 0 ? 1 : Math.ceil(totalEvents / pageSize);
@@ -212,19 +235,48 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     setOpenEventId((prev) => (prev === id ? null : id));
   };
 
-  // (opcional) para exibir um contador por status, se quiser depois
-  const statusCounts = useMemo(() => {
-    const counts: Record<string, number> = {
-      realizada: 0,
-      desmarcado: 0,
-      reagendada: 0,
-    };
-    for (const e of eventsList) {
-      const s = normalizeStatus(e.status);
-      if (counts[s] !== undefined) counts[s] += 1;
-    }
-    return counts;
-  }, [eventsList]);
+  const SwitchReplenish = ({
+    value,
+    onChange,
+  }: {
+    value: boolean;
+    onChange: (v: boolean) => void;
+  }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}>
+        Reagendadas:
+      </span>
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        style={{
+          width: 44,
+          height: 24,
+          borderRadius: 999,
+          border: `1px solid ${value ? partnerColor() : "#E5E7EB"}`,
+          background: value ? `${partnerColor()}20` : "#F3F4F6",
+          position: "relative",
+          cursor: "pointer",
+          padding: 0,
+        }}
+        aria-pressed={value}
+        aria-label="Mostrar apenas aulas reagendadas"
+      >
+        <span
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 999,
+            background: value ? partnerColor() : "#9CA3AF",
+            position: "absolute",
+            top: 2,
+            left: value ? 22 : 2,
+            transition: "left 180ms ease",
+          }}
+        />
+      </button>
+    </div>
+  );
 
   return (
     <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
@@ -281,7 +333,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
         <br />
 
-        {/* Controles: busca + filtro status + pageSize */}
+        {/* Controles: busca + filtros + pageSize */}
         <div
           style={{
             display: "flex",
@@ -298,6 +350,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               flexDirection: "column",
               gap: 6,
               flex: 1,
+              maxWidth: 300,
             }}
           >
             <input
@@ -313,6 +366,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 padding: "6px 10px",
                 backgroundColor: "#F9FAFB",
                 outline: "none",
+                maxWidth: 300,
               }}
             />
           </div>
@@ -325,17 +379,14 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               gap: 10,
             }}
           >
+            {/* ✅ switch replenish */}
+            <SwitchReplenish
+              value={onlyReplenish}
+              onChange={setOnlyReplenish}
+            />
+
             {/* ✅ filtro status */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  fontFamily: "Plus Jakarta Sans",
-                  color: "#4B5563",
-                }}
-              >
-                Status:
-              </span>
-
               <select
                 value={statusFilter}
                 onChange={(e) =>
@@ -364,20 +415,12 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
             {/* pageSize */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  fontFamily: "Plus Jakarta Sans",
-                  color: "#4B5563",
-                }}
-              >
-                Mostrar:
-              </span>
-
               <select
                 value={pageSize}
                 onChange={(e) => handleChangePageSize(Number(e.target.value))}
                 style={{
                   fontFamily: "Plus Jakarta Sans",
+                  maxWidth: 10,
                   borderRadius: 8,
                   border: "1px solid #E5E7EB",
                   padding: "6px 10px",
@@ -498,6 +541,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         {event.duration} min
                       </span>
                     )}
+
                     <span
                       style={{
                         ...pillStatus,
@@ -509,6 +553,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     </span>
                   </div>
                 </button>
+
                 {event.rescheduled && event.rescheduledDescription && (
                   <span
                     style={{
@@ -522,10 +567,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       color: "#4B5563",
                     }}
                   >
-                    {event.rescheduledDescription &&
-                      String(event.rescheduledDescription)}
+                    {String(event.rescheduledDescription)}
                   </span>
                 )}
+
                 {isOpen && (
                   <div
                     style={{
