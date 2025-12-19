@@ -420,15 +420,40 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         textAlign: "left",
         padding: "10px 12px",
         borderRadius: 8,
+        color: "#0f172a",
+        display:
+          new Date(item.date + "T" + (item.time || "00:00")) < new Date()
+            ? "none"
+            : "block",
         border: `1px solid ${selected ? partnerColor() : "#e2e8f0"}`,
         background: selected ? "rgba(84,191,8,0.12)" : "#fff",
         cursor: "pointer",
         fontSize: 13,
         fontWeight: selected ? 700 : 500,
-        color: "#0f172a",
       }}
     >
-      {item.date} • {item.time}
+      {(() => {
+        // item.date = "yyyy-mm-dd"
+        const [y, m, d] = item.date.slice(0, 10).split("-").map(Number);
+        const [hh, mm] = (item.time || "00:00").split(":").map(Number);
+
+        // Data local (sem UTC shift)
+        const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
+
+        const dateWithWeekday = dt.toLocaleDateString("pt-BR", {
+          weekday: "short",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+
+        const timeBR = dt.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        return `${dateWithWeekday} • ${timeBR}`;
+      })()}
     </button>
   );
 
@@ -515,7 +540,15 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       Nenhum horário disponível encontrado.
                     </div>
                   ) : (
-                    <div style={{ display: "grid", gap: 10 }}>
+                    <div
+                      style={{
+                        display: "grid",
+                        gap: 10,
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        paddingRight: 4,
+                      }}
+                    >
                       {eventsFreeArray.map((it) => (
                         <FreeEventItemButton
                           key={it._id}

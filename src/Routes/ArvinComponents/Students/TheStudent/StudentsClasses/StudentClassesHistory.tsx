@@ -21,6 +21,8 @@ type StudentClassesHistoryProps = HeadersProps & {
 interface EventFromApi {
   _id: string;
   board?: string;
+  rescheduled?: boolean;
+  rescheduledDescription?: string;
   category?: string;
   createdAt?: string;
   date: string;
@@ -111,6 +113,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
       setStudentName(response.data.studentName || "");
       setEventsList(response.data.events || []);
+      console.log(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
       setOpenEventId(null);
@@ -495,7 +498,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         {event.duration} min
                       </span>
                     )}
-
                     <span
                       style={{
                         ...pillStatus,
@@ -507,7 +509,23 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     </span>
                   </div>
                 </button>
-
+                {event.rescheduled && event.rescheduledDescription && (
+                  <span
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontSize: 12,
+                      backgroundColor: "#FEF3F2",
+                      padding: "4px 8px",
+                      borderRadius: 6,
+                      display: "inline-block",
+                      marginTop: 12,
+                      color: "#4B5563",
+                    }}
+                  >
+                    {event.rescheduledDescription &&
+                      String(event.rescheduledDescription)}
+                  </span>
+                )}
                 {isOpen && (
                   <div
                     style={{
