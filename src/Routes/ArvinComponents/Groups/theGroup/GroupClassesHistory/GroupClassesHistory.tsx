@@ -1,11 +1,15 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { HeadersProps } from "../../../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../../Styles/Styles";
-import { getEmbedUrl } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
+import {
+  categoryList,
+  getEmbedUrl,
+} from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
 import { newArvinTitleStyle } from "../../Groups";
 import {
@@ -37,6 +41,8 @@ interface EventFromApi {
   lessonTitle?: string;
   link?: string;
   notificationSent?: boolean;
+  rescheduled?: boolean;
+  rescheduledDescription?: string;
   showToAny?: boolean;
   status: string;
   student?: string;
@@ -60,6 +66,125 @@ interface GroupEventsResponse {
 type ClassStatus = "realizada" | "desmarcada" | "reagendada";
 type StatusFilter = ClassStatus | "all";
 
+/* ---------------------------
+  Modal (Portal no body)
+--------------------------- */
+function useLockBodyScroll(locked: boolean) {
+  useEffect(() => {
+    if (!locked) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [locked]);
+}
+
+function ModalInBody({
+  open,
+  title,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  title?: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
+  useLockBodyScroll(open);
+
+  if (!open) return null;
+
+  return ReactDOM.createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title || "Modal"}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(17, 24, 39, 0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        zIndex: 9999,
+        fontFamily: "Plus Jakarta Sans",
+      }}
+    >
+      <div
+        onMouseDown={(e) => e.stopPropagation()}
+        style={{
+          width: "min(920px, 100%)",
+          borderRadius: 16,
+          background: "#FFFFFF",
+          border: "1px solid #E5E7EB",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid #E5E7EB",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#111827",
+              lineHeight: "120%",
+            }}
+          >
+            {title || "Detalhes da aula"}
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            style={{
+              border: "1px solid #E5E7EB",
+              background: "#FFFFFF",
+              borderRadius: 999,
+              padding: "6px 10px",
+              cursor: "pointer",
+              fontWeight: 800,
+              color: "#111827",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <div style={{ padding: 16 }}>{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   headers,
   isDesktop,
@@ -71,7 +196,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
 
   const [pageSize, setPageSize] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [groupName, setGroupName] = useState<string>("");
 
   // 🔍 busca por descrição
@@ -79,6 +203,9 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
 
   // ✅ filtro por status (padrão: realizada)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
+
+  // ✅ modal
+  const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!groupId) return;
@@ -95,7 +222,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
       setGroupName(response.data.groupName || "");
       setEventsList(response.data.classesGroup || []);
       setCurrentPage(0);
-      setOpenEventId(null);
 
       setTimeout(() => setLoadingEventsList(false), 100);
     } catch (error) {
@@ -189,8 +315,26 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
   };
 
-  const toggleAccordion = (id: string) => {
-    setOpenEventId((prev) => (prev === id ? null : id));
+  const renderStatusPill = (event: EventFromApi) => {
+    const s = normalizeStatus(event.status);
+
+    const statusBg =
+      s !== "desmarcada" ? `${partnerColor()}20` : "rgba(255, 221, 221, 0.41)";
+
+    const statusColor =
+      s !== "desmarcada" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
+
+    return (
+      <span
+        style={{
+          ...pillStatus,
+          backgroundColor: statusBg,
+          color: statusColor,
+        }}
+      >
+        {event.status}
+      </span>
+    );
   };
 
   return (
@@ -224,7 +368,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
         style={{
           ...cardBase,
           fontFamily: "Plus Jakarta Sans",
-
           margin: !isDesktop ? 12 : 0,
         }}
       >
@@ -233,7 +376,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           style={{
             marginTop: 14,
             display: "block",
-
             textAlign: "right",
             color: partnerColor(),
             textDecoration: "none",
@@ -364,7 +506,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
             style={{
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
-
+              fontWeight: 400,
               color: "#4B5563",
             }}
           >
@@ -377,7 +519,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
             style={{
               marginTop: 12,
               fontFamily: "Plus Jakarta Sans",
-
+              fontWeight: 400,
               color: "#4B5563",
             }}
           >
@@ -385,18 +527,9 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           </p>
         )}
 
+        {/* ✅ Clique abre modal (no body) com vídeo + descrição + botão */}
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
-            const isOpen = openEventId === event._id;
-            const s = normalizeStatus(event.status);
-
-            const statusBg =
-              s !== "desmarcada"
-                ? `${partnerColor()}20`
-                : "rgba(255, 221, 221, 0.41)";
-            const statusColor =
-              s !== "desmarcada" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
-
             return (
               <div
                 key={event._id}
@@ -409,137 +542,118 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               >
                 <button
                   type="button"
-                  onClick={() => toggleAccordion(event._id)}
+                  onClick={() => setSelectedEvent(event)}
                   style={{
                     all: "unset",
                     width: "100%",
                     cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    display: "grid",
+                    gap: 10,
                   }}
+                  aria-label={`Abrir detalhes da aula: ${
+                    event.lessonTitle ?? "Aula Individual"
+                  }`}
                 >
-                  <div style={{ display: "grid", gap: 2 }}>
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        color: "#111827",
-                      }}
-                    >
-                      {event?.lessonTitle ? event.lessonTitle : "Aula de Grupo"}{" "}
-                      - {formatDate(event.date)} — {event.time || "--:--"}
-                    </span>
-
-                    {event.category && (
+                  <div style={{ display: "grid", gap: "0.75rem" }}>
+                    <div style={{ display: "grid", gap: 2 }}>
                       <span
                         style={{
-                          fontFamily: "Plus Jakarta Sans",
                           fontSize: 12,
-                          color: "#6B7280",
-                        }}
-                      >
-                        {event.category}
-                      </span>
-                    )}
-                  </div>
-
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
-                  >
-                    {typeof event.duration === "number" && (
-                      <span
-                        style={{
                           fontFamily: "Plus Jakarta Sans",
-                          color: "#4B5563",
+                          color: "#111827",
                         }}
                       >
-                        {event.duration} min
+                        {event?.lessonTitle
+                          ? event.lessonTitle
+                          : "Aula Individual"}{" "}
                       </span>
-                    )}
+                    </div>
 
-                    <span
-                      style={{
-                        ...pillStatus,
-                        backgroundColor: statusBg,
-                        color: statusColor,
-                      }}
-                    >
-                      {event.status}
-                    </span>
-
-                    <span
-                      style={{
-                        transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-                        transition: "transform 0.15s ease-out",
-                      }}
-                    >
-                      ▶
-                    </span>
-                  </div>
-                </button>
-
-                {isOpen && (
-                  <div
-                    style={{
-                      borderTop: "1px solid #E5E7EB",
-                      marginTop: 10,
-                      paddingTop: 10,
-                      display: "grid",
-                      gap: 10,
-                      fontFamily: "Plus Jakarta Sans",
-                      color: "#111827",
-                    }}
-                  >
                     <div
                       style={{
                         display: "flex",
-                        marginBottom: 8,
-                        justifyContent: "space-between",
                         alignItems: "center",
-                        gap: 8,
+                        justifyContent: "space-between",
+                        gap: 10,
+                        flexWrap: "wrap",
                       }}
                     >
-                      <p style={{ margin: 0, color: "#4B5563", flex: 1 }}>
-                        <strong>Descrição: </strong>
-                        {event.description ? event.description : "-"}
-                      </p>
-
-                      <a
-                        href={`/my-calendar/event/${event._id}`}
+                      <div
                         style={{
-                          display: "block",
-                          textAlign: "right",
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          textTransform: "uppercase",
+                          display: "flex",
                           alignItems: "center",
-                          gap: 6,
+                          gap: 8,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {event.category && (
+                          <div
+                            style={{
+                              fontSize: 10,
+                              color:
+                                event.category === "Established Group Class"
+                                  ? "#000"
+                                  : partnerColor(),
+                              marginRight: 8,
+                            }}
+                          >
+                            {categoryList.find(
+                              (cat) => cat.value === event.category
+                            )?.text || event.category}
+                          </div>
+                        )}
+
+                        {typeof event.duration === "number" && (
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontFamily: "Plus Jakarta Sans",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {event.duration} min | {formatDate(event.date)} |{" "}
+                            {event.time || "--:--"}
+                          </span>
+                        )}
+
+                        {renderStatusPill(event)}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          color: partnerColor(),
+                          fontSize: 10,
+                          fontFamily: "Plus Jakarta Sans",
+                          textTransform: "uppercase",
                           whiteSpace: "nowrap",
                         }}
                       >
-                        Ver Evento
-                        <i
-                          style={{ marginLeft: 8 }}
-                          className="fa fa-chevron-right"
-                        />
-                      </a>
-                    </div>
-
-                    {event.video && (
-                      <div style={{ display: "grid", gap: 6 }}>
-                        <div
-                          style={{
-                            borderRadius: 8,
-                            overflow: "hidden",
-                            border: "1px solid #E5E7EB",
-                          }}
-                        >
-                          <IFrameVideoBlog src={getEmbedUrl(event.video)} />
-                        </div>
+                        Ver detalhes
+                        <i className="fa fa-chevron-right" />
                       </div>
-                    )}
+                    </div>
                   </div>
-                )}
+
+                  {event.rescheduled && event.rescheduledDescription && (
+                    <span
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 10,
+                        backgroundColor: "#FEF3F2",
+                        padding: "4px 8px",
+                        borderRadius: 6,
+                        display: "inline-block",
+                        color: "#4B5563",
+                        width: "fit-content",
+                      }}
+                    >
+                      {String(event.rescheduledDescription)}
+                    </span>
+                  )}
+                </button>
               </div>
             );
           })}
@@ -552,7 +666,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               justifyContent: "space-between",
               alignItems: "center",
               fontFamily: "Plus Jakarta Sans",
-
               color: "#4B5563",
             }}
           >
@@ -595,6 +708,112 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           </div>
         )}
       </div>
+
+      {/* ✅ MODAL no BODY */}
+      <ModalInBody
+        open={Boolean(selectedEvent)}
+        title={selectedEvent?.lessonTitle || "Detalhes da aula"}
+        onClose={() => setSelectedEvent(null)}
+      >
+        {selectedEvent && (
+          <div style={{ display: "grid", gap: 12 }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10,
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span style={{ fontSize: 12, color: "#4B5563" }}>
+                {typeof selectedEvent.duration === "number"
+                  ? `${selectedEvent.duration} min • `
+                  : ""}
+                {formatDate(selectedEvent.date)} •{" "}
+                {selectedEvent.time || "--:--"}
+              </span>
+
+              <div>{renderStatusPill(selectedEvent)}</div>
+            </div>
+
+            {selectedEvent.video && (
+              <div
+                style={{
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <IFrameVideoBlog src={getEmbedUrl(selectedEvent.video)} />
+              </div>
+            )}
+
+            <div
+              style={{
+                border: "1px solid #E5E7EB",
+                borderRadius: 12,
+                padding: 12,
+                background: "#F9FAFB",
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111827" }}>
+                Descrição
+              </div>
+              <div style={{ marginTop: 6, fontSize: 12, color: "#4B5563" }}>
+                {selectedEvent.description ? selectedEvent.description : "-"}
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedEvent(null)}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: "1px solid #E5E7EB",
+                  background: "#FFFFFF",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              >
+                Fechar
+              </button>
+
+              <a
+                href={`/my-calendar/event/${selectedEvent._id}`}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: `1px solid ${partnerColor()}`,
+                  background: `${partnerColor()}10`,
+                  color: partnerColor(),
+                  cursor: "pointer",
+                  fontWeight: 900,
+                  fontFamily: "Plus Jakarta Sans",
+                  textDecoration: "none",
+                  textTransform: "uppercase",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Ver evento <i className="fa fa-chevron-right" />
+              </a>
+            </div>
+          </div>
+        )}
+      </ModalInBody>
     </div>
   );
 };

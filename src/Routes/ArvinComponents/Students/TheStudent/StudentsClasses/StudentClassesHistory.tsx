@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { Outlet, useParams } from "react-router-dom";
 import { HeadersProps } from "../../../../../Resources/types.universalInterfaces";
@@ -6,13 +7,12 @@ import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { newArvinTitleStyle } from "../../Students";
 import { partnerColor } from "../../../../../Styles/Styles";
-import { NotebookIcon } from "@phosphor-icons/react";
 import {
   categoryList,
   getEmbedUrl,
 } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
-import { cardBase, cardTitle } from "../types/studentPage.styles";
+import { cardBase } from "../types/studentPage.styles";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
@@ -20,9 +20,7 @@ type StudentClassesHistoryProps = HeadersProps & {
 
 interface EventFromApi {
   _id: string;
-  board?: string;
 
-  // ✅ campos de reagendamento (podem variar no backend)
   replenish?: boolean;
   rescheduled?: boolean;
   rescheduledDescription?: string;
@@ -79,6 +77,123 @@ interface EventsResponse {
 type ClassStatus = "realizada" | "desmarcado" | "reagendada";
 type StatusFilter = ClassStatus | "all";
 
+function useLockBodyScroll(locked: boolean) {
+  useEffect(() => {
+    if (!locked) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [locked]);
+}
+
+function ModalInBody({
+  open,
+  title,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  title?: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
+  useLockBodyScroll(open);
+
+  if (!open) return null;
+
+  return ReactDOM.createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title || "Modal"}
+      onMouseDown={(e) => {
+        // fecha clicando fora do conteúdo
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(17, 24, 39, 0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        zIndex: 9999,
+      }}
+    >
+      <div
+        onMouseDown={(e) => e.stopPropagation()}
+        style={{
+          width: "min(920px, 100%)",
+          borderRadius: 16,
+          background: "#FFFFFF",
+          border: "1px solid #E5E7EB",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+          overflow: "hidden",
+          fontFamily: "Plus Jakarta Sans",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid #E5E7EB",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#111827",
+              lineHeight: "120%",
+            }}
+          >
+            {title || "Detalhes da aula"}
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            style={{
+              border: "1px solid #E5E7EB",
+              background: "#FFFFFF",
+              borderRadius: 999,
+              padding: "6px 10px",
+              cursor: "pointer",
+              fontWeight: 800,
+              color: "#111827",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <div style={{ padding: 16 }}>{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   headers,
   isDesktop,
@@ -91,18 +206,16 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   >({});
   const [loadingEventsList, setLoadingEventsList] = useState<boolean>(false);
 
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [studentName, setStudentName] = useState<string>("");
 
-  // 🔍 busca por descrição
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  // ✅ filtro por status (padrão: realizada)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
-
-  // ✅ filtro extra: todas vs só replenish=true
   const [onlyReplenish, setOnlyReplenish] = useState<boolean>(false);
+
+  // ✅ modal
+  const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!studentId) return;
@@ -156,15 +269,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     return s || "";
   };
 
-  const getHomeworkHtml = (hw: HomeworkFromApi): string => {
-    return (
-      (hw.homework as string) ||
-      (hw.content as string) ||
-      (hw.board as string) ||
-      ""
-    );
-  };
-
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {
       realizada: 0,
@@ -178,7 +282,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     return counts;
   }, [eventsList]);
 
-  // 🔎 aplica: status + busca + replenish
   const filteredEvents = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     const status = statusFilter;
@@ -193,7 +296,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         ? true
         : (e.description || "").toLowerCase().includes(term);
 
-      // ✅ filtro de reagendadas:
       const replenishValue = Boolean(e.replenish) || Boolean(e.rescheduled);
       const replenishOk = onlyReplenish ? replenishValue : true;
 
@@ -201,7 +303,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     });
   }, [eventsList, searchTerm, statusFilter, onlyReplenish]);
 
-  // quando mudar busca OU filtros, volta pra página 0
   useEffect(() => {
     setCurrentPage(0);
   }, [searchTerm, statusFilter, onlyReplenish]);
@@ -271,6 +372,31 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     </div>
   );
 
+  const renderStatusPill = (event: EventFromApi) => {
+    const s = normalizeStatus(event.status);
+
+    const statusBg =
+      s !== "desmarcado" ? `${partnerColor()}20` : "rgba(255, 221, 221, 0.41)";
+
+    const statusColor =
+      s !== "desmarcado" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
+
+    return (
+      <span
+        style={{
+          fontSize: 10,
+          padding: "4px 8px",
+          borderRadius: 6,
+          backgroundColor: statusBg,
+          color: statusColor,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {event.status}
+      </span>
+    );
+  };
+
   return (
     <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
       {isDesktop && (
@@ -309,6 +435,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         <a
           href={`/students/${studentId}`}
           target="_blank"
+          rel="noreferrer"
           style={{
             marginTop: 14,
             display: "block",
@@ -327,7 +454,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
         <br />
 
-        {/* Controles: busca + filtros + pageSize */}
         <div
           style={{
             display: "flex",
@@ -373,13 +499,11 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               gap: 10,
             }}
           >
-            {/* ✅ switch replenish */}
             <SwitchReplenish
               value={onlyReplenish}
               onChange={setOnlyReplenish}
             />
 
-            {/* ✅ filtro status */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <select
                 value={statusFilter}
@@ -407,7 +531,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               </select>
             </div>
 
-            {/* pageSize */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <select
                 value={pageSize}
@@ -455,20 +578,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           </p>
         )}
 
-        {/* ✅ SEM SANFONA: clique vai direto pro evento */}
+        {/* ✅ Clique abre modal (no body) com vídeo + descrição + botão */}
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
-            const homeworks = homeworkByEvent[event._id] || [];
-            const s = normalizeStatus(event.status);
-
-            const statusBg =
-              s !== "desmarcado"
-                ? `${partnerColor()}20`
-                : "rgba(255, 221, 221, 0.41)";
-
-            const statusColor =
-              s !== "desmarcado" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
-
             return (
               <div
                 key={event._id}
@@ -479,22 +591,21 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   marginBottom: 4,
                 }}
               >
-                <a
-                  href={`/my-calendar/event/${event._id}`}
+                <button
+                  type="button"
+                  onClick={() => setSelectedEvent(event)}
                   style={{
+                    all: "unset",
+                    width: "100%",
+                    cursor: "pointer",
                     display: "grid",
                     gap: 10,
-                    textDecoration: "none",
-                    color: "inherit",
-                    cursor: "pointer",
                   }}
+                  aria-label={`Abrir detalhes da aula: ${
+                    event.lessonTitle ?? "Aula Individual"
+                  }`}
                 >
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: "0.75rem",
-                    }}
-                  >
+                  <div style={{ display: "grid", gap: "0.75rem" }}>
                     <div style={{ display: "grid", gap: 2 }}>
                       <span
                         style={{
@@ -556,21 +667,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           </span>
                         )}
 
-                        <span
-                          style={{
-                            fontSize: 10,
-                            padding: "4px 8px",
-                            borderRadius: 6,
-                            backgroundColor: statusBg,
-                            color: statusColor,
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {event.status}
-                        </span>
+                        {renderStatusPill(event)}
                       </div>
 
-                      {/* ✅ "Ver Evento" sempre visível e já é o destino do clique */}
                       <div
                         style={{
                           display: "inline-flex",
@@ -583,13 +682,12 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           whiteSpace: "nowrap",
                         }}
                       >
-                        Ver Evento
+                        Ver detalhes
                         <i className="fa fa-chevron-right" />
                       </div>
                     </div>
                   </div>
 
-                  {/* etiqueta de reagendamento */}
                   {event.rescheduled && event.rescheduledDescription && (
                     <span
                       style={{
@@ -606,7 +704,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       {String(event.rescheduledDescription)}
                     </span>
                   )}
-                </a>
+                </button>
               </div>
             );
           })}
@@ -668,6 +766,146 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           <Outlet />
         </div>
       )}
+
+      {/* ✅ MODAL no BODY (Portal) */}
+      <ModalInBody
+        open={Boolean(selectedEvent)}
+        title={selectedEvent?.lessonTitle || "Detalhes da aula"}
+        onClose={() => setSelectedEvent(null)}
+      >
+        {selectedEvent && (
+          <div style={{ display: "grid", gap: 12 }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10,
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                {selectedEvent.category && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: partnerColor(),
+                      fontWeight: 800,
+                    }}
+                  >
+                    {categoryList.find(
+                      (cat) => cat.value === selectedEvent.category
+                    )?.text || selectedEvent.category}
+                  </span>
+                )}
+
+                <span style={{ fontSize: 12, color: "#4B5563" }}>
+                  {typeof selectedEvent.duration === "number"
+                    ? `${selectedEvent.duration} min`
+                    : ""}
+                  {typeof selectedEvent.duration === "number" ? " • " : ""}
+                  {formatDate(selectedEvent.date)} •{" "}
+                  {selectedEvent.time || "--:--"}
+                </span>
+              </div>
+
+              <div>{renderStatusPill(selectedEvent)}</div>
+            </div>
+
+            {selectedEvent.video && (
+              <div
+                style={{
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <IFrameVideoBlog src={getEmbedUrl(selectedEvent.video)} />
+              </div>
+            )}
+
+            <div
+              style={{
+                border: "1px solid #E5E7EB",
+                borderRadius: 12,
+                padding: 12,
+                background: "#F9FAFB",
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111827" }}>
+                Descrição
+              </div>
+              <div style={{ marginTop: 6, fontSize: 12, color: "#4B5563" }}>
+                {selectedEvent.description ? selectedEvent.description : "-"}
+              </div>
+            </div>
+
+            {selectedEvent.rescheduled &&
+              selectedEvent.rescheduledDescription && (
+                <div
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontSize: 12,
+                    backgroundColor: "#FEF3F2",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    color: "#4B5563",
+                    border: "1px solid #FECACA",
+                  }}
+                >
+                  {String(selectedEvent.rescheduledDescription)}
+                </div>
+              )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginTop: 2,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedEvent(null)}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: "1px solid #E5E7EB",
+                  background: "#FFFFFF",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              >
+                Fechar
+              </button>
+
+              <a
+                href={`/my-calendar/event/${selectedEvent._id}`}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: `1px solid ${partnerColor()}`,
+                  background: `${partnerColor()}10`,
+                  color: partnerColor(),
+                  cursor: "pointer",
+                  fontWeight: 900,
+                  fontFamily: "Plus Jakarta Sans",
+                  textDecoration: "none",
+                  textTransform: "uppercase",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                Ver evento <i className="fa fa-chevron-right" />
+              </a>
+            </div>
+          </div>
+        )}
+      </ModalInBody>
     </div>
   );
 };
