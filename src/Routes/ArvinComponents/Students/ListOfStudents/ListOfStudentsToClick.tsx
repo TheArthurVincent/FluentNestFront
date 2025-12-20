@@ -306,7 +306,6 @@ export function ListOfStudentsToClick({
             style={{
               color: "#222",
               background: "white",
-              padding: "8px",
               borderRadius: 12,
               border: "1px solid #f5f5f5",
               display: myId !== st.id ? "grid" : "none",
