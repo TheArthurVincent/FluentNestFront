@@ -274,6 +274,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       realizada: 0,
       desmarcado: 0,
       reagendada: 0,
+      marcado: 0,
     };
     for (const e of eventsList) {
       const s = normalizeStatus(e.status);
@@ -376,10 +377,18 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     const s = normalizeStatus(event.status);
 
     const statusBg =
-      s !== "desmarcado" ? `${partnerColor()}20` : "rgba(255, 221, 221, 0.41)";
+      s == "desmarcado"
+        ? "rgba(255, 221, 221, 0.41)"
+        : s == "marcado"
+        ? "#cbd6f388"
+        : `${partnerColor()}20`;
 
     const statusColor =
-      s !== "desmarcado" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
+      s == "desmarcado"
+        ? "rgba(220, 38, 38, 0.8)"
+        : s == "marcado"
+        ? "#1e40af"
+        : partnerColor();
 
     return (
       <span
@@ -518,11 +527,15 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   backgroundColor: "#F9FAFB",
                 }}
               >
+                <option value="marcado">
+                  Marcada ({statusCounts.desmarcado})
+                </option>
                 <option value="realizada">
                   Realizada ({statusCounts.realizada})
                 </option>
+
                 <option value="desmarcado">
-                  Desmarcado ({statusCounts.desmarcado})
+                  Desmarcada ({statusCounts.desmarcado})
                 </option>
                 <option value="reagendada">
                   Reagendada ({statusCounts.reagendada})
