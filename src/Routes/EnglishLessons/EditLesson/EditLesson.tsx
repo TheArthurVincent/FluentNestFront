@@ -854,53 +854,68 @@ export default function EditLesson({
           {/* TOOLBAR: Import + tipo + add início/fim */}
           <div
             style={{
-              display: "flex",
-              gap: 8,
-              marginBottom: 12,
-              flexWrap: "wrap",
+              margin: "auto",
+              display: "inline",
             }}
           >
-            <select
-              value={newType}
-              onChange={(e) => setNewType(e.target.value as NewBlockType)}
+            <div
               style={{
-                ...inputBase,
-                background: "white",
-                maxWidth: 140,
-                paddingRight: 24,
+                display: "flex",
+                gap: 12,
+                justifyContent: "center",
+                flexWrap: "wrap",
               }}
-              title="Tipo do novo bloco"
             >
-              <option value="explanation">Explanation/Introduction</option>
-              <option value="vocabulary">Vocabulary</option>
-              <option value="singleimages">Single Images</option>
-              <option value="sentences">Sentences</option>
-              <option value="audio">Text + Audio</option>
-              <option value="images">Images (Grid + Audio)</option>
-              <option value="video">Video</option>
-              <option value="exercise">Exercise (List of questions)</option>
-              <option value="dialogue">Dialogue</option>
-              <option value="selectexercise">Select Exercise</option>
-            </select>
+              <button
+                onClick={() => addBlock("start")}
+                style={{
+                  ...fullWidthButton,
+                  maxWidth: 100,
+                }}
+                title="Adicionar no início"
+              >
+                + Início
+              </button>
+              <select
+                value={newType}
+                onChange={(e) => setNewType(e.target.value as NewBlockType)}
+                style={{
+                  ...inputBase,
+                  background: "white",
+                  maxWidth: 140,
+                  paddingRight: 24,
+                }}
+                title="Tipo do novo bloco"
+              >
+                <option value="explanation">Explanation/Introduction</option>
+                <option value="vocabulary">Vocabulary</option>
+                <option value="singleimages">Single Images</option>
+                <option value="sentences">Sentences</option>
+                <option value="audio">Text + Audio</option>
+                <option value="images">Images (Grid + Audio)</option>
+                <option value="video">Video</option>
+                <option value="exercise">Exercise (List of questions)</option>
+                <option value="dialogue">Dialogue</option>
+                <option value="selectexercise">Select Exercise</option>
+              </select>
 
-            <button
-              onClick={() => addBlock("start")}
-              style={{
-                ...fullWidthButton,
-                maxWidth: 100,
-              }}
-              title="Adicionar no início"
-            >
-              + Início
-            </button>
-
-            <button
-              onClick={() => addBlock("end")}
-              style={{ ...primaryButton, maxWidth: 100 }}
-              title="Adicionar ao final"
-            >
-              + Final
-            </button>
+              <button
+                onClick={() => addBlock("end")}
+                style={{ ...primaryButton, maxWidth: 100 }}
+                title="Adicionar ao final"
+              >
+                + Final
+              </button>
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: 20,
+              marginLeft: "auto",
+              marginRight: "auto",
+              maxWidth: 600,
+            }}
+          >
             <ImportElementsEditor
               lessonId={classId}
               studentId={studentId}
