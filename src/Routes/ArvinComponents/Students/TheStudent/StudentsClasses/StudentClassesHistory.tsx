@@ -12,7 +12,7 @@ import {
   getEmbedUrl,
 } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
-import { cardBase, cardTitle, pillStatus } from "../types/studentPage.styles";
+import { cardBase, cardTitle } from "../types/studentPage.styles";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
@@ -23,8 +23,8 @@ interface EventFromApi {
   board?: string;
 
   // ✅ campos de reagendamento (podem variar no backend)
-  replenish?: boolean; // <- o que você quer filtrar
-  rescheduled?: boolean; // fallback (se existir)
+  replenish?: boolean;
+  rescheduled?: boolean;
   rescheduledDescription?: string;
 
   category?: string;
@@ -93,7 +93,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
   const [pageSize, setPageSize] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [studentName, setStudentName] = useState<string>("");
 
   // 🔍 busca por descrição
@@ -122,7 +121,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       setEventsList(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
-      setOpenEventId(null);
 
       setTimeout(() => setLoadingEventsList(false), 100);
     } catch (error) {
@@ -196,7 +194,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         : (e.description || "").toLowerCase().includes(term);
 
       // ✅ filtro de reagendadas:
-      // prioridade no .replenish, com fallback no .rescheduled
       const replenishValue = Boolean(e.replenish) || Boolean(e.rescheduled);
       const replenishOk = onlyReplenish ? replenishValue : true;
 
@@ -229,10 +226,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
   const handleNextPage = () => {
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
-  };
-
-  const toggleAccordion = (id: string) => {
-    setOpenEventId((prev) => (prev === id ? null : id));
   };
 
   const SwitchReplenish = ({
@@ -315,6 +308,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       >
         <a
           href={`/students/${studentId}`}
+          target="_blank"
           style={{
             marginTop: 14,
             display: "block",
@@ -427,9 +421,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   backgroundColor: "#F9FAFB",
                 }}
               >
-                <option value={5}>5</option>
                 <option value={10}>10</option>
                 <option value={20}>20</option>
+                <option value={50}>50</option>
               </select>
             </div>
           </div>
@@ -461,9 +455,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           </p>
         )}
 
+        {/* ✅ SEM SANFONA: clique vai direto pro evento */}
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
-            const isOpen = openEventId === event._id;
             const homeworks = homeworkByEvent[event._id] || [];
             const s = normalizeStatus(event.status);
 
@@ -471,6 +465,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               s !== "desmarcado"
                 ? `${partnerColor()}20`
                 : "rgba(255, 221, 221, 0.41)";
+
             const statusColor =
               s !== "desmarcado" ? partnerColor() : "rgba(220, 38, 38, 0.8)";
 
@@ -484,244 +479,134 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   marginBottom: 4,
                 }}
               >
-                <button
-                  type="button"
-                  onClick={() => toggleAccordion(event._id)}
+                <a
+                  href={`/my-calendar/event/${event._id}`}
                   style={{
-                    all: "unset",
-                    width: "100%",
-                    cursor: "pointer",
                     display: "grid",
-                    gap: "1rem",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    gap: 10,
+                    textDecoration: "none",
+                    color: "inherit",
+                    cursor: "pointer",
                   }}
                 >
-                  <div style={{ display: "grid", gap: 2 }}>
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        color: "#111827",
-                      }}
-                    >
-                      {event?.lessonTitle
-                        ? event.lessonTitle
-                        : "Aula Individual"}{" "}
-                      - {formatDate(event.date)} — {event.time || "--:--"}
-                    </span>
-                  </div>
-
                   <div
-                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    style={{
+                      display: "grid",
+                      gap: "0.75rem",
+                    }}
                   >
-                    {event.category && (
-                      <div
-                        style={{
-                          ...pillStatus,
-                          color:
-                            event.category === "Established Group Class"
-                              ? "#000"
-                              : partnerColor(),
-                          marginRight: 8,
-                        }}
-                      >
-                        {categoryList.find(
-                          (cat) => cat.value === event.category
-                        )?.text || event.category}
-                      </div>
-                    )}
-
-                    {typeof event.duration === "number" && (
+                    <div style={{ display: "grid", gap: 2 }}>
                       <span
                         style={{
+                          fontSize: 12,
                           fontFamily: "Plus Jakarta Sans",
-                          color: "#4B5563",
+                          color: "#111827",
                         }}
                       >
-                        {event.duration} min
+                        {event?.lessonTitle
+                          ? event.lessonTitle
+                          : "Aula Individual"}{" "}
                       </span>
-                    )}
+                    </div>
 
-                    <span
-                      style={{
-                        ...pillStatus,
-                        backgroundColor: statusBg,
-                        color: statusColor,
-                      }}
-                    >
-                      {event.status}
-                    </span>
-                  </div>
-                </button>
-
-                {event.rescheduled && event.rescheduledDescription && (
-                  <span
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontSize: 12,
-                      backgroundColor: "#FEF3F2",
-                      padding: "4px 8px",
-                      borderRadius: 6,
-                      display: "inline-block",
-                      marginTop: 12,
-                      color: "#4B5563",
-                    }}
-                  >
-                    {String(event.rescheduledDescription)}
-                  </span>
-                )}
-
-                {isOpen && (
-                  <div
-                    style={{
-                      borderTop: "1px solid #E5E7EB",
-                      marginTop: 10,
-                      paddingTop: 10,
-                      display: "grid",
-                      gap: 10,
-                      fontFamily: "Plus Jakarta Sans",
-                      color: "#111827",
-                    }}
-                  >
                     <div
                       style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr auto",
-                        marginBottom: 8,
-                        justifyContent: "space-between",
+                        display: "flex",
                         alignItems: "center",
+                        justifyContent: "space-between",
                         gap: 10,
+                        flexWrap: "wrap",
                       }}
                     >
-                      <p style={{ margin: 0, color: "#4B5563" }}>
-                        <strong>Descrição: </strong>
-                        {event.description ? event.description : "-"}
-                      </p>
-
-                      <a
-                        href={`/my-calendar/event/${event._id}`}
+                      <div
                         style={{
-                          display: "block",
-                          textAlign: "right",
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          textTransform: "uppercase",
+                          display: "flex",
                           alignItems: "center",
-                          gap: 6,
+                          gap: 8,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {event.category && (
+                          <div
+                            style={{
+                              fontSize: 10,
+                              color:
+                                event.category === "Established Group Class"
+                                  ? "#000"
+                                  : partnerColor(),
+                              marginRight: 8,
+                            }}
+                          >
+                            {categoryList.find(
+                              (cat) => cat.value === event.category
+                            )?.text || event.category}
+                          </div>
+                        )}
+
+                        {typeof event.duration === "number" && (
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontFamily: "Plus Jakarta Sans",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {event.duration} min | {formatDate(event.date)} |{" "}
+                            {event.time || "--:--"}
+                          </span>
+                        )}
+
+                        <span
+                          style={{
+                            fontSize: 10,
+                            padding: "4px 8px",
+                            borderRadius: 6,
+                            backgroundColor: statusBg,
+                            color: statusColor,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {event.status}
+                        </span>
+                      </div>
+
+                      {/* ✅ "Ver Evento" sempre visível e já é o destino do clique */}
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          color: partnerColor(),
+                          fontSize: 10,
+                          fontFamily: "Plus Jakarta Sans",
+                          textTransform: "uppercase",
                           whiteSpace: "nowrap",
                         }}
                       >
                         Ver Evento
-                        <i
-                          style={{ marginLeft: 8 }}
-                          className="fa fa-chevron-right"
-                        />
-                      </a>
+                        <i className="fa fa-chevron-right" />
+                      </div>
                     </div>
-
-                    {event.video && (
-                      <div style={{ display: "grid", gap: 6 }}>
-                        <div
-                          style={{
-                            borderRadius: 8,
-                            overflow: "hidden",
-                            border: "1px solid #E5E7EB",
-                          }}
-                        >
-                          <IFrameVideoBlog src={getEmbedUrl(event.video)} />
-                        </div>
-                      </div>
-                    )}
-
-                    {homeworks.length > 0 && (
-                      <div
-                        style={{
-                          borderTop: "1px solid #E5E7EB",
-                          paddingTop: 10,
-                          display: "grid",
-                          gap: 8,
-                        }}
-                      >
-                        <div style={cardTitle}>
-                          <NotebookIcon
-                            size={20}
-                            color={"#111827"}
-                            weight="bold"
-                          />
-                          <span>Trabalhos de casa</span>
-                        </div>
-
-                        <div
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            color: "#030303",
-                            maxWidth: "100%",
-                            maxHeight: 150,
-                            padding: "4px 0",
-                            overflowY: "auto",
-                            scrollbarColor: `${partnerColor()}50 #FFFFFF`,
-                            scrollbarWidth: "thin",
-                          }}
-                        >
-                          {homeworks.map((hw) => {
-                            const html = getHomeworkHtml(hw);
-
-                            return (
-                              <div key={hw._id} style={{ marginBottom: 12 }}>
-                                {hw.title && (
-                                  <div
-                                    style={{ fontWeight: 600, marginBottom: 4 }}
-                                  >
-                                    {hw.title}
-                                  </div>
-                                )}
-
-                                {html ? (
-                                  <div
-                                    dangerouslySetInnerHTML={{ __html: html }}
-                                  />
-                                ) : (
-                                  <pre
-                                    style={{
-                                      whiteSpace: "pre-wrap",
-                                      color: "#6B7280",
-                                    }}
-                                  >
-                                    <div
-                                      dangerouslySetInnerHTML={{
-                                        __html:
-                                          (hw?.description as string) || "",
-                                      }}
-                                    />
-                                  </pre>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <a
-                          href={`/my-calendar/event/${event._id}`}
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            lineHeight: "100%",
-                            textTransform: "uppercase",
-                            cursor: "pointer",
-                            textDecoration: "none",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                            gap: 8,
-                            color: partnerColor(),
-                          }}
-                        >
-                          <span>Acessar</span>
-                          <i className="fa fa-chevron-right" />
-                        </a>
-                      </div>
-                    )}
                   </div>
-                )}
+
+                  {/* etiqueta de reagendamento */}
+                  {event.rescheduled && event.rescheduledDescription && (
+                    <span
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 10,
+                        backgroundColor: "#FEF3F2",
+                        padding: "4px 8px",
+                        borderRadius: 6,
+                        display: "inline-block",
+                        color: "#4B5563",
+                        width: "fit-content",
+                      }}
+                    >
+                      {String(event.rescheduledDescription)}
+                    </span>
+                  )}
+                </a>
               </div>
             );
           })}
