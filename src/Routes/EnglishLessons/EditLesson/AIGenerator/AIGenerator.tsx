@@ -92,7 +92,7 @@ export default function SimpleAIGenerator({
 
     try {
       setLoading(true);
-      const payload = { prompt, type, language1, numberOfSentences };
+      const payload = { prompt, type, language1: language1 || "en", numberOfSentences };
 
       const res = await axios.post(postUrl, payload, {
         headers: headers ? { ...headers } : {},
@@ -141,7 +141,7 @@ export default function SimpleAIGenerator({
         </div>
 
         <div style={{ padding: 12, display: "grid", gap: 10 }}>
-          <div style={{ display: "grid", gap: 6 }}>
+          {/* <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>Tema</label>
             <input
               disabled={loading}
@@ -171,7 +171,7 @@ export default function SimpleAIGenerator({
               min={1}
               max={20}
             />
-          </div>
+          </div> */}
 
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>

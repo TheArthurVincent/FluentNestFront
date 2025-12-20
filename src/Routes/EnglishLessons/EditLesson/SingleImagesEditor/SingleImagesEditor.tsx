@@ -146,7 +146,7 @@ export default function SingleImagesEditor({
           onClick={() => setShow(!show)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -158,9 +158,8 @@ export default function SingleImagesEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | IMAGEM INDIVIDUAL
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
 
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>

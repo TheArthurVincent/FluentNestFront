@@ -256,7 +256,7 @@ export default function DialogueEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -268,9 +268,8 @@ export default function DialogueEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | DIÁLOGO
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
         <span
           style={{

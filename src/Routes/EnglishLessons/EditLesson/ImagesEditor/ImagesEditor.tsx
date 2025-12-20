@@ -168,7 +168,7 @@ export default function ImagesEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -180,9 +180,8 @@ export default function ImagesEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | IMAGENS
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
         <span style={headerBtnWrap}>
           <div>

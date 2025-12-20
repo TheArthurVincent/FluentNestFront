@@ -264,7 +264,7 @@ export default function AudioAndTextEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -276,9 +276,8 @@ export default function AudioAndTextEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | TEXTO
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
         <span
           style={{
@@ -319,43 +318,6 @@ export default function AudioAndTextEditor({
           )}
         </span>
       </div>
-
-      {/* Preview rápido do áudio/link (fora do config para facilitar checagem) */}
-      {value.link && (
-        <div
-          style={{
-            display: "grid",
-            gap: 8,
-            background: "#f8fafc",
-            border: "1px solid #e2e8f0",
-            borderRadius: 8,
-            padding: 10,
-          }}
-        >
-          {isSoundCloudEmbed && (
-            <iframe
-              title="SoundCloud Player"
-              width="100%"
-              height="166"
-              scrolling="no"
-              frameBorder="no"
-              allow="autoplay"
-              src={value.link}
-              style={{ borderRadius: 8 }}
-            />
-          )}
-
-          {canHtml5Audio && (
-            <audio
-              controls
-              preload="none"
-              src={value.link}
-              style={{ width: "100%" }}
-            />
-          )}
-        </div>
-      )}
-
       {showConfig && (
         <div style={{ display: "grid", gap: 12 }}>
           {/* Subtitle */}
@@ -394,7 +356,7 @@ export default function AudioAndTextEditor({
           </div>
 
           {/* Área: Link do áudio + Upload opcional */}
-          <div style={{ display: "grid", gap: 12, alignItems: "end" }}>
+          {/* <div style={{ display: "grid", gap: 12, alignItems: "end" }}>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Link do áudio
@@ -434,7 +396,7 @@ export default function AudioAndTextEditor({
                 </label>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Capa/ícone do áudio */}
           <div

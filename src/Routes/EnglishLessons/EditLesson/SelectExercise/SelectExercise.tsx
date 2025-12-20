@@ -1,6 +1,13 @@
 // SelectExerciseEditor.tsx
 import React, { useMemo, useState } from "react";
-import { truncateString } from "../../../../Resources/UniversalComponents";
+import axios from "axios";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export type SelectExerciseChoice = {
   option: string;
@@ -9,9 +16,9 @@ export type SelectExerciseChoice = {
 };
 
 export type SelectExerciseQuestion = {
-  audio: string; // enunciado/pergunta falada ou texto do áudio
+  audio: string;
   options: SelectExerciseChoice[];
-  answer: string; // espelha a alternativa com status "right"
+  answer: string;
   studentsWhoDidIt: string[];
 };
 
@@ -22,12 +29,19 @@ export type SelectExerciseBlock = {
   options: SelectExerciseQuestion[];
 };
 
+type HeadersLike = Record<string, string>;
+
 type Props = {
   value: SelectExerciseBlock;
   onChange: (next: SelectExerciseBlock) => void;
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
+
+  // ✅ iguais ao SentencesEditor (pra IA funcionar igual)
+  studentId: any;
+  headers?: HeadersLike | null;
+  language: string; // idioma base que você já passa para a IA no sentences
 };
 
 const ghostBtn: React.CSSProperties = {
@@ -63,11 +77,17 @@ export default function SelectExerciseEditor({
   onRemove,
   onMoveUp,
   onMoveDown,
+  studentId,
+  headers,
+  language,
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
 
+  // ✅ Modal IA
+  const [aiOpen, setAiOpen] = useState(false);
+
   const update = (patch: Partial<SelectExerciseBlock>) =>
-    onChange({ ...value, ...patch });
+    onChange({ ...value, ...patch, type: "selectexercise" });
 
   const questions = useMemo(() => value.options ?? [], [value.options]);
 
@@ -120,13 +140,13 @@ export default function SelectExerciseEditor({
     const q = { ...questions[qIndex] };
     const nextOpts = [...q.options];
     nextOpts.splice(cIndex, 1);
-    // se removeu a correta, zera answer e garante que alguma outra seja correta depois (opcional)
+
     const hadRight = q.options[cIndex]?.status === "right";
     q.options = nextOpts;
+
     if (hadRight) {
       const first = nextOpts.find((o) => o.status === "right");
       if (!first) {
-        // se nenhuma correta restou, defina a primeira como correta (se existir)
         if (nextOpts.length > 0) {
           nextOpts[0].status = "right";
           q.answer = nextOpts[0].option;
@@ -166,11 +186,9 @@ export default function SelectExerciseEditor({
     nextOpts[cIndex] = choice;
     q.options = nextOpts;
 
-    // se mexeu no texto da correta, manter answer em sincronia
     if (choice.status === "right") {
       q.answer = choice.option;
     } else if (patch.option && q.options[cIndex].status === "right") {
-      // No caso de só editar o option da correta
       q.answer = patch.option;
     }
 
@@ -185,6 +203,206 @@ export default function SelectExerciseEditor({
     }));
     q.answer = q.options[cIndex].option;
     setQuestionAt(qIndex, q);
+  };
+
+  /* ===================== IA: helpers ===================== */
+
+  // remove ```json ... ``` e tenta JSON.parse
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/i, "")
+      .trim();
+
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input;
+    }
+  }
+
+  const shuffleArray = <T,>(arr: T[]) => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  const normalizeQuestion = (rawQ: any): SelectExerciseQuestion | null => {
+    // enunciado pode vir como audio / question / prompt / statement / title...
+    const audio =
+      rawQ?.audio ??
+      rawQ?.question ??
+      rawQ?.prompt ??
+      rawQ?.statement ??
+      rawQ?.enunciado ??
+      "";
+
+    // opções podem vir como options/choices/alternatives/items
+    const rawOptions =
+      rawQ?.options ?? rawQ?.choices ?? rawQ?.alternatives ?? rawQ?.items ?? [];
+
+    if (!audio && (!Array.isArray(rawOptions) || rawOptions.length === 0)) {
+      return null;
+    }
+
+    let options: SelectExerciseChoice[] = (
+      Array.isArray(rawOptions) ? rawOptions : []
+    )
+      .map((o: any) => {
+        const option = o?.option ?? o?.text ?? o?.value ?? o?.label ?? "";
+
+        // status pode vir como "right/wrong", boolean, "correct/incorrect"
+        let status: "right" | "wrong" = "wrong";
+        const s = o?.status ?? o?.correct ?? o?.isCorrect ?? o?.right;
+        if (s === "right" || s === true || s === "correct") status = "right";
+
+        const reason = o?.reason ?? o?.explanation ?? "";
+
+        return {
+          option: String(option ?? ""),
+          status,
+          reason: String(reason ?? ""),
+        };
+      })
+      .filter((c) => (c.option || c.reason).trim().length > 0);
+
+    // garante no mínimo 2 opções
+    if (options.length === 1) {
+      options.push({ option: "—", status: "wrong", reason: "" });
+    }
+    if (options.length === 0) return null;
+
+    // garante exatamente 1 correta
+    const rightIdxs = options
+      .map((c, i) => (c.status === "right" ? i : -1))
+      .filter((i) => i >= 0);
+
+    if (rightIdxs.length === 0) {
+      // se backend mandou "answer", tenta casar
+      const givenAnswer =
+        rawQ?.answer ?? rawQ?.correctAnswer ?? rawQ?.rightAnswer ?? "";
+
+      if (givenAnswer) {
+        const match = options.findIndex(
+          (c) =>
+            c.option.trim().toLowerCase() ===
+            String(givenAnswer).trim().toLowerCase()
+        );
+        if (match >= 0) options[match].status = "right";
+        else options[0].status = "right";
+      } else {
+        options[0].status = "right";
+      }
+    } else if (rightIdxs.length > 1) {
+      // mantém só a primeira correta
+      const keep = rightIdxs[0];
+      options = options.map((c, i) => ({
+        ...c,
+        status: i === keep ? "right" : "wrong",
+      }));
+    }
+
+    // sincroniza answer
+    const right = options.find((c) => c.status === "right");
+    let answer = right?.option ?? "";
+
+    // ✅ embaralhar para não deixar correta sempre no mesmo lugar (sua regra)
+    options = shuffleArray(options);
+    const rightAfterShuffle = options.find((c) => c.status === "right");
+    answer = rightAfterShuffle?.option ?? answer;
+
+    return {
+      audio: String(audio ?? ""),
+      options,
+      answer: String(answer ?? ""),
+      studentsWhoDidIt: Array.isArray(rawQ?.studentsWhoDidIt)
+        ? rawQ.studentsWhoDidIt
+        : [],
+    };
+  };
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+
+    // 1) extrair array de perguntas (tolerante a envelopes)
+    let arr: any[] = [];
+
+    if (Array.isArray(json)) {
+      arr = json;
+    } else if (json && typeof json === "object") {
+      // possíveis envelopes
+      const candidate =
+        json.options ??
+        json.questions ??
+        json.items ??
+        json.list ??
+        json.data ??
+        null;
+
+      if (Array.isArray(candidate)) {
+        arr = candidate;
+      } else if (
+        typeof json.result === "string" ||
+        typeof json.json === "string"
+      ) {
+        const inner = parseMaybeJson(json.result ?? json.json);
+        if (Array.isArray(inner)) arr = inner;
+        else if (inner && typeof inner === "object") {
+          const innerCandidate =
+            inner.options ??
+            inner.questions ??
+            inner.items ??
+            inner.list ??
+            inner.data ??
+            null;
+          if (Array.isArray(innerCandidate)) arr = innerCandidate;
+        }
+      }
+    } else if (typeof json === "string") {
+      const maybe = parseMaybeJson(json);
+      if (Array.isArray(maybe)) arr = maybe;
+    }
+
+    if (!Array.isArray(arr) || arr.length === 0) {
+      notifyAlert(
+        "Esperado um ARRAY de perguntas (ex.: [{ audio, options:[{option,status,reason}], answer }]). Ajuste o prompt/retorno.",
+        partnerColor()
+      );
+      console.warn("Conteúdo recebido (bruto):", raw);
+      return;
+    }
+
+    // 2) normalizar e filtrar vazias
+    const mapped = arr
+      .map((q) => normalizeQuestion(q))
+      .filter((q): q is SelectExerciseQuestion => !!q);
+
+    if (mapped.length === 0) {
+      notifyAlert(
+        "Nenhuma pergunta válida encontrada no retorno da IA.",
+        partnerColor()
+      );
+      console.warn("Conteúdo recebido (bruto):", raw);
+      return;
+    }
+
+    // 3) atualizar bloco
+    onChange({
+      ...value,
+      type: "selectexercise",
+      options: mapped,
+    });
+
+    setShowConfig(true);
   };
 
   return (
@@ -209,7 +427,7 @@ export default function SelectExerciseEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -221,9 +439,8 @@ export default function SelectExerciseEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | EXERCÍCIO DE MÚLTIPLA ESCOLHA
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
 
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -243,6 +460,27 @@ export default function SelectExerciseEditor({
               </button>
             )}
           </div>
+
+          {/* ✅ Botão IA + Modal */}
+          <button
+            style={{ ...ghostBtn, border: "1px solid #0891b2" }}
+            onClick={() => setAiOpen(true)}
+            title="Gerar perguntas por IA"
+          >
+            ✨ IA
+          </button>
+
+          <SimpleAIGenerator
+            visible={aiOpen}
+            language1={language}
+            type="selectexercise"
+            onClose={() => setAiOpen(false)}
+            postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+            headers={headers}
+            onReceiveJson={handleReceiveJson}
+            title="Gerar Select Exercise por IA"
+          />
+
           {onRemove && (
             <button onClick={onRemove} style={dangerBtn}>
               <i className="fa fa-trash" />
@@ -304,7 +542,8 @@ export default function SelectExerciseEditor({
                   color: "#64748b",
                 }}
               >
-                Nenhuma pergunta. Clique em <em>+ Adicionar pergunta</em>.
+                Nenhuma pergunta. Clique em <em>+ Adicionar pergunta</em> ou use
+                ✨ IA.
               </div>
             )}
 
@@ -368,7 +607,7 @@ export default function SelectExerciseEditor({
                   </div>
                 </div>
 
-                {/* Enunciado (audio) */}
+                {/* Enunciado */}
                 <div style={{ display: "grid", gap: 6 }}>
                   <label style={{ fontSize: 12, color: "#334155" }}>
                     Enunciado (audio)
@@ -445,6 +684,7 @@ export default function SelectExerciseEditor({
                             Opção #{cIndex + 1}
                           </small>
                         </div>
+
                         <div style={{ display: "flex", gap: 6 }}>
                           <button
                             style={ghostSm}
@@ -518,34 +758,6 @@ export default function SelectExerciseEditor({
                     </button>
                   </div>
                 </div>
-
-                {/* Answer & Students (read-only answer editável via 'Tornar correta') */}
-                {/* <div
-                  style={{
-                    display: "grid",
-                    gap: 10,
-                    gridTemplateColumns: "1fr",
-                  }}
-                >
-                  <div style={{ display: "grid", gap: 6 }}>
-                    <label style={{ fontSize: 12, color: "#334155" }}>
-                      Resposta correta (sincronizada automaticamente)
-                    </label>
-                    <input
-                      value={q.answer}
-                      readOnly
-                      placeholder="É definida ao marcar uma alternativa como correta"
-                      style={{
-                        border: "1px dashed #cbd5e1",
-                        background: "#f8fafc",
-                        borderRadius: 8,
-                        padding: 8,
-                        fontSize: 13,
-                        color: "#475569",
-                      }}
-                    />
-                  </div>
-                </div> */}
               </div>
             ))}
 

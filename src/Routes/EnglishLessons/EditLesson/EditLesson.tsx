@@ -388,33 +388,156 @@ export default function EditLesson({
   // ---------- Adicionar novo bloco ----------
   const makeEmptyBlock = (type: NewBlockType): ElementItem => {
     const base: any = { subtitle: "" }; // sem order
+    const getSubtitle = (type: string, theLanguage: string) => {
+      const subtitles: Record<string, any> = {
+        singleimages: {
+          pt: "Imagens",
+          es: "Imágenes",
+          fr: "Images",
+          en: "Images",
+        },
+        sentences: {
+          pt: "Frases",
+          es: "Frases",
+          fr: "Phrases",
+          en: "Sentences",
+        },
+        vocabulary: {
+          pt: "Vocabulário",
+          es: "Vocabulario",
+          fr: "Vocabulaire",
+          en: "Vocabulary",
+        },
+        video: {
+          pt: "Vídeo",
+          es: "Video",
+          fr: "Vidéo",
+          en: "Video",
+        },
+        exercise: {
+          pt: "Exercícios",
+          es: "Ejercicios",
+          fr: "Exercices",
+          en: "Exercises",
+        },
+        images: {
+          pt: "Imagens",
+          es: "Imágenes",
+          fr: "Images",
+          en: "Images",
+        },
+        audio: {
+          pt: "Áudio",
+          es: "Audio",
+          fr: "Audio",
+          en: "Audio",
+        },
+        dialogue: {
+          pt: "Diálogo",
+          es: "Diálogo",
+          fr: "Dialogue",
+          en: "Dialogue",
+        },
+        selectexercise: {
+          pt: "Exercício de Seleção",
+          es: "Ejercicio de Selección",
+          fr: "Exercice de Sélection",
+          en: "Select Exercise",
+        },
+        explanation: {
+          pt: "Explicação",
+          es: "Explicación",
+          fr: "Explication",
+          en: "Explanation",
+        },
+      };
+
+      return subtitles[type]?.[theLanguage] || subtitles[type]?.en || "";
+    };
 
     switch (type) {
       case "singleimages":
-        return { ...base, type: "singleimages", images: [] };
+        return {
+          ...base,
+          type: "singleimages",
+          images: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "sentences":
-        return { ...base, type: "sentences", sentences: [] };
+        return {
+          ...base,
+          type: "sentences",
+          sentences: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "vocabulary":
-        return { ...base, type: "vocabulary", sentences: [] };
+        return {
+          ...base,
+          type: "vocabulary",
+          sentences: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "video":
-        return { ...base, type: "video", video: "" };
+        return {
+          ...base,
+          type: "video",
+          video: "",
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "exercise":
-        return { ...base, type: "exercise", items: [] };
+        return {
+          ...base,
+          type: "exercise",
+          items: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "images":
-        return { ...base, type: "images", images: [] as ImageEntry[] };
+        return {
+          ...base,
+          type: "images",
+          images: [] as ImageEntry[],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "audio":
-        return { ...base, type: "audio", text: "", link: "", image: "" };
+        return {
+          ...base,
+          type: "audio",
+          text: "",
+          link: "",
+          image: "",
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "dialogue":
-        return { ...base, type: "dialogue", dialogue: [] };
+        return {
+          ...base,
+          type: "dialogue",
+          dialogue: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "selectexercise":
-        return { ...base, type: "selectexercise", options: [] };
+        return {
+          ...base,
+          type: "selectexercise",
+          options: [],
+          subtitle: getSubtitle(type, theLanguage),
+        };
+
       case "explanation":
         return {
           ...base,
           type: "explanation",
-          subtitle: "",
+          subtitle: getSubtitle(type, theLanguage),
           explanation: [{ image: null, title: "", list: [""] }],
         } as ExplanationBlock;
+
       default:
         return base as any;
     }
@@ -943,7 +1066,9 @@ export default function EditLesson({
                       key={idx}
                       value={el as SelectExerciseBlock}
                       onChange={(next) => updateElementAt(idx, next)}
+                      language={language}
                       onRemove={() => removeElementAt(idx)}
+                      studentId={studentId}
                       onMoveUp={() => moveElementUp(idx)}
                       onMoveDown={() => moveElementDown(idx)}
                     />
