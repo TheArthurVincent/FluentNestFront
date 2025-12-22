@@ -19,7 +19,7 @@ const categoryList = [
   { text: "Aula de um Grupo", value: "Established Group Class" },
   { text: "Aula de Reposição", value: "Rep" },
   { text: "Aula de Prêmio", value: "Prize Class" },
-  { text: "Aula de Tutoria", value: "Tutoring" },
+  { text: "Aula Particular Individual", value: "Tutoring" },
   { text: "Horário Vazio para Reposição", value: "Marcar Reposição" },
 ];
 

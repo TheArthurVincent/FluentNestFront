@@ -71,9 +71,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
         headers: headers as any,
       });
-      console.log(res.data.event);
       setEventData(res.data.event);
-      setReplicateLastEvent(res.data.event.replicateLastEvent);
+      setReplicateLastEvent(
+        res.data.event.replicateLastEvent &&
+          res.data.event.category !== "Established Group Class"
+      );
     } catch (err) {
       console.error("Error fetching event data", err);
     }

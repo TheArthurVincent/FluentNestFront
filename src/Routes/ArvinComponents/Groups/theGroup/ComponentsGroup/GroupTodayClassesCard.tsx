@@ -43,7 +43,6 @@ export const GroupTodayClassesCard: FC<GroupTodayClassesCardProps> = ({
         }
       );
 
-      console.log("Next class response:", response.data);
       if (response.data.nextEvent) {
         setNXTCLASS(response.data.nextEvent);
       }

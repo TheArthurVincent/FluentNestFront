@@ -19,7 +19,13 @@ type MainInfoClassProps = {
   allowedToEdit?: boolean;
 };
 
-// ---------- estilos reaproveitando a ideia do SimpleAIGenerator ----------
+type FreeEventItem = {
+  _id: string;
+  date: string; // "2025-12-17"
+  time: string; // "10:00"
+};
+
+// ---------- estilos ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -68,6 +74,25 @@ const primaryBtnStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
+// tabs
+const tabsRowStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 8,
+  padding: "0 12px 12px 12px",
+};
+
+const tabBtnStyle = (active: boolean): React.CSSProperties => ({
+  borderRadius: 10,
+  border: `1px solid ${active ? partnerColor() : "#e2e8f0"}`,
+  background: active ? "rgba(84,191,8,0.10)" : "#fff",
+  color: "#0f172a",
+  padding: "10px 10px",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: active ? 700 : 600,
+});
+
 const MainInfoClass: FC<MainInfoClassProps> = ({
   headers,
   evendId,
@@ -79,29 +104,50 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // estados para edição
+  // modal "Reagendar"
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const [rescheduleTab, setRescheduleTab] = useState<"fixed" | "free">("fixed");
+  const [rescheduling, setRescheduling] = useState(false);
+
+  // estados para edição (modal antigo)
   const [date, setDate] = useState<string>(event?.date || "");
   const [time, setTime] = useState<string>(event?.time || "");
   const [link, setLink] = useState<string>(event?.link || "");
   const [category, setCategory] = useState<string>(event?.category || "");
   const [duration, setDuration] = useState<number | "">(event?.duration ?? "");
 
+  // estados para reagendar (tab livre)
+  const [newDate, setNewDate] = useState<string>(event?.date || "");
+  const [newTime, setNewTime] = useState<string>(event?.time || "");
+
+  // estados para tab "fixo"
+  const [loadingEventsFree, setLoadingEventsFree] = useState(false);
+  const [eventsFreeArray, setEventsFreeArray] = useState<FreeEventItem[]>([]);
+  const [selectedFreeEvent, setSelectedFreeEvent] =
+    useState<FreeEventItem | null>(null);
+
   // presets de duração
   const presetOptions = [30, 45, 60, 90];
   const [preset, setPreset] = useState<string>("");
 
-  // sincroniza quando o evento mudar
   useEffect(() => {
     setDate(event?.date || "");
     setTime(event?.time || "");
+    setLink(event?.link || "");
     const d = event?.duration ?? "";
     setDuration(d);
-    if (typeof d === "number" && presetOptions.includes(d)) {
+
+    if (typeof d === "number" && presetOptions.includes(d))
       setPreset(String(d));
-    } else {
-      setPreset("custom");
-    }
+    else setPreset("custom");
+
     setCategory(event?.category || "");
+
+    setNewDate(event?.date || "");
+    setNewTime(event?.time || "");
+
+    // ao trocar evento, limpa seleção do fixo
+    setSelectedFreeEvent(null);
   }, [event]);
 
   const updateMainInfo = async (id: string) => {
@@ -122,9 +168,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         { headers: headers as any }
       );
 
-      if (response) {
-        fetchEventData();
-      }
+      if (response) fetchEventData();
     } catch (error) {
       console.error("Erro ao atualizar informações do evento", error);
     } finally {
@@ -132,17 +176,66 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const rescheduleEvent = async (
+    id: string,
+    forced?: { date: string; time: string; idNew?: string }
+  ) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/event-reschedule/${id}`,
+        { forced },
+        { headers: headers as any }
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao reagendar o evento", error);
+    } finally {
+      setRescheduling(false);
+    }
   };
 
+  const [allowedToReschedule, setAllowedToReschedule] = useState(false);
+  const fetchEventsFree = async () => {
+    const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "false");
+    if (!loggedIn) return;
+
+    try {
+      setLoadingEventsFree(true);
+
+      const response = await axios.get(
+        `${backDomain}/api/v1/free-events/${loggedIn.id || loggedIn._id}`,
+        { headers: headers as any }
+      );
+
+      const arr = (response.data?.events || []) as FreeEventItem[];
+      setAllowedToReschedule(response.data?.allowedToReschedule || false);
+      setEventsFreeArray(arr);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingEventsFree(false);
+    }
+  };
+
+  const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     if (!saving) setIsModalOpen(false);
   };
-
   const handleSave = async () => {
     await updateMainInfo(evendId);
     setIsModalOpen(false);
+  };
+
+  const openRescheduleModal = () => {
+    fetchEventsFree();
+    setRescheduleTab("fixed");
+    setSelectedFreeEvent(null);
+    setIsRescheduleOpen(true);
+  };
+
+  const closeRescheduleModal = () => {
+    if (!rescheduling) setIsRescheduleOpen(false);
   };
 
   const renderModal = () => {
@@ -152,7 +245,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     return createPortal(
       <div style={overlayStyle}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
           <div
             style={{
               padding: "20px 16px",
@@ -167,9 +259,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             Editar informações da aula
           </div>
 
-          {/* Corpo */}
           <div style={{ padding: 12, display: "grid", gap: 12 }}>
-            {/* Data */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>Data</label>
               <input
@@ -181,7 +271,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               />
             </div>
 
-            {/* Horário */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>Horário</label>
               <input
@@ -192,7 +281,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 style={inputStyle}
               />
             </div>
-            {/* Link */}
+
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Link da aula
@@ -206,7 +295,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               />
             </div>
 
-            {/* Categoria */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Categoria
@@ -215,10 +303,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 disabled={saving}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                style={{
-                  ...inputStyle,
-                  paddingRight: 24,
-                }}
+                style={{ ...inputStyle, paddingRight: 24 }}
               >
                 <option value="">Selecione uma categoria...</option>
                 {categoryList.map((cat) => {
@@ -228,17 +313,16 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         {cat.text}
                       </option>
                     );
+                  return null;
                 })}
               </select>
             </div>
 
-            {/* Duração */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Duração (minutos)
               </label>
 
-              {/* Select de presets */}
               <select
                 disabled={saving}
                 value={preset}
@@ -247,9 +331,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   setPreset(v);
                   if (v !== "custom" && v !== "") {
                     const num = Number(v);
-                    if (!Number.isNaN(num)) {
-                      setDuration(num);
-                    }
+                    if (!Number.isNaN(num)) setDuration(num);
                   }
                 }}
                 style={{ ...inputStyle, paddingRight: 24 }}
@@ -263,7 +345,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 <option value="custom">Outro (digitar)</option>
               </select>
 
-              {/* Input numérico */}
               <input
                 type="number"
                 min={1}
@@ -271,13 +352,10 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 value={duration === "" ? "" : duration}
                 onChange={(e) => {
                   const val = e.target.value;
-                  if (val === "") {
-                    setDuration("");
-                  } else {
+                  if (val === "") setDuration("");
+                  else {
                     const num = Number(val);
-                    if (!Number.isNaN(num)) {
-                      setDuration(num);
-                    }
+                    if (!Number.isNaN(num)) setDuration(num);
                   }
                   setPreset("custom");
                 }}
@@ -285,19 +363,13 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 style={inputStyle}
               />
 
-              <span
-                style={{
-                  fontSize: 11,
-                  color: "#94a3b8",
-                }}
-              >
+              <span style={{ fontSize: 11, color: "#94a3b8" }}>
                 Escolha uma duração padrão ou selecione &quot;Outro&quot; e
                 digite um valor manualmente.
               </span>
             </div>
           </div>
 
-          {/* Footer */}
           {allowedToEdit && (
             <div
               style={{
@@ -330,6 +402,310 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
+  const FreeEventItemButton = ({
+    item,
+    selected,
+    onClick,
+  }: {
+    item: FreeEventItem;
+    selected: boolean;
+    onClick: () => void;
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={rescheduling}
+      style={{
+        width: "100%",
+        textAlign: "left",
+        padding: "10px 12px",
+        borderRadius: 8,
+        color: "#0f172a",
+        display:
+          new Date(item.date + "T" + (item.time || "00:00")) < new Date()
+            ? "none"
+            : "block",
+        border: `1px solid ${selected ? partnerColor() : "#e2e8f0"}`,
+        background: selected ? "rgba(84,191,8,0.12)" : "#fff",
+        cursor: "pointer",
+        fontSize: 13,
+        fontWeight: selected ? 700 : 500,
+      }}
+    >
+      {(() => {
+        // item.date = "yyyy-mm-dd"
+        const [y, m, d] = item.date.slice(0, 10).split("-").map(Number);
+        const [hh, mm] = (item.time || "00:00").split(":").map(Number);
+
+        // Data local (sem UTC shift)
+        const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
+
+        const dateWithWeekday = dt.toLocaleDateString("pt-BR", {
+          weekday: "short",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+
+        const timeBR = dt.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        return `${dateWithWeekday} • ${timeBR}`;
+      })()}
+    </button>
+  );
+
+  // modal Reagendar
+  const renderRescheduleModal = () => {
+    if (!isRescheduleOpen) return null;
+    if (typeof document === "undefined") return null;
+
+    return createPortal(
+      <div style={overlayStyle} onClick={closeRescheduleModal}>
+        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+          <div
+            style={{
+              padding: "20px 16px 10px 16px",
+              maxWidth: "fit-content",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 16,
+              fontWeight: 600,
+            }}
+          >
+            Reagendar aula
+          </div>
+
+          {/* {allowedToEdit && (
+            <div style={tabsRowStyle}>
+              <button
+                type="button"
+                style={tabBtnStyle(rescheduleTab === "fixed")}
+                onClick={() => setRescheduleTab("fixed")}
+                disabled={rescheduling}
+              >
+                Horários fixos
+              </button>
+              <button
+                type="button"
+                style={tabBtnStyle(rescheduleTab === "free")}
+                onClick={() => setRescheduleTab("free")}
+                disabled={rescheduling}
+              >
+                Horário livre
+              </button>
+            </div>
+          )} */}
+          {!allowedToReschedule ? (
+            <div
+              style={{
+                padding: 12,
+              }}
+            >
+              Você excedeu o limite de reagendamentos.
+            </div>
+          ) : (
+            <div style={{ padding: 12, display: "grid", gap: 12 }}>
+              {rescheduleTab === "fixed" ? (
+                <>
+                  <div style={{ fontSize: 13, color: "#334155" }}>
+                    Selecione um horário disponível abaixo.
+                  </div>
+
+                  {loadingEventsFree ? (
+                    <div
+                      style={{
+                        border: "1px dashed #e2e8f0",
+                        borderRadius: 10,
+                        padding: 14,
+                        color: "#64748b",
+                        fontSize: 13,
+                      }}
+                    >
+                      Carregando horários...
+                    </div>
+                  ) : eventsFreeArray.length === 0 ? (
+                    <div
+                      style={{
+                        border: "1px dashed #e2e8f0",
+                        borderRadius: 10,
+                        padding: 14,
+                        color: "#64748b",
+                        fontSize: 13,
+                      }}
+                    >
+                      Nenhum horário disponível encontrado.
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: "grid",
+                        gap: 10,
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        paddingRight: 4,
+                      }}
+                    >
+                      {eventsFreeArray.map((it) => (
+                        <FreeEventItemButton
+                          key={it._id}
+                          item={it}
+                          selected={selectedFreeEvent?._id === it._id}
+                          onClick={() => setSelectedFreeEvent(it)}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {/* confirmação irreversível */}
+                  {selectedFreeEvent && (
+                    <div
+                      style={{
+                        marginTop: 6,
+                        border: "1px solid rgba(239,68,68,0.25)",
+                        background: "rgba(239,68,68,0.06)",
+                        borderRadius: 10,
+                        padding: 12,
+                        display: "grid",
+                        gap: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 800,
+                          color: "#7f1d1d",
+                        }}
+                      >
+                        Reagendar para esse horário (esta ação não pode ser
+                        desfeita)
+                      </div>
+                      <div style={{ fontSize: 13, color: "#0f172a" }}>
+                        <b>{selectedFreeEvent.date}</b> às{" "}
+                        <b>{selectedFreeEvent.time}</b>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          marginTop: 6,
+                          marginLeft: "auto",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          disabled={rescheduling}
+                          onClick={async () => {
+                            setSelectedFreeEvent(null);
+                          }}
+                          style={{
+                            ...primaryBtnStyle,
+                            border: "1px solid #eee",
+                            color: "#555",
+                            background: "#fff",
+                            opacity: rescheduling ? 0.7 : 1,
+                          }}
+                        >
+                          Cancelar
+                        </button>{" "}
+                        <button
+                          type="button"
+                          disabled={rescheduling}
+                          onClick={async () => {
+                            // ação irreversível: reage na hora
+                            await rescheduleEvent(evendId, {
+                              date: selectedFreeEvent.date,
+                              time: selectedFreeEvent.time,
+                              idNew: selectedFreeEvent._id,
+                            });
+                            setIsRescheduleOpen(false);
+                          }}
+                          style={{
+                            ...primaryBtnStyle,
+                            background: partnerColor(),
+                            opacity: rescheduling ? 0.7 : 1,
+                          }}
+                        >
+                          {rescheduling ? "Reagendando..." : "REAGENDAR AGORA"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <label style={{ fontSize: 12, color: "#334155" }}>
+                      Data
+                    </label>
+                    <input
+                      type="date"
+                      disabled={rescheduling}
+                      value={newDate}
+                      onChange={(e) => setNewDate(e.target.value)}
+                      style={inputStyle}
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gap: 6 }}>
+                    <label style={{ fontSize: 12, color: "#334155" }}>
+                      Horário
+                    </label>
+                    <input
+                      type="time"
+                      disabled={rescheduling}
+                      value={newTime}
+                      onChange={(e) => setNewTime(e.target.value)}
+                      style={inputStyle}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          {/* Footer com Salvar (não faz nada) e Cancelar */}
+          <div
+            style={{
+              padding: 12,
+              borderTop: "1px solid #e2e8f0",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              style={ghostBtnStyle}
+              onClick={closeRescheduleModal}
+              disabled={rescheduling}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                // por enquanto não faz nada
+              }}
+              style={{
+                ...primaryBtnStyle,
+                opacity: 0.7,
+                cursor: "not-allowed",
+              }}
+              disabled
+              title="Por enquanto este botão não faz nada"
+            >
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
+  };
+
   if (!event) return null;
 
   return (
@@ -352,6 +728,22 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         >
           <span>Informações do Evento</span>
         </div>
+        {event.rescheduledDescription && event.rescheduled && (
+          <div
+            style={{
+              display: "grid",
+              background: `linear-gradient(to right, ${partnerColor()}bb, ${partnerColor()}ff)`,
+              color: "#fff",
+              textAlign: "center",
+              padding: 8,
+              borderRadius: 6,
+            }}
+          >
+            <span style={{ fontWeight: 600, fontSize: 14 }}>
+              {event.rescheduledDescription}
+            </span>
+          </div>
+        )}
         {event.link && (
           <a
             href={event.link}
@@ -373,6 +765,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             Link da Sala
           </a>
         )}
+
         <div
           style={{
             marginTop: 12,
@@ -382,116 +775,93 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             gap: 8,
           }}
         >
-          {/* Aluno (somente mobile) */}
           {!isDesktop && (
             <div style={{ display: "grid" }}>
-              <span
-                style={{
-                  fontSize: 12,
-                  color: "#606060",
-                }}
-              >
-                Aluno
-              </span>
-              <span
-                style={{
-                  fontWeight: 600,
-                  color: "#030303",
-                  fontSize: 14,
-                }}
-              >
+              <span style={{ fontSize: 12, color: "#606060" }}>Aluno</span>
+              <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
                 {event.student}
               </span>
             </div>
           )}
 
-          {/* Data e horário */}
           <div style={{ display: "grid" }}>
-            <span
-              style={{
-                fontSize: 12,
-                color: "#606060",
-              }}
-            >
+            <span style={{ fontSize: 12, color: "#606060" }}>
               Data e horário
             </span>
-            <span
-              style={{
-                fontWeight: 600,
-                color: "#030303",
-                fontSize: 14,
-              }}
-            >
+            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
               {event.date} ({event.time})
             </span>
           </div>
 
-          {/* Duração */}
           <div style={{ display: "grid" }}>
-            <span
-              style={{
-                fontSize: 12,
-                color: "#606060",
-              }}
-            >
-              Duração
-            </span>
-            <span
-              style={{
-                fontWeight: 600,
-                color: "#030303",
-                fontSize: 14,
-              }}
-            >
+            <span style={{ fontSize: 12, color: "#606060" }}>Duração</span>
+            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
               {event.duration} min
             </span>
           </div>
 
-          {/* Categoria */}
           <div style={{ display: "grid" }}>
-            <span
-              style={{
-                fontSize: 12,
-                color: "#606060",
-              }}
-            >
-              Categoria
-            </span>
-            <span
-              style={{
-                fontWeight: 600,
-                color: "#030303",
-                fontSize: 14,
-              }}
-            >
+            <span style={{ fontSize: 12, color: "#606060" }}>Categoria</span>
+            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
               {categoryList.find((c) => c.value === event.category)?.text ||
                 "-"}
             </span>
           </div>
         </div>
-        {/* Botão para abrir o modal de edição */}
-        {allowedToEdit && (
-          <button
-            onClick={openModal}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: partnerColor(),
-              color: "#fff",
-              maxWidth: "fit-content",
-              border: "none",
-              marginLeft: "auto",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            Editar informações
-          </button>
-        )}
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          {event.status == "marcado" &&
+            event.category !== "Established Group Class" && (
+              <button
+                onClick={openRescheduleModal}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  maxWidth: "fit-content",
+                  border: "none",
+                  marginLeft: "auto",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                Reagendar
+              </button>
+            )}
+
+          {allowedToEdit && (
+            <button
+              onClick={openModal}
+              style={{
+                padding: "8px 16px",
+                backgroundColor: partnerColor(),
+                color: "#fff",
+                maxWidth: "fit-content",
+                border: "none",
+                marginLeft: "auto",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Editar informações
+            </button>
+          )}
+        </div>
       </div>
 
       {renderModal()}
+      {renderRescheduleModal()}
     </>
   );
 };

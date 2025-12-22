@@ -192,7 +192,7 @@ const EventVideo: FC<EventVideoProps> = ({
             <button
               onClick={handleSave}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !video.trim()}
+              disabled={saving}
             >
               {saving ? "Salvando..." : "Salvar vídeo"}
             </button>

@@ -516,7 +516,7 @@ const SentencesEditor: React.FC<Props> = ({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -528,9 +528,8 @@ const SentencesEditor: React.FC<Props> = ({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | SENTENÇAS
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
 
         <span className="se-actions">

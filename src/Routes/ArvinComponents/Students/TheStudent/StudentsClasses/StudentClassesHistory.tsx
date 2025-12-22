@@ -1,21 +1,18 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { Outlet, useParams } from "react-router-dom";
 import { HeadersProps } from "../../../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  truncateString,
-} from "../../../../../Resources/UniversalComponents";
+import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { newArvinTitleStyle } from "../../Students";
 import { partnerColor } from "../../../../../Styles/Styles";
-import { NotebookIcon } from "@phosphor-icons/react";
 import {
   categoryList,
   getEmbedUrl,
 } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
-import { cardBase, cardTitle, pillStatus } from "../types/studentPage.styles";
+import { cardBase } from "../types/studentPage.styles";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
@@ -23,13 +20,12 @@ type StudentClassesHistoryProps = HeadersProps & {
 
 interface EventFromApi {
   _id: string;
-  board?: string;
+
+  replenish?: boolean;
+  rescheduled?: boolean;
+  rescheduledDescription?: string;
+
   category?: string;
-  checkList1?: boolean;
-  checkList2?: boolean;
-  checkList3?: boolean;
-  checkList4?: boolean;
-  checkList5?: boolean;
   createdAt?: string;
   date: string;
   description?: string;
@@ -62,6 +58,7 @@ interface HomeworkFromApi {
   board?: string;
   status?: string;
   studentName?: string;
+  description?: string;
   [key: string]: unknown;
 }
 
@@ -77,6 +74,126 @@ interface EventsResponse {
   };
 }
 
+type ClassStatus = "realizada" | "desmarcado" | "reagendada";
+type StatusFilter = ClassStatus | "all";
+
+function useLockBodyScroll(locked: boolean) {
+  useEffect(() => {
+    if (!locked) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [locked]);
+}
+
+function ModalInBody({
+  open,
+  title,
+  onClose,
+  children,
+}: {
+  open: boolean;
+  title?: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, onClose]);
+
+  useLockBodyScroll(open);
+
+  if (!open) return null;
+
+  return ReactDOM.createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title || "Modal"}
+      onMouseDown={(e) => {
+        // fecha clicando fora do conteúdo
+        if (e.target === e.currentTarget) onClose();
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(17, 24, 39, 0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        zIndex: 9999,
+      }}
+    >
+      <div
+        onMouseDown={(e) => e.stopPropagation()}
+        style={{
+          width: "min(920px, 100%)",
+          borderRadius: 16,
+          background: "#FFFFFF",
+          border: "1px solid #E5E7EB",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+          overflow: "hidden",
+          fontFamily: "Plus Jakarta Sans",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid #E5E7EB",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: "#111827",
+              lineHeight: "120%",
+            }}
+          >
+            {title || "Detalhes da aula"}
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            style={{
+              border: "1px solid #E5E7EB",
+              background: "#FFFFFF",
+              borderRadius: 999,
+              padding: "6px 10px",
+              cursor: "pointer",
+              fontWeight: 800,
+              color: "#111827",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        <div style={{ padding: 16 }}>{children}</div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   headers,
   isDesktop,
@@ -89,13 +206,16 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   >({});
   const [loadingEventsList, setLoadingEventsList] = useState<boolean>(false);
 
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [openEventId, setOpenEventId] = useState<string | null>(null);
   const [studentName, setStudentName] = useState<string>("");
 
-  // 🔍 NOVO: termo de busca por descrição
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
+  const [onlyReplenish, setOnlyReplenish] = useState<boolean>(false);
+
+  // ✅ modal
+  const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!studentId) return;
@@ -107,20 +227,15 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     try {
       const response = await axios.get<EventsResponse>(
         `${backDomain}/api/v1/event-one-student-pag/${studentId}`,
-        {
-          headers: headers as any,
-        }
+        { headers: headers as any }
       );
+
       setStudentName(response.data.studentName || "");
-      console.log(response.data.events, "Histórico de aulas Individuais");
       setEventsList(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
-      setOpenEventId(null);
 
-      setTimeout(() => {
-        setLoadingEventsList(false);
-      }, 100);
+      setTimeout(() => setLoadingEventsList(false), 100);
     } catch (error) {
       notifyAlert("Erro ao buscar histórico de aulas Individuais");
       console.log(error, "Erro ao buscar histórico de aulas Individuais");
@@ -131,7 +246,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   useEffect(() => {
     if (!studentId) return;
     handleSeeClassesHistory();
-    console.log("studentId mudou:", studentId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
 
   const formatDate = (dateStr?: string) => {
@@ -147,19 +262,51 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     }
   };
 
-  // 🔍 NOVO: eventos filtrados pela descrição
-  const filteredEvents = useMemo(() => {
-    if (!searchTerm.trim()) return eventsList;
-    const term = searchTerm.toLowerCase();
-    return eventsList.filter((e) =>
-      (e.description || "").toLowerCase().includes(term)
-    );
-  }, [eventsList, searchTerm]);
+  const normalizeStatus = (raw?: unknown): string => {
+    const s = String(raw || "")
+      .trim()
+      .toLowerCase();
+    return s || "";
+  };
 
-  // quando mudar o filtro, volta pra página 0
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      realizada: 0,
+      desmarcado: 0,
+      reagendada: 0,
+      marcado: 0,
+    };
+    for (const e of eventsList) {
+      const s = normalizeStatus(e.status);
+      if (counts[s] !== undefined) counts[s] += 1;
+    }
+    return counts;
+  }, [eventsList]);
+
+  const filteredEvents = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const status = statusFilter;
+
+    return eventsList.filter((e) => {
+      const eStatus = normalizeStatus(e.status);
+
+      const statusOk =
+        status === "all" ? true : eStatus === normalizeStatus(status);
+
+      const searchOk = !term
+        ? true
+        : (e.description || "").toLowerCase().includes(term);
+
+      const replenishValue = Boolean(e.replenish) || Boolean(e.rescheduled);
+      const replenishOk = onlyReplenish ? replenishValue : true;
+
+      return statusOk && searchOk && replenishOk;
+    });
+  }, [eventsList, searchTerm, statusFilter, onlyReplenish]);
+
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchTerm]);
+  }, [searchTerm, statusFilter, onlyReplenish]);
 
   const totalEvents = filteredEvents.length;
   const totalPages = totalEvents === 0 ? 1 : Math.ceil(totalEvents / pageSize);
@@ -183,25 +330,84 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
   };
 
-  const toggleAccordion = (id: string) => {
-    setOpenEventId((prev) => (prev === id ? null : id));
-  };
+  const SwitchReplenish = ({
+    value,
+    onChange,
+  }: {
+    value: boolean;
+    onChange: (v: boolean) => void;
+  }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <span style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}>
+        Reagendadas:
+      </span>
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        style={{
+          width: 44,
+          height: 24,
+          borderRadius: 999,
+          border: `1px solid ${value ? partnerColor() : "#E5E7EB"}`,
+          background: value ? `${partnerColor()}20` : "#F3F4F6",
+          position: "relative",
+          cursor: "pointer",
+          padding: 0,
+        }}
+        aria-pressed={value}
+        aria-label="Mostrar apenas aulas reagendadas"
+      >
+        <span
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 999,
+            background: value ? partnerColor() : "#9CA3AF",
+            position: "absolute",
+            top: 2,
+            left: value ? 22 : 2,
+            transition: "left 180ms ease",
+          }}
+        />
+      </button>
+    </div>
+  );
 
-  const getHomeworkHtml = (hw: HomeworkFromApi): string => {
+  const renderStatusPill = (event: EventFromApi) => {
+    const s = normalizeStatus(event.status);
+
+    const statusBg =
+      s == "desmarcado"
+        ? "rgba(255, 221, 221, 0.41)"
+        : s == "marcado"
+        ? "#cbd6f388"
+        : `${partnerColor()}20`;
+
+    const statusColor =
+      s == "desmarcado"
+        ? "rgba(220, 38, 38, 0.8)"
+        : s == "marcado"
+        ? "#1e40af"
+        : partnerColor();
+
     return (
-      (hw.homework as string) ||
-      (hw.content as string) ||
-      (hw.board as string) ||
-      ""
+      <span
+        style={{
+          fontSize: 10,
+          padding: "4px 8px",
+          borderRadius: 6,
+          backgroundColor: statusBg,
+          color: statusColor,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {event.status}
+      </span>
     );
   };
 
   return (
-    <div
-      style={{
-        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
-      }}
-    >
+    <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
       {isDesktop && (
         <div
           style={{
@@ -221,13 +427,12 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             }}
           >
             <span style={newArvinTitleStyle}>
-              Histórico de Aulas {studentName && `de ${studentName}`}
+              Histórico de Aulas de {studentName && `${studentName}`}
             </span>
           </section>
         </div>
       )}
 
-      {/* CARD PRINCIPAL USANDO cardBase */}
       <div
         style={{
           ...cardBase,
@@ -238,6 +443,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       >
         <a
           href={`/students/${studentId}`}
+          target="_blank"
+          rel="noreferrer"
           style={{
             marginTop: 14,
             display: "block",
@@ -251,16 +458,11 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           }}
         >
           Ver aluno
-          <i
-            style={{
-              marginLeft: 8,
-            }}
-            className="fa fa-chevron-right"
-          />
+          <i style={{ marginLeft: 8 }} className="fa fa-chevron-right" />
         </a>
+
         <br />
 
-        {/* Controles de paginação + filtro */}
         <div
           style={{
             display: "flex",
@@ -268,7 +470,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             justifyContent: "space-between",
             alignItems: isDesktop ? "center" : "flex-start",
             marginBottom: 10,
-            gap: 8,
+            gap: 10,
           }}
         >
           <div
@@ -277,20 +479,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               flexDirection: "column",
               gap: 6,
               flex: 1,
+              maxWidth: 300,
             }}
           >
-            <span
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                color: "#4B5563",
-              }}
-            >
-              Aulas exibidas: {paginatedEvents.length}{" "}
-              {searchTerm && `(filtrado de ${totalEvents})`}
-            </span>
-
-            {/* 🔍 Input de busca por descrição */}
             <input
               type="text"
               value={searchTerm}
@@ -298,13 +489,13 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               placeholder="Buscar por descrição da aula..."
               style={{
                 fontFamily: "Plus Jakarta Sans",
-                fontWeight: 400,
                 fontSize: 14,
                 borderRadius: 8,
                 border: "1px solid #E5E7EB",
                 padding: "6px 10px",
                 backgroundColor: "#F9FAFB",
                 outline: "none",
+                maxWidth: 300,
               }}
             />
           </div>
@@ -312,39 +503,68 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           <div
             style={{
               display: "flex",
+              flexWrap: "wrap",
               alignItems: "center",
-              gap: 8,
+              gap: 10,
             }}
           >
-            <span
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                color: "#4B5563",
-              }}
-            >
-              Mostrar:
-            </span>
-            <select
-              value={pageSize}
-              onChange={(e) => handleChangePageSize(Number(e.target.value))}
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                borderRadius: 8,
-                border: "1px solid #E5E7EB",
-                padding: "4px 8px",
-                backgroundColor: "#F9FAFB",
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
+            <SwitchReplenish
+              value={onlyReplenish}
+              onChange={setOnlyReplenish}
+            />
+
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select
+                value={statusFilter}
+                onChange={(e) =>
+                  setStatusFilter(e.target.value as StatusFilter)
+                }
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  borderRadius: 8,
+                  border: "1px solid #E5E7EB",
+                  padding: "6px 10px",
+                  backgroundColor: "#F9FAFB",
+                }}
+              >
+                <option value="marcado">
+                  Marcada ({statusCounts.desmarcado})
+                </option>
+                <option value="realizada">
+                  Realizada ({statusCounts.realizada})
+                </option>
+
+                <option value="desmarcado">
+                  Desmarcada ({statusCounts.desmarcado})
+                </option>
+                <option value="reagendada">
+                  Reagendada ({statusCounts.reagendada})
+                </option>
+                <option value="all">Todas</option>
+              </select>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <select
+                value={pageSize}
+                onChange={(e) => handleChangePageSize(Number(e.target.value))}
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  maxWidth: 10,
+                  borderRadius: 8,
+                  border: "1px solid #E5E7EB",
+                  padding: "6px 10px",
+                  backgroundColor: "#F9FAFB",
+                }}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Lista de eventos com acordeon */}
         {loadingEventsList && (
           <p
             style={{
@@ -371,11 +591,9 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           </p>
         )}
 
+        {/* ✅ Clique abre modal (no body) com vídeo + descrição + botão */}
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
-            const isOpen = openEventId === event._id;
-            const homeworks = homeworkByEvent[event._id] || [];
-
             return (
               <div
                 key={event._id}
@@ -386,274 +604,124 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   marginBottom: 4,
                 }}
               >
-                {/* Cabeçalho do acordeon */}
                 <button
                   type="button"
-                  onClick={() => toggleAccordion(event._id)}
+                  onClick={() => setSelectedEvent(event)}
                   style={{
                     all: "unset",
                     width: "100%",
                     cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    display: "grid",
+                    gap: 10,
                   }}
+                  aria-label={`Abrir detalhes da aula: ${
+                    event.lessonTitle ?? "Aula Individual"
+                  }`}
                 >
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: 2,
-                    }}
-                  >
-                    {/* <span>{event.title ? event.title : "Aula Individual"}</span> */}
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
-                        color: "#111827",
-                      }}
-                    >
-                      {event?.lessonTitle
-                        ? event.lessonTitle
-                        : "Aula Individual"}{" "}
-                      - {formatDate(event.date)} — {event.time || "--:--"}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {event.category && (
-                      <div
-                        style={{
-                          ...pillStatus,
-                          backgroundColor:
-                            event.category == "Established Group Class"
-                              ? "#E0E7FF"
-                              : `${partnerColor()}20`,
-                          color:
-                            event.category == "Established Group Class"
-                              ? "#000"
-                              : partnerColor(),
-                          marginRight: 8,
-                        }}
-                      >
-                        {categoryList.find(
-                          (cat) => cat.value === event.category
-                        )?.text || event.category}
-                      </div>
-                    )}
-
-                    {typeof event.duration === "number" && (
+                  <div style={{ display: "grid", gap: "0.75rem" }}>
+                    <div style={{ display: "grid", gap: 2 }}>
                       <span
                         style={{
+                          fontSize: 12,
                           fontFamily: "Plus Jakarta Sans",
-                          fontWeight: 500,
-                          color: "#4B5563",
+                          color: "#111827",
                         }}
                       >
-                        {event.duration} min
+                        {event?.lessonTitle
+                          ? event.lessonTitle
+                          : "Aula Individual"}{" "}
                       </span>
-                    )}
+                    </div>
 
-                    <span
-                      style={{
-                        ...pillStatus,
-                        backgroundColor:
-                          event.status !== "desmarcado"
-                            ? `${partnerColor()}20`
-                            : "rgba(255, 221, 221, 0.41)",
-                        color:
-                          event.status !== "desmarcado"
-                            ? partnerColor()
-                            : "rgba(220, 38, 38, 0.8)",
-                      }}
-                    >
-                      {event.status}
-                    </span>
-
-                    <span
-                      style={{
-                        transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-                        transition: "transform 0.15s ease-out",
-                      }}
-                    >
-                      ▶
-                    </span>
-                  </div>
-                </button>
-
-                {/* Conteúdo do acordeon */}
-                {isOpen && (
-                  <div
-                    style={{
-                      borderTop: "1px solid #E5E7EB",
-                      marginTop: 10,
-                      paddingTop: 10,
-                      display: "grid",
-                      gap: 10,
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 400,
-                      color: "#111827",
-                    }}
-                  >
                     <div
                       style={{
                         display: "flex",
-                        marginBottom: 8,
-                        justifyContent: "space-between",
                         alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: 10,
+                        flexWrap: "wrap",
                       }}
                     >
-                      <p
-                        style={{
-                          margin: 0,
-                          color: "#4B5563",
-                        }}
-                      >
-                        <strong>Descrição: </strong>
-                        {event.description ? event.description : "-"}
-                      </p>
-                      <a
-                        href={`/my-calendar/event/${event._id}`}
-                        style={{
-                          display: "block",
-                          fontWeight: 700,
-                          textAlign: "right",
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          textTransform: "uppercase",
-                          alignItems: "center",
-                          gap: 6,
-                        }}
-                      >
-                        Ver Evento
-                        <i
-                          style={{
-                            marginLeft: 8,
-                          }}
-                          className="fa fa-chevron-right"
-                        />
-                      </a>
-                    </div>
-
-                    {event.video && (
-                      <div style={{ display: "grid", gap: 6 }}>
-                        <div
-                          style={{
-                            borderRadius: 8,
-                            overflow: "hidden",
-                            border: "1px solid #E5E7EB",
-                          }}
-                        >
-                          <IFrameVideoBlog src={getEmbedUrl(event.video)} />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* HOMEWORK */}
-                    {homeworks.length > 0 && (
                       <div
                         style={{
-                          borderTop: "1px solid #E5E7EB",
-                          paddingTop: 10,
-                          display: "grid",
+                          display: "flex",
+                          alignItems: "center",
                           gap: 8,
+                          flexWrap: "wrap",
                         }}
                       >
-                        <div style={cardTitle}>
-                          <NotebookIcon
-                            size={20}
-                            color={"#111827"}
-                            weight="bold"
-                          />
-                          <span>Trabalhos de casa</span>
-                        </div>
+                        {event.category && (
+                          <div
+                            style={{
+                              fontSize: 10,
+                              color:
+                                event.category === "Established Group Class"
+                                  ? "#000"
+                                  : partnerColor(),
+                              marginRight: 8,
+                            }}
+                          >
+                            {categoryList.find(
+                              (cat) => cat.value === event.category
+                            )?.text || event.category}
+                          </div>
+                        )}
 
-                        <div
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            color: "#030303",
-                            maxWidth: "100%",
-                            maxHeight: 150,
-                            padding: "4px 0",
-                            overflowY: "auto",
-                            scrollbarColor: `${partnerColor()}50 #FFFFFF`,
-                            scrollbarWidth: "thin",
-                          }}
-                        >
-                          {homeworks.map((hw) => {
-                            const html = getHomeworkHtml(hw);
+                        {typeof event.duration === "number" && (
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontFamily: "Plus Jakarta Sans",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {event.duration} min | {formatDate(event.date)} |{" "}
+                            {event.time || "--:--"}
+                          </span>
+                        )}
 
-                            return (
-                              <div key={hw._id} style={{ marginBottom: 12 }}>
-                                {hw.title && (
-                                  <div
-                                    style={{
-                                      fontWeight: 600,
-                                      marginBottom: 4,
-                                    }}
-                                  >
-                                    {hw.title}
-                                  </div>
-                                )}
-
-                                {html ? (
-                                  <div
-                                    dangerouslySetInnerHTML={{ __html: html }}
-                                  />
-                                ) : (
-                                  <pre
-                                    style={{
-                                      whiteSpace: "pre-wrap",
-                                      color: "#6B7280",
-                                    }}
-                                  >
-                                    <div
-                                      dangerouslySetInnerHTML={{
-                                        __html: hw?.description || "",
-                                      }}
-                                    />{" "}
-                                  </pre>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-
-                        <a
-                          href={`/my-calendar/event/${event._id}`}
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 700,
-                            lineHeight: "100%",
-                            textTransform: "uppercase",
-                            cursor: "pointer",
-                            textDecoration: "none",
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "flex-end",
-                            gap: 8,
-                            color: partnerColor(),
-                          }}
-                        >
-                          <span>Acessar</span>
-                          <i className="fa fa-chevron-right" />
-                        </a>
+                        {renderStatusPill(event)}
                       </div>
-                    )}
+
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          color: partnerColor(),
+                          fontSize: 10,
+                          fontFamily: "Plus Jakarta Sans",
+                          textTransform: "uppercase",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Ver detalhes
+                        <i className="fa fa-chevron-right" />
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  {event.rescheduled && event.rescheduledDescription && (
+                    <span
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 10,
+                        backgroundColor: "#FEF3F2",
+                        padding: "4px 8px",
+                        borderRadius: 6,
+                        display: "inline-block",
+                        color: "#4B5563",
+                        width: "fit-content",
+                      }}
+                    >
+                      {String(event.rescheduledDescription)}
+                    </span>
+                  )}
+                </button>
               </div>
             );
           })}
 
-        {/* Paginação (anterior / próxima) */}
         {totalEvents > 0 && (
           <div
             style={{
@@ -669,6 +737,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
             <span>
               Página {currentPage + 1} de {totalPages}
             </span>
+
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 type="button"
@@ -684,6 +753,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               >
                 Anterior
               </button>
+
               <button
                 type="button"
                 onClick={handleNextPage}
@@ -705,14 +775,150 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       </div>
 
       {isDesktop && (
-        <div
-          style={{
-            minHeight: 200,
-          }}
-        >
+        <div style={{ minHeight: 200 }}>
           <Outlet />
         </div>
       )}
+
+      {/* ✅ MODAL no BODY (Portal) */}
+      <ModalInBody
+        open={Boolean(selectedEvent)}
+        title={selectedEvent?.lessonTitle || "Detalhes da aula"}
+        onClose={() => setSelectedEvent(null)}
+      >
+        {selectedEvent && (
+          <div style={{ display: "grid", gap: 12 }}>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 10,
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                {selectedEvent.category && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: partnerColor(),
+                      fontWeight: 800,
+                    }}
+                  >
+                    {categoryList.find(
+                      (cat) => cat.value === selectedEvent.category
+                    )?.text || selectedEvent.category}
+                  </span>
+                )}
+
+                <span style={{ fontSize: 12, color: "#4B5563" }}>
+                  {typeof selectedEvent.duration === "number"
+                    ? `${selectedEvent.duration} min`
+                    : ""}
+                  {typeof selectedEvent.duration === "number" ? " • " : ""}
+                  {formatDate(selectedEvent.date)} •{" "}
+                  {selectedEvent.time || "--:--"}
+                </span>
+              </div>
+
+              <div>{renderStatusPill(selectedEvent)}</div>
+            </div>
+
+            {selectedEvent.video && (
+              <div
+                style={{
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  border: "1px solid #E5E7EB",
+                }}
+              >
+                <IFrameVideoBlog src={getEmbedUrl(selectedEvent.video)} />
+              </div>
+            )}
+
+            <div
+              style={{
+                border: "1px solid #E5E7EB",
+                borderRadius: 12,
+                padding: 12,
+                background: "#F9FAFB",
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 900, color: "#111827" }}>
+                Descrição
+              </div>
+              <div style={{ marginTop: 6, fontSize: 12, color: "#4B5563" }}>
+                {selectedEvent.description ? selectedEvent.description : "-"}
+              </div>
+            </div>
+
+            {selectedEvent.rescheduled &&
+              selectedEvent.rescheduledDescription && (
+                <div
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontSize: 12,
+                    backgroundColor: "#FEF3F2",
+                    padding: "10px 12px",
+                    borderRadius: 12,
+                    color: "#4B5563",
+                    border: "1px solid #FECACA",
+                  }}
+                >
+                  {String(selectedEvent.rescheduledDescription)}
+                </div>
+              )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                justifyContent: "flex-end",
+                alignItems: "center",
+                marginTop: 2,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedEvent(null)}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: "1px solid #E5E7EB",
+                  background: "#FFFFFF",
+                  cursor: "pointer",
+                  fontWeight: 800,
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              >
+                Fechar
+              </button>
+
+              <a
+                href={`/my-calendar/event/${selectedEvent._id}`}
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 999,
+                  border: `1px solid ${partnerColor()}`,
+                  background: `${partnerColor()}10`,
+                  color: partnerColor(),
+                  cursor: "pointer",
+                  fontWeight: 900,
+                  fontFamily: "Plus Jakarta Sans",
+                  textDecoration: "none",
+                  textTransform: "uppercase",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                Ver evento <i className="fa fa-chevron-right" />
+              </a>
+            </div>
+          </div>
+        )}
+      </ModalInBody>
     </div>
   );
 };

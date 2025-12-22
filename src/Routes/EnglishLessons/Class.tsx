@@ -2253,7 +2253,7 @@ export default function EnglishClassCourse2({
       const g = parseInt(partnerColorHex.substring(2, 4), 16);
       const b = parseInt(partnerColorHex.substring(4, 6), 16);
       pdf.setTextColor(r, g, b);
-      const titleLines = splitTextToSize(safeTitle, maxWidth, 20);
+      const titleLines = splitTextToSize(safeTitle, maxWidth, 25);
       checkPageBreak(titleLines.length * 7);
       pdf.text(titleLines, margin, yPosition);
       yPosition += titleLines.length * 7 + 5;

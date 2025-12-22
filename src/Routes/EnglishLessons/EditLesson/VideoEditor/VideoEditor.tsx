@@ -116,7 +116,7 @@ export default function VideoEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 14,
+            fontSize: 12,
             color: "#0f172a",
             display: "flex",
             alignItems: "center",
@@ -128,9 +128,8 @@ export default function VideoEditor({
             style={{ color: "#0f172a" }}
           />
           {value.subtitle
-            ? truncateString(value.subtitle, 15)
-            : "Adicione  um título"}{" "}
-          | VÍDEO
+            ? truncateString(value.subtitle, 25)
+            : "Adicione  um título"}
         </strong>
 
         <span

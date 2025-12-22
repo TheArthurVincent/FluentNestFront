@@ -1,14 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  updateInfo,
-  updateScore,
-} from "../../../Resources/UniversalComponents";
-import axios from "axios";
-import { partnerColor } from "../../../Styles/Styles";
 import ListOfStudentsToClick from "./ListOfStudents/ListOfStudentsToClick";
-import { ArvinTopBar } from "../ArvinTopSideBar/NewTopSideBar";
 import { Outlet } from "react-router-dom";
 
 type StudentsProps = HeadersProps & {
