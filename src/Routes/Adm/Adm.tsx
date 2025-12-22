@@ -29,7 +29,7 @@ export function Adm({ headers }: HeadersProps) {
     //   value: "0",
     //   tooltip:
     //     "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
-    //   component: <AllStudents id={id} headers={headers} plan={plan} />,
+    // component: <AllStudents id={id} headers={headers} plan={plan} />,
     // },
     // {
     //   title: "Turmas",

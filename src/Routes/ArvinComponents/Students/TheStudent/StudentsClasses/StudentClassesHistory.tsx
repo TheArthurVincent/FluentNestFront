@@ -211,7 +211,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   const [studentName, setStudentName] = useState<string>("");
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [onlyReplenish, setOnlyReplenish] = useState<boolean>(false);
 
   // ✅ modal
@@ -232,6 +232,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
       setStudentName(response.data.studentName || "");
       setEventsList(response.data.events || []);
+      console.log(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
 
@@ -537,9 +538,6 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 <option value="desmarcado">
                   Desmarcada ({statusCounts.desmarcado})
                 </option>
-                <option value="reagendada">
-                  Reagendada ({statusCounts.reagendada})
-                </option>
                 <option value="all">Todas</option>
               </select>
             </div>
@@ -615,7 +613,11 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     gap: 10,
                   }}
                   aria-label={`Abrir detalhes da aula: ${
-                    event.lessonTitle ?? "Aula Individual"
+                    event.status == "desmarcado"
+                      ? `Aula desmarcada de ${event.student}`
+                      : event.lessonTitle
+                      ? event.lessonTitle
+                      : " Aula Individual"
                   }`}
                 >
                   <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -627,9 +629,11 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           color: "#111827",
                         }}
                       >
-                        {event?.lessonTitle
+                        {event.status == "desmarcado"
+                          ? `Aula desmarcada de ${event.student}`
+                          : event.lessonTitle
                           ? event.lessonTitle
-                          : "Aula Individual"}{" "}
+                          : `Aula individual de ${event.student}`}
                       </span>
                     </div>
 

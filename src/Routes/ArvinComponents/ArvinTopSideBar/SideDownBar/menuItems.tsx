@@ -185,14 +185,11 @@ export const menuItems: MenuItem[] = [
   {
     showInBottomBar: !!studentId,
     justBottom: false,
-    label: "Lições de Casa",
+    label: "Materiais",
+    Icon: BookIcon,
+    path: "/teaching-materials",
     orderSideBar: 5,
-    Icon: NotebookIcon,
     isJustStudent: true,
-    path:
-      permissions == "student"
-        ? `/my-homework-and-lessons/${studentId}`
-        : "/homework",
     isMobile: false,
   },
   {
@@ -216,9 +213,12 @@ export const menuItems: MenuItem[] = [
   },
   {
     showInBottomBar: false,
-    label: "Materiais",
-    Icon: BookIcon,
-    path: "/teaching-materials",
+    label: "Lições de Casa",
+    Icon: NotebookIcon,
+    path:
+      permissions == "student"
+        ? `/my-homework-and-lessons/${studentId}`
+        : "/homework",
     isMobile: true,
     justBottom: false,
     orderMobile: 4,
@@ -241,7 +241,6 @@ export const menuItems: MenuItem[] = [
     showInBottomBar: true,
     admin: true,
   },
-
   {
     label: "Sair",
     Icon: SignOutIcon,
