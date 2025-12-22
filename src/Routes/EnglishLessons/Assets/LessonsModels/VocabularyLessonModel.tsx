@@ -244,7 +244,7 @@ export default function VocabularyLesson({
             />
           </button>
         )}
-        <button
+      <button
           onClick={toggleMatchMode}
           style={{
             border: `1px solid ${partnerColor()}`,
