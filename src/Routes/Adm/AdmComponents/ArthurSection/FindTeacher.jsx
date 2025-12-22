@@ -49,6 +49,7 @@ import {
   formatCPF,
   formatPhoneNumber,
 } from "../../../../Resources/Components/ItemsLibrary";
+import AllStudents from "../FindStudentAssets/NewStudent";
 
 export function FindTeacher({ headers, id, plan }) {
   const { UniversalTexts } = useUserContext();
@@ -1283,7 +1284,6 @@ export function FindTeacher({ headers, id, plan }) {
           </Grid>
         </div>
       )}
-
       {/* TÍTULO E PESQUISA */}
       <div
         style={{
@@ -1326,7 +1326,6 @@ export function FindTeacher({ headers, id, plan }) {
           }}
         />
       </div>
-
       {/* TABELA */}
       {!loading ? (
         <div
@@ -1485,7 +1484,6 @@ export function FindTeacher({ headers, id, plan }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
-
       {/* MODAL DE EDIÇÃO */}
       <Dialog
         open={isVisible}
@@ -1986,6 +1984,7 @@ export function FindTeacher({ headers, id, plan }) {
           </div>
         </DialogContent>
       </Dialog>
+      <AllStudents id={id} headers={headers} plan={plan} />,
     </>
   );
 }
