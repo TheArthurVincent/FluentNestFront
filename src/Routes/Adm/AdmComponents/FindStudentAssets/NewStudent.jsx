@@ -74,7 +74,7 @@ export function AllStudents({ headers, id, plan }) {
 
     try {
       const response = await axios.post(
-        `${backDomain}/api/v1/newstudentbyteacher/${id}`,
+        `${backDomain}/api/v1/newteachersubscription/${id}`,
         newStudent,
         { headers }
       );
@@ -120,13 +120,13 @@ export function AllStudents({ headers, id, plan }) {
 
   return (
     <>
-      <FindStudent
+      {/* <FindStudent
         plan={plan}
         isResponsble={false}
         id={id}
         uploadStatus={upload}
         headers={headers}
-      />
+      /> */}
       <div
         style={{
           maxWidth: "90%",
@@ -135,7 +135,7 @@ export function AllStudents({ headers, id, plan }) {
           borderRadius: "4px",
         }}
       >
-        <HOne> Novo Aluno</HOne>
+        <h1>New Teacher</h1>
         <form className="grid-2-1" onSubmit={handleSubmit}>
           {formFields.map(({ label, type, key, required }) => (
             <div key={key}>
