@@ -202,7 +202,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   // ✅ filtro por status (padrão: realizada)
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("realizada");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
 
   // ✅ modal
   const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
@@ -463,9 +463,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                 </option>
                 <option value="desmarcada">
                   Desmarcada ({statusCounts.desmarcada})
-                </option>
-                <option value="reagendada">
-                  Reagendada ({statusCounts.reagendada})
                 </option>
                 <option value="all">Todas</option>
               </select>
