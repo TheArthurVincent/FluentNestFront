@@ -6,7 +6,7 @@ export const levels = () => {
       color: "#f8f8f8",
       flashcards25Reviews: 0,
       homeworkAssignmentsDone: 0,
-      textcolor: "black",
+      textcolor: "white",
       backgroundcolor: "#000",
       card: "https://ik.imagekit.io/vjz75qw96/cards/1.jpg?updatedAt=1735816547056",
       text: "White Belt",
@@ -106,7 +106,7 @@ export const levels = () => {
     },
     {
       level: 7,
-      icon: "fa fa-moon",
+      icon: "fa fa-moon-o",
       color: "#40004B",
       backgroundcolor: "#502070",
       textcolor: "white",
@@ -163,7 +163,7 @@ export const levels = () => {
       card: "https://ik.imagekit.io/vjz75qw96/cards/9.jpg?updatedAt=1735816547135",
       icon: "fa fa-superpowers",
       color: "#000",
-      textcolor: "silver",
+      textcolor: "white",
       text: "Black Belt Silver Stripe",
       backgroundcolor: "#222222",
       background:
