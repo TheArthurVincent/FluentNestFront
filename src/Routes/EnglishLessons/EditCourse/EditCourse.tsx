@@ -4,6 +4,7 @@ import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
+import { createPortal } from "react-dom";
 
 /** ==================== TYPES ==================== */
 export type Course = {
@@ -105,6 +106,16 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
   useEffect(() => injectKeyframes(), []);
 
+  // ✅ garante que o portal exista e bloqueia scroll (opcional, mas recomendado)
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   useEffect(() => {
     if (course) {
       setTitle(course.title || "");
@@ -142,7 +153,9 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
       await axios.put(
         `${backDomain}/api/v1/course-edit/${course._id}`,
         payload,
-        { headers }
+        {
+          headers,
+        }
       );
       onSaved();
       onClose();
@@ -158,7 +171,6 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
     setDeleting(true);
     setError("");
     try {
-      // Body no DELETE vai via config.data
       await axios.delete(`${backDomain}/api/v1/course/${course._id}`, {
         headers,
         data: { studentId },
@@ -174,10 +186,12 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
 
   if (!open) return null;
 
-  return (
+  const modalUI = (
     <div
       className="modal-backdrop"
       onClick={() => (!saving && !deleting ? onClose() : null)}
+      // ✅ reforço caso tenha algo muito alto no app
+      style={{ zIndex: 999999 }}
     >
       <div
         className="modal"
@@ -185,6 +199,7 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* ... seu JSX inteiro igual daqui pra baixo ... */}
         <div className="modal-header">
           <span>Editar curso</span>
           <button
@@ -257,7 +272,6 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
               <div style={{ color: "#b91c1c", fontSize: 14 }}>{error}</div>
             )}
 
-            {/* Confirmação de exclusão */}
             {showConfirmDelete && (
               <div
                 style={{
@@ -305,7 +319,6 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
         </div>
 
         <div className="modal-actions">
-          {/* Botão para abrir confirmação */}
           <button
             className="btn"
             onClick={() => setShowConfirmDelete((v) => !v)}
@@ -353,6 +366,8 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
       </div>
     </div>
   );
-};
 
+  // ✅ gruda no body
+  return createPortal(modalUI, document.body);
+};
 export default EditCourseModal;
