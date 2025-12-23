@@ -385,6 +385,7 @@ function MyCalendar({
   const [todoList, setTodoList] = useState([]);
 
   const loadGeneral = async (baseDate) => {
+    setModalEditTodo(false);
     setShowDeleteEventConfirmation(false);
     setDisabledAvoid(false);
     setLoading(true);
