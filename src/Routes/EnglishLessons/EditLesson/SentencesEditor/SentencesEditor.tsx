@@ -288,6 +288,7 @@ const SentencesEditor: React.FC<Props> = ({
           it?.en ??
           it?.source ??
           "";
+
         const portuguese =
           it?.portuguese ??
           it?.back ??
@@ -295,16 +296,22 @@ const SentencesEditor: React.FC<Props> = ({
           it?.pt ??
           it?.target ??
           "";
+
+        const lang1 =
+          it?.languages?.language1 ?? it?.language1 ?? defaultLang1 ?? "en";
+
+        const lang2 =
+          it?.languages?.language2 ?? it?.language2 ?? defaultLang2 ?? "pt";
+
         return {
           english: String(english ?? ""),
           portuguese: String(portuguese ?? ""),
           languages: {
-            language1: defaultLang1 || "en",
-            language2: defaultLang2 || "pt",
+            language1: String(lang1).trim(),
+            language2: String(lang2).trim(),
           },
         };
       })
-      // evita inserir linhas totalmente vazias
       .filter((it) => (it.english || it.portuguese).trim().length > 0);
 
     onChange({
@@ -756,6 +763,7 @@ const SentencesEditor: React.FC<Props> = ({
         headers={headers}
         onReceiveJson={handleReceiveJson}
         title="Gerar Sentences por IA"
+        numberOfSentences={20}
       />
     </div>
   );

@@ -573,13 +573,11 @@ export default function EditLesson({
   const outerWrapStyle: React.CSSProperties = {
     width: "98%",
     margin: "0 auto",
-    padding: 12,
     boxSizing: "border-box",
     borderRadius: 12,
   };
 
   const sectionCard: React.CSSProperties = {
-    padding: 10,
     boxSizing: "border-box",
   };
 
