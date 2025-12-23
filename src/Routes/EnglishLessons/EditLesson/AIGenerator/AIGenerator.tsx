@@ -10,8 +10,10 @@ type Props = {
   postUrl: string;
   language1: string;
   type: string;
+  numberOfSentences?: number;
   headers?: HeadersLike | null;
   visible: boolean;
+  theme?: string;
   onClose: () => void;
   onReceiveJson: (json: any) => void;
   title?: string;
@@ -73,15 +75,31 @@ export default function SimpleAIGenerator({
   onClose,
   onReceiveJson,
   headers,
+  numberOfSentences,
+  theme,
   title = "Gerar por IA",
 }: Props) {
-  const [theme, setTheme] = React.useState("");
   const [instructions, setInstructions] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [numberOfSentences, setNumberOfSentences] = React.useState(20);
 
   const handleGenerate = async () => {
-    const t = theme.trim();
+    const t =
+      theme?.trim() ||
+      `Aula de ${
+        language1 == "en"
+          ? "Inglês"
+          : language1 == "pt"
+          ? "Português"
+          : language1 == "es"
+          ? "Espanhol"
+          : language1 == "fr"
+          ? "Francês"
+          : language1 == "de"
+          ? "Alemão"
+          : language1 == "it"
+          ? "Italiano"
+          : language1
+      }.`;
     const i = instructions.trim();
     if (!t && !i) {
       notifyAlert("Preencha tema e/ou instruções.", partnerColor());
@@ -92,7 +110,12 @@ export default function SimpleAIGenerator({
 
     try {
       setLoading(true);
-      const payload = { prompt, type, language1: language1 || "en", numberOfSentences };
+      const payload = {
+        prompt,
+        type,
+        language1: language1 || "en",
+        numberOfSentences: numberOfSentences ? numberOfSentences : 10,
+      };
 
       const res = await axios.post(postUrl, payload, {
         headers: headers ? { ...headers } : {},
@@ -141,38 +164,6 @@ export default function SimpleAIGenerator({
         </div>
 
         <div style={{ padding: 12, display: "grid", gap: 10 }}>
-          {/* <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 12, color: "#334155" }}>Tema</label>
-            <input
-              disabled={loading}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              placeholder="Ex.: Supermercado, Viagem, Escritório…"
-              style={inputStyle}
-            />
-            <label style={{ fontSize: 12, color: "#334155" }}>
-              Quantidade de
-              {type === "vocabulary"
-                ? " palavras/termos"
-                : type == "sentences"
-                ? " sentenças"
-                : type == "dialogue"
-                ? " falas"
-                : type == "text"
-                ? " linhas de texto"
-                : ""}
-            </label>
-            <input
-              type="number"
-              disabled={loading}
-              value={numberOfSentences}
-              onChange={(e) => setNumberOfSentences(Number(e.target.value))}
-              style={inputStyle}
-              min={1}
-              max={20}
-            />
-          </div> */}
-
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>
               Instruções da IA

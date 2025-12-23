@@ -287,32 +287,42 @@ export default function VocabularyEditor({
     }
 
     // 2) mapear chaves flexíveis
-    const mapped = arr.map((it: any) => {
-      const english =
-        it?.english ??
-        it?.front ??
-        it?.term ??
-        it?.word ??
-        it?.en ??
-        it?.source ??
-        "";
-      const portuguese =
-        it?.portuguese ??
-        it?.back ??
-        it?.translation ??
-        it?.pt ??
-        it?.target ??
-        "";
+    // 2) mapear chaves flexíveis + PRESERVAR languages quando vier do backend
+    const mapped: SentenceItem[] = arr
+      .map((it: any) => {
+        const english =
+          it?.english ??
+          it?.front ??
+          it?.term ??
+          it?.word ??
+          it?.en ??
+          it?.source ??
+          "";
 
-      return {
-        english: String(english ?? ""),
-        portuguese: String(portuguese ?? ""),
-        languages: {
-          language1: defaultLang1 || "en",
-          language2: defaultLang2 || "pt",
-        },
-      };
-    });
+        const portuguese =
+          it?.portuguese ??
+          it?.back ??
+          it?.translation ??
+          it?.pt ??
+          it?.target ??
+          "";
+
+        const lang1 =
+          it?.languages?.language1 ?? it?.language1 ?? defaultLang1 ?? "en";
+
+        const lang2 =
+          it?.languages?.language2 ?? it?.language2 ?? defaultLang2 ?? "pt";
+
+        return {
+          english: String(english ?? ""),
+          portuguese: String(portuguese ?? ""),
+          languages: {
+            language1: String(lang1).trim(),
+            language2: String(lang2).trim(),
+          },
+        };
+      })
+      .filter((it) => (it.english || it.portuguese).trim().length > 0);
 
     // 3) injeta no bloco e garante o type correto
     onChange({
@@ -494,7 +504,13 @@ export default function VocabularyEditor({
               style={{
                 display: "grid",
                 gap: 12,
-                gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
+                // ✅ anti “vazar pra direita”
+                width: "100%",
+                maxWidth: "100%",
+                minWidth: 0,
+                overflow: "hidden",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(min(270px, 100%), 1fr))",
               }}
             >
               {value.sentences.map((s, idx) => (
@@ -516,6 +532,10 @@ export default function VocabularyEditor({
                       gap: 6,
                       justifyContent: "flex-end",
                       alignItems: "center",
+                      width: "100%",
+                      maxWidth: "100%",
+                      minWidth: 0,
+                      overflow: "hidden",
                     }}
                   >
                     {idx !== 0 && (
@@ -569,6 +589,7 @@ export default function VocabularyEditor({
                           display: "flex",
                           gap: 6,
                           alignItems: "center",
+                          minWidth: 0,
                           width: "100%",
                         }}
                       >
@@ -666,6 +687,7 @@ export default function VocabularyEditor({
         headers={headers}
         onReceiveJson={handleReceiveJson}
         title="Gerar Vocabulary por IA"
+        numberOfSentences={20}
       />
     </div>
   );

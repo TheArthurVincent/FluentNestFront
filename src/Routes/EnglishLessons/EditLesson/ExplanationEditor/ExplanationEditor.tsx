@@ -150,6 +150,10 @@ export default function ExplanationEditor({
         borderRadius: 6,
         padding: "5px 12px",
         background: "linear-gradient(to right, #eef2ff55, #ffffff)",
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+        overflow: "hidden",
       }}
     >
       {/* Header */}
@@ -158,6 +162,10 @@ export default function ExplanationEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+          overflow: "hidden",
         }}
       >
         <strong
