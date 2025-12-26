@@ -100,6 +100,7 @@ const times = [
   "22:30",
   "22:45",
 ];
+
 interface NewRecurringEventCalendarProps {
   headers: any; // substitua pelo tipo real se possível
   myId: string | number;
@@ -108,6 +109,21 @@ interface NewRecurringEventCalendarProps {
   alternateBoolean: boolean;
   setAlternateBoolean: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+// mesma lógica usada no backend (corrigida)
+const getNextDayOfWeek = (dayOfWeek: string, fromDate: Date) => {
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const target = daysOfWeek.indexOf(dayOfWeek);
+  if (target < 0) return null;
+
+  const current = fromDate.getDay();
+  const diff = (target - current + 7) % 7; // pode ser hoje (0) ou próxima semana
+
+  const next = new Date(fromDate);
+  next.setDate(fromDate.getDate() + diff);
+  return next;
+};
+
 function NewRecurringEventCalendar({
   headers,
   myId,
@@ -122,9 +138,10 @@ function NewRecurringEventCalendar({
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
 
-  // alternância Aluno/Grupo
+  // alternância Aluno/Grupo/Fixos do professor
   const [showStudentsRecurring, setShowStudentsRecurring] = useState(true);
   const [showGroupsRecurring, setShowGroupsRecurring] = useState(false);
+  const [SHOWEMPTY, setSHOWEMPTY] = useState(false);
 
   // filtros e listas
   const [newStudentId, setNewStudentId] = useState("");
@@ -133,7 +150,8 @@ function NewRecurringEventCalendar({
   const [
     tutoringsListOfOneStudentOrGroup,
     setTutoringsListOfOneStudentOrGroup,
-  ] = useState([]);
+  ] = useState<any[]>([]);
+  const [fixedTeacherTutorings, setFixedTeacherTutorings] = useState<any[]>([]);
   const [loadingTutoringDays, setLoadingTutoringDays] = useState(false);
 
   // criar nova recorrência
@@ -169,15 +187,13 @@ function NewRecurringEventCalendar({
     if (!tutoring.endDate) return null;
     const today = new Date();
     const endDate = new Date(tutoring.endDate);
-    //@ts-ignore
+    // @ts-ignore
     const diffTime = endDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
 
   const handleSeeModalOfTutorings = async () => {
-    // setAlternateBoolean(!alternateBoolean);
-    // setChange?.(!change);
     setNewStudentId("");
     setNewGroupId("");
     setShowClasses(false);
@@ -189,7 +205,6 @@ function NewRecurringEventCalendar({
     setLoadingTutoringDays(false);
     setShowSeeEditTutoring(false);
 
-    // 👇 acrescentar isso:
     setLoadingModalTutoringsInfo(true);
     try {
       await fetchStudents();
@@ -243,8 +258,24 @@ function NewRecurringEventCalendar({
     }
   };
 
-  const [studentsList, setStudentsList] = useState([]);
-  const [groupsList, setGroupsList] = useState([]);
+  const fetchOneSetOfFixedTeacherTutorings = async (teacherId: any) => {
+    if (!teacherId) return;
+    try {
+      setLoadingTutoringDays(true);
+      const { data } = await axios.get(
+        `${backDomain}/api/v1/tutoring-teachers/${teacherId}`,
+        { headers }
+      );
+      setFixedTeacherTutorings(data?.tutorings ?? []);
+    } catch (error) {
+      console.log(error, "Erro ao encontrar tutorias do professor");
+    } finally {
+      setLoadingTutoringDays(false);
+    }
+  };
+
+  const [studentsList, setStudentsList] = useState<any[]>([]);
+  const [groupsList, setGroupsList] = useState<any[]>([]);
   const fetchStudents = async () => {
     try {
       const response = await axios.get(
@@ -271,6 +302,7 @@ function NewRecurringEventCalendar({
     const id = e.target.value;
     setNewStudentId(id);
     setNewGroupId("");
+    setSHOWEMPTY(false);
     setShowClasses(true);
     setSeeEditTutoring(false);
     setShowSeeEditTutoring(false);
@@ -281,17 +313,23 @@ function NewRecurringEventCalendar({
     const id = e.target.value;
     setNewGroupId(id);
     setNewStudentId("");
+    setSHOWEMPTY(false);
     setShowClasses(true);
     setSeeEditTutoring(false);
     setShowSeeEditTutoring(false);
     fetchOneSetOfGroups(id);
   };
 
+  // lista usada na UI, dependendo da aba
+  const listToRender = SHOWEMPTY
+    ? fixedTeacherTutorings
+    : tutoringsListOfOneStudentOrGroup;
+
   // ----- editar existente -----
   const seeEditOneTutoring = (item: any) => {
     setSeeEditTutoring(true);
     setTutoringId(item.id);
-    setTimeOfTutoring(item.time);
+    setTimeOfTutoring(item.time || item.startTime || "");
     setLink(item.link || "");
     setWeekDay(item.day);
     setDuration(item.duration ?? 60);
@@ -308,28 +346,53 @@ function NewRecurringEventCalendar({
   const handleTimeChange = (e: any) => setTimeOfTutoring(e.target.value);
 
   const updateOneTutoring = async () => {
+    if (!weekDay || !timeOfTutoring || !link || !tutoringId) return;
+
     setLoadingTutoringDays(true);
     setSeeEditTutoring(true);
 
     try {
-      await axios.put(
-        `${backDomain}/api/v1/tutoringevent`,
-        {
-          id: tutoringId,
-          studentID: newStudentId || "",
-          groupId: newGroupId || "",
-          day: weekDay,
-          time: timeOfTutoring,
-          duration,
-          link,
-        },
-        { headers }
-      );
+      if (SHOWEMPTY) {
+        // Editar horários fixos do professor
+        await axios.put(
+          `${backDomain}/api/v1/tutoringevent-fixed`,
+          {
+            id: tutoringId,
+            teacherID: myId,
+            day: weekDay,
+            time: timeOfTutoring,
+            duration,
+            link,
+            // se quiser controlar explicitamente:
+            // numberOfWeeks: Number(numberOfWeeks) || 24,
+          },
+          { headers }
+        );
 
-      setSeeEditTutoring(false);
-      setLoadingTutoringDays(false);
-      if (newStudentId) fetchOneSetOfTutorings(newStudentId);
-      if (newGroupId) fetchOneSetOfGroups(newGroupId);
+        setSeeEditTutoring(false);
+        setTimeout(() => {
+          fetchOneSetOfFixedTeacherTutorings(myId);
+        }, 200);
+      } else {
+        // Recorrência de aluno ou grupo (rota antiga)
+        await axios.put(
+          `${backDomain}/api/v1/tutoringevent`,
+          {
+            id: tutoringId,
+            studentID: newStudentId || "",
+            groupId: newGroupId || "",
+            day: weekDay,
+            time: timeOfTutoring,
+            duration,
+            link,
+          },
+          { headers }
+        );
+
+        setSeeEditTutoring(false);
+        if (newStudentId) await fetchOneSetOfTutorings(newStudentId);
+        if (newGroupId) await fetchOneSetOfGroups(newGroupId);
+      }
     } catch (error) {
       console.log(error, "Erro ao atualizar recorrência");
     } finally {
@@ -345,16 +408,19 @@ function NewRecurringEventCalendar({
     setTheNewTimeOfTutoring(e.target.value);
 
   const newTutoring = async () => {
-    // calcula endDate (de próxima segunda até N semanas)
+    // calcula endDate com base no DIA ESCOLHIDO + numberOfWeeks (mesma lógica do back)
     const today = new Date();
-    const nextWeekDay = new Date(today);
-    const dow = today.getDay();
-    const daysUntilMonday = dow === 0 ? 1 : (8 - dow) % 7;
-    nextWeekDay.setDate(today.getDate() + daysUntilMonday);
-    const endDate = new Date(nextWeekDay);
-    endDate.setDate(
-      nextWeekDay.getDate() + (Number(numberOfWeeks) || 4) * 7 - 1
-    );
+    const firstDate = theNewWeekDay && getNextDayOfWeek(theNewWeekDay, today);
+    if (!firstDate) {
+      alert(
+        UniversalTexts.calendarModal.selectWeekDayOption ||
+          "Selecione um dia da semana."
+      );
+      return;
+    }
+
+    const endDate = new Date(firstDate);
+    endDate.setDate(firstDate.getDate() + (Number(numberOfWeeks) || 4) * 7 - 1);
 
     // alerta se < 1 mês
     const oneMonthFromNow = new Date();
@@ -373,26 +439,50 @@ function NewRecurringEventCalendar({
     }
 
     try {
-      await axios.post(
-        `${backDomain}/api/v1/tutoringevent`,
-        {
-          day: theNewWeekDay,
-          time: theNewTimeOfTutoring,
-          duration,
-          link: theNewLink,
-          studentID: newStudentId || "",
-          teacherID: myId,
-          groupId: newGroupId || "",
-          numberOfWeeks: Number(numberOfWeeks) || 4,
-          endDate,
-        },
-        { headers }
-      );
+      if (SHOWEMPTY) {
+        // ABA DE HORÁRIOS FIXOS DO PROFESSOR -> rota FIXED
+        await axios.post(
+          `${backDomain}/api/v1/tutoringevent-fixed`,
+          {
+            teacherID: myId,
+            day: theNewWeekDay,
+            time: theNewTimeOfTutoring,
+            duration,
+            link: theNewLink,
+            numberOfWeeks: Number(numberOfWeeks) || 4,
+            endDate,
+          },
+          { headers }
+        );
 
-      setSeeEditTutoring(false);
-      setShowSeeEditTutoring(false);
-      if (newStudentId) fetchOneSetOfTutorings(newStudentId);
-      if (newGroupId) fetchOneSetOfGroups(newGroupId);
+        setSeeEditTutoring(false);
+        setShowSeeEditTutoring(false);
+        setTimeout(() => {
+          fetchOneSetOfFixedTeacherTutorings(myId);
+        }, 200);
+      } else {
+        // LÓGICA ORIGINAL: recorrência vinculada a aluno/grupo
+        await axios.post(
+          `${backDomain}/api/v1/tutoringevent`,
+          {
+            day: theNewWeekDay,
+            time: theNewTimeOfTutoring,
+            duration,
+            link: theNewLink,
+            studentID: newStudentId || "",
+            teacherID: myId,
+            groupId: newGroupId || "",
+            numberOfWeeks: Number(numberOfWeeks) || 4,
+            endDate,
+          },
+          { headers }
+        );
+
+        setSeeEditTutoring(false);
+        setShowSeeEditTutoring(false);
+        if (newStudentId) await fetchOneSetOfTutorings(newStudentId);
+        if (newGroupId) await fetchOneSetOfGroups(newGroupId);
+      }
     } catch (error) {
       console.log(error, "Erro ao criar recorrência");
     }
@@ -401,25 +491,45 @@ function NewRecurringEventCalendar({
   // ----- deletar -----
   const deleteTutoring = async (item: any) => {
     try {
-      await axios.delete(`${backDomain}/api/v1/tutoringevent`, {
-        data: {
-          time: item.time,
-          day: item.day,
-          id: item.id,
-          studentID: newStudentId || "",
-          groupId: newGroupId || "",
-        },
-        headers,
-      });
-      setSeeEditTutoring(false);
-      if (newGroupId) fetchOneSetOfGroups(newGroupId);
-      else if (newStudentId) fetchOneSetOfTutorings(newStudentId);
+      if (SHOWEMPTY) {
+        // Apaga recorrência vazia do professor + eventos associados
+        await axios.delete(`${backDomain}/api/v1/tutoringevent-fixed`, {
+          data: {
+            id: item.id,
+            teacherID: myId,
+            day: item.day,
+            time: item.time || item.startTime || "",
+          },
+          headers,
+        });
+
+        setSeeEditTutoring(false);
+        setTimeout(() => {
+          fetchOneSetOfFixedTeacherTutorings(myId);
+        }, 200);
+      } else {
+        // Apaga recorrência de aluno/grupo
+        await axios.delete(`${backDomain}/api/v1/tutoringevent`, {
+          data: {
+            time: item.time,
+            day: item.day,
+            id: item.id,
+            studentID: newStudentId || "",
+            groupId: newGroupId || "",
+          },
+          headers,
+        });
+
+        setSeeEditTutoring(false);
+        if (newGroupId) await fetchOneSetOfGroups(newGroupId);
+        else if (newStudentId) await fetchOneSetOfTutorings(newStudentId);
+      }
     } catch (error) {
       console.log(error, "Erro ao deletar recorrência");
     }
   };
 
-  // ----- render -----
+  // ----- validação form nova recorrência -----
   const isFormIncompleteNew =
     !theNewWeekDay ||
     !theNewTimeOfTutoring ||
@@ -427,9 +537,10 @@ function NewRecurringEventCalendar({
     !numberOfWeeks ||
     Number(numberOfWeeks) <= 0 ||
     Number(duration) <= 0;
+
   return (
     <>
-      {/* Botão que abre o modal – estilo mais “pill” Arvin */}
+      {/* Botão que abre o modal */}
       <button
         onClick={handleSeeModalOfTutorings}
         style={{
@@ -449,7 +560,7 @@ function NewRecurringEventCalendar({
         <span>{UniversalTexts.calendarModal.recurringClasses}</span>
       </button>
 
-      {/* Modal no body via createPortal */}
+      {/* Modal via createPortal */}
       {isModalOfTutoringsVisible &&
         createPortal(
           <>
@@ -464,7 +575,7 @@ function NewRecurringEventCalendar({
               }}
             />
 
-            {/* CONTAINER PARA CENTRALIZAR */}
+            {/* CONTAINER CENTRALIZADO */}
             <div
               style={{
                 position: "fixed",
@@ -477,10 +588,10 @@ function NewRecurringEventCalendar({
               }}
               onClick={handleCloseModalOfTutorings}
             >
-              {/* MODAL EM SI */}
+              {/* MODAL */}
               <div
                 className="arvin-modal box-shadow-white"
-                onClick={(e) => e.stopPropagation()} // não fecha ao clicar dentro
+                onClick={(e) => e.stopPropagation()}
                 style={{
                   width: "100%",
                   maxWidth: 520,
@@ -521,7 +632,7 @@ function NewRecurringEventCalendar({
                       }}
                     >
                       {UniversalTexts.calendarModal.recurringSubtitle ||
-                        "Gerencie as aulas recorrentes de alunos e grupos."}
+                        "Gerencie as aulas recorrentes de alunos, grupos e horários fixos."}
                     </p>
                   </div>
 
@@ -556,7 +667,7 @@ function NewRecurringEventCalendar({
                     gap: 16,
                   }}
                 >
-                  {/* 1. SELECIONAR ALUNO / GRUPO */}
+                  {/* 1. SELECIONAR ALUNO / GRUPO / HORÁRIOS FIXOS */}
                   {loadingModalTutoringsInfo ? (
                     <div
                       style={{
@@ -583,10 +694,10 @@ function NewRecurringEventCalendar({
                         }}
                       >
                         {UniversalTexts.calendarModal.step1 ||
-                          "1. Escolha um aluno ou grupo"}
+                          "1. Escolha um aluno, grupo ou horário fixo"}
                       </p>
 
-                      {/* Tabs aluno/grupo */}
+                      {/* Tabs aluno/grupo/horários recorrentes */}
                       <div
                         style={{
                           display: "inline-flex",
@@ -602,6 +713,7 @@ function NewRecurringEventCalendar({
                           onClick={() => {
                             setShowStudentsRecurring(true);
                             setShowGroupsRecurring(false);
+                            setSHOWEMPTY(false);
                             setNewGroupId("");
                             setShowClasses(false);
                             setSeeEditTutoring(false);
@@ -628,6 +740,7 @@ function NewRecurringEventCalendar({
                           onClick={() => {
                             setShowStudentsRecurring(false);
                             setShowGroupsRecurring(true);
+                            setSHOWEMPTY(false);
                             setNewStudentId("");
                             setShowClasses(false);
                             setSeeEditTutoring(false);
@@ -647,6 +760,35 @@ function NewRecurringEventCalendar({
                           }}
                         >
                           {UniversalTexts.group || "Grupo"}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowStudentsRecurring(false);
+                            setShowGroupsRecurring(false);
+                            setSHOWEMPTY(true);
+                            setNewStudentId("");
+                            setNewGroupId("");
+                            setSeeEditTutoring(false);
+                            setShowSeeEditTutoring(false);
+                            setShowClasses(true);
+                            fetchOneSetOfFixedTeacherTutorings(myId);
+                          }}
+                          style={{
+                            border: "none",
+                            cursor: "pointer",
+                            borderRadius: 999,
+                            padding: "6px 12px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            backgroundColor: SHOWEMPTY
+                              ? partnerColor()
+                              : "transparent",
+                            color: SHOWEMPTY ? "#fff" : "#475569",
+                          }}
+                        >
+                          {"Horários Recorrentes"}
                         </button>
                       </div>
 
@@ -785,10 +927,9 @@ function NewRecurringEventCalendar({
                       >
                         <CircularProgress style={{ color: partnerColor() }} />
                       </div>
-                    ) : showClasses &&
-                      tutoringsListOfOneStudentOrGroup.length > 0 ? (
+                    ) : showClasses && listToRender.length > 0 ? (
                       <div style={{ display: "grid", gap: 8 }}>
-                        {tutoringsListOfOneStudentOrGroup
+                        {listToRender
                           .sort(
                             (a: any, b: any) =>
                               moment(a.day, "dddd").day() -
@@ -801,7 +942,9 @@ function NewRecurringEventCalendar({
 
                             return (
                               <div
-                                key={`${item.day}-${item.time}-${index}`}
+                                key={`${item.day}-${
+                                  item.time || item.startTime || ""
+                                }-${index}`}
                                 style={{
                                   backgroundColor: isExpiring
                                     ? "#fff1f2"
@@ -813,7 +956,7 @@ function NewRecurringEventCalendar({
                                     : "1px solid #e2e8f0",
                                 }}
                               >
-                                {isExpiring && (
+                                {isExpiring && item.endDate && (
                                   <div
                                     style={{
                                       backgroundColor: "#fb7185",
@@ -827,7 +970,6 @@ function NewRecurringEventCalendar({
                                       marginBottom: 6,
                                     }}
                                   >
-                                    ⚠️
                                     {daysLeft && daysLeft > 0
                                       ? `${
                                           UniversalTexts.endsIn
@@ -859,7 +1001,11 @@ function NewRecurringEventCalendar({
                                         color: "#0f172a",
                                       }}
                                     >
-                                      {UniversalTexts.Class} #{index + 1}
+                                      {SHOWEMPTY
+                                        ? `Horário #${index + 1}`
+                                        : `${UniversalTexts.Class} #${
+                                            index + 1
+                                          }`}
                                     </span>
                                     <div
                                       style={{
@@ -868,7 +1014,7 @@ function NewRecurringEventCalendar({
                                         marginTop: 2,
                                       }}
                                     >
-                                      {item.day} • {item.time}
+                                      {item.day} • {item.time || item.startTime}
                                       {item.link && (
                                         <Link
                                           target="_blank"
@@ -885,16 +1031,15 @@ function NewRecurringEventCalendar({
                                       )}
                                       {item.endDate && (
                                         <span style={{ marginLeft: 6 }}>
-                                          (
                                           {moment(item.endDate).format(
                                             "DD/MM/YYYY"
                                           )}
-                                          )
                                         </span>
                                       )}
                                     </div>
                                   </div>
 
+                                  {/* Botões em todas as recorrências (aluno/grupo/horários fixos) */}
                                   <div
                                     style={{
                                       display: "inline-flex",
@@ -943,8 +1088,10 @@ function NewRecurringEventCalendar({
                           margin: 0,
                         }}
                       >
-                        {UniversalTexts.calendarModal.noRecurringClasses ||
-                          "Nenhuma recorrência encontrada para este aluno/grupo."}
+                        {SHOWEMPTY
+                          ? "Nenhum horário recorrente configurado para o professor."
+                          : UniversalTexts.calendarModal.noRecurringClasses ||
+                            "Nenhuma recorrência encontrada para este aluno/grupo."}
                       </p>
                     ) : (
                       <p
@@ -1107,7 +1254,7 @@ function NewRecurringEventCalendar({
 
                   {/* 3. CRIAR NOVA RECORRÊNCIA */}
                   {!loadingModalTutoringsInfo &&
-                    (newStudentId !== "" || newGroupId !== "") && (
+                    (newStudentId !== "" || newGroupId !== "" || SHOWEMPTY) && (
                       <>
                         <button
                           onClick={() =>
@@ -1218,7 +1365,7 @@ function NewRecurringEventCalendar({
                               />
                             </div>
 
-                            {/* atalhos semanas & duração – mantive tua lógica, só dei uma limpada visual */}
+                            {/* atalhos semanas & duração */}
                             <div>
                               <p
                                 style={{
@@ -1254,7 +1401,11 @@ function NewRecurringEventCalendar({
                                     weeks: 24,
                                     tooltip: "6 meses",
                                   },
-                                  { label: "1a", weeks: 52, tooltip: "1 ano" },
+                                  {
+                                    label: "1a",
+                                    weeks: 52,
+                                    tooltip: "1 ano",
+                                  },
                                   {
                                     label: "2a",
                                     weeks: 104,
@@ -1481,36 +1632,37 @@ function NewRecurringEventCalendar({
                                   lineHeight: "1.3",
                                 }}
                               >
-                                {numberOfWeeks && Number(numberOfWeeks) > 0 ? (
-                                  <div>
-                                    {(() => {
-                                      const today = new Date();
-                                      const nextWeekDay = new Date(today);
-                                      const dow = today.getDay();
-                                      const daysUntilMonday =
-                                        dow === 0 ? 1 : (8 - dow) % 7;
-                                      nextWeekDay.setDate(
-                                        today.getDate() + daysUntilMonday
-                                      );
-                                      const endDate = new Date(nextWeekDay);
-                                      endDate.setDate(
-                                        nextWeekDay.getDate() +
-                                          (Number(numberOfWeeks) || 4) * 7 -
-                                          1
-                                      );
-                                      const fmt = (d: any) =>
-                                        d.toLocaleDateString("pt-BR", {
-                                          day: "2-digit",
-                                          month: "2-digit",
-                                          year: "numeric",
-                                        });
-                                      return `${fmt(nextWeekDay)} até ${fmt(
-                                        endDate
-                                      )} (${numberOfWeeks} semana${
-                                        Number(numberOfWeeks) > 1 ? "s" : ""
-                                      })`;
-                                    })()}
-                                  </div>
+                                {numberOfWeeks &&
+                                Number(numberOfWeeks) > 0 &&
+                                theNewWeekDay ? (
+                                  (() => {
+                                    const today = new Date();
+                                    const first = getNextDayOfWeek(
+                                      theNewWeekDay,
+                                      today
+                                    );
+                                    if (!first) {
+                                      return UniversalTexts.calendarModal
+                                        .selectWeekDayOption;
+                                    }
+                                    const end = new Date(first);
+                                    end.setDate(
+                                      first.getDate() +
+                                        (Number(numberOfWeeks) || 4) * 7 -
+                                        1
+                                    );
+                                    const fmt = (d: Date) =>
+                                      d.toLocaleDateString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                      });
+                                    return `${fmt(first)} até ${fmt(
+                                      end
+                                    )} (${numberOfWeeks} semana${
+                                      Number(numberOfWeeks) > 1 ? "s" : ""
+                                    })`;
+                                  })()
                                 ) : (
                                   <div>
                                     {
@@ -1521,7 +1673,6 @@ function NewRecurringEventCalendar({
                                 )}
                               </div>
                             </div>
-                            {/* Para não estourar a resposta, mantive a lógica igual à sua, só dentro desse section */}
 
                             {/* BOTÃO FINAL */}
                             <button
