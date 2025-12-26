@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
+import { createPortal } from "react-dom";
 import { useParams } from "react-router-dom";
 import {
   backDomain,
@@ -354,16 +355,35 @@ export default function Homework({
     }
   };
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+  const [homeworkToDelete, setHomeworkToDelete] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const openDeleteModal = (homeworkId: string) => {
+    setHomeworkToDelete(homeworkId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setHomeworkToDelete("");
+    setIsDeleteModalOpen(false);
+  };
+
   const deleteHomework = async (id: string) => {
     try {
+      setIsDeleting(true);
       await axios.delete(`${backDomain}/api/v1/homework/${id}`, {
         headers: actualHeaders,
       });
+      notifyAlert("Homework deletado com sucesso.", "green");
       fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
         UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
       );
+    } finally {
+      setIsDeleting(false);
+      closeDeleteModal();
     }
   };
 
@@ -597,6 +617,7 @@ export default function Homework({
                               Marcar como feito
                             </button>
                           )}
+
                           <button
                             type="button"
                             onClick={() => justStatus(hw._id)}
@@ -611,6 +632,24 @@ export default function Homework({
                             }}
                           >
                             Só mudar status
+                          </button>
+
+                          {/* NOVO BOTÃO DELETAR */}
+                          <button
+                            type="button"
+                            onClick={() => openDeleteModal(hw._id)}
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #FCA5A5",
+                              backgroundColor: "#FEF2F2",
+                              fontSize: 12,
+                              fontWeight: 500,
+                              cursor: "pointer",
+                              color: "#B91C1C",
+                            }}
+                          >
+                            Excluir
                           </button>
                         </div>
                       )}
@@ -668,7 +707,101 @@ export default function Homework({
           )}
 
           {/* Modais existentes (envio / edição) – mantidos exatamente como estavam */}
+          {isDeleteModalOpen &&
+            createPortal(
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 10000,
+                  padding: "0 8px",
+                }}
+                onClick={closeDeleteModal}
+              >
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 8,
+                    padding: 20,
+                    maxWidth: 400,
+                    width: "100%",
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h2
+                    style={{
+                      margin: 0,
+                      marginBottom: 12,
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: "#111827",
+                    }}
+                  >
+                    Confirmar exclusão
+                  </h2>
 
+                  <p
+                    style={{
+                      margin: 0,
+                      marginBottom: 20,
+                      fontSize: 14,
+                      color: "#4B5563",
+                    }}
+                  >
+                    Tem certeza de que deseja excluir este homework? Esta ação
+                    não pode ser desfeita.
+                  </p>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: 8,
+                    }}
+                  >
+                    <button
+                      onClick={closeDeleteModal}
+                      style={{
+                        backgroundColor: "transparent",
+                        color: "#374151",
+                        border: "1px solid #D1D5DB",
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        fontSize: 13,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      onClick={() => deleteHomework(homeworkToDelete)}
+                      disabled={isDeleting}
+                      style={{
+                        backgroundColor: isDeleting ? "#FCA5A5" : "#DC2626",
+                        color: "#FFF",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        fontSize: 13,
+                        cursor: isDeleting ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {isDeleting ? "Excluindo..." : "Excluir"}
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body
+            )}
           {isModalOpen && (
             <div
               style={{
