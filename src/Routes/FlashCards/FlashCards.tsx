@@ -232,17 +232,6 @@ const FlashCards = ({
             >
               Flashcards
             </h2>
-            <p
-              style={{
-                margin: "4px 0 0 0",
-                fontSize: 12,
-                color: "#64748b",
-                fontWeight: 400,
-              }}
-            >
-              {UniversalTexts.flashcardsSubtitle ||
-                "Revise, crie e organize seus flashcards em um só lugar."}
-            </p>
           </div>
 
           {(myPermissions === "superadmin" || myPermissions === "teacher") && (
@@ -358,7 +347,7 @@ const FlashCards = ({
               sx={() => {
                 const color = partnerColor();
                 return {
-                  width: "100%",
+                  width: "fit-content",
                   maxWidth: 520,
                   fontFamily: "Plus Jakarta Sans",
                   fontWeight: 600,
