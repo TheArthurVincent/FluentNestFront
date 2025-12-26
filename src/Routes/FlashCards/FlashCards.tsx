@@ -203,7 +203,6 @@ const FlashCards = ({
           backgroundColor: "#ffffff",
           borderRadius: "12px",
           border: "1px solid #e8eaed",
-          boxShadow: "0 10px 30px rgba(15,23,42,0.06)",
           padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
           maxWidth: 960,
         }}
@@ -211,30 +210,17 @@ const FlashCards = ({
         <Helmets text="Flashcards" />
 
         {/* HEADER DO CARD: título + seleção de aluno (quando ADM) */}
-        <header
-          style={{
-            display: "flex",
-            flexDirection: isDesktop ? "row" : "column",
-            justifyContent: "space-between",
-            alignItems: isDesktop ? "center" : "flex-start",
-            gap: 12,
-            marginBottom: 12,
-          }}
-        >
-          <div>
-            <h2
-              style={{
-                margin: 0,
-                fontSize: 16,
-                color: partnerColor(),
-                fontWeight: 700,
-              }}
-            >
-              Flashcards
-            </h2>
-          </div>
-
-          {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+        {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+          <header
+            style={{
+              display: "flex",
+              flexDirection: isDesktop ? "row" : "column",
+              justifyContent: "space-between",
+              alignItems: isDesktop ? "center" : "flex-start",
+              gap: 12,
+              marginBottom: 12,
+            }}
+          >
             <div
               style={{
                 padding: "6px 8px",
@@ -318,16 +304,16 @@ const FlashCards = ({
                 </>
               )}
             </div>
-          )}
-        </header>
+            <div
+              style={{
+                borderTop: "1px solid #e2e8f0",
+                marginBottom: 10,
+              }}
+            />
+          </header>
+        )}
 
         {/* LINHA DIVISÓRIA */}
-        <div
-          style={{
-            borderTop: "1px solid #e2e8f0",
-            marginBottom: 10,
-          }}
-        />
 
         {/* TABS + CONTEÚDO */}
         <TabContext value={value}>
@@ -369,7 +355,6 @@ const FlashCards = ({
                     "&.Mui-selected": {
                       color: color,
                       backgroundColor: "#ffffff",
-                      boxShadow: "0 4px 10px rgba(15,23,42,0.12)",
                     },
                   },
                   "& .MuiTabs-indicator": {
