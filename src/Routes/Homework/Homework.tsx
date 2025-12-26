@@ -21,6 +21,7 @@ import {
   cardTitle,
   pillStatus,
 } from "../ArvinComponents/Students/TheStudent/types/studentPage.styles";
+import NewHomeworkModal from "../ArvinComponents/Students/TheStudent/sections/StudentsRecurringTutorings/NewHomework/NewHomework";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -39,16 +40,18 @@ export default function Homework({
 
   const [isGroupClass, setIsGroupClass] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(true);
-  const [tutoringList, setTutoringList] = useState<any>([]);
+  const [tutoringList, setTutoringList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // 👇 NOVOS
+  // paginação (se for usar no futuro)
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+
   const [ID, setID] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
   const [myPermissions, setPermissions] = useState<string>("");
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [type, setType] = useState<number>(1);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -62,6 +65,15 @@ export default function Homework({
   );
   const [homeworkAnswer, setHomeworkAnswer] = useState<string>("");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const [studentName, setStudentName] = useState<string>("");
+  const [tabValue, setTabValue] = useState(0);
+
+  const { UniversalTexts } = useUserContext();
+
+  const actualHeaders = headers || {};
+  const pointsMadeHW = listOfCriteria[0].score[0].score;
+  const pointsLateHW = listOfCriteria[0].score[1].score;
 
   function normalizeCategory(v?: string) {
     return (v || "").toLowerCase().trim();
@@ -95,11 +107,15 @@ export default function Homework({
     });
   };
 
+  const handleHomeworkAnswerChange = (content: string) => {
+    setHomeworkAnswer(content);
+  };
+
   const saveEditedDescription = async (homeworkId?: string) => {
     const targetId = homeworkId || selectedHomeworkId;
-    setUploading(true); // Add this line to indicate the upload process has started
+    setUploading(true);
     try {
-      const response = await axios.put(
+      await axios.put(
         `${backDomain}/api/v1/edithomeworkdescription/${targetId}`,
         {
           description: homeworkAnswer,
@@ -126,14 +142,13 @@ export default function Homework({
       );
       console.error(error);
     } finally {
-      setUploading(false); // Ensure this is meaningful by setting `setUploading(true)` earlier
+      setUploading(false);
     }
   };
 
   const submitHomework = async (homeworkId?: string) => {
     const targetId = homeworkId || selectedHomeworkId;
 
-    // Validation based on submission mode
     if (submissionMode === "file" && !selectedFile) {
       notifyAlert(
         UniversalTexts?.pleaseSelectFile || "Por favor, selecione um arquivo"
@@ -232,7 +247,6 @@ export default function Homework({
     setSelectedHomeworkContent(homeworkDescription || "");
     setHomeworkAnswer(homeworkDescription || "");
 
-    // Set the submission mode based on the preferred mode
     if (preferredMode) {
       setSubmissionMode(preferredMode);
     }
@@ -257,33 +271,25 @@ export default function Homework({
     setSubmissionMode("file");
   };
 
-  const [studentName, setStudentName] = useState<string>("");
-
-  const handleHomeworkAnswerChange = (content: string) => {
-    setHomeworkAnswer(content);
-  };
-
-  const actualHeaders = headers || {};
-
-  const fetchHW = async (studentId: string) => {
+  const fetchHW = async (targetStudentId: string) => {
     setLoading(true);
     setType(1);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/homework/${studentId}`,
+        `${backDomain}/api/v1/homework/${targetStudentId}`,
         {
           headers: actualHeaders,
         }
       );
-      const tt = response.data.tutoringHomeworkList;
+      const tt = response.data.tutoringHomeworkList || [];
       setTutoringList(tt);
       setStudentName(response.data.studentName || "");
       setBoth(true);
       setIsGroupClass(false);
-
       setLoading(false);
     } catch (error) {
       console.log(error, "erro ao listar homework");
+      setLoading(false);
     }
   };
 
@@ -297,6 +303,12 @@ export default function Homework({
     updateInfo(id, actualHeaders);
     setPermissions(permissions);
   }, []);
+
+  useEffect(() => {
+    if (studentId || ID) {
+      fetchHW(studentId || ID);
+    }
+  }, [ID, studentId]);
 
   const updateRealizedClass = async (tutoringId: string, score: number) => {
     setDisabled(true);
@@ -354,17 +366,14 @@ export default function Homework({
       );
     }
   };
-  const { UniversalTexts } = useUserContext();
 
-  const pointsMadeHW = listOfCriteria[0].score[0].score;
-  const pointsLateHW = listOfCriteria[0].score[1].score;
-  const [tabValue, setTabValue] = useState(0);
+  const isAllowed =
+    myPermissions === "superadmin" || myPermissions === "teacher";
 
-  useEffect(() => {
-    fetchHW(studentId || ID);
-  }, [ID]);
+  // EVENTO PADRÃO PARA CRIAR NOVO HOMEWORK
+  const mainEventIdForNewHomework =
+    tutoringList[0]?.eventDetails?.id || tutoringList[0]?.eventID || "";
 
-  const isAllowed = myPermissions == "superadmin" || myPermissions == "teacher";
   return (
     <div
       style={{
@@ -396,6 +405,7 @@ export default function Homework({
           </section>
         </div>
       )}
+
       <div
         style={{
           fontFamily: "Plus Jakarta Sans",
@@ -410,31 +420,54 @@ export default function Homework({
         }}
       >
         {isAllowed && (
-          <a
-            href={`/students/${studentId}`}
+          <div
             style={{
               marginTop: 14,
-              display: "block",
-              fontWeight: 700,
-              textAlign: "right",
-              color: partnerColor(),
-              textDecoration: "none",
-              fontSize: 12,
-              textTransform: "uppercase",
+              display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
-              gap: 6,
+              gap: 12,
             }}
           >
-            Ver aluno
-            <i
+            <a
+              href={`/students/${studentId}`}
               style={{
-                marginLeft: 8,
+                fontWeight: 700,
+                textAlign: "right",
+                color: partnerColor(),
+                textDecoration: "none",
+                fontSize: 12,
+                textTransform: "uppercase",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
               }}
-              className="fa fa-chevron-right"
-            />
-          </a>
+            >
+              Ver aluno
+              <i
+                style={{
+                  marginLeft: 4,
+                }}
+                className="fa fa-chevron-right"
+              />
+            </a>
+
+            {mainEventIdForNewHomework && (
+              <NewHomeworkModal
+                headers={actualHeaders}
+                studentID={studentId || ID}
+                eventID={mainEventIdForNewHomework}
+                buttonLabel="+ Novo Homework"
+                onHomeworkCreated={(newHomeworks) => {
+                  setTutoringList((prev) => [...newHomeworks, ...prev]);
+                }}
+              />
+            )}
+          </div>
         )}
+
         <Helmets text={`Lições da Casa de ${studentName}`} />
+
         <>
           {loading ? (
             <CircularProgress
@@ -507,7 +540,6 @@ export default function Homework({
                           )}
                         </div>
 
-                        {/* Status do homework */}
                         <span
                           style={{
                             ...pillStatus,
@@ -582,6 +614,7 @@ export default function Homework({
                           </button>
                         </div>
                       )}
+
                       {/* Descrição do homework */}
                       <div
                         style={{
@@ -633,7 +666,9 @@ export default function Homework({
               )}
             </div>
           )}
-          {/* Modal for Homework Submission */}
+
+          {/* Modais existentes (envio / edição) – mantidos exatamente como estavam */}
+
           {isModalOpen && (
             <div
               style={{
@@ -666,7 +701,7 @@ export default function Homework({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Modal Header */}
+                {/* Header */}
                 <div
                   style={{
                     display: "flex",
@@ -719,7 +754,7 @@ export default function Homework({
                   </button>
                 </div>
 
-                {/* Submission Mode Selection */}
+                {/* Modo de envio */}
                 <div
                   style={{
                     marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
@@ -812,7 +847,7 @@ export default function Homework({
                   </div>
                 </div>
 
-                {/* Modal Content based on submission mode */}
+                {/* Conteúdo do modal de envio */}
                 {submissionMode === "file" ? (
                   <div
                     style={{
@@ -929,7 +964,7 @@ export default function Homework({
                   </div>
                 )}
 
-                {/* Modal Actions */}
+                {/* Actions */}
                 <div
                   style={{
                     display: "flex",
@@ -1049,6 +1084,7 @@ export default function Homework({
               </div>
             </div>
           )}
+
           {isEditModalOpen && (
             <div
               style={{
@@ -1081,7 +1117,6 @@ export default function Homework({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Modal Header */}
                 <div
                   style={{
                     display: "flex",
@@ -1103,7 +1138,7 @@ export default function Homework({
                       color: "#495057",
                     }}
                   >
-                    {"Editar Homework"}
+                    Editar Homework
                   </h2>
                   <button
                     onClick={closeSubmissionModal}
@@ -1139,6 +1174,7 @@ export default function Homework({
                     borderRadius: 6,
                     backgroundColor: "#ffffff",
                     minHeight: "300px",
+                    marginBottom: 16,
                   }}
                 >
                   <HTMLEditor
@@ -1146,10 +1182,47 @@ export default function Homework({
                     initialContent={selectedHomeworkContent}
                   />
                 </div>
-                <div>
-                  <button onClick={closeSubmissionModal}>Cancelar</button>
-                  <button onClick={() => saveEditedDescription()}>
-                    Salvar
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: 8,
+                  }}
+                >
+                  <button
+                    onClick={closeSubmissionModal}
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "#666",
+                      border: "1px solid #ddd",
+                      padding: "6px 12px",
+                      borderRadius: 6,
+                      fontSize: 12,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() => saveEditedDescription()}
+                    disabled={uploading || !homeworkAnswer.trim()}
+                    style={{
+                      backgroundColor:
+                        uploading || !homeworkAnswer.trim()
+                          ? "#ccc"
+                          : partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      padding: "6px 12px",
+                      borderRadius: 6,
+                      fontSize: 12,
+                      cursor:
+                        uploading || !homeworkAnswer.trim()
+                          ? "not-allowed"
+                          : "pointer",
+                    }}
+                  >
+                    {uploading ? "Salvando..." : "Salvar"}
                   </button>
                 </div>
               </div>
