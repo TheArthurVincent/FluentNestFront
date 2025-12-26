@@ -1746,7 +1746,7 @@ export const updateInfo = async (id, headers) => {
   } catch (error) {
     console.log(error, "Erro ao atualizar dados");
   }
-  if (!loggedIn.responsible) {
+  if (!loggedIn?.responsible) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/studentflashcardstoday/${id}`,
