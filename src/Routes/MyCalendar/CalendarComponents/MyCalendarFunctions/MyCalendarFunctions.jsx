@@ -196,42 +196,42 @@ export const formatTimeRange = (startTime, durationMinutes = 60) => {
 
 export const categoryList = [
   {
-    text: "Aula Experimental",
-    value: "Test",
-    forStudent: false,
-  },
-  {
-    text: "Aula Única",
-    forStudent: false,
-    value: "Standalone",
-  },
-  {
-    text: "Aula Geral",
-    value: "Group Class",
-    forStudent: false,
-  },
-  {
-    text: "Aula De Um Grupo",
-    value: "Established Group Class",
-    forStudent: false,
-  },
-  {
-    text: "Aula De Reposição",
-    value: "Rep",
-    forStudent: true,
-  },
-  {
-    text: "Aula Prêmio",
-    value: "Prize Class",
-    forStudent: true,
-  },
-  {
-    text: "Aula Particular Individual",
+    text: "Aula Particular Individual (De um de seus alunos)",
     value: "Tutoring",
     forStudent: true,
   },
   {
-    text: "Horário Vazio Para Reposição",
+    text: "Aula Experimental (Para um possível novo aluno)",
+    value: "Test",
+    forStudent: false,
+  },
+  {
+    text: "Aula Única (Para nenhum aluno específico)",
+    forStudent: false,
+    value: "Standalone",
+  },
+  {
+    text: "Aula Geral (Para todos os alunos)",
+    value: "Group Class",
+    forStudent: false,
+  },
+  {
+    text: "Aula De Um Grupo (Para um grupo específico)",
+    value: "Established Group Class",
+    forStudent: false,
+  },
+  {
+    text: "Aula De Reposição (De um de seus alunos)",
+    value: "Rep",
+    forStudent: true,
+  },
+  {
+    text: "Aula Prêmio (De um de seus alunos)",
+    value: "Prize Class",
+    forStudent: true,
+  },
+  {
+    text: "Horário Vazio Para Reposição (Para que seus alunos marquem)",
     value: "Marcar Reposição",
     forStudent: false,
   },

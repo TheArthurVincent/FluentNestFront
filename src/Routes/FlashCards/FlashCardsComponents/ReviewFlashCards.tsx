@@ -228,13 +228,14 @@ const ReviewFlashCards = ({
   };
 
   const timerCard = () => {
-    //@ts-ignore
+    // @ts-ignore
     const timers = [];
     for (let i = 20; i >= 1; i--) {
       const delay = i === 10 ? 11000 : i === 9 ? 10000 : (21 - i) * 1000;
+      // @ts-ignore
       timers.push(setTimeout(() => setTimerCardCount(i), delay));
     }
-    //@ts-ignore
+    // @ts-ignore
     return () => timers.forEach(clearTimeout);
   };
 
@@ -275,15 +276,16 @@ const ReviewFlashCards = ({
 
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // ---------------- RENDER ----------------
   return (
-    <section>
+    <section style={{ padding: "0 1rem", marginTop: "1rem" }}>
       {loading ? (
         <div
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "150px",
+            minHeight: "160px",
           }}
         >
           <CircularProgress size={24} style={{ color: partnerColor() }} />
@@ -291,27 +293,78 @@ const ReviewFlashCards = ({
       ) : (
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "0 1rem",
-            width: "90%",
-            maxWidth: "500px",
             margin: "0 auto",
+            borderRadius: 12,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
           }}
         >
+          {/* CONTROLS SUPERIORES */}
           <div
             style={{
-              flex: 1,
               display: "flex",
-              flexDirection: "column",
+              gap: "0.75rem",
+              justifyContent: "space-between",
               alignItems: "center",
-              gap: "1rem",
-              width: "100%",
+              marginTop: 4,
+              flexWrap: "wrap",
             }}
           >
-            {/* Flashcard area */}
+            <Voice
+              maxW="auto"
+              changeB={changeNumber}
+              setChangeB={setChangeNumber}
+              chosenLanguage={languageToUse}
+            />
+
+            <select
+              id="language-select"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              style={{
+                borderRadius: 999,
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                fontSize: "11px",
+                fontWeight: 400,
+                color: "#64748b",
+                padding: "4px 10px",
+                height: "28px",
+                minWidth: "120px",
+                maxWidth: "150px",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = partnerColor())
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+            >
+              <option value="en">English</option>
+              <option value="es">Español</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+
+          {/* LINHA DIVISÓRIA */}
+          <div
+            style={{
+              marginTop: 8,
+              borderTop: "1px solid #e2e8f0",
+            }}
+          />
+
+          {/* ÁREA DO FLASHCARD / LISTA */}
+          <div
+            style={{
+              marginTop: 8,
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             {see && (
-              <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
+              <div ref={cardRef} style={{ width: "100%", maxWidth: 420 }}>
                 {loading ? (
                   <div
                     style={{
@@ -330,40 +383,63 @@ const ReviewFlashCards = ({
                     style={{
                       width: "100%",
                       textAlign: "center",
-                      color: "black",
+                      color: "#0f172a",
                     }}
                   >
                     {cardsLength ? (
                       <>
-                        <button
-                          disabled={isDisabled}
+                        {/* BOTÃO ANSWER/BACK */}
+                        <div
                           style={{
-                            cursor: isDisabled ? "not-allowed" : "pointer",
-                            color: isDisabled
-                              ? "grey"
-                              : textPrimaryColorContrast(),
-                            backgroundColor: isDisabled
-                              ? "#ccc"
-                              : partnerColor(),
-                          }}
-                          onClick={() => {
-                            setBackCardVisible(!backCardVisible);
-                            setAnswer(!answer);
+                            display: "flex",
+                            justifyContent: "center",
+                            marginBottom: 10,
                           }}
                         >
-                          {isDisabled ? (
-                            <span>{count}</span>
-                          ) : (
-                            <span>
-                              {answer
-                                ? UniversalTexts?.back || "Back"
-                                : UniversalTexts?.answer || "Answer"}
-                            </span>
-                          )}
-                        </button>
+                          <button
+                            disabled={isDisabled}
+                            style={{
+                              cursor: isDisabled ? "not-allowed" : "pointer",
+                              color: isDisabled
+                                ? "#e5e7eb"
+                                : textPrimaryColorContrast(),
+                              backgroundColor: isDisabled
+                                ? "#cbd5e1"
+                                : partnerColor(),
+                              border: "none",
+                              borderRadius: 999,
+                              padding: "6px 14px",
+                              fontSize: 12,
+                              fontWeight: 500,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              minWidth: 80,
+                              boxShadow: isDisabled
+                                ? "none"
+                                : "0 4px 10px rgba(15,23,42,0.18)",
+                              transition: "all 0.15s ease",
+                            }}
+                            onClick={() => {
+                              setBackCardVisible(!backCardVisible);
+                              setAnswer(!answer);
+                            }}
+                          >
+                            {isDisabled ? (
+                              <span>{count}</span>
+                            ) : (
+                              <span>
+                                {answer
+                                  ? UniversalTexts?.back || "Back"
+                                  : UniversalTexts?.answer || "Answer"}
+                              </span>
+                            )}
+                          </button>
+                        </div>
 
+                        {/* BOTÕES HARD/EASY */}
                         {answer && (
-                          <div style={{ marginTop: "1rem" }}>
+                          <div style={{ marginTop: "0.5rem" }}>
                             <div
                               style={{
                                 justifyContent: "center",
@@ -375,8 +451,16 @@ const ReviewFlashCards = ({
                               <button
                                 onClick={() => reviewCard(cards[0]._id, "hard")}
                                 style={{
-                                  backgroundColor: "red",
-                                  color: "white",
+                                  backgroundColor: "#f97373",
+                                  color: "#fff",
+                                  border: "none",
+                                  padding: "6px 14px",
+                                  borderRadius: 999,
+                                  fontSize: 11,
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                  boxShadow:
+                                    "0 4px 10px rgba(248,113,113,0.35)",
                                 }}
                               >
                                 {UniversalTexts?.iMissed || "I missed (Errei)"}
@@ -387,6 +471,13 @@ const ReviewFlashCards = ({
                                 style={{
                                   backgroundColor: partnerColor(),
                                   color: textPrimaryColorContrast(),
+                                  border: "none",
+                                  padding: "6px 14px",
+                                  borderRadius: 999,
+                                  fontSize: 11,
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                  boxShadow: "0 4px 10px rgba(34,197,94,0.35)",
                                 }}
                               >
                                 {UniversalTexts?.iGotIt ||
@@ -395,30 +486,47 @@ const ReviewFlashCards = ({
                             </div>
                           </div>
                         )}
+
+                        {/* CARTÃO EM SI */}
                         <div
-                          style={{ margin: "auto" }}
+                          style={{ margin: "0 auto" }}
                           className={`flashcard ${answer ? "flip" : ""}`}
                         >
+                          {/* FRONT */}
                           <div
                             style={{
                               backgroundColor: textColor,
                               display: !backCardVisible ? "none" : "block",
+                              borderRadius: 10,
+                              padding: "12px 14px",
+                              boxShadow: "0 8px 20px rgba(15,23,42,0.18)",
+                              minHeight: 130,
                             }}
                             className="flashcard-front"
                           >
                             <div>
-                              <span style={{ fontSize: "12px" }}>
+                              <span
+                                style={{
+                                  fontSize: 11,
+                                  color: "#0f172a",
+                                  backgroundColor: "#e5e7eb",
+                                  borderRadius: 999,
+                                  padding: "2px 8px",
+                                  display: "inline-block",
+                                  marginBottom: 6,
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {Math.round(cards[0]?.numberOfReviews) || 0}{" "}
                                 {Math.round(cards[0]?.numberOfReviews) === 1
                                   ? UniversalTexts?.review || "review"
                                   : UniversalTexts?.reviews || "reviews"}
                               </span>
-                              <br />
                               <div
                                 style={{
-                                  fontSize: "15px",
+                                  fontSize: 16,
                                   margin: "10px",
-                                  fontWeight: "600",
+                                  fontWeight: 600,
                                 }}
                               >
                                 {cards[0]?.front?.text}
@@ -436,6 +544,16 @@ const ReviewFlashCards = ({
                                         selectedVoice
                                       )
                                     }
+                                    style={{
+                                      borderRadius: 999,
+                                      border: "1px solid #e5e7eb",
+                                      padding: "4px 8px",
+                                      fontSize: 11,
+                                      cursor: "pointer",
+                                      backgroundColor: "#ffffff",
+                                      boxShadow:
+                                        "0 4px 10px rgba(15,23,42,0.08)",
+                                    }}
                                   >
                                     <i
                                       className="fa fa-volume-up"
@@ -453,10 +571,11 @@ const ReviewFlashCards = ({
                                       aspectRatio: "1 / 1",
                                       objectFit: "cover",
                                       display: "block",
-                                      margin: "1rem auto",
+                                      margin: "1rem auto 0",
                                       objectPosition: "center",
-                                      borderRadius: "4px",
-                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                      borderRadius: "8px",
+                                      boxShadow:
+                                        "0 8px 20px rgba(15,23,42,0.22)",
                                     }}
                                     src={cards[0]?.img}
                                     alt={cards[0]?.front?.text}
@@ -465,35 +584,45 @@ const ReviewFlashCards = ({
                             </div>
                           </div>
 
+                          {/* BACK */}
                           <div
                             style={{
                               display: backCardVisible ? "none" : "block",
+                              borderRadius: 10,
+                              padding: "12px 14px",
+                              boxShadow: "0 8px 20px rgba(15,23,42,0.18)",
+                              backgroundColor: "#0f172a",
+                              color: "#e5e7eb",
+                              minHeight: 130,
                             }}
                             className="flashcard-back"
                           >
                             <div>
                               <div
                                 style={{
-                                  fontSize: "11px",
-                                  marginBottom: "15px",
+                                  fontSize: 11,
+                                  marginBottom: 10,
+                                  opacity: 0.9,
                                 }}
                               >
                                 {cards[0]?.front?.text}
                               </div>
                               <div
                                 style={{
-                                  fontSize: "15px",
-                                  margin: "10px",
+                                  fontSize: 16,
+                                  margin: "10px 0",
                                   fontStyle: "italic",
+                                  color: "#f9fafb",
                                 }}
                               >
                                 {cards[0]?.back?.text}
                               </div>
                               <div
                                 style={{
-                                  fontSize: "12px",
+                                  fontSize: 12,
                                   fontStyle: "italic",
-                                  marginBottom: "15px",
+                                  marginBottom: 10,
+                                  opacity: 0.9,
                                 }}
                                 dangerouslySetInnerHTML={{
                                   __html: cards[0]?.backComments,
@@ -512,6 +641,16 @@ const ReviewFlashCards = ({
                                         selectedVoice
                                       )
                                     }
+                                    style={{
+                                      borderRadius: 999,
+                                      border: "1px solid #e5e7eb",
+                                      padding: "4px 8px",
+                                      fontSize: 11,
+                                      cursor: "pointer",
+                                      backgroundColor: "#ffffff",
+                                      boxShadow:
+                                        "0 4px 10px rgba(15,23,42,0.08)",
+                                    }}
                                   >
                                     <i
                                       className="fa fa-volume-up"
@@ -529,10 +668,11 @@ const ReviewFlashCards = ({
                                       aspectRatio: "1 / 1",
                                       objectFit: "cover",
                                       display: "block",
-                                      margin: "1rem auto",
+                                      margin: "1rem auto 0",
                                       objectPosition: "center",
-                                      borderRadius: "4px",
-                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                      borderRadius: "8px",
+                                      boxShadow:
+                                        "0 8px 20px rgba(15,23,42,0.22)",
                                     }}
                                     src={cards[0]?.img}
                                     alt={cards[0]?.front?.text}
@@ -545,18 +685,19 @@ const ReviewFlashCards = ({
                     ) : (
                       <div
                         style={{
-                          padding: "1.5rem",
+                          padding: "1.2rem",
                           textAlign: "center",
-                          color: "#666",
-                          fontSize: "14px",
-                          backgroundColor: "#f8f9fa",
-                          borderRadius: "4px",
-                          margin: "1rem 0",
+                          color: "#64748b",
+                          fontSize: 13,
+                          backgroundColor: "#f8fafc",
+                          borderRadius: 8,
+                          margin: "0.75rem 0",
+                          border: "1px dashed #cbd5e1",
                         }}
                       >
                         <div
                           style={{
-                            fontWeight: "500",
+                            fontWeight: 500,
                             marginBottom: "0.25rem",
                           }}
                         >
@@ -564,10 +705,11 @@ const ReviewFlashCards = ({
                         </div>
                         <a
                           style={{
-                            fontSize: "12px",
-                            color: "#666",
+                            fontSize: 12,
+                            color: partnerColor(),
                             textDecoration: "none",
-                            marginBottom: "1rem",
+                            marginTop: "0.25rem",
+                            display: "inline-block",
                           }}
                           href="/sentence-mining"
                         >
@@ -580,94 +722,50 @@ const ReviewFlashCards = ({
                 )}
               </div>
             )}
-            <div
-              style={{
-                display: !isDisabled ? "none" : "flex",
-                justifyContent: "center",
-                margin: "1rem 0",
-              }}
-            >
-              <button
-                style={{
-                  backgroundColor: partnerColor(),
-                  color: textPrimaryColorContrast(),
-                }}
-                onClick={seeCardsToReview}
-              >
-                {!see ? (
-                  UniversalTexts?.start || "Start"
-                ) : (
-                  <i className="fa fa-refresh" aria-hidden="true" />
-                )}
-              </button>
-            </div>
-            {/* Controls */}
-            <div
-              style={{
-                display: "flex",
-                gap: "0.75rem",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "1rem 0",
-                width: "100%",
-                maxWidth: "320px",
-              }}
-            >
-              <Voice
-                maxW="auto"
-                changeB={changeNumber}
-                setChangeB={setChangeNumber}
-                chosenLanguage={languageToUse}
-              />
-              <select
-                id="category-select"
-                value={lang}
-                onChange={(e) => setLang(e.target.value)}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "11px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "4px 6px",
-                  height: "28px",
-                  minWidth: "120px",
-                  maxWidth: "150px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = partnerColor())
-                }
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              >
-                <option value="en">{"English"}</option>
-                <option value="es">{"Espanõl"}</option>
-                <option value="fr">{"Français"}</option>
-              </select>
-            </div>
+          </div>
+
+          {/* BOTÃO START/REFRESH */}
+          <div
+            style={{
+              display: !isDisabled ? "none" : "flex",
+              justifyContent: "center",
+              marginTop: see ? 4 : 8,
+            }}
+          >
             <button
-              onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
               style={{
-                fontSize: "10px",
-                borderRadius: "4px",
-                border: "1px solid #ddd",
-                padding: "2px 8px",
+                backgroundColor: "#ecfdf3",
+                color: partnerColor(),
+                borderRadius: 999,
+                border: `1px solid ${partnerColor()}`,
+                padding: "6px 14px",
+                fontSize: 12,
+                fontWeight: 500,
                 cursor: "pointer",
-                backgroundColor: playCardAutomatically
-                  ? partnerColor()
-                  : "#f9fafb",
-                color: playCardAutomatically ? "#fff" : "#555",
-                transition: "all 0.2s ease",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
+              onClick={seeCardsToReview}
             >
-              {playCardAutomatically ? "🔊 Auto ON" : "🔇 Auto OFF"}
+              {!see ? (
+                <>
+                  <i className="fa fa-play" aria-hidden="true" />
+                  {UniversalTexts?.start || "Start"}
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-refresh" aria-hidden="true" />
+                  {UniversalTexts?.refreshCards || "Atualizar lista"}
+                </>
+              )}
             </button>
           </div>
         </div>
       )}
-      <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
+
+      {/* PROGRESSO GERAL (FORA DO CARD) */}
+      <div style={{ margin: "5.5rem 0 1rem 0", padding: "0 0.25rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
     </section>

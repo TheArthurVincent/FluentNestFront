@@ -14,6 +14,7 @@ import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 import { HOne } from "../../../Resources/Components/RouteBox";
+import { createPortal } from "react-dom";
 
 var AllCards = ({
   headers,
@@ -40,15 +41,14 @@ var AllCards = ({
 
   var fetchMoreCards = async (isReset: boolean = false): Promise<void> => {
     var currentPage = isReset ? 0 : page;
-    if (!selectedStudentId) return; // segurança extra
-    // Se estiver buscando, só carrega a primeira página e desativa o infinito
+    if (!selectedStudentId) return;
     if (search && !isReset) return;
     if (!hasMore && !isReset) return;
 
     if (isReset) {
       setCards([]);
       setPage(0);
-      setHasMore(!search); // Se tem busca, não tem mais cards para carregar
+      setHasMore(!search);
     }
 
     setLoading(true);
@@ -61,7 +61,6 @@ var AllCards = ({
           headers: actualHeaders,
         }
       );
-      setLoading(false);
 
       var newCards = response.data.allFlashCards;
       if (newCards.length === 0) {
@@ -69,12 +68,10 @@ var AllCards = ({
       } else {
         setCards((prev) => (isReset ? newCards : [...prev, ...newCards]));
         setPage((prev) => (isReset ? 1 : prev + 1));
-        if (search) setHasMore(false); // Se está buscando, não tem mais para carregar
+        if (search) setHasMore(false);
       }
-      setLoading(false);
     } catch (error) {
       console.error("Erro ao carregar flashcards", error);
-      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -82,7 +79,6 @@ var AllCards = ({
 
   var searchCards = (query: string) => {
     setSearch(query);
-    // Não chama fetchMoreCards aqui, o useEffect de search faz isso
   };
 
   useEffect(() => {
@@ -100,14 +96,13 @@ var AllCards = ({
     var isBottom =
       element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 
-    // Só carrega mais se não estiver buscando
     if (isBottom && !search) {
       fetchMoreCards();
     }
-    setLoading(false);
   };
 
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
+
   var handleSeeModal = async (cardId: string) => {
     setShowModal(true);
     setLoadingModal(true);
@@ -138,10 +133,11 @@ var AllCards = ({
       onLoggOut();
     }
   };
+
   var handleEditCard = async (cardId: string) => {
-    setShowModal(true);
+    setLoadingModal(true);
     try {
-      var response = await axios.put(
+      await axios.put(
         `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         {
           newFront,
@@ -155,29 +151,33 @@ var AllCards = ({
           headers: actualHeaders,
         }
       );
-      fetchMoreCards(true);
+      await fetchMoreCards(true);
       setShowModal(false);
     } catch (error) {
-      console.log(error, "Erro ao obter cards");
+      console.log(error, "Erro ao editar card");
       onLoggOut();
+    } finally {
+      setLoadingModal(false);
     }
   };
 
   var handleDeleteCard = async (cardId: string) => {
+    setLoadingModal(true);
     try {
-      var response = await axios.delete(
+      await axios.delete(
         `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         {
           params: { cardId },
           headers: actualHeaders,
         }
       );
-      fetchMoreCards(true);
-
+      await fetchMoreCards(true);
       setShowModal(false);
     } catch (error) {
       console.log(error, "Erro ao apagar cards");
       onLoggOut();
+    } finally {
+      setLoadingModal(false);
     }
   };
 
@@ -207,26 +207,30 @@ var AllCards = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "600px",
+          maxWidth: "640px",
           margin: "0 auto",
           padding: "1rem 0.5rem",
         }}
       >
+        {/* Header de controles */}
         <div
           style={{
             display: "flex",
             gap: "0.5rem",
             alignItems: "center",
+            marginBottom: "0.75rem",
           }}
         >
-          {/* Header Controls */}
           <button
             onClick={() => fetchMoreCards(true)}
             style={{
-              borderRadius: 4,
+              borderRadius: 999,
               fontSize: "11px",
               padding: "4px 8px",
               height: "28px",
+              border: "1px solid #e2e8f0",
+              backgroundColor: "#f8fafc",
+              cursor: "pointer",
             }}
           >
             <i className="fa fa-refresh" aria-hidden="true" />
@@ -234,15 +238,15 @@ var AllCards = ({
           <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
           <input
             style={{
-              borderRadius: 4,
+              borderRadius: 999,
               border: "1px solid #e2e8f0",
               backgroundColor: "#f8fafc",
               fontSize: "11px",
               fontWeight: "400",
               color: "#64748b",
-              padding: "4px 6px",
+              padding: "4px 10px",
               height: "28px",
-              minWidth: "120px",
+              minWidth: "140px",
               outline: "none",
             }}
             type="text"
@@ -250,15 +254,16 @@ var AllCards = ({
             onChange={(e) => searchCards(e.target.value)}
           />
         </div>
-        {/* Cards Section */}
-        {loading ? (
+
+        {/* Lista de cards */}
+        {loading && cards.length === 0 ? (
           <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <div
             className="flashcard-history-list"
             style={{
               width: "100%",
-              maxWidth: "500px",
+              maxWidth: "560px",
             }}
           >
             <div
@@ -275,10 +280,10 @@ var AllCards = ({
                   key={index}
                   style={{
                     marginBottom: "0.75rem",
-                    borderRadius: 4,
+                    borderRadius: 10,
                     overflow: "hidden",
-                    boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
-                    border: "1px solid #f1f5f9",
+                    boxShadow: "0 6px 16px rgba(15,23,42,0.06)",
+                    border: "1px solid #e2e8f0",
                     backgroundColor: "#ffffff",
                   }}
                 >
@@ -294,20 +299,24 @@ var AllCards = ({
                   >
                     <span
                       style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#374151",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: "#0f172a",
                       }}
                     >
-                      📚 Flashcard #{index + 1}
+                      Flashcard #{index + 1}
                     </span>
                     <button
                       onClick={() => handleSeeModal(card._id)}
-                      color="yellow"
                       style={{
                         fontSize: "11px",
-                        padding: "2px 6px",
+                        padding: "3px 8px",
                         height: "24px",
+                        borderRadius: 999,
+                        border: "1px solid #e2e8f0",
+                        backgroundColor: "#fff7ed",
+                        cursor: "pointer",
+                        color: "#c2410c",
                       }}
                     >
                       <i className="fa fa-edit" aria-hidden="true" />
@@ -315,14 +324,14 @@ var AllCards = ({
                   </div>
 
                   {/* Card Content */}
-                  <div style={{ padding: "0.75rem" }}>
+                  <div style={{ padding: "0.75rem 1rem" }}>
                     <div
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "flex-start",
                         marginBottom: "0.5rem",
-                        gap: "0.5rem",
+                        gap: "0.75rem",
                       }}
                     >
                       <div style={{ flex: 1 }}>
@@ -361,6 +370,7 @@ var AllCards = ({
                           display: "flex",
                           gap: "0.25rem",
                           flexDirection: "column",
+                          alignItems: "flex-end",
                         }}
                       >
                         {card.front.language &&
@@ -376,9 +386,9 @@ var AllCards = ({
                                 )
                               }
                               style={{
-                                background: "none",
+                                background: "#ffffff",
                                 border: "1px solid #e2e8f0",
-                                borderRadius: 4,
+                                borderRadius: 999,
                                 padding: "4px 6px",
                                 cursor: "pointer",
                                 fontSize: "12px",
@@ -403,9 +413,9 @@ var AllCards = ({
                               )
                             }
                             style={{
-                              background: "none",
+                              background: "#ffffff",
                               border: "1px solid #e2e8f0",
-                              borderRadius: 4,
+                              borderRadius: 999,
                               padding: "4px 6px",
                               cursor: "pointer",
                               fontSize: "12px",
@@ -417,11 +427,15 @@ var AllCards = ({
                         )}
                         <button
                           onClick={() => handleDeleteCard(card._id)}
-                          color="red"
                           style={{
                             fontSize: "11px",
-                            padding: "2px 6px",
+                            padding: "3px 8px",
                             height: "24px",
+                            borderRadius: 999,
+                            border: "1px solid #fee2e2",
+                            backgroundColor: "#fef2f2",
+                            cursor: "pointer",
+                            color: "#b91c1c",
                           }}
                         >
                           <i className="fa fa-trash" aria-hidden="true" />
@@ -439,14 +453,15 @@ var AllCards = ({
                             aspectRatio: "1 / 1",
                             objectFit: "cover",
                             objectPosition: "center",
-                            borderRadius: 4,
-                            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+                            borderRadius: 6,
+                            boxShadow: "0 4px 10px rgba(15,23,42,0.18)",
                           }}
                           src={card.img}
                           alt={card.front?.text}
                         />
                       </div>
                     )}
+
                     {/* Stats Section */}
                     <div
                       style={{
@@ -494,146 +509,231 @@ var AllCards = ({
                   </div>
                 </div>
               ))}
+
+              {loading && cards.length > 0 && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    padding: "0.75rem 0",
+                  }}
+                >
+                  <CircularProgress
+                    size={20}
+                    style={{ color: partnerColor() }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
-        <div
-          style={{
-            backgroundColor: "rgba(0,0,0,0.5)",
-            top: 0,
-            left: 0,
-            display: showModal ? "block" : "none",
-            width: "1000%",
-            height: "1000%",
-            position: "fixed",
-          }}
-          onClick={handleHideModal}
-        />
-        <div
-          style={{
-            display: showModal ? "flex" : "none",
-            flexDirection: "column",
-            gap: "1rem",
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -70%)",
-            backgroundColor: "#fff",
-            borderRadius: 4,
-            padding: "1rem",
-            width: "300px",
-            maxWidth: "90vw",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-            zIndex: 2000,
-          }}
-          id="modal"
-        >
-          {/* Cabeçalho */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "0.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <HOne
+      </div>
+
+      {/* MODAL NO BODY VIA PORTAL */}
+      {showModal &&
+        createPortal(
+          <>
+            {/* Backdrop */}
+            <div
+              onClick={handleHideModal}
               style={{
-                padding: "1px",
-                margin: "1px",
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(15,23,42,0.45)",
+                zIndex: 999,
               }}
+            />
+
+            {/* Container centralizado */}
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: 1000,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "16px",
+              }}
+              onClick={handleHideModal}
             >
-              Editar Card
-            </HOne>
-            <Xp onClick={handleHideModal}>✕</Xp>
-          </div>
-          {!loadingModal ? (
-            <>
-              <article id="front" style={{ display: "flex", gap: "0.5rem" }}>
-                <input
-                  style={{
-                    flex: 1,
-                    padding: "8px",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                  }}
-                  value={newFront}
-                  onChange={(e) => setNewFront(e.target.value)}
-                  type="text"
-                  placeholder="Frente"
-                />
-                <select
-                  style={{
-                    flexBasis: "35%",
-                    padding: "8px",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                  }}
-                  value={newLGFront}
-                  onChange={(e) => setNewLGFront(e.target.value)}
-                >
-                  {languages.map((language, langIndex) => (
-                    <option key={langIndex} value={language}>
-                      {language}
-                    </option>
-                  ))}
-                </select>
-              </article>
-              <article
-                id="back"
+              <div
+                onClick={(e) => e.stopPropagation()}
                 style={{
+                  width: "100%",
+                  maxWidth: 420,
+                  maxHeight: "90vh",
+                  overflow: "hidden",
+                  borderRadius: 12,
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 18px 55px rgba(15,23,42,0.25)",
                   display: "flex",
                   flexDirection: "column",
-                  gap: "0.5rem",
                 }}
               >
-                <div style={{ display: "flex", gap: "0.5rem" }}>
-                  <input
-                    style={{
-                      flex: 1,
-                      padding: "8px",
-                      border: "1px solid #ddd",
-                      borderRadius: 4,
-                    }}
-                    value={newBack}
-                    onChange={(e) => setNewBack(e.target.value)}
-                    type="text"
-                    placeholder="Verso"
-                  />
-                  <select
-                    style={{
-                      flexBasis: "35%",
-                      padding: "8px",
-                      border: "1px solid #ddd",
-                      borderRadius: 4,
-                    }}
-                    value={newLGBack}
-                    onChange={(e) => setNewLGBack(e.target.value)}
-                  >
-                    {languages.map((language, langIndex) => (
-                      <option key={langIndex} value={language}>
-                        {language}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <input
-                  style={{
-                    padding: "8px",
-                    border: "1px solid #ddd",
-                    borderRadius: 4,
-                  }}
-                  value={newBackComments}
-                  onChange={(e) => setNewBackComments(e.target.value)}
-                  type="text"
-                  placeholder="Comentários"
-                />
-
+                {/* Header */}
                 <div
                   style={{
+                    padding: "12px 16px",
+                    borderBottom: "1px solid #e2e8f0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                  }}
+                >
+                  <HOne
+                    style={{
+                      padding: 0,
+                      margin: 0,
+                      fontSize: 16,
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.editCardTitle || "Editar Flashcard"}
+                  </HOne>
+                  <button
+                    onClick={handleHideModal}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      width: 28,
+                      height: 28,
+                      borderRadius: "999px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 16,
+                      color: "#94a3b8",
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Body */}
+                <div
+                  style={{
+                    padding: "12px 16px 14px",
+                    overflowY: "auto",
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                  }}
+                >
+                  {!loadingModal ? (
+                    <>
+                      <article
+                        id="front"
+                        style={{ display: "flex", gap: "0.5rem" }}
+                      >
+                        <input
+                          style={{
+                            flex: 1,
+                            padding: "8px",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: 8,
+                            fontSize: 13,
+                          }}
+                          value={newFront}
+                          onChange={(e) => setNewFront(e.target.value)}
+                          type="text"
+                          placeholder="Frente"
+                        />
+                        <select
+                          style={{
+                            flexBasis: "35%",
+                            padding: "8px",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: 8,
+                            fontSize: 12,
+                          }}
+                          value={newLGFront}
+                          onChange={(e) => setNewLGFront(e.target.value)}
+                        >
+                          {languages.map((language, langIndex) => (
+                            <option key={langIndex} value={language}>
+                              {language}
+                            </option>
+                          ))}
+                        </select>
+                      </article>
+
+                      <article
+                        id="back"
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <input
+                            style={{
+                              flex: 1,
+                              padding: "8px",
+                              border: "1px solid #e2e8f0",
+                              borderRadius: 8,
+                              fontSize: 13,
+                            }}
+                            value={newBack}
+                            onChange={(e) => setNewBack(e.target.value)}
+                            type="text"
+                            placeholder="Verso"
+                          />
+                          <select
+                            style={{
+                              flexBasis: "35%",
+                              padding: "8px",
+                              border: "1px solid #e2e8f0",
+                              borderRadius: 8,
+                              fontSize: 12,
+                            }}
+                            value={newLGBack}
+                            onChange={(e) => setNewLGBack(e.target.value)}
+                          >
+                            {languages.map((language, langIndex) => (
+                              <option key={langIndex} value={language}>
+                                {language}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <input
+                          style={{
+                            padding: "8px",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: 8,
+                            fontSize: 13,
+                          }}
+                          value={newBackComments}
+                          onChange={(e) => setNewBackComments(e.target.value)}
+                          type="text"
+                          placeholder="Comentários"
+                        />
+                      </article>
+                    </>
+                  ) : (
+                    <div
+                      style={{
+                        padding: "24px 0",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <CircularProgress style={{ color: partnerColor() }} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div
+                  style={{
+                    padding: "10px 16px 12px",
+                    borderTop: "1px solid #e2e8f0",
                     display: "flex",
                     justifyContent: "flex-end",
                     gap: "0.5rem",
@@ -642,37 +742,45 @@ var AllCards = ({
                   <button
                     onClick={() => handleDeleteCard(cardIdToEdit)}
                     style={{
-                      backgroundColor: "#f44336",
-                      color: "white",
+                      backgroundColor: "#fee2e2",
+                      color: "#b91c1c",
                       border: "none",
-                      borderRadius: 4,
-                      padding: "0.5rem 1rem",
+                      borderRadius: 999,
+                      padding: "0.4rem 0.9rem",
                       cursor: "pointer",
+                      fontSize: 12,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
                     }}
                   >
-                    <i className="fa fa-trash" aria-hidden="true" /> Excluir
+                    <i className="fa fa-trash" aria-hidden="true" />{" "}
+                    {UniversalTexts.delete || "Excluir"}
                   </button>
                   <button
                     onClick={() => handleEditCard(cardIdToEdit)}
                     style={{
-                      backgroundColor: "#4caf50",
-                      color: "white",
+                      backgroundColor: partnerColor(),
+                      color: "#ffffff",
                       border: "none",
-                      borderRadius: 4,
-                      padding: "0.5rem 1rem",
+                      borderRadius: 999,
+                      padding: "0.4rem 0.9rem",
                       cursor: "pointer",
+                      fontSize: 12,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
                     }}
                   >
-                    <i className="fa fa-save" aria-hidden="true" /> Salvar
+                    <i className="fa fa-save" aria-hidden="true" />{" "}
+                    {UniversalTexts.save || "Salvar"}
                   </button>
                 </div>
-              </article>
-            </>
-          ) : (
-            <CircularProgress style={{ color: partnerColor() }} />
-          )}
-        </div>
-      </div>
+              </div>
+            </div>
+          </>,
+          document.body
+        )}
     </>
   );
 };

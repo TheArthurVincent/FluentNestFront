@@ -168,6 +168,7 @@ const FlashCards = ({
         margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
+      {/* Título da página (desktop) */}
       {isDesktop && (
         <div
           style={{
@@ -190,6 +191,8 @@ const FlashCards = ({
           </section>
         </div>
       )}
+
+      {/* CARD PRINCIPAL */}
       <div
         style={{
           fontFamily: "Plus Jakarta Sans",
@@ -200,141 +203,196 @@ const FlashCards = ({
           backgroundColor: "#ffffff",
           borderRadius: "12px",
           border: "1px solid #e8eaed",
-          padding: "2rem",
+          padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
+          maxWidth: 960,
         }}
       >
         <Helmets text="Flashcards" />
+
+        {/* HEADER DO CARD: título + seleção de aluno (quando ADM) */}
         {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-          <div
+          <header
             style={{
-              padding: "1rem",
-              backgroundColor: alwaysWhite(),
-              borderBottom: "1px solid #e2e8f0",
               display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              justifyContent: "center",
+              flexDirection: isDesktop ? "row" : "column",
+              justifyContent: "space-between",
+              alignItems: isDesktop ? "center" : "flex-start",
+              gap: 12,
+              marginBottom: 12,
             }}
           >
-            {loadingStudents ? (
-              <CircularProgress size={20} style={{ color: partnerColor() }} />
-            ) : (
-              <select
-                onChange={(e) => {
-                  handleStudentChange(e);
-                  const studentSelected = students.find(
-                    (student) => student.id === e.target.value
-                  );
-                  if (studentSelected) {
-                    setSelectedStudent(
-                      (studentSelected.name || "") +
-                        " " +
-                        (studentSelected.lastname || "")
-                    );
-                  } else {
-                    setSelectedStudent("");
-                  }
-                }}
-                value={selectedStudentId}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "13px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "6px 8px",
-                  minWidth: isDesktop ? "200px" : "unset",
-                  maxWidth: isDesktop ? "300px" : "unset",
-                  width: isDesktop ? "auto" : "100%",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = partnerColor();
-                  e.target.style.backgroundColor = "#ffffff";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#e2e8f0";
-                  e.target.style.backgroundColor = "#f8fafc";
-                }}
-              >
-                <option value="">
-                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-                </option>
-                {students.map((student) => (
-                  <option
-                    key={student.id || student.theId}
-                    value={student.id || student.theId}
+            <div
+              style={{
+                padding: "6px 8px",
+                backgroundColor: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                margin: "auto",
+                minWidth: isDesktop ? 200 : "90%",
+              }}
+            >
+              {loadingStudents ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "90%",
+                  }}
+                >
+                  <CircularProgress
+                    size={18}
+                    style={{ color: partnerColor() }}
+                  />
+                </div>
+              ) : (
+                <>
+                  <select
+                    onChange={(e) => {
+                      handleStudentChange(e);
+                      const studentSelected = students.find(
+                        (student) =>
+                          student.id === e.target.value ||
+                          student.theId === e.target.value
+                      );
+                      if (studentSelected) {
+                        setSelectedStudent(
+                          (studentSelected.name || "") +
+                            " " +
+                            (studentSelected.lastname || "")
+                        );
+                      } else {
+                        setSelectedStudent("");
+                      }
+                    }}
+                    value={selectedStudentId}
+                    style={{
+                      borderRadius: 2,
+                      border: "1px solid #e2e8f0",
+                      fontSize: 12,
+                      fontWeight: 400,
+                      maxWidth: isDesktop ? "140px" : "90%",
+                      padding: "4px 8px",
+                      minWidth: isDesktop ? "180px" : "100%",
+                      outline: "none",
+                      cursor: "pointer",
+                      flex: 1,
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = partnerColor();
+                      e.target.style.backgroundColor = "#ffffff";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#e2e8f0";
+                      e.target.style.backgroundColor = alwaysWhite();
+                    }}
                   >
-                    {student.name} {student.lastname}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
+                    <option value="">
+                      {UniversalTexts?.selectAStudent ||
+                        "Selecione um aluno..."}
+                    </option>
+                    {students.map((student) => (
+                      <option
+                        key={student.id || student.theId}
+                        value={student.id || student.theId}
+                      >
+                        {student.name} {student.lastname}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              )}
+            </div>
+            <div
+              style={{
+                borderTop: "1px solid #e2e8f0",
+                marginBottom: 10,
+              }}
+            />
+          </header>
         )}
 
+        {/* LINHA DIVISÓRIA */}
+
+        {/* TABS + CONTEÚDO */}
         <TabContext value={value}>
-          <TabList
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="scrollable auto tabs example"
-            sx={() => {
-              const color = partnerColor();
-              return {
-                width: "100%",
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontStyle: "SemiBold",
-                justifyContent: "space-between",
-                display: "flex",
-                color,
-                "& .MuiTab-root": {
-                  color,
-                  padding: 0, // mantém seu padding original
-                  minHeight: 44,
-                },
-                "& .Mui-selected": {
-                  color,
-                  padding: 0, // mantém seu padding original
-                },
-                "& .MuiTabs-indicator": {
-                  backgroundColor: color,
-                  height: 2,
-                },
-              };
+          {/* TABLIST em “pill” style */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 8,
             }}
           >
-            {componentsToRender.map((component, index) => {
-              const color = partnerColor();
-              return (
-                <Tab
-                  key={index + component.value}
-                  style={{
-                    color,
-                    fontWeight: (index + 1).toString() === value ? 800 : 500,
-                    display: component.adm === false ? "block" : displayIsAdm,
-                    // RESPONSIVO: tabs mais “clicáveis” no mobile
-                    flex: isDesktop ? "0 0 auto" : "1 0 auto",
-                  }}
-                  label={component.title}
-                  value={component.value}
-                />
-              );
-            })}
-          </TabList>
+            <TabList
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="flashcards tabs"
+              sx={() => {
+                const color = partnerColor();
+                return {
+                  width: "fit-content",
+                  maxWidth: 520,
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 600,
+                  display: "flex",
+                  justifyContent: "center",
+                  "& .MuiTabs-flexContainer": {
+                    gap: 4,
+                    backgroundColor: "#f1f5f9",
+                    borderRadius: 999,
+                    padding: "3px",
+                  },
+                  "& .MuiTab-root": {
+                    textTransform: "none",
+                    minHeight: 32,
+                    fontSize: 12,
+                    padding: "4px 12px",
+                    borderRadius: 999,
+                    color: "#64748b",
+                    "&.Mui-selected": {
+                      color: color,
+                      backgroundColor: "#ffffff",
+                    },
+                  },
+                  "& .MuiTabs-indicator": {
+                    display: "none",
+                  },
+                };
+              }}
+            >
+              {componentsToRender.map((component, index) => {
+                const color = partnerColor();
+                const isSelected = component.value === value;
+                return (
+                  <Tab
+                    key={index + component.value}
+                    style={{
+                      color,
+                      fontWeight: isSelected ? 800 : 500,
+                      display: component.adm === false ? "block" : displayIsAdm,
+                      flex: isDesktop ? "0 0 auto" : "1 0 auto",
+                    }}
+                    label={component.title}
+                    value={component.value}
+                  />
+                );
+              })}
+            </TabList>
+          </div>
 
+          {/* PAINÉIS */}
           {componentsToRender.map((component, index) => {
             return (
               <TabPanel
-                style={{
-                  padding: 0,
-                  margin: isDesktop ? "1rem auto" : "0.75rem auto",
-                }}
                 key={index + component.value}
                 value={component.value}
+                style={{
+                  padding: 0,
+                  margin: isDesktop ? "0.75rem auto 0" : "0.5rem auto 0",
+                }}
               >
                 {component.component}
               </TabPanel>

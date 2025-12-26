@@ -404,14 +404,7 @@ const AddFlashCards = ({
                   <button
                     color={partnerColor()}
                     onClick={() => {
-                      if (selectedStudentName) {
-                        setShowConfirmation(true);
-                      } else {
-                        notifyAlert(
-                          "Nenhum aluno selecionado! Selecione um aluno",
-                          partnerColor()
-                        );
-                      }
+                      setShowConfirmation(true);
                     }}
                   >
                     {UniversalTexts?.addAllCards || "Add all cards"}
