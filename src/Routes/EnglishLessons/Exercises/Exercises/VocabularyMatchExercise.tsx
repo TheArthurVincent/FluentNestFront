@@ -3,6 +3,7 @@ import { readText, notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/SearchMaterials";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
+import ReactDOM from "react-dom";
 
 export type SentenceItem = {
   english: string;
@@ -231,10 +232,11 @@ export default function VocabularyMatchExercise({
   // tentativas por card (index do pool)
   const [attempts, setAttempts] = useState<Record<number, number>>({});
 
-  // total de pontos e descrição de performance
   const [totalPoints, setTotalPoints] = useState<number>(0);
   const [description, setDescription] = useState<string>("");
 
+  // NOVO
+  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const handleScoreStamp = async (
     pointsToSend: number,
     descriptionToSend: string
@@ -376,7 +378,7 @@ export default function VocabularyMatchExercise({
         ? "e ganhou 1 ponto"
         : `e ganhou ${points} pontos`;
 
-    const base = `Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.`;
+    const base = `◾Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.◾`;
 
     setDescription((prev) => (prev ? `${prev} ${base}` : base));
   }
@@ -474,24 +476,7 @@ export default function VocabularyMatchExercise({
 
   return (
     <div style={cardContainerStyle}>
-      <HeaderBar
-        title={L.title}
-        right={
-          <>
-            <span>
-              {matched.size} {L.of} {total}
-            </span>
-            <span style={{ fontWeight: 600 }}>Pontos: {totalPoints}</span>
-            <button
-              onClick={reset}
-              style={restartButtonStyle}
-              title={L.restart}
-            >
-              {L.restart}
-            </button>
-          </>
-        }
-      />
+      <HeaderBar title={L.title} right={<></>} />
 
       {/* layout duas colunas */}
       {!done && (
@@ -644,35 +629,22 @@ export default function VocabularyMatchExercise({
             fontFamily: "Plus Jakarta Sans",
           }}
         >
-          {/* Linha de status + pontos */}
-          <div style={finishedRowStyle}>
-            <span>✅ {L.finished}</span>
-            <span>
-              {L.plusPoints} | Total: {totalPoints} pontos
-            </span>
-          </div>
-
-          {/* Descrição de performance + botão Reiniciar lado a lado */}
           <div
             style={{
+              marginTop: 8,
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              gap: 12,
+              gap: 8,
               flexWrap: "wrap",
             }}
           >
-            <span
-              style={{
-                fontSize: 12,
-                color: "#374151",
-                flex: 1,
-                whiteSpace: "pre-wrap",
-              }}
+            <button
+              style={restartButtonStyle}
+              onClick={() => setShowPerformanceModal(true)}
+              title="Ver detalhes da performance"
             >
-              {description ||
-                "Seu desempenho foi registrado para este exercício de vocabulário."}
-            </span>
+              Ver performance
+            </button>
 
             <button
               onClick={reset}
@@ -682,6 +654,92 @@ export default function VocabularyMatchExercise({
               🔁 {L.restart}
             </button>
           </div>
+          {/* Modal de performance */}
+          {showPerformanceModal &&
+            ReactDOM.createPortal(
+              <>
+                {/* Overlay */}
+                <div
+                  style={{
+                    position: "fixed",
+                    inset: 0,
+                    backgroundColor: "rgba(15, 23, 42, 0.35)",
+                    zIndex: 999,
+                  }}
+                  onClick={() => setShowPerformanceModal(false)}
+                />
+
+                {/* Caixa */}
+                <div
+                  style={{
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 12,
+                    boxShadow: "0 20px 40px rgba(15, 23, 42, 0.25)",
+                    maxWidth: "600px",
+                    width: "90vw",
+                    maxHeight: "70vh",
+                    padding: 16,
+                    zIndex: 1000,
+                    fontFamily: "Plus Jakarta Sans",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h2 style={{ margin: 0, fontSize: 16 }}>
+                      Detalhes da performance
+                    </h2>
+
+                    <button
+                      onClick={() => setShowPerformanceModal(false)}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        cursor: "pointer",
+                        fontSize: 18,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: 13,
+                      color: "#374151",
+                      whiteSpace: "pre-wrap",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {description ||
+                      "Seu desempenho foi registrado para este exercício de vocabulário."}
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 8,
+                      fontSize: 12,
+                      color: "#065F46",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Total de pontos: {totalPoints}
+                  </div>
+                </div>
+              </>,
+              document.body
+            )}
         </div>
       )}
     </div>
