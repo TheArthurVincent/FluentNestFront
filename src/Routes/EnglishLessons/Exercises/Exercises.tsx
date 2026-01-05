@@ -451,7 +451,7 @@ export default function ExerciseRunner({
       typeof dictationItems === "number" && dictationItems > 0
         ? dictationItems
         : sentences.length;
-    const limit = Math.min(requested, 10, sentences.length); // máx. 10
+    const limit = Math.min(requested, 5, sentences.length); // máx. 10
     return shuffle(sentences).slice(0, limit);
   }, [sentences, dictationItems]);
 
