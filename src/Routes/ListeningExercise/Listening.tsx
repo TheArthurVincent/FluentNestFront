@@ -15,20 +15,20 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
   useState<number>(0);
 
   return (
-    <RouteDiv>
+    <div>
       <Helmets text="Listening Exercise" />
       <HOne>Listening Exercise</HOne>
-      {/* <ListeningExercise
-        onChange={onChange}
-        change={change}
-        headers={headers}
-      /> */}
-      <ListeningExerciseNew
+      <ListeningExercise
         onChange={onChange}
         change={change}
         headers={headers}
       />
-    </RouteDiv>
+      {/* <ListeningExerciseNew
+        onChange={onChange}
+        change={change}
+        headers={headers}
+      /> */}
+    </div>
   );
 };
 
