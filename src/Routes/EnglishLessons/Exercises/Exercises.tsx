@@ -5,14 +5,12 @@ import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
-import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
 import { newArvinTitleStyle } from "../../ArvinComponents/SearchMaterials/SearchMaterials";
 import { partnerColor } from "../../../Styles/Styles";
 import { backDomain } from "../../../Resources/UniversalComponents";
-// ajusta o path se necessário
-// import { notifyAlert } from "../Assets/Functions/FunctionLessons";
+import { LessonListeningExercise } from "./Exercises/ListenInEnglishExercise";
 
 // ===================== TIPOS =====================
 
@@ -396,7 +394,7 @@ export default function ExerciseRunner({
   const [boardVisible, setBoardVisible] = useState(true);
   const [boardSubmitted, setBoardSubmitted] = useState(false);
   const [boardContent, setBoardContent] = useState(boardInitialContent || "");
-  const [boardSaving, setBoardSaving] = useState(false);
+  const [, setBoardSaving] = useState(false); // reservado para futuro
   const [boardFinishing, setBoardFinishing] = useState(false);
 
   // histórico agrupado por tipo
@@ -443,7 +441,7 @@ export default function ExerciseRunner({
 
   const hasExerciseBlocks = exerciseElements.length > 0;
 
-  // ===================== DITADO: limite controlado pelo PAI (máx 10) =====================
+  // ===================== DITADO: limite controlado pelo PAI (máx 5 aqui) =====================
 
   const dictationSentences = useMemo(() => {
     if (!sentences.length) return [];
@@ -451,9 +449,17 @@ export default function ExerciseRunner({
       typeof dictationItems === "number" && dictationItems > 0
         ? dictationItems
         : sentences.length;
-    const limit = Math.min(requested, 5, sentences.length); // máx. 10
+    const limit = Math.min(requested, 5, sentences.length);
     return shuffle(sentences).slice(0, limit);
   }, [sentences, dictationItems]);
+
+  // ===================== LISTENING: 5 frases da própria lição =====================
+
+  const listeningSentences = useMemo(() => {
+    if (!sentences.length) return [];
+    const limit = Math.min(5, sentences.length);
+    return shuffle(sentences).slice(0, limit);
+  }, [sentences]);
 
   // ===================== CATÁLOGO DE EXERCÍCIOS =====================
 
@@ -498,6 +504,26 @@ export default function ExerciseRunner({
       },
     },
 
+    // LISTENING A PARTIR DAS FRASES DA LIÇÃO (5 por vez, só inglês)
+    {
+      key: `lesson_listening_${listeningSentences.length}`,
+      title: "Listening com frases desta lição",
+      render: ({ labels, selectedVoice }: CatalogCtx) => {
+        if (!listeningSentences.length) return null;
+        return (
+          <LessonListeningExercise
+            sentences={listeningSentences}
+            studentId={studentId || ""}
+            courseId={classId}
+            selectedVoice={selectedVoice}
+            language={language}
+            labels={labels}
+            exerciseScore={exerciseScore}
+          />
+        );
+      },
+    },
+
     // IMAGEM -> PALAVRA
     {
       key: "images_to_word",
@@ -536,20 +562,31 @@ export default function ExerciseRunner({
       },
     },
 
-    // LISTEN IN ENGLISH – um exercício por bloco
+    // LISTEN IN ENGLISH – um exercício por bloco, reaproveitando o LessonListeningExercise
     ...listenInEnglishElements.map((listenElement, index) => ({
       key: `listen_${index}`,
       title: listenElement.subtitle || `Listen in English ${index + 1}`,
-      render: ({ labels, selectedVoice }: CatalogCtx) => (
-        <ListenInEnglishExercise
-          exercise={exerciseScore}
-          exerciseElement={listenElement}
-          studentId={studentId || ""}
-          labels={labels}
-          selectedVoice={selectedVoice}
-          language={language}
-        />
-      ),
+      render: ({ labels, selectedVoice }: CatalogCtx) => {
+        // mapeia audios.enusAudio como "english" (texto para o listening)
+        const mappedSentences: SentenceItem[] = listenElement.audios.map(
+          (a) => ({
+            english: a.enusAudio,
+            portuguese: "",
+          })
+        );
+        if (!mappedSentences.length) return null;
+        return (
+          <LessonListeningExercise
+            exerciseScore={exerciseScore}
+            sentences={mappedSentences}
+            studentId={studentId || ""}
+            courseId={classId}
+            selectedVoice={selectedVoice}
+            language={language}
+            labels={labels}
+          />
+        );
+      },
     })),
 
     // SELECT EXERCISE – um exercício por bloco
@@ -573,9 +610,19 @@ export default function ExerciseRunner({
   const available = exerciseCatalog.filter((e) => {
     if (e.key.startsWith("dictation_from_sentences"))
       return dictationSentences.length > 0;
+
+    // Listening: só mostra se for lição em inglês
+    if (e.key.startsWith("lesson_listening"))
+      return language === "en" && listeningSentences.length > 0;
+
+    if (e.key.startsWith("listen_"))
+      return language === "en" && listenInEnglishElements.length > 0;
+
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
+
     if (e.key === "questions_unified") return exerciseElements.length > 0; // legado
+
     return true;
   });
 
@@ -590,8 +637,6 @@ export default function ExerciseRunner({
     if (!studentId) return;
 
     if (!boardContent?.trim()) {
-      // se quiser obrigar o aluno a escrever algo antes de enviar, pode checar aqui
-      // notifyAlert?.("Escreva sua resposta na lousa antes de finalizar.", "#f97316");
       return;
     }
 
@@ -603,7 +648,6 @@ export default function ExerciseRunner({
           ? `${loggedIn.name} ${loggedIn.lastname}`
           : "Student") || "Student";
 
-      // AGORA: o HTML da lousa vira o description
       const description = boardContent;
 
       await axios.put(`${backDomain}/api/v1/exercise-done/${classId}`, {
@@ -616,10 +660,8 @@ export default function ExerciseRunner({
 
       setBoardSubmitted(true);
       setBoardVisible(false);
-      // notifyAlert?.("Exercício de escrita submetido!", partnerColor());
     } catch (error) {
       console.error("Erro ao finalizar exercício de escrita:", error);
-      // notifyAlert?.("Erro ao finalizar exercício de escrita.", "#ef4444");
     } finally {
       setBoardFinishing(false);
     }
@@ -722,7 +764,6 @@ export default function ExerciseRunner({
                 ? "🔁 Reabrir exercícios de escrita"
                 : "📝 Mostrar exercícios de escrita"}
             </button>
-            {}
             <div
               dangerouslySetInnerHTML={{
                 __html: boardContent,
@@ -786,8 +827,6 @@ export default function ExerciseRunner({
                 onChange: handleBoardChange,
               })}
             </div>
-
-            {/* AÇÕES: SALVAR + FINALIZAR */}
           </div>
         )}
 
