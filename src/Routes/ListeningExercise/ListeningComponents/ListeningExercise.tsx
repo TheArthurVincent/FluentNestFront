@@ -405,7 +405,12 @@ const ListeningExercise = ({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
-        { headers: actualHeaders || {} }
+        {
+          headers: actualHeaders || {},
+          params: {
+            lang: filterLanguage, // <<<<<<<<<< AQUI
+          },
+        }
       );
 
       const lp = response.data.dueFlashcards[0]?.front?.language || "en";
@@ -562,6 +567,7 @@ const ListeningExercise = ({
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
+  const [filterLanguage, setFilterLanguage] = useState<string>("all");
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
@@ -781,6 +787,41 @@ const ListeningExercise = ({
         chosenLanguage={language}
       />
 
+      {/* Select de língua para filtrar no backend */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "10px",
+        }}
+      >
+        <select
+          value={filterLanguage}
+          onChange={(e) => {
+            setFilterLanguage(e.target.value);
+            // Se já estiver vendo, próxima vez que clicar em Start/refresh já vai buscar nessa língua
+          }}
+          style={{
+            borderRadius: "4px",
+            border: "1px solid #e2e8f0",
+            backgroundColor: "#f8fafc",
+            fontSize: "13px",
+            fontWeight: 400,
+            color: "#64748b",
+            padding: "6px 8px",
+            minWidth: "200px",
+            outline: "none",
+            cursor: "pointer",
+          }}
+        >
+          <option value="all">Todas as línguas</option>
+          <option value="en">Inglês</option>
+          <option value="es">Espanhol</option>
+          <option value="fr">Francês</option>
+          <option value="de">Alemão</option>
+          <option value="it">Italiano</option>
+        </select>
+      </div>
       {(myPermissions === "superadmin" || myPermissions === "teacher") && (
         <div
           style={{
