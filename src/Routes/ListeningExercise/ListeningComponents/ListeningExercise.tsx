@@ -119,6 +119,68 @@ interface FlashCardsPropsRv {
   change: boolean;
 }
 
+// ---------------------- Estilos reutilizáveis ----------------------
+
+const baseCardStyle: React.CSSProperties = {
+  borderRadius: "4px",
+  backgroundColor: alwaysWhite(),
+};
+
+const primaryButtonStyle: React.CSSProperties = {
+  padding: "10px 18px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  backgroundColor: partnerColor(),
+  color: "#ffffff",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "6px",
+  minWidth: "110px",
+  transition: "box-shadow 0.15s ease, transform 0.1s ease, opacity 0.15s",
+};
+
+const secondaryButtonStyle: React.CSSProperties = {
+  padding: "9px 16px",
+  borderRadius: "6px",
+  border: "1px solid #cbd5f1",
+  cursor: "pointer",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  backgroundColor: "#ffffff",
+  color: "#334155",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: "42px",
+  transition: "background-color 0.15s ease, border-color 0.15s ease",
+};
+
+const selectStyleBase: React.CSSProperties = {
+  borderRadius: "6px",
+  border: "1px solid #e2e8f0",
+  backgroundColor: "#f8fafc",
+  fontSize: "13px",
+  fontWeight: 400,
+  color: "#475569",
+  padding: "7px 12px",
+  minWidth: "200px",
+  outline: "none",
+  cursor: "pointer",
+};
+
+const pillSimilarityBase: React.CSSProperties = {
+  padding: "10px 14px",
+  borderRadius: "6px",
+  color: "#ffffff",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  textAlign: "center" as const,
+};
+
 // ---------------------- Componente principal ----------------------
 
 const ListeningExercise = ({
@@ -391,6 +453,8 @@ const ListeningExercise = ({
 
   // ---------------------- Buscar cards ----------------------
 
+  const [filterLanguage, setFilterLanguage] = useState<string>("en");
+
   const seeCardsToReview = async () => {
     setReadyToListen(false);
     setLoading(true);
@@ -408,7 +472,7 @@ const ListeningExercise = ({
         {
           headers: actualHeaders || {},
           params: {
-            lang: filterLanguage, // <<<<<<<<<< AQUI
+            lang: filterLanguage,
           },
         }
       );
@@ -567,7 +631,6 @@ const ListeningExercise = ({
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
-  const [filterLanguage, setFilterLanguage] = useState<string>("all");
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
@@ -578,198 +641,141 @@ const ListeningExercise = ({
 
   if (isAPPLE) {
     return (
-      <section
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "60vh",
-          padding: "2rem",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "500px",
-            padding: "2rem",
-            borderRadius: "4px",
-            backgroundColor: "#fff",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-            border: "1px solid #e0e0e0",
-          }}
-        >
+      <section>
+        <div>
           <div
             style={{
-              fontSize: "3rem",
-              marginBottom: "1.5rem",
-              color: "#ff6b6b",
+              padding: "24px 24px 20px",
             }}
           >
-            🚫
-          </div>
-
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: 600,
-              color: "#333",
-              marginBottom: "1rem",
-              lineHeight: "1.4",
-            }}
-          >
-            Audio Recording Not Supported
-          </h2>
-
-          <h3
-            style={{
-              fontSize: "1.1rem",
-              fontWeight: 500,
-              color: "#666",
-              marginBottom: "1.5rem",
-              lineHeight: "1.4",
-            }}
-          >
-            Gravação de áudio não suportada
-          </h3>
-
-          <p
-            style={{
-              fontSize: "1rem",
-              color: "#555",
-              lineHeight: "1.6",
-              marginBottom: "1.5rem",
-            }}
-          >
-            Your Apple device or Safari browser doesn't support audio recording
-            features required for this exercise.
-          </p>
-
-          <p
-            style={{
-              fontSize: "0.95rem",
-              color: "#666",
-              lineHeight: "1.6",
-              marginBottom: "2rem",
-            }}
-          >
-            Seu dispositivo Apple ou navegador Safari não suporta os recursos de
-            gravação de áudio necessários para este exercício.
-          </p>
-
-          <div
-            style={{
-              backgroundColor: "#f8f9fa",
-              padding: "1.5rem",
-              borderRadius: "4px",
-              marginBottom: "1.5rem",
-              border: "1px solid #e9ecef",
-            }}
-          >
-            <h4
+            <h2
               style={{
-                fontSize: "1rem",
+                fontSize: "1.5rem",
                 fontWeight: 600,
-                color: "#495057",
-                marginBottom: "1rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.5rem",
+                color: "#1f2933",
+                marginBottom: "4px",
               }}
             >
-              💡 Recommended Solutions
-            </h4>
+              Audio Recording Not Supported
+            </h2>
+
+            <h3
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: 500,
+                color: "#4b5563",
+                marginBottom: "16px",
+              }}
+            >
+              Gravação de áudio não suportada
+            </h3>
+
+            <p
+              style={{
+                fontSize: "0.95rem",
+                color: "#4b5563",
+                lineHeight: 1.6,
+                marginBottom: "8px",
+              }}
+            >
+              Your Apple device or Safari browser does not provide the audio
+              recording features required for this exercise.
+            </p>
+
+            <p
+              style={{
+                fontSize: "0.9rem",
+                color: "#6b7280",
+                lineHeight: 1.6,
+                marginBottom: "20px",
+              }}
+            >
+              Seu dispositivo Apple ou navegador Safari não oferece os recursos
+              de gravação de áudio necessários para este exercício.
+            </p>
 
             <div
               style={{
-                textAlign: "left",
-                fontSize: "0.9rem",
-                color: "#555",
-                lineHeight: "1.5",
+                borderRadius: "4px",
+                backgroundColor: "#f1f5f9",
+                border: "1px solid #e2e8f0",
+                padding: "16px",
+                marginBottom: "18px",
               }}
             >
-              <div style={{ marginBottom: "0.8rem" }}>
-                <strong>🖥️ Desktop/Laptop:</strong>
-                <br />
-                Use Google Chrome or Firefox on your computer
-              </div>
+              <h4
+                style={{
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  color: "#1e293b",
+                  marginBottom: "10px",
+                }}
+              >
+                Recommended alternatives
+              </h4>
 
-              <div style={{ marginBottom: "0.8rem" }}>
-                <strong>📱 Mobile Alternative:</strong>
-                <br />
-                Try Google Chrome mobile browser (on some Android devices)
-              </div>
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: "18px",
+                  fontSize: "0.9rem",
+                  color: "#475569",
+                  lineHeight: 1.5,
+                }}
+              >
+                <li style={{ marginBottom: "6px" }}>
+                  Use Google Chrome or Firefox on a desktop or laptop.
+                </li>
+                <li>
+                  Em alguns dispositivos Android, você pode tentar o navegador
+                  Google Chrome para ter suporte completo.
+                </li>
+              </ul>
             </div>
-          </div>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.8rem",
-              alignItems: "center",
-            }}
-          >
-            <a
-              href="/flash-cards"
+            <div
               style={{
-                display: "inline-block",
-                padding: "12px 24px",
-                backgroundColor: partnerColor(),
-                color: "#fff",
-                textDecoration: "none",
-                borderRadius: "4px",
-                fontSize: "0.95rem",
-                fontWeight: 500,
-                transition: "all 0.2s",
-                minWidth: "200px",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-            >
-              📚 Try Regular Flashcards
-            </a>
-
-            <a
-              href="/"
-              style={{
-                display: "inline-block",
-                padding: "10px 20px",
-                backgroundColor: "transparent",
-                color: "#666",
-                textDecoration: "none",
-                borderRadius: "4px",
-                fontSize: "0.9rem",
-                border: "1px solid #ddd",
-                transition: "all 0.2s",
-                minWidth: "200px",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f8f9fa";
-                e.currentTarget.style.borderColor = "#bbb";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "#ddd";
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginBottom: "10px",
               }}
             >
-              🏠 Back to Home
-            </a>
-          </div>
+              <a
+                href="/flash-cards"
+                style={{
+                  ...primaryButtonStyle,
+                  textDecoration: "none",
+                }}
+              >
+                Try regular flashcards
+              </a>
 
-          <div
-            style={{
-              marginTop: "2rem",
-              paddingTop: "1rem",
-              borderTop: "1px solid #eee",
-              fontSize: "0.8rem",
-              color: "#999",
-              fontStyle: "italic",
-            }}
-          >
-            This limitation is due to browser security policies on iOS/Safari
-            devices
+              <a
+                href="/"
+                style={{
+                  ...secondaryButtonStyle,
+                  textDecoration: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Back to home
+              </a>
+            </div>
+
+            <div
+              style={{
+                marginTop: "8px",
+                paddingTop: "10px",
+                borderTop: "1px solid #e5e7eb",
+                fontSize: "0.75rem",
+                color: "#9ca3af",
+                fontStyle: "italic",
+              }}
+            >
+              This limitation is caused by security and privacy policies in
+              iOS/Safari regarding microphone access.
+            </div>
           </div>
         </div>
       </section>
@@ -778,244 +784,322 @@ const ListeningExercise = ({
 
   // ---------------------- Render normal ----------------------
 
-  return (
-    <section id="review">
-      <Voice
-        changeB={changeNumber}
-        setChangeB={setChangeNumber}
-        maxW="400px"
-        chosenLanguage={language}
-      />
+  const similarityColor =
+    similarity === 100
+      ? "#16a34a"
+      : similarity > 98
+      ? "#2563eb"
+      : similarity > 40
+      ? "#eab308"
+      : "#dc2626";
 
-      {/* Select de língua para filtrar no backend */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "10px",
-        }}
-      >
-        <select
-          value={filterLanguage}
-          onChange={(e) => {
-            setFilterLanguage(e.target.value);
-            // Se já estiver vendo, próxima vez que clicar em Start/refresh já vai buscar nessa língua
-          }}
-          style={{
-            borderRadius: "4px",
-            border: "1px solid #e2e8f0",
-            backgroundColor: "#f8fafc",
-            fontSize: "13px",
-            fontWeight: 400,
-            color: "#64748b",
-            padding: "6px 8px",
-            minWidth: "200px",
-            outline: "none",
-            cursor: "pointer",
-          }}
-        >
-          <option value="all">Todas as línguas</option>
-          <option value="en">Inglês</option>
-          <option value="es">Espanhol</option>
-          <option value="fr">Francês</option>
-          <option value="de">Alemão</option>
-          <option value="it">Italiano</option>
-        </select>
-      </div>
-      {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+  const similarityBorderColor =
+    similarity > 40 ? "transparent" : "rgba(255,255,255,0.7)";
+
+  return (
+    <section>
+      <div>
+        {/* Header / controles superiores */}
         <div
           style={{
-            padding: "1rem",
-            backgroundColor: alwaysWhite(),
-            borderBottom: "1px solid #e2e8f0",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "0.5rem",
+            marginBottom: "20px",
           }}
         >
-          {loadingStudents ? (
-            <CircularProgress size={20} style={{ color: partnerColor() }} />
-          ) : (
-            <select
-              onChange={handleStudentChange}
-              value={selectedStudentId}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "13px",
-                fontWeight: 400,
-                color: "#64748b",
-                padding: "6px 8px",
-                minWidth: "200px",
-                maxWidth: "300px",
-                outline: "none",
-                cursor: "pointer",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = partnerColor();
-                e.target.style.backgroundColor = "#ffffff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e2e8f0";
-                e.target.style.backgroundColor = "#f8fafc";
-              }}
-            >
-              <option value="">
-                {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-              </option>
-              {students.map((student) => (
-                <option
-                  key={student.id || student.theId}
-                  value={student.id || student.theId}
-                >
-                  {student.name} {student.lastname}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-      )}
-
-      {see && (
-        <div>
-          {loading ? (
-            <CircularProgress style={{ color: partnerColor() }} />
-          ) : (
+          <div
+            style={{
+              padding: "16px 18px 10px",
+              marginBottom: "8px",
+            }}
+          >
             <div
               style={{
-                maxWidth: "400px",
-                margin: "auto",
-                textAlign: "center",
-                padding: "20px",
-                borderRadius: "4px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
               }}
             >
-              {cardsLength ? (
-                <>
-                  <div>
+              {/* Filtro de língua */}
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                  marginTop: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#64748b",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Language:
+                  </span>
+                  <select
+                    value={filterLanguage}
+                    onChange={(e) => {
+                      setFilterLanguage(e.target.value);
+                    }}
+                    style={selectStyleBase}
+                  >
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                  </select>
+                </div>
+
+                {(myPermissions === "superadmin" ||
+                  myPermissions === "teacher") && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "#64748b",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Student:
+                    </span>
+                    {loadingStudents ? (
+                      <CircularProgress
+                        size={18}
+                        style={{ color: partnerColor() }}
+                      />
+                    ) : (
+                      <select
+                        onChange={handleStudentChange}
+                        value={selectedStudentId}
+                        style={{
+                          ...selectStyleBase,
+                          minWidth: "220px",
+                          maxWidth: "260px",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = partnerColor();
+                          e.target.style.backgroundColor = "#ffffff";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = "#e2e8f0";
+                          e.target.style.backgroundColor = "#f8fafc";
+                        }}
+                      >
+                        <option value="">
+                          {UniversalTexts?.selectAStudent ||
+                            "Selecione um aluno..."}
+                        </option>
+                        {students.map((student) => (
+                          <option
+                            key={student.id || student.theId}
+                            value={student.id || student.theId}
+                          >
+                            {student.name} {student.lastname}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card principal de listening */}
+        <div
+          style={{
+            ...baseCardStyle,
+            padding: "22px 20px 18px",
+            marginBottom: "20px",
+          }}
+        >
+          {see ? (
+            loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "24px 0",
+                }}
+              >
+                <CircularProgress style={{ color: partnerColor() }} />
+              </div>
+            ) : (
+              <div
+                style={{
+                  maxWidth: "460px",
+                  margin: "0 auto",
+                  textAlign: "left",
+                }}
+              >
+                {cardsLength ? (
+                  <>
+                    {/* Resultado / correção */}
                     <div
                       style={{
                         display: isDisabled ? "none" : "grid",
-                        alignItems: "center",
-                        gap: "10px",
-                        justifyContent: "center",
+                        gap: "14px",
+                        marginBottom: "8px",
                       }}
                     >
-                      <p
+                      <div
                         style={{
-                          padding: "10px",
-                          borderRadius: "4px",
-                          backgroundColor:
-                            similarity === 100
-                              ? "#4caf40"
-                              : similarity > 98
-                              ? "#2196f3"
-                              : similarity > 40
-                              ? "#ffeb3b"
-                              : "#f44336",
-                          color:
-                            similarity === 100
-                              ? "white"
-                              : similarity > 98
-                              ? "white"
-                              : similarity > 40
-                              ? "black"
-                              : "white",
-                          border: `solid 1px ${
-                            similarity === 100
-                              ? "white"
-                              : similarity > 98
-                              ? "white"
-                              : similarity > 40
-                              ? "black"
-                              : "white"
-                          }`,
-                          transition: "background-color 0.3s",
+                          ...pillSimilarityBase,
+                          backgroundColor: similarityColor,
+                          border: `1px solid ${similarityBorderColor}`,
                         }}
                       >
-                        {similarity}% correct{" "}
+                        <span>{similarity}% correct</span>
                         {similarity < 40 && (
-                          <span>(You need at least 40% to score)</span>
+                          <span
+                            style={{ marginLeft: "4px", fontSize: "0.8rem" }}
+                          >
+                            (minimum 40% to score)
+                          </span>
                         )}
-                      </p>
+                      </div>
+
                       <div
                         style={{
                           display: "grid",
-                          border: "solid 1px #ccc",
+                          gap: "6px",
+                          border: "1px solid #e2e8f0",
                           borderRadius: "4px",
-                          padding: "15px",
-                          backgroundColor: "#fff",
+                          padding: "14px 12px",
+                          backgroundColor: "#fdfeff",
                         }}
                       >
                         <p
                           style={{
-                            fontSize: "1rem",
+                            fontSize: "0.95rem",
+                            fontWeight: 500,
+                            color: "#0f172a",
+                          }}
+                        >
+                          Original sentence
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "0.95rem",
                             fontWeight: 400,
+                            color: "#111827",
                           }}
                         >
                           {cards[0]?.front?.text.replace(/\s+/g, " ")}
                         </p>
                         <p
                           style={{
-                            fontSize: "12px",
+                            fontSize: "0.8rem",
                             fontWeight: 400,
-                            color: "#555",
+                            color: "#6b7280",
                           }}
                         >
                           {cards[0]?.back?.text}
                         </p>
                       </div>
+
                       <div
                         style={{
                           display: "grid",
-                          border: "solid 1px #ccc",
+                          gap: "6px",
+                          border: "1px solid #e5e7eb",
                           borderRadius: "4px",
-                          padding: "15px",
-                          backgroundColor: "#fff",
+                          padding: "14px 12px",
+                          backgroundColor: "#ffffff",
                         }}
                       >
                         <p
                           style={{
-                            color: "grey",
-                            marginBottom: "10px",
-                            fontSize: "10px",
+                            color: "#6b7280",
+                            marginBottom: "2px",
+                            fontSize: "0.8rem",
                             fontStyle: "italic",
                           }}
                         >
-                          Your answer:
+                          Your answer
                         </p>
                         <div
+                          style={{
+                            fontSize: "0.94rem",
+                            lineHeight: 1.6,
+                          }}
                           dangerouslySetInnerHTML={{
                             __html: transcriptHighLighted,
                           }}
                         />
                       </div>
-                      <p>
-                        This sentence has <b>{words}</b> words
-                      </p>
-                      <p>
-                        You scored <b>{score.toFixed()}</b> points
-                      </p>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                          fontSize: "0.9rem",
+                          color: "#111827",
+                        }}
+                      >
+                        <p>
+                          Sentence length: <b>{words}</b> words
+                        </p>
+                        <p>
+                          Your score:{" "}
+                          <b>{Number.isFinite(score) ? score.toFixed(0) : 0}</b>{" "}
+                          points
+                        </p>
+                      </div>
                     </div>
 
+                    {/* Área de escuta + gravação */}
                     {seeProgress ? (
-                      <CircularProgress style={{ color: partnerColor() }} />
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          padding: "10px 0",
+                        }}
+                      >
+                        <CircularProgress style={{ color: partnerColor() }} />
+                      </div>
                     ) : (
                       <div
                         style={{
                           display: "flex",
-                          justifyContent: "space-evenly",
+                          justifyContent: "center",
+                          gap: "10px",
+                          marginTop: isDisabled ? 0 : "4px",
                         }}
                       >
-                        {/* Botão de áudio (TTS para ouvir a frase) */}
+                        {/* Botão ouvir frase (TTS) */}
+                        <div>
+                          <Voice
+                            changeB={changeNumber}
+                            setChangeB={setChangeNumber}
+                            maxW="280px"
+                            chosenLanguage={language}
+                          />
+                        </div>
                         <button
                           onClick={() => {
                             const text = cards[0]?.front?.text;
                             if (!text) return;
 
-                            // Cancela qualquer fala anterior do navegador (caso o readText use speechSynthesis)
                             if (
                               typeof window !== "undefined" &&
                               "speechSynthesis" in window
@@ -1023,7 +1107,6 @@ const ListeningExercise = ({
                               window.speechSynthesis.cancel();
                             }
 
-                            // Lê o texto
                             readText(
                               text,
                               false,
@@ -1031,7 +1114,6 @@ const ListeningExercise = ({
                               selectedVoice
                             );
 
-                            // Reabilita o listening depois de um tempo razoável
                             const wordsInSentence = text.split(" ").length || 0;
                             const estimatedTime = Math.min(
                               8000,
@@ -1042,28 +1124,26 @@ const ListeningExercise = ({
                               setEnableVoice(true);
                             }, estimatedTime);
                           }}
-                          style={{
-                            cursor: "pointer",
-                            margin: "0 5px",
-                            marginTop: !isDisabled ? "1rem" : 0,
-                          }}
+                          style={secondaryButtonStyle}
+                          aria-label="Play sentence"
+                          title="Play sentence"
                         >
                           <i className="fa fa-volume-up" aria-hidden="true" />
                         </button>
 
-                        {/* Botão de gravação / reconhecimento */}
+                        {/* Botão gravação / reconhecimento */}
                         <button
                           style={{
-                            display: !isDisabled ? "none" : "inline-block",
+                            ...secondaryButtonStyle,
+                            display: !isDisabled ? "none" : "inline-flex",
                             cursor: enableVoice ? "pointer" : "not-allowed",
-                            margin: "0 5px",
+                            opacity: enableVoice ? 1 : 0.55,
                           }}
                           disabled={!enableVoice}
                           onClick={() => {
                             if (!enableVoice || !readyToListen) return;
                             if (!cards[0]?.front?.text) return;
 
-                            // Restrição: em celular, só funciona listening em inglês
                             if (isMobile && language !== "en") {
                               notifyAlert(
                                 "No celular, o listening só está disponível para frases em inglês. Use um computador para outras línguas."
@@ -1074,14 +1154,12 @@ const ListeningExercise = ({
                             cardTextRef.current = cards[0]?.front?.text || "";
 
                             if (language === "en") {
-                              // Inglês -> Google (endpoint speech-listening)
                               if (!listening) {
                                 startRecording();
                               } else {
                                 stopRecording();
                               }
                             } else {
-                              // Outras línguas -> SpeechRecognition do navegador
                               if (!listening) {
                                 startBrowserSpeechRecognition();
                               } else {
@@ -1089,6 +1167,9 @@ const ListeningExercise = ({
                               }
                             }
                           }}
+                          aria-label={
+                            !listening ? "Start recording" : "Stop recording"
+                          }
                         >
                           <i
                             className={
@@ -1099,52 +1180,103 @@ const ListeningExercise = ({
                         </button>
                       </div>
                     )}
-                  </div>
 
-                  <button
+                    {/* Botão Next */}
+                    <div
+                      style={{
+                        marginTop: "16px",
+                        display: isDisabled ? "none" : "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <button
+                        style={{
+                          ...primaryButtonStyle,
+                          opacity: next ? 0.7 : 1,
+                          cursor: next ? "wait" : "pointer",
+                        }}
+                        disabled={next}
+                        onClick={() => ponctuate(transcript)}
+                      >
+                        {next ? "Saving..." : "Next card"}
+                      </button>
+                    </div>
+
+                    {/* Área de anotação opcional */}
+                    <textarea
+                      style={{
+                        display: !isDisabled ? "none" : "block",
+                        marginTop: "18px",
+                        width: "100%",
+                        minHeight: "72px",
+                        padding: "10px 12px",
+                        borderRadius: "4px",
+                        border: "1px solid #e5e7eb",
+                        fontSize: "0.9rem",
+                        resize: "vertical",
+                        color: "#111827",
+                      }}
+                      placeholder="Use this area to write what you hear before speaking, if it helps your listening."
+                    />
+                  </>
+                ) : (
+                  <p
                     style={{
-                      marginTop: "1rem",
-                      display: isDisabled ? "none" : "inline-block",
+                      textAlign: "center",
+                      padding: "20px 0",
+                      fontSize: "0.95rem",
+                      color: "#6b7280",
                     }}
-                    disabled={next}
-                    onClick={() => ponctuate(transcript)}
                   >
-                    Next
-                  </button>
-
-                  <textarea
-                    style={{
-                      display: !isDisabled ? "none" : "inline-block",
-                      marginTop: "1rem",
-                      width: "85%",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                    }}
-                    placeholder="Use this area for reference if you need to transcribe what you hear"
-                  />
-                </>
-              ) : (
-                <p>No flashcards</p>
-              )}
+                    No flashcards available for listening review right now.
+                  </p>
+                )}
+              </div>
+            )
+          ) : (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "16px 4px 8px",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.95rem",
+                  color: "#4b5563",
+                  marginBottom: "12px",
+                }}
+              >
+                When you are ready, start the listening session. You can use
+                your voice or type to match the sentence.
+              </p>
             </div>
           )}
+
+          {/* Start / Refresh */}
+          <div
+            style={{
+              display: !isDisabled && !see ? "none" : "flex",
+              justifyContent: "center",
+              marginTop: see ? "18px" : "8px",
+            }}
+          >
+            <button onClick={seeCardsToReview} style={primaryButtonStyle}>
+              {!see ? "Start" : "Refresh"}
+            </button>
+          </div>
         </div>
-      )}
 
-      <div
-        style={{
-          display: !isDisabled ? "none" : "flex",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <button onClick={seeCardsToReview} style={{ margin: "0 5px" }}>
-          {!see ? "Start" : <i className="fa fa-refresh" />}
-        </button>
+        {/* Progressão diária */}
+        <div
+          style={{
+            ...baseCardStyle,
+            padding: "12px 16px 10px",
+          }}
+        >
+          <ProgressCounter flashcardsToday={flashcardsToday} />
+        </div>
       </div>
-
-      <ProgressCounter flashcardsToday={flashcardsToday} />
     </section>
   );
 };

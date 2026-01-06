@@ -1,33 +1,70 @@
 import React, { useState } from "react";
-import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-
 import ListeningExercise from "./ListeningComponents/ListeningExercise";
-import ListeningExerciseNew from "./ListeningComponents/ListeningExerciseNew";
+import { newArvinTitleStyle } from "../ArvinComponents/Students/Students";
 
 interface ListeningProps {
   headers: MyHeadersType | null;
   onChange: any;
+  isDesktop: boolean;
   change: boolean;
 }
-const Listening = ({ headers, onChange, change }: ListeningProps) => {
+const Listening = ({
+  headers,
+  onChange,
+  isDesktop,
+  change,
+}: ListeningProps) => {
   useState<number>(0);
 
   return (
-    <div>
-      <Helmets text="Listening Exercise" />
-      <HOne>Listening Exercise</HOne>
-      <ListeningExercise
-        onChange={onChange}
-        change={change}
-        headers={headers}
-      />
-      {/* <ListeningExerciseNew
-        onChange={onChange}
-        change={change}
-        headers={headers}
-      /> */}
+    <div
+      style={{
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
+      }}
+    >
+      {isDesktop && (
+        <div
+          style={{
+            paddingTop: 29,
+            paddingBottom: 17,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <section
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+            }}
+          >
+            <span style={newArvinTitleStyle}>Listening</span>
+          </section>
+        </div>
+      )}
+      <div
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          margin: !isDesktop ? "12px" : "0px",
+          border: "1px solid #e8eaed",
+        }}
+      >
+        <Helmets text="Listening Exercise" />
+        <ListeningExercise
+          onChange={onChange}
+          change={change}
+          headers={headers}
+        />
+      </div>
     </div>
   );
 };
