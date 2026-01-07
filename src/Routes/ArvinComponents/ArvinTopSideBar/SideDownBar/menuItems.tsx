@@ -15,7 +15,7 @@ import {
 import React, { FC } from "react";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
 import { Link } from "react-router-dom";
-import { UserIcon } from "@phosphor-icons/react/dist/ssr";
+import { ShovelIcon, UserIcon } from "@phosphor-icons/react/dist/ssr";
 
 export type MenuItem = {
   label: string;
@@ -206,23 +206,35 @@ export const menuItems: MenuItem[] = [
     orderMobile: 2,
     justBottom: false,
   },
-    {
+  {
     label: "Escuta & Pronúncia",
     Icon: EarIcon,
-    showInBottomBar: false,
     orderSideBar: 6.5,
     path: "/listening",
-    isMobile: true,
-    orderMobile: 2,
+    orderMobile: 5,
     justBottom: false,
+    showInBottomBar: !!studentId,
+    isJustStudent: true,
+    isMobile: false,
   },
   {
-    showInBottomBar: !!studentId,
+    label: "Mineração de Sentenças",
+    Icon: ShovelIcon,
+    orderSideBar: 6.7,
+    path: "/sentence-mining",
+    orderMobile: 5.1,
     justBottom: false,
+    showInBottomBar: !!studentId,
+    isJustStudent: true,
+    isMobile: false,
+  },
+  {
     label: "Materiais",
     Icon: BookIcon,
     path: "/teaching-materials",
     orderSideBar: 7,
+    justBottom: false,
+    showInBottomBar: !!studentId,
     isJustStudent: true,
     isMobile: false,
   },

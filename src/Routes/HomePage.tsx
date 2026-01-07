@@ -300,7 +300,12 @@ export function HomePage({ headers }: HeadersProps) {
       levelcard: true,
       title: "Listening",
       component: isArthurVincent ? (
-        <Listening change={change} onChange={setChange} headers={headers} />
+        <Listening
+          isDesktop={false}
+          change={change}
+          onChange={setChange}
+          headers={headers}
+        />
       ) : (
         <Redirect to="/" />
       ),

@@ -366,6 +366,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             myPermissions={thePermissions}
             onChange={setChange}
             change={change}
+            isDesktop={isDesktop}
             headers={headers}
           />
         ) : (
