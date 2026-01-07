@@ -95,7 +95,6 @@ export function FindTeacher({ headers, id, plan }) {
   const [eventsList, setEventsList] = useState([]);
   const [loadingEventsList, setLoadingEventsList] = useState(false);
   const [loadingPermissions, setLoadingPermissions] = useState(false);
-
   const [descSpecial, setDescSpecial] = useState("");
   const [plusScore, setPlusScore] = useState(0);
 
@@ -124,7 +123,6 @@ export function FindTeacher({ headers, id, plan }) {
       const response = await axios.get(`${backDomain}/api/v1/teachers/${id}`, {
         headers,
       });
-
       setStudents(response.data.listOfTeachers || []);
       setLoading(false);
     } catch (error) {
@@ -1133,8 +1131,16 @@ export function FindTeacher({ headers, id, plan }) {
                   {selectedStudent.subscriptionAsaas || "N/A"}
                 </div>
               </div>
+              <div
+                style={{
+                  fontWeight: "500",
+                  color: "#2c3e50",
+                  fontSize: "11px",
+                }}
+              >
+                Cadastro: {formatDateBr(new Date(selectedStudent.createdAt))}
+              </div>
             </Grid>
-
             {/* Installment ID */}
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
@@ -1245,7 +1251,7 @@ export function FindTeacher({ headers, id, plan }) {
                     }}
                   >
                     {selectedStudent.address}
-                  </div>
+                  </div>{" "}
                 </div>
               </Grid>
             )}
@@ -1357,6 +1363,9 @@ export function FindTeacher({ headers, id, plan }) {
                     <span style={cellTable}>Foto</span>
                   </TableCell>
                   <TableCell style={stickyHeaderStyle}>
+                    <span style={cellTable}>Cadastro</span>
+                  </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>Nome Completo</span>
                   </TableCell>
                   <TableCell style={stickyHeaderStyle}>
@@ -1380,6 +1389,7 @@ export function FindTeacher({ headers, id, plan }) {
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
                   )
+                  .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                   .map((student, index) => (
                     <TableRow
                       key={student.id || index}
@@ -1421,6 +1431,11 @@ export function FindTeacher({ headers, id, plan }) {
                           }
                           alt=""
                         />
+                      </TableCell>
+                      <TableCell style={cellTable}>
+                        <span style={{ fontWeight: "500", color: "#2c3e50" }}>
+                          {formatDate(student.createdAt)}
+                        </span>
                       </TableCell>
                       <TableCell style={cellTable}>
                         <span style={{ fontWeight: "500", color: "#2c3e50" }}>
