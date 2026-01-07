@@ -7,6 +7,39 @@ import { StudentItem } from "../types/studentsTypes";
 import { cardBase } from "../types/studentPage.styles";
 import { partnerColor } from "../../../../../Styles/Styles";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
+interface CheckboxFieldProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
+
+const CheckboxField: React.FC<CheckboxFieldProps> = ({
+  label,
+  ...inputProps
+}) => {
+  return (
+    <label
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        fontSize: "13px",
+        color: "#334155",
+        cursor: inputProps.disabled ? "not-allowed" : "pointer",
+      }}
+    >
+      <input
+        type="checkbox"
+        {...inputProps}
+        style={{
+          width: 16,
+          height: 16,
+          cursor: inputProps.disabled ? "not-allowed" : "pointer",
+        }}
+      />
+      <span>{label}</span>
+    </label>
+  );
+};
 
 interface StudentMainCardProps {
   student: StudentItem;
@@ -27,11 +60,18 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [editName, setEditName] = useState(student.name || "");
   const [editLastname, setEditLastname] = useState(student.lastname || "");
   const [editEmail, setEditEmail] = useState(student.email || "");
-  const [editAddress, setEditAddress] = useState(student.email || "");
+  const [editAddress, setEditAddress] = useState(student.address || "");
   const [editPhone, setEditPhone] = useState(student.phoneNumber || "");
   const [editDoc, setEditDoc] = useState((student as any).doc || "");
   const [editDateOfBirth, setEditDateOfBirth] = useState<string>("");
-
+  const [editFee, setEditFee] = useState(student.fee || 0);
+  const [editUpToDate, setEditUpToDate] = useState(
+    student.feeUpToDate || false
+  );
+  const [googleDriveLink, setGoogleDriveLink] = useState(
+    student.googleDriveLink || ""
+  );
+  const [onHold, setOnHold] = useState(student.onHold || false);
   // ====== estados pro modal de senha ======
   const [openPwd, setOpenPwd] = useState(false);
   const [savingPwd, setSavingPwd] = useState(false);
@@ -45,6 +85,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
 
   // Inicializa a data de nascimento em formato yyyy-MM-dd (para <input type="date" />)
   useEffect(() => {
+    console.log(student);
     const raw = (student as any).dateOfBirth;
     if (!raw) return;
     const d = new Date(raw);
@@ -86,6 +127,10 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const openModal = () => {
     setErrorMsg(null);
     setEditName(student.name || "");
+    setEditFee(student.fee || 0);
+    setEditUpToDate(student.feeUpToDate || false);
+    setGoogleDriveLink(student.googleDriveLink || "");
+    setOnHold(student.onHold || false);
     setEditLastname(student.lastname || "");
     setEditEmail(student.email || "");
     setEditAddress(student.address || "");
@@ -107,6 +152,10 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
       const payload: any = {
         name: editName,
         lastname: editLastname,
+        fee: editFee,
+        feeUpToDate: editUpToDate,
+        googleDriveLink: googleDriveLink,
+        onHold: onHold,
         email: editEmail,
         address: editAddress,
         phoneNumber: editPhone,
@@ -260,7 +309,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               id="edit-student-title"
               style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}
             >
-              Editar aluno
+              Editar Aluno
             </h3>
             <button
               onClick={() => !saving && closeModal()}
@@ -295,6 +344,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               </div>
             )}
 
+            {/* Nome + Sobrenome */}
             <div
               style={{
                 display: "grid",
@@ -321,6 +371,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               />
             </div>
 
+            {/* Data de nascimento + CPF */}
             <div
               style={{
                 display: "grid",
@@ -344,6 +395,8 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                 placeholder="000.000.000-00"
               />
             </div>
+
+            {/* Endereço */}
             <Field
               label="Endereço"
               type="text"
@@ -352,6 +405,8 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               disabled={saving}
               placeholder="Rua, número, bairro, cidade"
             />
+
+            {/* Email */}
             <Field
               label="Email"
               type="email"
@@ -361,6 +416,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               placeholder="email@exemplo.com"
             />
 
+            {/* Telefone */}
             <Field
               label="Telefone"
               type="tel"
@@ -368,6 +424,49 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               onChange={(e) => setEditPhone(e.target.value)}
               disabled={saving}
               placeholder="(11) 99999-9999"
+            />
+
+            {/* Mensalidade */}
+            <Field
+              label="Mensalidade (R$)"
+              type="number"
+              value={editFee}
+              onChange={(e) => setEditFee(Number(e.target.value))}
+              disabled={saving}
+              placeholder="0,00"
+            />
+
+            {/* Flags: em dia / em pausa */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "8px",
+                marginTop: "4px",
+              }}
+            >
+              <CheckboxField
+                label="Mensalidade em dia"
+                checked={editUpToDate}
+                onChange={(e) => setEditUpToDate(e.target.checked)}
+                disabled={saving}
+              />
+              <CheckboxField
+                label="Aluno em pausa (on hold)"
+                checked={onHold}
+                onChange={(e) => setOnHold(e.target.checked)}
+                disabled={saving}
+              />
+            </div>
+
+            {/* Link Google Drive */}
+            <Field
+              label="Link do Google Drive"
+              type="url"
+              value={googleDriveLink}
+              onChange={(e) => setGoogleDriveLink(e.target.value)}
+              disabled={saving}
+              placeholder="https://drive.google.com/..."
             />
           </div>
 
