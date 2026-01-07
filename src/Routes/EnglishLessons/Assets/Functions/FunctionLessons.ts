@@ -57,31 +57,27 @@ export const notifyAlert = (
     timeEstablished ? timeEstablished : 2500
   );
 };
-let currentAudio: HTMLAudioElement | null = null;
-
 export let globalAudioController: {
   currentAudio: HTMLAudioElement | null;
 } = {
   currentAudio: null,
 };
-
 export const readText = async (
   text: string,
-  restart: boolean,
+  restart: boolean, // mantido por compatibilidade, mas será ignorado
   lang?: string,
-  chosenVoice?: string,
+  chosenVoice?: string, // mantido, mas não usado
   rate?: number
 ) => {
   try {
-    // Se já estiver tocando → parar
+    // Se já houver áudio tocando, parar e resetar SEM retornar
     if (globalAudioController.currentAudio) {
       globalAudioController.currentAudio.pause();
       globalAudioController.currentAudio.currentTime = 0;
-      if (!restart) return;
     }
 
-    let voiceLang = localStorage.getItem("voiceLang");
-    let voiceGender = localStorage.getItem("voiceGender");
+    const voiceLang = localStorage.getItem("voiceLang");
+    const voiceGender = localStorage.getItem("voiceGender");
 
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
@@ -92,7 +88,6 @@ export const readText = async (
     });
 
     const audioBase64 = response.data.audio;
-
     const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
 
     globalAudioController.currentAudio = audio;

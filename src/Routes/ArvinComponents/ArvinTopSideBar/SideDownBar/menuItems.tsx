@@ -2,6 +2,7 @@ import {
   BookIcon,
   CalendarIcon,
   CardsIcon,
+  EarIcon,
   GearIcon,
   NotebookIcon,
   ScreencastIcon,
@@ -14,7 +15,7 @@ import {
 import React, { FC } from "react";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
 import { Link } from "react-router-dom";
-import { UserIcon } from "@phosphor-icons/react/dist/ssr";
+import { ShovelIcon, UserIcon } from "@phosphor-icons/react/dist/ssr";
 
 export type MenuItem = {
   label: string;
@@ -206,12 +207,34 @@ export const menuItems: MenuItem[] = [
     justBottom: false,
   },
   {
-    showInBottomBar: !!studentId,
+    label: "Escuta & Pronúncia",
+    Icon: EarIcon,
+    orderSideBar: 6.5,
+    path: "/listening",
+    orderMobile: 5,
     justBottom: false,
+    showInBottomBar: !!studentId,
+    isJustStudent: true,
+    isMobile: false,
+  },
+  {
+    label: "Mineração de Sentenças",
+    Icon: ShovelIcon,
+    orderSideBar: 6.7,
+    path: "/sentence-mining",
+    orderMobile: 5.1,
+    justBottom: false,
+    showInBottomBar: !!studentId,
+    isJustStudent: true,
+    isMobile: false,
+  },
+  {
     label: "Materiais",
     Icon: BookIcon,
     path: "/teaching-materials",
     orderSideBar: 7,
+    justBottom: false,
+    showInBottomBar: !!studentId,
     isJustStudent: true,
     isMobile: false,
   },

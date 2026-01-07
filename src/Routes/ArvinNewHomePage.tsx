@@ -344,7 +344,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       title: "Listening",
       showLeftBar: true,
       component: isArthurVincent ? (
-        <Listening change={change} onChange={setChange} headers={headers} />
+        <Listening
+          change={change}
+          onChange={setChange}
+          headers={headers}
+          isDesktop={isDesktop}
+        />
       ) : (
         <Redirect to="/" />
       ),
@@ -361,6 +366,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             myPermissions={thePermissions}
             onChange={setChange}
             change={change}
+            isDesktop={isDesktop}
             headers={headers}
           />
         ) : (

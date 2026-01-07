@@ -16,6 +16,20 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
+// ---------------------- Helpers de texto ----------------------
+
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+function escapeHTML(str: string): string {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function highlightDifferences(
   original: string,
   userInput: string,
@@ -30,6 +44,7 @@ function highlightDifferences(
   for (let i = 0; i < len; i++) {
     const userWord = userWords[i];
     const originalWord = originalWords[i];
+
     if (!userWord && originalWord) {
       if (similarity >= 40) {
         output.push(`<span style="color: red;">-</span>`);
@@ -37,16 +52,13 @@ function highlightDifferences(
         output.push("");
       }
     } else if (userWord === originalWord) {
-      output.push(`<span style="color: green;">${userWord}</span>`);
+      output.push(
+        `<span style="color: green;">${escapeHTML(userWord || "")}</span>`
+      );
     } else {
       output.push(
         `<span style="color: red; font-weight: 400;">${
-          userWord || "(extra)"
-        }</span>`
-      );
-      console.log(
-        `<span style="color: red; font-weight: 400;">${
-          userWord || "(extra)"
+          userWord ? escapeHTML(userWord) : "(extra)"
         }</span>`
       );
     }
@@ -59,25 +71,14 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
-// Função para normalizar o texto
-const normalizeText = (text: string): string => {
-  return text
-    .toLowerCase()
-    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "") // Remove pontuação
-    .replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
-    .trim();
-};
-
-// Função para limpar a string
 function cleanString(str: string): string {
   return str
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "") // Remove caracteres não imprimíveis
+    .replace(/[^\x20-\x7E]/g, "")
     .trim();
 }
 
-// Função de distância de Levenshtein
 function levenshteinDistance(str1: string, str2: string): number {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -98,6 +99,7 @@ function levenshteinDistance(str1: string, str2: string): number {
 
   return dp[len1][len2];
 }
+
 function similarityPercentage(str1: string, str2: string): number {
   const clean1 = normalizeText(str1);
   const clean2 = normalizeText(str2);
@@ -109,11 +111,77 @@ function similarityPercentage(str1: string, str2: string): number {
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
 
+// ---------------------- Types ----------------------
+
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
-  onChange: any;
+  onChange: (value: boolean) => void;
   change: boolean;
 }
+
+// ---------------------- Estilos reutilizáveis ----------------------
+
+const baseCardStyle: React.CSSProperties = {
+  borderRadius: "4px",
+  backgroundColor: alwaysWhite(),
+};
+
+const primaryButtonStyle: React.CSSProperties = {
+  padding: "10px 18px",
+  borderRadius: "6px",
+  border: "none",
+  cursor: "pointer",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  backgroundColor: partnerColor(),
+  color: "#ffffff",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "6px",
+  minWidth: "110px",
+  transition: "box-shadow 0.15s ease, transform 0.1s ease, opacity 0.15s",
+};
+
+const secondaryButtonStyle: React.CSSProperties = {
+  padding: "9px 16px",
+  borderRadius: "6px",
+  border: "1px solid #cbd5f1",
+  cursor: "pointer",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  backgroundColor: "#ffffff",
+  color: "#334155",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: "42px",
+  transition: "background-color 0.15s ease, border-color 0.15s ease",
+};
+
+const selectStyleBase: React.CSSProperties = {
+  borderRadius: "6px",
+  border: "1px solid #e2e8f0",
+  backgroundColor: "#f8fafc",
+  fontSize: "13px",
+  fontWeight: 400,
+  color: "#475569",
+  padding: "7px 12px",
+  minWidth: "200px",
+  outline: "none",
+  cursor: "pointer",
+};
+
+const pillSimilarityBase: React.CSSProperties = {
+  padding: "10px 14px",
+  borderRadius: "6px",
+  color: "#ffffff",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  textAlign: "center" as const,
+};
+
+// ---------------------- Componente principal ----------------------
 
 const ListeningExercise = ({
   headers,
@@ -144,11 +212,11 @@ const ListeningExercise = ({
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
   const [students, setStudents] = useState<any[]>([]);
-
   const [listening, setListening] = useState<boolean>(false);
-  var cardTextRef = useRef<string>("");
-  const { UniversalTexts } = useUserContext();
 
+  const cardTextRef = useRef<string>("");
+
+  const { UniversalTexts } = useUserContext();
   const actualHeaders = headers || {};
 
   const languageMap: { [key: string]: string } = {
@@ -158,32 +226,83 @@ const ListeningExercise = ({
     fr: "fr-FR",
     de: "de-DE",
     it: "it-IT",
-    // Adicione outros idiomas conforme necessário
+  };
+
+  // Apple / Safari (sem suporte)
+  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const ua = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !("MSStream" in window);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+
+    if (isIOS || isSafari) {
+      setISAPPLE(true);
+    } else {
+      setISAPPLE(false);
+    }
+
+    const mobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
+    setIsMobile(mobile);
+  }, []);
+
+  // ---------------------- Info do usuário ----------------------
+
+  useEffect(() => {
+    const user = localStorage.getItem("loggedIn");
+    const flashcardsTodayStored =
+      localStorage.getItem("flashcardsToday") || "0";
+    const flashcardsTodayNumber = parseFloat(flashcardsTodayStored);
+
+    if (!user) {
+      console.log("No user found in localStorage, logging out");
+      onLoggOut();
+      return;
+    }
+
+    const parsed = JSON.parse(user);
+    const userId = parsed.id || "";
+    const permissions = parsed.permissions || "";
+
+    setId(userId);
+    setSelectedStudentId(userId);
+    setMyPermissions(permissions);
+    setFlashcardsToday(flashcardsTodayNumber);
+
+    setTimeout(() => {
+      updateInfo(userId, actualHeaders);
+    }, 100);
+  }, [change, actualHeaders]);
+
+  // ---------------------- Carregar alunos ----------------------
+
+  const fetchStudents = async () => {
+    if (!myId) return;
+
+    if (myPermissions === "superadmin" || myPermissions === "teacher") {
+      setLoadingStudents(true);
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${myId}`,
+          {
+            headers: actualHeaders,
+          }
+        );
+        const allUsers = response.data.listOfStudents || response.data;
+        setStudents(allUsers);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      } finally {
+        setLoadingStudents(false);
+      }
+    }
   };
 
   useEffect(() => {
-    var user = localStorage.getItem("loggedIn");
-
-    var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
-    // @ts-ignore
-    var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
-    setTimeout(() => {
-      updateInfo(myId, actualHeaders);
-    }, 100);
-    setTimeout(() => {
-      if (user) {
-        const { id } = JSON.parse(user);
-        setId(id);
-        setFlashcardsToday(flashcardsTodayNumber);
-      }
-    }, 250);
-  }, [change]);
-
-  useEffect(() => {
-    if (myId) {
-      fetchData();
-    }
-  }, [myId]);
+    fetchStudents();
+  }, [myId, myPermissions, actualHeaders]);
 
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
@@ -191,44 +310,12 @@ const ListeningExercise = ({
     setSelectedStudentId(studentId);
   };
 
-  const fetchData = async () => {
-    const user = localStorage.getItem("loggedIn");
+  // ---------------------- Review no backend ----------------------
 
-    if (user) {
-      const { permissions, id } = user
-        ? JSON.parse(user)
-        : { permissions: "", id: "" };
-
-      setMyPermissions(permissions);
-      setSelectedStudentId(id);
-      if (permissions === "superadmin" || permissions === "teacher") {
-        setLoadingStudents(true);
-        try {
-          const response = await axios.get(
-            `${backDomain}/api/v1/students/${myId}`,
-            {
-              headers: actualHeaders,
-            }
-          );
-          const allUsers = response.data.listOfStudents || response.data;
-          setStudents(allUsers);
-        } catch (error) {
-          console.error("Error fetching students:", error);
-        } finally {
-          setLoadingStudents(false);
-        }
-      }
-    } else {
-      console.log("No user found in localStorage, logging out");
-      onLoggOut();
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const reviewListeningExercise = async (score: number, percentage: number) => {
+  const reviewListeningExercise = async (
+    finalScore: number,
+    percentage: number
+  ) => {
     setNext(true);
     try {
       await axios.put(
@@ -237,7 +324,7 @@ const ListeningExercise = ({
         }`,
         {
           flashcardId: cards[0]?._id,
-          score,
+          score: finalScore,
           percentage,
           transcript,
           dayToday: new Date(),
@@ -248,28 +335,32 @@ const ListeningExercise = ({
       onChange(!change);
       setNext(false);
       setTranscript("");
+      setTranscriptHighLighted("");
       setLoading(false);
 
-      var user = localStorage.getItem("loggedIn");
-      var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
-      // @ts-ignore
-      var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
-      setTimeout(() => {
-        updateInfo(myId, actualHeaders);
-      }, 100);
-      setTimeout(() => {
-        if (user) {
-          const { id } = JSON.parse(user);
-          setId(id);
-          setFlashcardsToday(flashcardsTodayNumber);
-        }
-      }, 250);
+      const user = localStorage.getItem("loggedIn");
+      const flashcardsTodayStored =
+        localStorage.getItem("flashcardsToday") || "0";
+      const flashcardsTodayNumber = parseFloat(flashcardsTodayStored);
+
+      if (user) {
+        const { id } = JSON.parse(user);
+        setId(id);
+        setFlashcardsToday(flashcardsTodayNumber);
+
+        setTimeout(() => {
+          updateInfo(id, actualHeaders);
+        }, 100);
+      }
+
       seeCardsToReview();
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      // onLoggOut();
     }
   };
+
+  // ---------------------- Correção / Similaridade ----------------------
+
   const isCorrectAnswer = (transcription: string | null) => {
     const cardTextRaw = cardTextRef.current;
 
@@ -284,7 +375,7 @@ const ListeningExercise = ({
     const wc = wordCount(correct);
     const sim = similarityPercentage(user, correct);
 
-    setTranscriptHighLighted(highlightDifferences(correct, user, sim));
+    setTranscriptHighLighted(highlightDifferences(cardTextRaw, user, sim));
     setSimilarity(sim);
     setWords(wc);
 
@@ -304,21 +395,22 @@ const ListeningExercise = ({
 
   const ponctuate = (transcription: string | null) => {
     setLoading(true);
+
     const raw = cards[0]?.front?.text;
     if (!raw) {
       notifyAlert("Erro: Card text está vazio.");
+      setLoading(false);
       return;
     }
 
     const cardText = normalizeText(cleanString(raw.replace(/\s+/g, " ")));
-
     const userTranscript = normalizeText(cleanString(transcription || ""));
+
     const wordCountInCard = wordCount(
-      cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
-        ""
+      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
     );
 
-    if (userTranscript === "") {
+    if (!userTranscript) {
       setSimilarity(0);
       setScore(0);
       setWords(wordCountInCard);
@@ -328,48 +420,66 @@ const ListeningExercise = ({
 
     if (cleanString(cardText) === cleanString(userTranscript)) {
       setSimilarity(100);
-      setScore(wordCountInCard * 3);
+      const finalScore = wordCountInCard * 3;
+      setScore(finalScore);
       setWords(wordCountInCard);
-      reviewListeningExercise(wordCountInCard * 3, 100);
+      reviewListeningExercise(finalScore, 100);
       return;
     }
 
     const simC = similarityPercentage(
       userTranscript,
-      cards[0]?.front?.text.replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
+      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
     );
+
     setSimilarity(simC);
     setWords(wordCountInCard);
-    // const points = simC > 40 ? wordCountInCard : 0;
-    const points = score;
 
-    if (simC > 98) {
-      setSimilarity(100);
-      reviewListeningExercise(wordCountInCard * 3, 100);
+    let points = 0;
+    if (simC >= 98) {
+      points = wordCountInCard * 3;
+      setScore(points);
+      reviewListeningExercise(points, 100);
+    } else if (simC >= 40) {
+      points = wordCountInCard * 2;
+      setScore(points);
+      reviewListeningExercise(points, simC);
     } else {
+      points = 0;
       setScore(points);
       reviewListeningExercise(points, simC);
     }
-
-    onChange(!change);
   };
+
+  // ---------------------- Buscar cards ----------------------
+
+  const [filterLanguage, setFilterLanguage] = useState<string>("en");
 
   const seeCardsToReview = async () => {
     setReadyToListen(false);
     setLoading(true);
     setTranscript("");
+    setTranscriptHighLighted("");
     setIsDisabled(true);
     setSee(true);
     setSimilarity(0);
     setScore(0);
     setWords(0);
+
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
-        { headers: actualHeaders || {} }
+        {
+          headers: actualHeaders || {},
+          params: {
+            lang: filterLanguage,
+          },
+        }
       );
-      var lp = response.data.dueFlashcards[0]?.front?.language || "en";
+
+      const lp = response.data.dueFlashcards[0]?.front?.language || "en";
       setLanguage(lp);
+
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
       localStorage.setItem(
         "flashcardsToday",
@@ -377,124 +487,41 @@ const ListeningExercise = ({
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
 
-      setCards(response.data.dueFlashcards);
+      setCards(response.data.dueFlashcards || []);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 
-      const thereAreCards = response.data.dueFlashcards[0] !== null;
+      const thereAreCards = !!response.data.dueFlashcards[0];
       setCardsLength(thereAreCards);
-      setLoading(false);
       setIsShow(true);
+
       setTimeout(() => {
         setReadyToListen(true);
-        setEnableVoice(true); // Ativa só após cards estarem prontos
+        setEnableVoice(true);
       }, 300);
     } catch (error) {
       notifyAlert("Erro ao carregar cards");
+    } finally {
+      setLoading(false);
+      setIsShow(true);
     }
-    setIsShow(true);
   };
 
-  const isIOS =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-  const isSafari = /^((?!chrome|android).)*safari/i.test(
-    navigator.userAgent.toLowerCase()
-  );
-
-  useEffect(() => {
-    if (isIOS || isSafari) {
-      // if (!isIOS && !isSafari) {
-      const SpeechRecognition =
-        (window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
-        notifyAlert("Reconhecimento de voz não suportado.");
-        return;
-      }
-
-      const recognition = new SpeechRecognition();
-      recognition.lang = languageMap[language] || "en-US"; // Use o mapeamento baseado no estado language
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      recognition.onresult = (event: any) => {
-        if (!cardTextRef.current) {
-          notifyAlert("Erro: Nenhuma frase carregada para comparar.");
-          return;
-        }
-
-        const speechToText = event.results[0][0].transcript;
-        const cleaned = speechToText.trim();
-        setTranscript(cleaned);
-
-        setSeeProgress(true);
-        setTimeout(() => {
-          isCorrectAnswer(cleaned); // 🔧 envia versão limpa
-          setIsDisabled(false);
-          setSeeProgress(false);
-        }, 2000);
-        setEnableVoice(false);
-      };
-
-      recognition.onerror = () => {
-        notifyAlert("Erro no reconhecimento de voz");
-        setEnableVoice(false);
-        setListening(false);
-      };
-
-      recognition.onspeechend = () => {
-        recognition.stop();
-      };
-
-      // Ative ao clicar no botão
-      const startSpeechRecognition = () => {
-        setListening(true);
-        recognition.start();
-      };
-
-      const stopSpeechRecognition = () => {
-        setListening(false);
-        recognition.stop();
-      };
-
-      // Torna acessível no escopo
-      (window as any).startSpeechRecognition = startSpeechRecognition;
-      (window as any).stopSpeechRecognition = stopSpeechRecognition;
-    }
-  }, [language]);
+  // ---------------------- Gravação Google (inglês) ----------------------
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
-  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
-
-  useEffect(() => {
-    const isIOSs =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-    const isSafaris = /^((?!chrome|android).)*safari/i.test(
-      navigator.userAgent
-    );
-
-    if (isIOSs || isSafaris) {
-      setISAPPLE(true);
-    } else {
-      setISAPPLE(false);
-    }
-  }, []);
   const startRecording = async () => {
-    console.log("Start recording triggered", language);
-    const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    if (isIOS || isSafari) {
-      notifyAlert(
-        "Seu dispositivo Apple ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
-      );
-      return;
-    }
-
     try {
+      if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia ||
+        typeof MediaRecorder === "undefined"
+      ) {
+        notifyAlert("Gravação de áudio não suportada neste navegador.");
+        return;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       const mediaRecorder = new MediaRecorder(stream, {
@@ -514,7 +541,7 @@ const ListeningExercise = ({
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.webm");
-        formData.append("language", languageMap[language] || "en-US"); // Envie o idioma para a API
+        formData.append("language", languageMap[language] || "en-US");
 
         setSeeProgress(true);
         try {
@@ -537,8 +564,9 @@ const ListeningExercise = ({
         }
       };
     } catch (error: any) {
-      notifyAlert("Erro ao acessar microfone", error);
+      notifyAlert("Erro ao acessar microfone");
       console.log("Erro ao acessar microfone", error);
+      setListening(false);
     }
   };
 
@@ -547,543 +575,708 @@ const ListeningExercise = ({
     setListening(false);
   };
 
+  // ---------------------- Browser SpeechRecognition (não-inglês) ----------------------
+
+  const recognitionRef = useRef<any>(null);
+
+  const startBrowserSpeechRecognition = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      notifyAlert("Reconhecimento de voz não suportado neste navegador.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.lang = languageMap[language] || "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (event: any) => {
+      const speechToText = event.results[0][0].transcript.trim();
+      setTranscript(speechToText);
+      setSeeProgress(true);
+      isCorrectAnswer(speechToText);
+      setIsDisabled(false);
+      setSeeProgress(false);
+      setEnableVoice(false);
+      setListening(false);
+    };
+
+    recognition.onerror = () => {
+      notifyAlert("Erro no reconhecimento de voz");
+      setEnableVoice(false);
+      setListening(false);
+    };
+
+    recognition.onspeechend = () => {
+      recognition.stop();
+    };
+
+    recognition.start();
+    setListening(true);
+  };
+
+  const stopBrowserSpeechRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+    setListening(false);
+  };
+
+  // ---------------------- Voz selecionada ----------------------
+
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
-  }, [selectedVoice, changeNumber]);
+  }, [changeNumber]);
 
-  return isAPPLE ? (
-    <section
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "60vh",
-        padding: "2rem",
-        textAlign: "center",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "500px",
-          padding: "2rem",
-          borderRadius: "4px",
-          backgroundColor: "#fff",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-          border: "1px solid #e0e0e0",
-        }}
-      >
-        {/* Icon */}
-        <div
-          style={{
-            fontSize: "3rem",
-            marginBottom: "1.5rem",
-            color: "#ff6b6b",
-          }}
-        >
-          🚫
-        </div>
+  // ---------------------- Render Apple fallback ----------------------
 
-        {/* Title */}
-        <h2
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#333",
-            marginBottom: "1rem",
-            lineHeight: "1.4",
-          }}
-        >
-          Audio Recording Not Supported
-        </h2>
-
-        {/* Subtitle */}
-        <h3
-          style={{
-            fontSize: "1.1rem",
-            fontWeight: "500",
-            color: "#666",
-            marginBottom: "1.5rem",
-            lineHeight: "1.4",
-          }}
-        >
-          Gravação de áudio não suportada
-        </h3>
-
-        {/* Main message */}
-        <p
-          style={{
-            fontSize: "1rem",
-            color: "#555",
-            lineHeight: "1.6",
-            marginBottom: "1.5rem",
-          }}
-        >
-          Your Apple device or Safari browser doesn't support audio recording
-          features required for this exercise.
-        </p>
-
-        <p
-          style={{
-            fontSize: "0.95rem",
-            color: "#666",
-            lineHeight: "1.6",
-            marginBottom: "2rem",
-          }}
-        >
-          Seu dispositivo Apple ou navegador Safari não suporta os recursos de
-          gravação de áudio necessários para este exercício.
-        </p>
-
-        {/* Recommendations */}
-        <div
-          style={{
-            backgroundColor: "#f8f9fa",
-            padding: "1.5rem",
-            borderRadius: "4px",
-            marginBottom: "1.5rem",
-            border: "1px solid #e9ecef",
-          }}
-        >
-          <h4
-            style={{
-              fontSize: "1rem",
-              fontWeight: "600",
-              color: "#495057",
-              marginBottom: "1rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem",
-            }}
-          >
-            💡 Recommended Solutions
-          </h4>
-
+  if (isAPPLE) {
+    return (
+      <section>
+        <div>
           <div
             style={{
-              textAlign: "left",
-              fontSize: "0.9rem",
-              color: "#555",
-              lineHeight: "1.5",
+              padding: "24px 24px 20px",
             }}
           >
-            <div style={{ marginBottom: "0.8rem" }}>
-              <strong>🖥️ Desktop/Laptop:</strong>
-              <br />
-              Use Google Chrome or Firefox on your computer
+            <h2
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 600,
+                color: "#1f2933",
+                marginBottom: "4px",
+              }}
+            >
+              Audio Recording Not Supported
+            </h2>
+
+            <h3
+              style={{
+                fontSize: "1.05rem",
+                fontWeight: 500,
+                color: "#4b5563",
+                marginBottom: "16px",
+              }}
+            >
+              Gravação de áudio não suportada
+            </h3>
+
+            <p
+              style={{
+                fontSize: "0.95rem",
+                color: "#4b5563",
+                lineHeight: 1.6,
+                marginBottom: "8px",
+              }}
+            >
+              Your Apple device or Safari browser does not provide the audio
+              recording features required for this exercise.
+            </p>
+
+            <p
+              style={{
+                fontSize: "0.9rem",
+                color: "#6b7280",
+                lineHeight: 1.6,
+                marginBottom: "20px",
+              }}
+            >
+              Seu dispositivo Apple ou navegador Safari não oferece os recursos
+              de gravação de áudio necessários para este exercício.
+            </p>
+
+            <div
+              style={{
+                borderRadius: "4px",
+                backgroundColor: "#f1f5f9",
+                border: "1px solid #e2e8f0",
+                padding: "16px",
+                marginBottom: "18px",
+              }}
+            >
+              <h4
+                style={{
+                  fontSize: "0.95rem",
+                  fontWeight: 600,
+                  color: "#1e293b",
+                  marginBottom: "10px",
+                }}
+              >
+                Recommended alternatives
+              </h4>
+
+              <ul
+                style={{
+                  margin: 0,
+                  paddingLeft: "18px",
+                  fontSize: "0.9rem",
+                  color: "#475569",
+                  lineHeight: 1.5,
+                }}
+              >
+                <li style={{ marginBottom: "6px" }}>
+                  Use Google Chrome or Firefox on a desktop or laptop.
+                </li>
+                <li>
+                  Em alguns dispositivos Android, você pode tentar o navegador
+                  Google Chrome para ter suporte completo.
+                </li>
+              </ul>
             </div>
 
-            <div style={{ marginBottom: "0.8rem" }}>
-              <strong>📱 Mobile Alternative:</strong>
-              <br />
-              Try Google Chrome mobile browser (on some Android devices)
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginBottom: "10px",
+              }}
+            >
+              <a
+                href="/flash-cards"
+                style={{
+                  ...primaryButtonStyle,
+                  textDecoration: "none",
+                }}
+              >
+                Try regular flashcards
+              </a>
+
+              <a
+                href="/"
+                style={{
+                  ...secondaryButtonStyle,
+                  textDecoration: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Back to home
+              </a>
+            </div>
+
+            <div
+              style={{
+                marginTop: "8px",
+                paddingTop: "10px",
+                borderTop: "1px solid #e5e7eb",
+                fontSize: "0.75rem",
+                color: "#9ca3af",
+                fontStyle: "italic",
+              }}
+            >
+              This limitation is caused by security and privacy policies in
+              iOS/Safari regarding microphone access.
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ---------------------- Render normal ----------------------
+
+  const similarityColor =
+    similarity === 100
+      ? "#16a34a"
+      : similarity > 98
+      ? "#2563eb"
+      : similarity > 40
+      ? "#eab308"
+      : "#dc2626";
+
+  const similarityBorderColor =
+    similarity > 40 ? "transparent" : "rgba(255,255,255,0.7)";
+
+  return (
+    <section>
+      <div>
+        {/* Header / controles superiores */}
+        <div
+          style={{
+            marginBottom: "20px",
+          }}
+        >
+          <div
+            style={{
+              padding: "16px 18px 10px",
+              marginBottom: "8px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
+              {/* Filtro de língua */}
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                  marginTop: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#64748b",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Language:
+                  </span>
+                  <select
+                    value={filterLanguage}
+                    onChange={(e) => {
+                      setFilterLanguage(e.target.value);
+                    }}
+                    style={selectStyleBase}
+                  >
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                  </select>
+                </div>
+
+                {(myPermissions === "superadmin" ||
+                  myPermissions === "teacher") && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "#64748b",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Student:
+                    </span>
+                    {loadingStudents ? (
+                      <CircularProgress
+                        size={18}
+                        style={{ color: partnerColor() }}
+                      />
+                    ) : (
+                      <select
+                        onChange={handleStudentChange}
+                        value={selectedStudentId}
+                        style={{
+                          ...selectStyleBase,
+                          minWidth: "220px",
+                          maxWidth: "260px",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = partnerColor();
+                          e.target.style.backgroundColor = "#ffffff";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = "#e2e8f0";
+                          e.target.style.backgroundColor = "#f8fafc";
+                        }}
+                      >
+                        <option value="">
+                          {UniversalTexts?.selectAStudent ||
+                            "Selecione um aluno..."}
+                        </option>
+                        {students.map((student) => (
+                          <option
+                            key={student.id || student.theId}
+                            value={student.id || student.theId}
+                          >
+                            {student.name} {student.lastname}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Action buttons */}
+        {/* Card principal de listening */}
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.8rem",
-            alignItems: "center",
+            ...baseCardStyle,
+            padding: "22px 20px 18px",
+            marginBottom: "20px",
           }}
         >
-          <a
-            href="/flash-cards"
-            style={{
-              display: "inline-block",
-              padding: "12px 24px",
-              backgroundColor: partnerColor(),
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "4px",
-              fontSize: "0.95rem",
-              fontWeight: "500",
-              transition: "all 0.2s",
-              minWidth: "200px",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-          >
-            📚 Try Regular Flashcards
-          </a>
-
-          <a
-            href="/"
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              backgroundColor: "transparent",
-              color: "#666",
-              textDecoration: "none",
-              borderRadius: "4px",
-              fontSize: "0.9rem",
-              border: "1px solid #ddd",
-              transition: "all 0.2s",
-              minWidth: "200px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f8f9fa";
-              e.currentTarget.style.borderColor = "#bbb";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#ddd";
-            }}
-          >
-            🏠 Back to Home
-          </a>
-        </div>
-
-        {/* Footer note */}
-        <div
-          style={{
-            marginTop: "2rem",
-            paddingTop: "1rem",
-            borderTop: "1px solid #eee",
-            fontSize: "0.8rem",
-            color: "#999",
-            fontStyle: "italic",
-          }}
-        >
-          This limitation is due to browser security policies on iOS/Safari
-          devices
-        </div>
-      </div>
-    </section>
-  ) : (
-    <section id="review">
-      <Voice
-        changeB={changeNumber}
-        setChangeB={setChangeNumber}
-        maxW="400px"
-        chosenLanguage={language}
-      />
-      {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-        <div
-          style={{
-            padding: "1rem",
-            backgroundColor: alwaysWhite(),
-            borderBottom: "1px solid #e2e8f0",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "0.5rem",
-          }}
-        >
-          {loadingStudents ? (
-            <CircularProgress size={20} style={{ color: partnerColor() }} />
-          ) : (
-            <select
-              onChange={(e) => {
-                handleStudentChange(e);
-              }}
-              value={selectedStudentId}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "13px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "6px 8px",
-                minWidth: "200px",
-                maxWidth: "300px",
-                outline: "none",
-                cursor: "pointer",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = partnerColor();
-                e.target.style.backgroundColor = "#ffffff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e2e8f0";
-                e.target.style.backgroundColor = "#f8fafc";
-              }}
-            >
-              <option value="">
-                {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-              </option>
-              {students.map((student) => (
-                <option
-                  key={student.id || student.theId}
-                  value={student.id || student.theId}
-                >
-                  {student.name} {student.lastname}
-                </option>
-              ))}
-            </select>
-          )}
-        </div>
-      )}
-
-      {see && (
-        <div>
-          {loading ? (
-            <CircularProgress style={{ color: partnerColor() }} />
-          ) : (
-            <div
-              style={{
-                maxWidth: "400px",
-                margin: "auto",
-                textAlign: "center",
-                padding: "20px",
-                borderRadius: "4px",
-              }}
-            >
-              {cardsLength ? (
-                <>
-                  <div>
+          {see ? (
+            loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "24px 0",
+                }}
+              >
+                <CircularProgress style={{ color: partnerColor() }} />
+              </div>
+            ) : (
+              <div
+                style={{
+                  maxWidth: "460px",
+                  margin: "0 auto",
+                  textAlign: "left",
+                }}
+              >
+                {cardsLength ? (
+                  <>
+                    {/* Resultado / correção */}
                     <div
                       style={{
                         display: isDisabled ? "none" : "grid",
-                        alignItems: "center",
-                        gap: "10px",
-                        justifyContent: "center",
+                        gap: "14px",
+                        marginBottom: "8px",
                       }}
                     >
-                      <p
+                      <div
                         style={{
-                          padding: "10px",
-                          borderRadius: "4px",
-                          backgroundColor:
-                            similarity === 100
-                              ? "#4caf40"
-                              : similarity > 98
-                              ? "#2196f3"
-                              : similarity > 40
-                              ? "#ffeb3b"
-                              : "#f44336",
-                          color:
-                            similarity === 100
-                              ? "white"
-                              : similarity > 98
-                              ? "white"
-                              : similarity > 40
-                              ? "black"
-                              : "white",
-                          border: `solid 1px ${
-                            similarity === 100
-                              ? "white"
-                              : similarity > 98
-                              ? "white"
-                              : similarity > 40
-                              ? "black"
-                              : "white"
-                          }`,
-                          transition: "background-color 0.3s",
+                          ...pillSimilarityBase,
+                          backgroundColor: similarityColor,
+                          border: `1px solid ${similarityBorderColor}`,
                         }}
                       >
-                        {similarity}% correct{" "}
+                        <span>{similarity}% correct</span>
                         {similarity < 40 && (
-                          <span>(You need at least 40% to score)</span>
+                          <span
+                            style={{ marginLeft: "4px", fontSize: "0.8rem" }}
+                          >
+                            (minimum 40% to score)
+                          </span>
                         )}
-                      </p>
+                      </div>
+
                       <div
                         style={{
                           display: "grid",
-                          border: "solid 1px #ccc",
+                          gap: "6px",
+                          border: "1px solid #e2e8f0",
                           borderRadius: "4px",
-                          padding: "15px",
-                          backgroundColor: "#fff",
+                          padding: "14px 12px",
+                          backgroundColor: "#fdfeff",
                         }}
                       >
                         <p
                           style={{
-                            fontSize: "1rem",
+                            fontSize: "0.95rem",
+                            fontWeight: 500,
+                            color: "#0f172a",
+                          }}
+                        >
+                          Original sentence
+                        </p>
+                        <p
+                          style={{
+                            fontSize: "0.95rem",
                             fontWeight: 400,
+                            color: "#111827",
                           }}
                         >
                           {cards[0]?.front?.text.replace(/\s+/g, " ")}
                         </p>
                         <p
                           style={{
-                            fontSize: "12px",
+                            fontSize: "0.8rem",
                             fontWeight: 400,
-                            color: "#555",
+                            color: "#6b7280",
                           }}
                         >
                           {cards[0]?.back?.text}
                         </p>
                       </div>
+
                       <div
                         style={{
                           display: "grid",
-                          border: "solid 1px #ccc",
+                          gap: "6px",
+                          border: "1px solid #e5e7eb",
                           borderRadius: "4px",
-                          padding: "15px",
-                          backgroundColor: "#fff",
+                          padding: "14px 12px",
+                          backgroundColor: "#ffffff",
                         }}
                       >
                         <p
                           style={{
-                            color: "grey",
-                            marginBottom: "10px",
-                            fontSize: "10px",
+                            color: "#6b7280",
+                            marginBottom: "2px",
+                            fontSize: "0.8rem",
                             fontStyle: "italic",
                           }}
                         >
-                          Your answer:
+                          Your answer
                         </p>
                         <div
+                          style={{
+                            fontSize: "0.94rem",
+                            lineHeight: 1.6,
+                          }}
                           dangerouslySetInnerHTML={{
                             __html: transcriptHighLighted,
                           }}
                         />
                       </div>
-                      <p>
-                        This sentence has <b>{words}</b> words
-                      </p>
-                      <p>
-                        You scored <b>{score.toFixed()}</b> points
-                      </p>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "10px",
+                          fontSize: "0.9rem",
+                          color: "#111827",
+                        }}
+                      >
+                        <p>
+                          Sentence length: <b>{words}</b> words
+                        </p>
+                        <p>
+                          Your score:{" "}
+                          <b>{Number.isFinite(score) ? score.toFixed(0) : 0}</b>{" "}
+                          points
+                        </p>
+                      </div>
                     </div>
+
+                    {/* Área de escuta + gravação */}
                     {seeProgress ? (
-                      <CircularProgress style={{ color: partnerColor() }} />
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          padding: "10px 0",
+                        }}
+                      >
+                        <CircularProgress style={{ color: partnerColor() }} />
+                      </div>
                     ) : (
                       <div
                         style={{
                           display: "flex",
-                          justifyContent: "space-evenly",
+                          justifyContent: "center",
+                          gap: "10px",
+                          marginTop: isDisabled ? 0 : "4px",
                         }}
                       >
+                        {/* Botão ouvir frase (TTS) */}
+                        <div>
+                          <Voice
+                            changeB={changeNumber}
+                            setChangeB={setChangeNumber}
+                            maxW="280px"
+                            chosenLanguage={language}
+                          />
+                        </div>
                         <button
-                          disabled={playingAudio}
                           onClick={() => {
-                            setPlayingAudio(true);
-                            setTimeout(() => {
-                              setPlayingAudio(false);
-                            }, 3000);
+                            const text = cards[0]?.front?.text;
+                            if (!text) return;
+
+                            if (
+                              typeof window !== "undefined" &&
+                              "speechSynthesis" in window
+                            ) {
+                              window.speechSynthesis.cancel();
+                            }
 
                             readText(
-                              cards[0]?.front?.language == "en"
-                                ? `${cards[0]?.front?.text.replace(
-                                    /\s+/g,
-                                    " "
-                                  )}`
-                                : `${cards[0]?.front?.text}`,
+                              text,
                               false,
                               cards[0]?.front?.language,
                               selectedVoice
                             );
-                            const wordsInSentence =
-                              cards[0]?.front?.text.split(" ").length || 0;
+
+                            const wordsInSentence = text.split(" ").length || 0;
                             const estimatedTime = Math.min(
-                              6000,
-                              wordsInSentence * 350
+                              8000,
+                              wordsInSentence * 400
                             );
 
                             setTimeout(() => {
                               setEnableVoice(true);
                             }, estimatedTime);
                           }}
-                          color={!playingAudio ? "blue" : "grey"}
-                          style={{
-                            cursor: playingAudio ? "not-allowed" : "pointer",
-                            margin: "0 5px",
-                            marginTop: !isDisabled ? "1rem" : 0,
-                          }}
+                          style={secondaryButtonStyle}
+                          aria-label="Play sentence"
+                          title="Play sentence"
                         >
                           <i className="fa fa-volume-up" aria-hidden="true" />
                         </button>
+
+                        {/* Botão gravação / reconhecimento */}
                         <button
                           style={{
-                            display: !isDisabled ? "none" : "inline-block",
+                            ...secondaryButtonStyle,
+                            display: !isDisabled ? "none" : "inline-flex",
                             cursor: enableVoice ? "pointer" : "not-allowed",
-                            margin: "0 5px",
+                            opacity: enableVoice ? 1 : 0.55,
                           }}
                           disabled={!enableVoice}
                           onClick={() => {
-                            if (
-                              !enableVoice ||
-                              !readyToListen ||
-                              !cards[0]?.front?.text
-                            )
-                              return;
-                            if (isIOS || isSafari) {
-                              if (!listening) {
-                                cardTextRef.current =
-                                  cards[0]?.front?.text || "";
+                            if (!enableVoice || !readyToListen) return;
+                            if (!cards[0]?.front?.text) return;
 
-                                (window as any).startSpeechRecognition();
-                                setListening(true);
-                                setTimeout(() => setListening(false), 4000);
+                            if (isMobile && language !== "en") {
+                              notifyAlert(
+                                "No celular, o listening só está disponível para frases em inglês. Use um computador para outras línguas."
+                              );
+                              return;
+                            }
+
+                            cardTextRef.current = cards[0]?.front?.text || "";
+
+                            if (language === "en") {
+                              if (!listening) {
+                                startRecording();
+                              } else {
+                                stopRecording();
                               }
                             } else {
-                              !listening ? startRecording() : stopRecording();
+                              if (!listening) {
+                                startBrowserSpeechRecognition();
+                              } else {
+                                stopBrowserSpeechRecognition();
+                              }
                             }
                           }}
-                          color={
-                            !enableVoice
-                              ? "lightgrey"
-                              : listening
-                              ? "red"
-                              : "green"
+                          aria-label={
+                            !listening ? "Start recording" : "Stop recording"
                           }
                         >
                           <i
                             className={
-                              isIOS || isSafari || !listening
-                                ? "fa fa-microphone"
-                                : "fa fa-stop"
+                              !listening ? "fa fa-microphone" : "fa fa-stop"
                             }
                             aria-hidden="true"
                           />
                         </button>
                       </div>
                     )}
-                  </div>
-                  <button
+
+                    {/* Botão Next */}
+                    <div
+                      style={{
+                        marginTop: "16px",
+                        display: isDisabled ? "none" : "flex",
+                        justifyContent: "flex-end",
+                      }}
+                    >
+                      <button
+                        style={{
+                          ...primaryButtonStyle,
+                          opacity: next ? 0.7 : 1,
+                          cursor: next ? "wait" : "pointer",
+                        }}
+                        disabled={next}
+                        onClick={() => ponctuate(transcript)}
+                      >
+                        {next ? "Saving..." : "Next card"}
+                      </button>
+                    </div>
+
+                    {/* Área de anotação opcional */}
+                    <textarea
+                      style={{
+                        display: !isDisabled ? "none" : "block",
+                        marginTop: "18px",
+                        width: "100%",
+                        minHeight: "72px",
+                        padding: "10px 12px",
+                        borderRadius: "4px",
+                        border: "1px solid #e5e7eb",
+                        fontSize: "0.9rem",
+                        resize: "vertical",
+                        color: "#111827",
+                      }}
+                      placeholder="Use this area to write what you hear before speaking, if it helps your listening."
+                    />
+                  </>
+                ) : (
+                  <p
                     style={{
-                      marginTop: "1rem",
-                      display: isDisabled ? "none" : "inline-block",
+                      textAlign: "center",
+                      padding: "20px 0",
+                      fontSize: "0.95rem",
+                      color: "#6b7280",
                     }}
-                    disabled={next}
-                    color="green"
-                    onClick={() => ponctuate(transcript)}
                   >
-                    Next
-                  </button>
-                  <textarea
-                    style={{
-                      display: !isDisabled ? "none" : "inline-block",
-                      marginTop: "1rem",
-                      width: "85%",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                    }}
-                    placeholder="Use this area for reference if you need to transcribe what you hear"
-                    name=""
-                    id=""
-                  />
-                </>
-              ) : (
-                <p>No flashcards</p>
-              )}
+                    No flashcards available for listening review right now.
+                  </p>
+                )}
+              </div>
+            )
+          ) : (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "16px 4px 8px",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "0.95rem",
+                  color: "#4b5563",
+                  marginBottom: "12px",
+                }}
+              >
+                When you are ready, start the listening session. You can use
+                your voice or type to match the sentence.
+              </p>
             </div>
           )}
+
+          {/* Start / Refresh */}
+          <div
+            style={{
+              display: !isDisabled && !see ? "none" : "flex",
+              justifyContent: "center",
+              marginTop: see ? "18px" : "8px",
+            }}
+          >
+            <button onClick={seeCardsToReview} style={primaryButtonStyle}>
+              {!see ? "Start" : "Refresh"}
+            </button>
+          </div>
         </div>
-      )}
-      <div
-        style={{
-          display: !isDisabled ? "none" : "flex",
-          justifyContent: "center",
-          marginTop: "20px",
-        }}
-      >
-        <button onClick={seeCardsToReview} style={{ margin: "0 5px" }}>
-          {!see ? "Start" : <i className="fa fa-refresh" />}
-        </button>
+
+        {/* Progressão diária */}
+        <div
+          style={{
+            ...baseCardStyle,
+            padding: "12px 16px 10px",
+          }}
+        >
+          <ProgressCounter flashcardsToday={flashcardsToday} />
+        </div>
       </div>
-      <ProgressCounter flashcardsToday={flashcardsToday} />
     </section>
   );
 };
