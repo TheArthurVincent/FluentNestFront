@@ -7,8 +7,8 @@ import { StudentItem } from "../types/studentsTypes";
 import { cardBase } from "../types/studentPage.styles";
 import { partnerColor } from "../../../../../Styles/Styles";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
-interface CheckboxFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+
+interface CheckboxFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
@@ -66,12 +66,13 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [editDateOfBirth, setEditDateOfBirth] = useState<string>("");
   const [editFee, setEditFee] = useState(student.fee || 0);
   const [editUpToDate, setEditUpToDate] = useState(
-    student.feeUpToDate || false
+    student.feeUpToDate || false,
   );
   const [googleDriveLink, setGoogleDriveLink] = useState(
-    student.googleDriveLink || ""
+    student.googleDriveLink || "",
   );
   const [onHold, setOnHold] = useState(student.onHold || false);
+
   // ====== estados pro modal de senha ======
   const [openPwd, setOpenPwd] = useState(false);
   const [savingPwd, setSavingPwd] = useState(false);
@@ -80,8 +81,22 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // ====== DELETE (danger zone) ======
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
   const firstFocusableRef = useRef<HTMLInputElement | null>(null);
   const firstPwdRef = useRef<HTMLInputElement | null>(null);
+
+  const studentFirstName = (student?.name || "")
+    .trim()
+    .split(/\s+/)[0]
+    .toLowerCase();
+
+  const isDeleteConfirmValid =
+    deleteConfirmText.trim().toLowerCase() === studentFirstName;
 
   // Inicializa a data de nascimento em formato yyyy-MM-dd (para <input type="date" />)
   useEffect(() => {
@@ -101,7 +116,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        if (open && !saving) setOpen(false);
+        if (open && !saving && !deleting) setOpen(false);
         if (openPwd && !savingPwd) setOpenPwd(false);
       }
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "enter") {
@@ -122,10 +137,17 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     }
     return () => document.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, saving, openPwd, savingPwd]);
+  }, [open, saving, openPwd, savingPwd, deleting]);
 
   const openModal = () => {
     setErrorMsg(null);
+
+    // reset delete flow
+    setDeleteMode(false);
+    setDeleteError(null);
+    setDeleteConfirmText("");
+    setDeleting(false);
+
     setEditName(student.name || "");
     setEditFee(student.fee || 0);
     setEditUpToDate(student.feeUpToDate || false);
@@ -136,12 +158,29 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     setEditAddress(student.address || "");
     setEditPhone(student.phoneNumber || "");
     setEditDoc((student as any).doc || "");
+
+    const raw = (student as any).dateOfBirth;
+    if (raw) {
+      const d = new Date(raw);
+      if (!isNaN(d.getTime())) {
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        setEditDateOfBirth(`${yyyy}-${mm}-${dd}`);
+      }
+    } else {
+      setEditDateOfBirth("");
+    }
+
     setOpen(true);
   };
 
   const closeModal = () => {
-    if (saving) return;
+    if (saving || deleting) return;
     setOpen(false);
+    setDeleteMode(false);
+    setDeleteError(null);
+    setDeleteConfirmText("");
   };
 
   const handleSave = async () => {
@@ -160,7 +199,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
         address: editAddress,
         phoneNumber: editPhone,
         dateOfBirth: editDateOfBirth || null,
-        doc: editDoc, // CPF (backend ainda pode ignorar, mas já mandamos)
+        doc: editDoc,
       };
 
       const url = `${backDomain}/api/v1/students/${student.id}`;
@@ -224,7 +263,6 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
 
       setSavingPwd(true);
 
-      // Ajuste essa URL para o path real da sua rota
       const url = `${backDomain}/api/v1/studentpassword/${student.id}`;
 
       const response = await axios.put(
@@ -232,13 +270,12 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
         { newPassword },
         {
           headers: headers ? { ...headers } : {},
-        }
+        },
       );
 
       const msg = response.data?.message || "Senha editada com sucesso.";
       setPwdSuccess(msg);
 
-      // Fecha depois de um pequeno delay
       setTimeout(() => {
         setOpenPwd(false);
       }, 800);
@@ -255,8 +292,47 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     }
   };
 
+  // ====== DELETE FLOW HANDLERS ======
+  const startDeleteFlow = () => {
+    if (saving) return;
+    setDeleteError(null);
+    setDeleteConfirmText("");
+    setDeleteMode(true);
+  };
+
+  const cancelDeleteFlow = () => {
+    if (deleting) return;
+    setDeleteError(null);
+    setDeleteConfirmText("");
+    setDeleteMode(false);
+  };
+
+  const handleDeleteStudent = async () => {
+    try {
+      if (!isDeleteConfirmValid) return;
+
+      setDeleting(true);
+      setDeleteError(null);
+
+      const url = `${backDomain}/api/v1/students/${student.id}`;
+      await axios.delete(url, { headers: headers ? { ...headers } : {} });
+
+      setOpen(false);
+      window.location.assign("/students");
+    } catch (err: any) {
+      console.error(err);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Erro ao excluir aluno.";
+      setDeleteError(msg);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const renderModal = () => {
-    // segurança para SSR
     if (typeof document === "undefined") return null;
     if (!open) return null;
 
@@ -266,7 +342,8 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
         aria-modal="true"
         aria-labelledby="edit-student-title"
         onClick={(e) => {
-          if (e.target === e.currentTarget && !saving) closeModal();
+          if (e.target === e.currentTarget && !saving && !deleting)
+            closeModal();
         }}
         style={{
           position: "fixed",
@@ -309,15 +386,15 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               id="edit-student-title"
               style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}
             >
-              Editar Aluno
+              {deleteMode ? "Excluir Aluno" : "Editar Aluno"}
             </h3>
             <button
-              onClick={() => !saving && closeModal()}
+              onClick={() => !saving && !deleting && closeModal()}
               aria-label="Fechar"
               style={{
                 border: "none",
                 background: "transparent",
-                cursor: saving ? "not-allowed" : "pointer",
+                cursor: saving || deleting ? "not-allowed" : "pointer",
                 padding: "6px",
                 color: "#64748b",
               }}
@@ -328,146 +405,217 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
 
           {/* Body */}
           <div style={{ padding: "16px", display: "grid", gap: "12px" }}>
-            {errorMsg && (
-              <div
-                role="alert"
-                style={{
-                  background: "#fef2f2",
-                  color: "#991b1b",
-                  border: "1px solid #fecaca",
-                  borderRadius: "8px",
-                  padding: "10px 12px",
-                  fontSize: "13px",
-                }}
-              >
-                {errorMsg}
-              </div>
+            {!deleteMode ? (
+              <>
+                {errorMsg && (
+                  <div
+                    role="alert"
+                    style={{
+                      background: "#fef2f2",
+                      color: "#991b1b",
+                      border: "1px solid #fecaca",
+                      borderRadius: "8px",
+                      padding: "10px 12px",
+                      fontSize: "13px",
+                    }}
+                  >
+                    {errorMsg}
+                  </div>
+                )}
+
+                {/* Nome + Sobrenome */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: "12px",
+                  }}
+                >
+                  <Field
+                    label="Nome"
+                    ref={firstFocusableRef}
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    disabled={saving}
+                    placeholder="Nome"
+                  />
+                  <Field
+                    label="Sobrenome"
+                    type="text"
+                    value={editLastname}
+                    onChange={(e) => setEditLastname(e.target.value)}
+                    disabled={saving}
+                    placeholder="Sobrenome"
+                  />
+                </div>
+
+                {/* Data de nascimento + CPF */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: "12px",
+                  }}
+                >
+                  <Field
+                    label="Data de nascimento"
+                    type="date"
+                    value={editDateOfBirth}
+                    onChange={(e) => setEditDateOfBirth(e.target.value)}
+                    disabled={saving}
+                  />
+                  <Field
+                    label="CPF"
+                    type="text"
+                    value={editDoc}
+                    onChange={(e) => setEditDoc(e.target.value)}
+                    disabled={saving}
+                    placeholder="000.000.000-00"
+                  />
+                </div>
+
+                {/* Endereço */}
+                <Field
+                  label="Endereço"
+                  type="text"
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  disabled={saving}
+                  placeholder="Rua, número, bairro, cidade"
+                />
+
+                {/* Email */}
+                <Field
+                  label="Email"
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  disabled={saving}
+                  placeholder="email@exemplo.com"
+                />
+
+                {/* Telefone */}
+                <Field
+                  label="Telefone"
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  disabled={saving}
+                  placeholder="(11) 99999-9999"
+                />
+
+                {/* Mensalidade */}
+                <Field
+                  label="Mensalidade (R$)"
+                  type="number"
+                  value={editFee}
+                  onChange={(e) => setEditFee(Number(e.target.value))}
+                  disabled={saving}
+                  placeholder="0,00"
+                />
+
+                {/* Flags: em dia / em pausa */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                    gap: "8px",
+                    marginTop: "4px",
+                  }}
+                >
+                  <CheckboxField
+                    label="Mensalidade em dia"
+                    checked={editUpToDate}
+                    onChange={(e) => setEditUpToDate(e.target.checked)}
+                    disabled={saving}
+                  />
+                  <CheckboxField
+                    label="Aluno em pausa (on hold)"
+                    checked={onHold}
+                    onChange={(e) => setOnHold(e.target.checked)}
+                    disabled={saving}
+                  />
+                </div>
+
+                {/* Link Google Drive */}
+                <Field
+                  label="Link do Google Drive"
+                  type="url"
+                  value={googleDriveLink}
+                  onChange={(e) => setGoogleDriveLink(e.target.value)}
+                  disabled={saving}
+                  placeholder="https://drive.google.com/..."
+                />
+              </>
+            ) : (
+              <>
+                <div
+                  role="alert"
+                  style={{
+                    background: "#fff1f2",
+                    color: "#9f1239",
+                    border: "1px solid #fecdd3",
+                    borderRadius: "12px",
+                    padding: "14px 14px",
+                    display: "grid",
+                    gap: "10px",
+                  }}
+                >
+                  <div style={{ display: "grid", gap: 4 }}>
+                    <strong style={{ fontSize: 14 }}>
+                      Você está prestes a excluir este aluno.
+                    </strong>
+                    <span style={{ fontSize: 13, color: "#881337" }}>
+                      Todas as aulas pendentes, flashcards e conteúdos serão
+                      excluídos. Essa ação não pode ser desfeita.
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      background: "#ffffff",
+                      border: "1px solid #ffe4e6",
+                      borderRadius: "10px",
+                      padding: "10px 12px",
+                      fontSize: 13,
+                      color: "#4c0519",
+                    }}
+                  >
+                    Para confirmar, digite o <strong>primeiro nome</strong> do
+                    aluno:{" "}
+                    <strong style={{ textTransform: "none" }}>
+                      {student?.name?.trim().split(/\s+/)[0] || ""}
+                    </strong>
+                  </div>
+
+                  <Field
+                    label="Digite o primeiro nome para confirmar"
+                    type="text"
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    disabled={deleting}
+                    placeholder="Ex: Maria"
+                  />
+
+                  {deleteError && (
+                    <div
+                      role="alert"
+                      style={{
+                        background: "#fef2f2",
+                        color: "#991b1b",
+                        border: "1px solid #fecaca",
+                        borderRadius: "8px",
+                        padding: "10px 12px",
+                        fontSize: "13px",
+                      }}
+                    >
+                      {deleteError}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
-
-            {/* Nome + Sobrenome */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "12px",
-              }}
-            >
-              <Field
-                label="Nome"
-                ref={firstFocusableRef}
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                disabled={saving}
-                placeholder="Nome"
-              />
-              <Field
-                label="Sobrenome"
-                type="text"
-                value={editLastname}
-                onChange={(e) => setEditLastname(e.target.value)}
-                disabled={saving}
-                placeholder="Sobrenome"
-              />
-            </div>
-
-            {/* Data de nascimento + CPF */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "12px",
-              }}
-            >
-              <Field
-                label="Data de nascimento"
-                type="date"
-                value={editDateOfBirth}
-                onChange={(e) => setEditDateOfBirth(e.target.value)}
-                disabled={saving}
-              />
-              <Field
-                label="CPF"
-                type="text"
-                value={editDoc}
-                onChange={(e) => setEditDoc(e.target.value)}
-                disabled={saving}
-                placeholder="000.000.000-00"
-              />
-            </div>
-
-            {/* Endereço */}
-            <Field
-              label="Endereço"
-              type="text"
-              value={editAddress}
-              onChange={(e) => setEditAddress(e.target.value)}
-              disabled={saving}
-              placeholder="Rua, número, bairro, cidade"
-            />
-
-            {/* Email */}
-            <Field
-              label="Email"
-              type="email"
-              value={editEmail}
-              onChange={(e) => setEditEmail(e.target.value)}
-              disabled={saving}
-              placeholder="email@exemplo.com"
-            />
-
-            {/* Telefone */}
-            <Field
-              label="Telefone"
-              type="tel"
-              value={editPhone}
-              onChange={(e) => setEditPhone(e.target.value)}
-              disabled={saving}
-              placeholder="(11) 99999-9999"
-            />
-
-            {/* Mensalidade */}
-            <Field
-              label="Mensalidade (R$)"
-              type="number"
-              value={editFee}
-              onChange={(e) => setEditFee(Number(e.target.value))}
-              disabled={saving}
-              placeholder="0,00"
-            />
-
-            {/* Flags: em dia / em pausa */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: "8px",
-                marginTop: "4px",
-              }}
-            >
-              <CheckboxField
-                label="Mensalidade em dia"
-                checked={editUpToDate}
-                onChange={(e) => setEditUpToDate(e.target.checked)}
-                disabled={saving}
-              />
-              <CheckboxField
-                label="Aluno em pausa (on hold)"
-                checked={onHold}
-                onChange={(e) => setOnHold(e.target.checked)}
-                disabled={saving}
-              />
-            </div>
-
-            {/* Link Google Drive */}
-            <Field
-              label="Link do Google Drive"
-              type="url"
-              value={googleDriveLink}
-              onChange={(e) => setGoogleDriveLink(e.target.value)}
-              disabled={saving}
-              placeholder="https://drive.google.com/..."
-            />
           </div>
 
           {/* Footer */}
@@ -481,52 +629,126 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               background: "#fafafa",
             }}
           >
-            <button
-              onClick={closeModal}
-              disabled={saving}
-              style={{
-                padding: "10px 14px",
-                borderRadius: "8px",
-                border: "1px solid #e2e8f0",
-                background: "#ffffff",
-                color: "#334155",
-                cursor: saving ? "not-allowed" : "pointer",
-                fontSize: "14px",
-              }}
-            >
-              Cancelar
-            </button>
+            {!deleteMode ? (
+              <>
+                <button
+                  type="button"
+                  onClick={startDeleteFlow}
+                  disabled={saving}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    background: "#dc2626",
+                    color: "#fff",
+                    cursor: saving ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Excluir Aluno
+                </button>
 
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 14px",
-                borderRadius: "8px",
-                border: `1px solid ${partnerColor()}`,
-                background: saving
-                  ? `${partnerColor()}50`
-                  : `${partnerColor()}`,
-                color: "white",
-                cursor: saving ? "not-allowed" : "pointer",
-                fontSize: "14px",
-              }}
-            >
-              {saving ? (
-                <>
-                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
-                  Salvando...
-                </>
-              ) : (
-                <>
-                  <i className="fa fa-check" aria-hidden="true" />
-                  Salvar alterações
-                </>
-              )}
-            </button>
+                <button
+                  onClick={closeModal}
+                  disabled={saving}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    background: "#ffffff",
+                    color: "#334155",
+                    cursor: saving ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: `1px solid ${partnerColor()}`,
+                    background: saving
+                      ? `${partnerColor()}50`
+                      : `${partnerColor()}`,
+                    color: "white",
+                    cursor: saving ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  {saving ? (
+                    <>
+                      <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                      Salvando...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa fa-check" aria-hidden="true" />
+                      Salvar alterações
+                    </>
+                  )}
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={cancelDeleteFlow}
+                  disabled={deleting}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    background: "#ffffff",
+                    color: "#334155",
+                    cursor: deleting ? "not-allowed" : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  Voltar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleDeleteStudent}
+                  disabled={deleting || !isDeleteConfirmValid}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 14px",
+                    borderRadius: "8px",
+                    border: "1px solid #fecaca",
+                    background:
+                      deleting || !isDeleteConfirmValid ? "#fca5a5" : "#b91c1c",
+                    color: "white",
+                    cursor:
+                      deleting || !isDeleteConfirmValid
+                        ? "not-allowed"
+                        : "pointer",
+                    fontSize: "14px",
+                  }}
+                >
+                  {deleting ? (
+                    <>
+                      <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                      Excluindo...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa fa-trash" aria-hidden="true" />
+                      Excluir definitivamente
+                    </>
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -927,6 +1149,6 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
         }}
       />
     </label>
-  )
+  ),
 );
 Field.displayName = "Field";

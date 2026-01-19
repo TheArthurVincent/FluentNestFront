@@ -99,7 +99,7 @@ const Spinner: React.FC<{ size?: number; color?: string }> = ({
 /** ==================== HELPERS ==================== */
 function findCourseByKey(
   courses: Array<{ _id: string; title: string }>,
-  key: string
+  key: string,
 ) {
   const byId = courses.find((c) => c._id === key);
   if (byId) return byId;
@@ -116,7 +116,7 @@ const sortByTitle = (arr: CourseWithCreator[]) =>
   [...arr].sort((a, b) =>
     (a.title || "").localeCompare(b.title || "", undefined, {
       sensitivity: "base",
-    })
+    }),
   );
 
 const sortByCreatorName = (arr: CourseWithCreator[]) =>
@@ -144,7 +144,7 @@ const sortByCreatorThenOrder = (arr: CourseWithCreator[]) =>
 const canEditCourseFor = (
   course: CourseWithCreator,
   permissions: Permissions,
-  studentID: string
+  studentID: string,
 ) => {
   if (permissions === "superadmin") return true;
   if (permissions === "teacher") {
@@ -491,7 +491,7 @@ export default function EnglishCourses({
 
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [courseToEdit, setCourseToEdit] = useState<CourseWithCreator | null>(
-    null
+    null,
   );
 
   const [permissions, setPermissions] = useState<Permissions>("student");
@@ -528,7 +528,7 @@ export default function EnglishCourses({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/courses/${studentId}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       const classesDB: CourseWithCreator[] = response.data.courses || [];
@@ -558,76 +558,82 @@ export default function EnglishCourses({
     () =>
       sortByCreatorThenOrder(
         (listOfCoursesFromDatabase || []).filter(
-          (c: any) => c && c.isOriginal === false
-        )
+          (c: any) => c && c.isOriginal === false,
+        ),
       ),
-    [listOfCoursesFromDatabase]
+    [listOfCoursesFromDatabase],
   );
 
   const nonAllowedNonOriginal = useMemo(
     () =>
       sortByCreatorName(
         (listOfNonAllowedCoursesFromDatabase || []).filter(
-          (c: any) => c && c.isOriginal === false
-        )
+          (c: any) => c && c.isOriginal === false,
+        ),
       ),
-    [listOfNonAllowedCoursesFromDatabase]
+    [listOfNonAllowedCoursesFromDatabase],
   );
 
   const allowedOriginalOnly = useMemo(
     () =>
       (listOfCoursesFromDatabase || []).filter(
-        (c: any) => c && c.isOriginal !== false
+        (c: any) => c && c.isOriginal !== false,
       ),
-    [listOfCoursesFromDatabase]
+    [listOfCoursesFromDatabase],
   );
 
   const nonAllowedOriginalOnly = useMemo(
     () =>
       (listOfNonAllowedCoursesFromDatabase || []).filter(
-        (c: any) => c && c.isOriginal !== false
+        (c: any) => c && c.isOriginal !== false,
       ),
-    [listOfNonAllowedCoursesFromDatabase]
+    [listOfNonAllowedCoursesFromDatabase],
   );
 
   const groupedAllowed = useMemo(
     () => ({
       en: sortByOrder(
-        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "en")
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "en"),
       ),
       es: sortByOrder(
-        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "es")
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "es"),
       ),
       fr: sortByOrder(
-        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "fr")
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "fr"),
       ),
       other: sortByOrder(
         allowedOriginalOnly.filter(
-          (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
-        )
+          (c) => !["en", "es", "fr"].includes(normalizeLang(c.language)),
+        ),
       ),
     }),
-    [allowedOriginalOnly]
+    [allowedOriginalOnly],
   );
 
   const groupedNonAllowed = useMemo(
     () => ({
       en: sortByOrder(
-        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "en")
+        nonAllowedOriginalOnly.filter(
+          (c) => normalizeLang(c.language) === "en",
+        ),
       ),
       es: sortByOrder(
-        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "es")
+        nonAllowedOriginalOnly.filter(
+          (c) => normalizeLang(c.language) === "es",
+        ),
       ),
       fr: sortByOrder(
-        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "fr")
+        nonAllowedOriginalOnly.filter(
+          (c) => normalizeLang(c.language) === "fr",
+        ),
       ),
       other: sortByOrder(
         nonAllowedOriginalOnly.filter(
-          (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
-        )
+          (c) => !["en", "es", "fr"].includes(normalizeLang(c.language)),
+        ),
       ),
     }),
-    [nonAllowedOriginalOnly]
+    [nonAllowedOriginalOnly],
   );
 
   /** ==================== CALLBACKS ==================== */
@@ -759,8 +765,8 @@ export default function EnglishCourses({
                         permissions === "superadmin"
                           ? "Materiais de Outros Criadores"
                           : permissions === "teacher"
-                          ? `Materiais de ${teacherName}`
-                          : "Materiais disponíveis"
+                            ? `Materiais de ${teacherName}`
+                            : "Materiais disponíveis"
                       }
                       allowed={allowedNonOriginal}
                       nonAllowed={nonAllowedNonOriginal}

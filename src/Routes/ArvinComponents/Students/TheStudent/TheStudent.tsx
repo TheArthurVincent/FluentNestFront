@@ -29,7 +29,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
       try {
         const res = await axios.get(
           `${backDomain}/api/v1/student/${studentId}`,
-          { headers: headers as any }
+          { headers: headers as any },
         );
         setStudent(res.data.formattedStudentData as StudentItem);
       } catch (err) {
