@@ -59,7 +59,7 @@ import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
-    typeof window !== "undefined" ? window.innerWidth > breakpoint : false
+    typeof window !== "undefined" ? window.innerWidth > breakpoint : false,
   );
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
 
     if (!verifyToken()) {
       console.log(
-        "Token inválido no ArvinNewHomePage, redirecionando para login"
+        "Token inválido no ArvinNewHomePage, redirecionando para login",
       );
       onLoggOutToken();
       return;
@@ -156,22 +156,22 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
 
       var response = await axios.get(
         `${backDomain}/api/v1/studentfeeuptodate/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response2 = await axios.get(
         `${backDomain}/api/v1/uploadneeded/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response3 = await axios.get(
         `${backDomain}/api/v1/logmeoutornot/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response4 = await axios.get(
         `${backDomain}/api/v1/limitdate/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       if (response.data.feeUpToDate === false) {
@@ -196,7 +196,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         (error.response.status === 401 || error.response.status === 403)
       ) {
         console.log(
-          "Erro de autorização em seeFee, token possivelmente inválido"
+          "Erro de autorização em seeFee, token possivelmente inválido",
         );
         onLoggOutToken();
       }
@@ -343,15 +343,13 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       levelcard: true,
       title: "Listening",
       showLeftBar: true,
-      component: isArthurVincent ? (
+      component: (
         <Listening
           change={change}
           onChange={setChange}
           headers={headers}
           isDesktop={isDesktop}
         />
-      ) : (
-        <Redirect to="/" />
       ),
     },
     {
