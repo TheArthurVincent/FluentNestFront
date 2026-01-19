@@ -50,7 +50,7 @@ export default function ImportElementsEditor({
   const [isOpen, setIsOpen] = useState(false);
 
   const [language, setLanguage] = useState<"en" | "pt" | "fr" | "es">(
-    (theLanguage as any) || "en"
+    (theLanguage as any) || "en",
   );
   const [search, setSearch] = useState("");
 
@@ -303,7 +303,7 @@ export default function ImportElementsEditor({
               q: term,
               language,
             },
-          }
+          },
         );
 
         const res: LessonFromApi[] = data?.lessons ?? [];
@@ -337,7 +337,7 @@ export default function ImportElementsEditor({
     if (!elements || elements.length === 0) return;
 
     setImportMsg(
-      `Selecionados ${elements.length} elemento(s) de "${fromTitle}" para importar para o editor.`
+      `Selecionados ${elements.length} elemento(s) de "${fromTitle}" para importar para o editor.`,
     );
 
     onChange?.({
