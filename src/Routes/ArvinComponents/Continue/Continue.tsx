@@ -231,7 +231,7 @@ export const Continue: FC<ContinueProps> = ({
 
       {/* Botão principal */}
       <a
-        target={isDesktop ? "_blank" : "_self"}
+        target={"_self"}
         href={href}
         style={{
           textDecoration: "none",
