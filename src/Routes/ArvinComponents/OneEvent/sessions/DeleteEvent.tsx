@@ -60,7 +60,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
     if (thePermissions !== "superadmin" && thePermissions !== "teacher") {
       notifyAlert(
         "Você não tem permissão para excluir esta aula.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -130,14 +130,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
           >
             Tem certeza de que deseja excluir esta aula? Essa ação não pode ser
             desfeita.
-            {lastLesson?.date && (
-              <>
-                <br />
-                <strong>
-                  Aula de {lastLesson.date} ({lastLesson.time})
-                </strong>
-              </>
-            )}
           </p>
 
           <div
@@ -184,7 +176,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     );
 
   return (

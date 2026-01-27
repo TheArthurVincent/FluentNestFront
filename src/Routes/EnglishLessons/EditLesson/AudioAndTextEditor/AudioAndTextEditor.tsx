@@ -75,6 +75,10 @@ export default function AudioAndTextEditor({
   setChange,
   change,
 }: Props) {
+  const studentPermissions = JSON.parse(
+    localStorage.getItem("loggedIn") || "null",
+  );
+
   const [showConfig, setShowConfig] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [coverError, setCoverError] = useState<string | null>(null);
@@ -212,7 +216,7 @@ export default function AudioAndTextEditor({
     if (!norm.text && !norm.link && !norm.image) {
       notifyAlert(
         "Não reconheci campos para Audio. Retorne { text, link?, image? } ou um texto simples.",
-        partnerColor()
+        partnerColor(),
       );
       console.warn("IA (bruto) audio:", raw);
       return;
@@ -356,47 +360,49 @@ export default function AudioAndTextEditor({
           </div>
 
           {/* Área: Link do áudio + Upload opcional */}
-          {/* <div style={{ display: "grid", gap: 12, alignItems: "end" }}>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Link do áudio
-              </label>
-              <input
-                value={value.link ?? ""}
-                onChange={(e) =>
-                  update({ link: extractSrcFromIframe(e.target.value) })
-                }
-                placeholder='Cole a URL (Drive/CDN) ou um <iframe> de embed (pegarei o "src")'
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
-              />
-              {audioError && (
-                <small style={{ color: "#b91c1c" }}>{audioError}</small>
-              )}
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <label
-                  style={{
-                    ...ghostBtnStyle,
-                    display: "inline-block",
-                    textAlign: "center",
-                  }}
-                >
-                  {uploadingAudio ? "Enviando áudio..." : "Upload de áudio"}
-                  <input
-                    type="file"
-                    accept="audio/*"
-                    style={{ display: "none" }}
-                    onChange={(e) => onPickAudio(e.target.files?.[0] || null)}
-                    disabled={uploadingAudio}
-                  />
+          {studentPermissions.permissions == "superadmin" && (
+            <div style={{ display: "grid", gap: 12, alignItems: "end" }}>
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 12, color: "#334155" }}>
+                  Link do áudio
                 </label>
+                <input
+                  value={value.link ?? ""}
+                  onChange={(e) =>
+                    update({ link: extractSrcFromIframe(e.target.value) })
+                  }
+                  placeholder='Cole a URL (Drive/CDN) ou um <iframe> de embed (pegarei o "src")'
+                  style={{
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 8,
+                    padding: 8,
+                    fontSize: 13,
+                  }}
+                />
+                {audioError && (
+                  <small style={{ color: "#b91c1c" }}>{audioError}</small>
+                )}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <label
+                    style={{
+                      ...ghostBtnStyle,
+                      display: "inline-block",
+                      textAlign: "center",
+                    }}
+                  >
+                    {uploadingAudio ? "Enviando áudio..." : "Upload de áudio"}
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      style={{ display: "none" }}
+                      onChange={(e) => onPickAudio(e.target.files?.[0] || null)}
+                      disabled={uploadingAudio}
+                    />
+                  </label>
+                </div>
               </div>
             </div>
-          </div> */}
+          )}
 
           {/* Capa/ícone do áudio */}
           <div

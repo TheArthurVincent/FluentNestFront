@@ -165,7 +165,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       const response = await axios.put(
         `${backDomain}/api/v1/eventmaininfo/${id}`,
         payload,
-        { headers: headers as any }
+        { headers: headers as any },
       );
 
       if (response) fetchEventData();
@@ -178,13 +178,13 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   const rescheduleEvent = async (
     id: string,
-    forced?: { date: string; time: string; idNew?: string }
+    forced?: { date: string; time: string; idNew?: string },
   ) => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/event-reschedule/${id}`,
         { forced },
-        { headers: headers as any }
+        { headers: headers as any },
       );
 
       window.location.reload();
@@ -205,7 +205,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
       const response = await axios.get(
         `${backDomain}/api/v1/free-events/${loggedIn.id || loggedIn._id}`,
-        { headers: headers as any }
+        { headers: headers as any },
       );
 
       const arr = (response.data?.events || []) as FreeEventItem[];
@@ -398,7 +398,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           )}
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 
@@ -583,10 +583,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         Reagendar para esse horário (esta ação não pode ser
                         desfeita)
                       </div>
-                      <div style={{ fontSize: 13, color: "#0f172a" }}>
-                        <b>{selectedFreeEvent.date}</b> às{" "}
-                        <b>{selectedFreeEvent.time}</b>
-                      </div>
                       <div
                         style={{
                           display: "flex",
@@ -702,7 +698,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 

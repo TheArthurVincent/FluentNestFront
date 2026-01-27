@@ -100,7 +100,7 @@ function MyCalendar({
   const [googleDriveLink, setGoogleDriveLink] = useState("");
   const [homework, setHomework] = useState("");
   const [dueDate, setDueDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [base64String, setBase64String] = useState("");
   const [fileName, setFileName] = useState("");
@@ -259,7 +259,7 @@ function MyCalendar({
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description/${myId}`,
           { description, classTitle: theLesson.title },
-          { headers }
+          { headers },
         );
         const adapted = response.data.adapted;
         setDescription(adapted);
@@ -279,7 +279,7 @@ function MyCalendar({
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description-hw/${myId}`,
           { homework },
-          { headers }
+          { headers },
         );
         const adapted = response.data.adapted;
         setShowAIGENERATED(true);
@@ -336,7 +336,7 @@ function MyCalendar({
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${myId}`,
-          { headers }
+          { headers },
         );
         const res = response.data.listOfStudents;
         setStudentsList(res);
@@ -348,7 +348,7 @@ function MyCalendar({
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/groups/${myId}`,
-          { headers }
+          { headers },
         );
         const res = response.data.groups;
         setGroupsList(res);
@@ -362,7 +362,7 @@ function MyCalendar({
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/todo/${myId}?todoId=${id}`,
-          { headers }
+          { headers },
         );
         setTask(response.data.todo);
         setModalEditTodo(true);
@@ -411,7 +411,7 @@ function MyCalendar({
       // Requisição
       const response = await axios.get(
         `${backDomain}/api/v1/eventsgeneral/${id}`,
-        { headers, params: { today: monday } }
+        { headers, params: { today: monday } },
       );
       // Normalizadores
       const addOneDayAndFormat = (dt) => {
@@ -490,7 +490,7 @@ function MyCalendar({
         studentsInGroup.map((student) => ({
           studentId: student._id,
           comment: "",
-        }))
+        })),
       );
     }
   }, [studentsInGroup]);
@@ -519,7 +519,7 @@ function MyCalendar({
       setLastFew(response.data.event.recentUnmarkedEvents || []);
       if (response?.data?.event?.recentUnmarkedEvents?.[0]?.theLesson) {
         setTheLessonLast(
-          response.data.event.recentUnmarkedEvents[0].theLesson || []
+          response.data.event.recentUnmarkedEvents[0].theLesson || [],
         );
       }
 
@@ -607,7 +607,7 @@ function MyCalendar({
         `${backDomain}/api/v1/tutoringsevents/${studentId}`,
         {
           headers,
-        }
+        },
       );
       const tutorings = response.data.tutorings;
       setLoadingTutoringDays(true);
@@ -630,7 +630,7 @@ function MyCalendar({
         `${backDomain}/api/v1/groupsrecurrentevents/${groupID}`,
         {
           headers,
-        }
+        },
       );
       const groups = response.data.tutorings;
       setLoadingTutoringDays(true);
@@ -667,7 +667,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       setLoadingInfo(false);
       setIsVisible(false);
@@ -746,7 +746,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       setCategory("");
       setDate("");
@@ -775,7 +775,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       if (response) {
         fetchOneEvent(id);
@@ -793,7 +793,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       if (response) {
         fetchOneEvent(id);
@@ -811,7 +811,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       if (response) {
         fetchOneEvent(id);
@@ -836,7 +836,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       setSeeEditTutoring(false);
       fetchOneSetOfTutorings(newStudentId);
@@ -858,7 +858,7 @@ function MyCalendar({
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-          }
+          },
         );
 
         const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
@@ -885,7 +885,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       if (response) {
         setSeeEditTutoring(false);
@@ -929,7 +929,7 @@ function MyCalendar({
             groupId: newGroupId,
           },
           headers,
-        }
+        },
       );
       if (response) {
         setSeeEditTutoring(false);
@@ -1056,7 +1056,7 @@ function MyCalendar({
       const response = await axios.post(
         `${backDomain}/api/v1/event/${myId}`,
         payload,
-        { headers }
+        { headers },
       );
 
       if (response.status === 200 || response.status === 201) {
@@ -1223,7 +1223,7 @@ function MyCalendar({
       try {
         const { data } = await axios.get(
           `${backDomain}/api/v1/courses-organized/${myId}`,
-          { headers }
+          { headers },
         );
         const res = data?.lessons ?? [];
         setLessonsList(res);
@@ -1374,7 +1374,7 @@ function MyCalendar({
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventchecklist4/${newEventId}`,
-        { headers }
+        { headers },
       );
       fetchOneEvent(newEventId);
     } catch (error) {
@@ -1386,7 +1386,7 @@ function MyCalendar({
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventchecklist5/${newEventId}`,
-        { headers }
+        { headers },
       );
       fetchOneEvent(newEventId);
     } catch (error) {
@@ -1535,7 +1535,7 @@ function MyCalendar({
         `${backDomain}/api/v1/scheduleclass/${id}?eventId=${eventId}`,
         {
           headers,
-        }
+        },
       );
       setShowAIGENERATED(false);
       loadGeneral(new Date());
@@ -1553,7 +1553,7 @@ function MyCalendar({
         `${backDomain}/api/v1/todochecklist/${id}?todoId=${taskID}&checkList=${index}`,
         {
           headers,
-        }
+        },
       );
       setShowAIGENERATED(false);
       fetchTodo(taskID);
@@ -1569,7 +1569,7 @@ function MyCalendar({
         `${backDomain}/api/v1/todochecklistname/${id}?todoId=${taskID}&checkList=${index}&newDescription=${desc}`,
         {
           headers,
-        }
+        },
       );
       fetchTodo(taskID);
     } catch (error) {
@@ -1589,7 +1589,7 @@ function MyCalendar({
         },
         {
           headers,
-        }
+        },
       );
       setSeeEditTutoring(false);
       setSeeReplenish(false);
@@ -1610,7 +1610,7 @@ function MyCalendar({
         `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
         {
           headers,
-        }
+        },
       );
       setSeeEditTutoring(false);
       setSeeReplenish(false);
@@ -1773,7 +1773,7 @@ function MyCalendar({
                               .filter(
                                 (event) =>
                                   event.date.toDateString() ===
-                                  date.toDateString()
+                                  date.toDateString(),
                               )
                               .map((todo, idx) => (
                                 <div
@@ -1790,18 +1790,18 @@ function MyCalendar({
                                       todo.category == "personal"
                                         ? "rgba(215, 192, 192, 0.7)"
                                         : todo.category == "finance"
-                                        ? "rgba(234, 215, 191, 0.7)"
-                                        : todo.category == "work"
-                                        ? "rgba(234, 234, 191, 0.7)"
-                                        : todo.category == "study"
-                                        ? "rgba(215, 234, 191, 0.7)"
-                                        : todo.category == "health"
-                                        ? "rgba(191, 234, 212, 0.7)"
-                                        : todo.category == "family"
-                                        ? "rgba(191, 201, 234, 0.7)"
-                                        : todo.category == "other"
-                                        ? "rgba(216, 191, 234, 0.7)"
-                                        : "rgba(234, 191, 215, 0.7)",
+                                          ? "rgba(234, 215, 191, 0.7)"
+                                          : todo.category == "work"
+                                            ? "rgba(234, 234, 191, 0.7)"
+                                            : todo.category == "study"
+                                              ? "rgba(215, 234, 191, 0.7)"
+                                              : todo.category == "health"
+                                                ? "rgba(191, 234, 212, 0.7)"
+                                                : todo.category == "family"
+                                                  ? "rgba(191, 201, 234, 0.7)"
+                                                  : todo.category == "other"
+                                                    ? "rgba(216, 191, 234, 0.7)"
+                                                    : "rgba(234, 191, 215, 0.7)",
                                     borderRadius: "4px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
@@ -1843,7 +1843,7 @@ function MyCalendar({
                                             }}
                                           />
                                         );
-                                      }
+                                      },
                                     )}
                                   </span>
                                 </div>
@@ -1855,7 +1855,7 @@ function MyCalendar({
                         {events
                           .filter(
                             (event) =>
-                              event.date.toDateString() === date.toDateString()
+                              event.date.toDateString() === date.toDateString(),
                           )
                           .sort((a, b) => {
                             const timeA =
@@ -1950,7 +1950,7 @@ function MyCalendar({
                                     event,
                                     hj,
                                     date,
-                                    event.duration
+                                    event.duration,
                                   ) && (
                                     <div
                                       style={{
@@ -2012,7 +2012,7 @@ function MyCalendar({
 
                                     {formatTimeRange(
                                       event.time,
-                                      event.duration
+                                      event.duration,
                                     )}
                                   </div>
 
@@ -2028,10 +2028,16 @@ function MyCalendar({
                                     {event.groupName
                                       ? truncateString(event.groupName, 11)
                                       : event.student
-                                      ? truncateString(event.student, 11)
-                                      : event.description
-                                      ? truncateString(event.description, 10)
-                                      : "No description"}
+                                        ? truncateString(event.student, 11)
+                                        : event.description
+                                          ? truncateString(
+                                              event.description,
+                                              10,
+                                            )
+                                          : event.category ===
+                                              "Marcar Reposição"
+                                            ? "Disponível"
+                                            : "No description"}
                                   </div>
                                 </div>
 
@@ -2056,7 +2062,7 @@ function MyCalendar({
                                         style={{ marginRight: "2px" }}
                                       />
                                       {categoryList.find(
-                                        (cat) => cat.value === event.category
+                                        (cat) => cat.value === event.category,
                                       )?.text || event.category}
                                     </>
                                   )}
@@ -2068,7 +2074,7 @@ function MyCalendar({
                                         style={{ marginRight: "2px" }}
                                       />
                                       {categoryList.find(
-                                        (cat) => cat.value === event.category
+                                        (cat) => cat.value === event.category,
                                       )?.text || event.category}
                                     </>
                                   )}
@@ -2081,7 +2087,7 @@ function MyCalendar({
                                       />
 
                                       {categoryList.find(
-                                        (cat) => cat.value === event.category
+                                        (cat) => cat.value === event.category,
                                       )?.text || event.category}
                                     </>
                                   )}
@@ -2093,7 +2099,7 @@ function MyCalendar({
                         {/* Empty State */}
                         {events.filter(
                           (event) =>
-                            event.date.toDateString() === date.toDateString()
+                            event.date.toDateString() === date.toDateString(),
                         ).length === 0 && (
                           <div
                             style={{

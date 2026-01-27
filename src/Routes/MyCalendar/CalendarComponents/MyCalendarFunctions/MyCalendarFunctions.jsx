@@ -149,7 +149,7 @@ export function isEventTimeNowConsideringDuration(
   eventTime,
   hj,
   date,
-  durationInMinutes
+  durationInMinutes,
 ) {
   const [eventHour, eventMinute] = eventTime.time.split(":").map(Number);
   // Verificar se é o mesmo dia
@@ -196,6 +196,11 @@ export const formatTimeRange = (startTime, durationMinutes = 60) => {
 
 export const categoryList = [
   {
+    text: "Horário Vazio Para Reposição (Para que seus alunos marquem)",
+    value: "Marcar Reposição",
+    forStudent: false,
+  },
+  {
     text: "Aula Particular Individual (De um de seus alunos)",
     value: "Tutoring",
     forStudent: true,
@@ -229,10 +234,5 @@ export const categoryList = [
     text: "Aula Prêmio (De um de seus alunos)",
     value: "Prize Class",
     forStudent: true,
-  },
-  {
-    text: "Horário Vazio Para Reposição (Para que seus alunos marquem)",
-    value: "Marcar Reposição",
-    forStudent: false,
   },
 ];
