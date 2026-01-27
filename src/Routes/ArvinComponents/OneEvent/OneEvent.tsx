@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, Outlet, useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { backDomain } from "../../../Resources/UniversalComponents";
+import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
 import EventVideo from "./sessions/VideoClass";
 import MainInfoClass from "./sessions/MainInfoClass";
@@ -28,6 +28,29 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedFutureEventId, setSelectedFutureEventId] =
+    useState<string>("");
+  const [rescheduling, setRescheduling] = useState(false);
+
+  const rescheduleEvent = async (
+    id: string,
+    forced?: { date: string; time: string; idNew?: string },
+  ) => {
+    try {
+      setRescheduling(true);
+      await axios.put(
+        `${backDomain}/api/v1/event-reschedule/${id}`,
+        { forced },
+        { headers: headers as any },
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao reagendar o evento", error);
+    } finally {
+      setRescheduling(false);
+    }
+  };
 
   // NOVO: controle de abas  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<TabType>("dados");
@@ -63,7 +86,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
   const fetchEventData = async () => {
     setPermissionsUser(
-      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions
+      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions,
     );
 
     if (!eventId) return;
@@ -74,7 +97,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       setEventData(res.data.event);
       setReplicateLastEvent(
         res.data.event.replicateLastEvent &&
-          res.data.event.category !== "Established Group Class"
+          res.data.event.category !== "Established Group Class",
       );
     } catch (err) {
       console.error("Error fetching event data", err);
@@ -89,13 +112,37 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const event = eventData;
   const lastLesson = eventData?.recentUnmarkedEvents?.[0] || null;
 
+  const [futureEventsData, setFutureEventsData] = useState<any>(null);
+
+  const fetchFutureEventsData = async () => {
+    const student = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+
+    setPermissionsUser(
+      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions,
+    );
+
+    if (!eventId) return;
+    try {
+      const res = await axios.get(
+        `${backDomain}/api/v1/next-few-events/${student.id || student._id}?eventId=${eventId}`,
+        {
+          headers: headers as any,
+        },
+      );
+      setFutureEventsData(res.data.eventsList);
+      console.log(res.data.eventsList);
+    } catch (err) {
+      console.error("Error fetching event data", err);
+    }
+  };
+
   const updateScheduled = async (id: string) => {
     if (!id) return;
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
         { status: "marcado" },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       if (response) {
         fetchEventData();
@@ -111,7 +158,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
         { status: "desmarcado" },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       if (response) {
         fetchEventData();
@@ -127,7 +174,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
         { status: "realizada" },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       if (response) {
         fetchEventData();
@@ -146,7 +193,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         `${backDomain}/api/v1/scheduleclass/${id}?eventId=${eventId}`,
         {
           headers,
-        }
+        },
       );
       window.location.reload();
     } catch (error) {
@@ -181,7 +228,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           >
             <span style={newArvinTitleStyle}>
               {event
-                ? `${event.student} ${event.date} (${event.time})`
+                ? `${event.student ? event.student : ""} ${event.date} (${event.time})`
                 : "Evento"}
             </span>
             <Helmets
@@ -467,7 +514,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             {/* Botão principal */}
             {!seeReplenish && (
               <button
-                onClick={() => setSeeReplenish(true)}
+                onClick={() => {
+                  fetchFutureEventsData();
+                  setSelectedFutureEventId("");
+                  setTimeout(() => setSeeReplenish(true), 500);
+                }}
                 style={{
                   marginTop: 4,
                   width: "100%",
@@ -481,7 +532,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   color: "#ffffff",
                 }}
               >
-                Reservar o horário de {event.date} às {event.time} reposição
+                Reservar o horário
               </button>
             )}
 
@@ -510,7 +561,47 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   Deseja agendar sua aula de reposição para este horário? Esta
                   ação não poderá ser desfeita.
                 </p>
-
+                Escolha uma de suas aulas agendadas para transferir para{" "}
+                {event.date}: <br />
+                <div
+                  style={{
+                    display: "grid",
+                    overflowY: "auto",
+                    gap: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  {futureEventsData && futureEventsData.length > 0
+                    ? futureEventsData.map((futureEvent: any) => {
+                        const isSelected =
+                          selectedFutureEventId === futureEvent._id;
+                        return (
+                          <div
+                            key={futureEvent._id}
+                            onClick={() =>
+                              setSelectedFutureEventId(futureEvent._id)
+                            }
+                            style={{
+                              gap: 20,
+                              border: isSelected
+                                ? `1px solid ${partnerColor()}`
+                                : "1px solid #334155",
+                              borderRadius: 8,
+                              padding: 8,
+                              fontSize: 12,
+                              color: "#e5e7eb",
+                              cursor: "pointer",
+                              background: isSelected
+                                ? partnerColor()
+                                : "transparent",
+                            }}
+                          >
+                            {futureEvent.date} às {futureEvent.time}
+                          </div>
+                        );
+                      })
+                    : "Nenhuma aula agendada disponível para substituição/reposição."}
+                </div>
                 <div
                   style={{
                     display: "flex",
@@ -519,7 +610,10 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   }}
                 >
                   <button
-                    onClick={() => setSeeReplenish(false)}
+                    onClick={() => {
+                      setSelectedFutureEventId("");
+                      setSeeReplenish(false);
+                    }}
                     style={{
                       padding: "6px 16px",
                       fontSize: 12,
@@ -533,10 +627,17 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   >
                     Cancelar
                   </button>
-
                   <button
+                    disabled={!selectedFutureEventId || rescheduling}
                     onClick={async () => {
-                      await handleScheduleReplenish();
+                      if (!eventId) return; // slot destino (Marcar Reposição)
+                      if (!selectedFutureEventId) return;
+                      await rescheduleEvent(selectedFutureEventId, {
+                        idNew: eventId, // o slot "Marcar Reposição" atual
+                        date: event.date, // só pra descrição no back
+                        time: event.time, // só pra descrição no back
+                      });
+
                       setSeeReplenish(false);
                     }}
                     style={{
@@ -547,7 +648,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       border: "1px solid transparent",
                       background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}cc)`,
                       color: "#ffffff",
-                      cursor: "pointer",
+                      cursor:
+                        !selectedFutureEventId || rescheduling
+                          ? "not-allowed"
+                          : "pointer",
+                      opacity: !selectedFutureEventId || rescheduling ? 0.6 : 1,
                     }}
                   >
                     Confirmar reposição
