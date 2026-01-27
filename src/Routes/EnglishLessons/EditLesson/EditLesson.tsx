@@ -157,7 +157,7 @@ export default function EditLesson({
             language: language || "en",
             studentId: studentId || "",
           },
-          { headers: headers as any }
+          { headers: headers as any },
         );
         const adapted = response.data.titleAdapted;
         console.log(adapted);
@@ -184,7 +184,7 @@ export default function EditLesson({
             language: language || "en",
             studentId: studentId || "",
           },
-          { headers: headers as any }
+          { headers: headers as any },
         );
         const adapted = response.data.descriptionAdapted;
         console.log(adapted);
@@ -223,7 +223,7 @@ export default function EditLesson({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        { headers }
+        { headers },
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
@@ -298,7 +298,7 @@ export default function EditLesson({
       const res = await axios.put(
         `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        { headers }
+        { headers },
       );
 
       const updated: ClassDetails =
@@ -306,7 +306,7 @@ export default function EditLesson({
 
       // Sanitiza de novo caso o back devolva `order` nos elements
       const updatedSanitizedElements: ElementItem[] = Array.isArray(
-        updated.elements
+        updated.elements,
       )
         ? updated.elements.map((el: any) => {
             const { order: _ignored, _id: _ignoredId, ...rest } = el;
@@ -427,10 +427,10 @@ export default function EditLesson({
           en: "Images",
         },
         audio: {
-          pt: "Áudio",
-          es: "Audio",
-          fr: "Audio",
-          en: "Audio",
+          pt: "Texto",
+          es: "Texto",
+          fr: "Texte",
+          en: "Text",
         },
         dialogue: {
           pt: "Diálogo",
@@ -546,7 +546,7 @@ export default function EditLesson({
   const addBlock = (pos: "start" | "end" = "end") => {
     const block = makeEmptyBlock(newType);
     setElements((prev) =>
-      pos === "start" ? [block, ...prev] : [...prev, block]
+      pos === "start" ? [block, ...prev] : [...prev, block],
     );
   };
 
@@ -743,7 +743,7 @@ export default function EditLesson({
                       const lang = e.target.value;
                       setTheLanguage(lang);
                       setLesson((prev) =>
-                        prev ? { ...prev, language: lang } : prev
+                        prev ? { ...prev, language: lang } : prev,
                       );
                     }}
                     style={{
@@ -889,7 +889,7 @@ export default function EditLesson({
                 <option value="vocabulary">Vocabulary</option>
                 <option value="singleimages">Single Images</option>
                 <option value="sentences">Sentences</option>
-                <option value="audio">Text + Audio</option>
+                <option value="audio">Text</option>
                 <option value="images">Images (Grid + Audio)</option>
                 <option value="video">Video</option>
                 <option value="exercise">Exercise (List of questions)</option>
