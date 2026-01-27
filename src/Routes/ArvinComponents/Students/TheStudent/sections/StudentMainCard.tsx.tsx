@@ -1052,6 +1052,25 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               )}
             </span>
           </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <span
+              style={{
+                width: 60,
+                fontWeight: 600,
+                color: "#9CA3AF",
+              }}
+            >
+              Drive
+            </span>
+            <span style={{ flex: 1 }}>
+              {student.fee
+                ? student.fee.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })
+                : "-"}
+            </span>
+          </div>
         </div>
 
         <div
