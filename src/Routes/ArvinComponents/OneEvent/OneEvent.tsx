@@ -38,13 +38,13 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   ) => {
     try {
       setRescheduling(true);
-      await axios.put(
+      const response = await axios.put(
         `${backDomain}/api/v1/event-reschedule/${id}`,
         { forced },
         { headers: headers as any },
       );
-
-      window.location.reload();
+      console.log("Evento reagendado com sucesso", response.data.event._id);
+      window.location.assign(`/my-calendar/event/${response.data.event._id}`);
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
     } finally {
