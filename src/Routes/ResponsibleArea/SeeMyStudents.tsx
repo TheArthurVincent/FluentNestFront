@@ -3,6 +3,7 @@ import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import React from "react";
 import FindStudent from "../Adm/AdmComponents/FindStudentAssets/FindStudent";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
+import Helmets from "../../Resources/Helmets";
 
 export interface SeeMyStudentsProps {
   headers: MyHeadersType | null;
@@ -22,6 +23,7 @@ export function SeeMyStudents({ headers, id }: SeeMyStudentsProps) {
         uploadStatus={upload}
         isResponsible={true}
       />
+      <Helmets text="Alunos" />
     </RouteDiv>
   );
 }

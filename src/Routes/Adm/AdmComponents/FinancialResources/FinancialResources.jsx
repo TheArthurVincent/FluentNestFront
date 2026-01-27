@@ -30,6 +30,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { createPortal } from "react-dom";
+
 import {
   Tab,
   CircularProgress,
@@ -1398,76 +1400,82 @@ export function FinancialResources({ headers, id, plan }) {
                     >
                       Gerar Relatório PDF
                     </button>
-                    {showPDFModal && (
-                      <div
-                        style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          width: "100vw",
-                          height: "100vh",
-                          background: "rgba(0,0,0,0.3)",
-                          zIndex: 9999,
-                        }}
-                      >
+                    {showPDFModal &&
+                      createPortal(
                         <div
                           style={{
-                            background: "#fff",
-                            padding: "24px",
-                            borderRadius: "4px",
-                            maxWidth: "350px",
-                            margin: "80px auto",
-                            boxShadow: "0 2px 8px #0002",
+                            position: "fixed",
+                            inset: 0,
+                            background: "rgba(0,0,0,0.3)",
+                            zIndex: 999999,
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            paddingTop: "80px",
                           }}
                         >
-                          <h3 style={{ marginBottom: "16px" }}>
-                            Opções do Relatório
-                          </h3>
-                          <label
-                            style={{ display: "block", marginBottom: "8px" }}
-                          >
-                            Tipo:
-                            <select
-                              value={pdfType}
-                              onChange={(e) => setPDFType(e.target.value)}
-                              style={{ marginLeft: "8px" }}
-                            >
-                              <option value="both">Entradas e Saídas</option>
-                              <option value="entradas">Só Entradas</option>
-                              <option value="saidas">Só Saídas</option>
-                            </select>
-                          </label>
                           <div
                             style={{
-                              display: "flex",
-                              gap: "12px",
-                              marginTop: "18px",
+                              background: "#fff",
+                              padding: "24px",
+                              borderRadius: "6px",
+                              maxWidth: "350px",
+                              width: "100%",
+                              boxShadow: "0 6px 20px rgba(0,0,0,.15)",
                             }}
                           >
-                            <button
-                              onClick={() => setShowPDFModal(false)}
+                            <h3 style={{ marginBottom: "16px" }}>
+                              Opções do Relatório
+                            </h3>
+
+                            <label
+                              style={{ display: "block", marginBottom: "8px" }}
+                            >
+                              Tipo:
+                              <select
+                                value={pdfType}
+                                onChange={(e) => setPDFType(e.target.value)}
+                                style={{ marginLeft: "8px" }}
+                              >
+                                <option value="both">Entradas e Saídas</option>
+                                <option value="entradas">Só Entradas</option>
+                                <option value="saidas">Só Saídas</option>
+                              </select>
+                            </label>
+
+                            <div
                               style={{
-                                background: "#eee",
-                                color: "#333",
-                                border: "none",
-                                borderRadius: "4px",
-                                padding: "8px 16px",
-                                fontWeight: "bold",
-                                cursor: "pointer",
+                                display: "flex",
+                                gap: "12px",
+                                marginTop: "18px",
+                                justifyContent: "flex-end",
                               }}
                             >
-                              Cancelar
-                            </button>{" "}
-                            <button
-                              onClick={generatePDFReport}
-                              className="linguee-btn linguee-btn-outline"
-                            >
-                              Gerar PDF
-                            </button>
+                              <button
+                                onClick={() => setShowPDFModal(false)}
+                                style={{
+                                  background: "#eee",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  padding: "8px 16px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancelar
+                              </button>
+
+                              <button
+                                onClick={generatePDFReport}
+                                className="linguee-btn linguee-btn-outline"
+                              >
+                                Gerar PDF
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    )}
+                        </div>,
+                        document.body,
+                      )}
+
                     <div
                       style={{
                         display: "flex",
