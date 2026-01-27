@@ -311,13 +311,13 @@ export function FinancialResources({ headers, id, plan }) {
     const duplicateCost = fixedCosts.find(
       (cost) =>
         cost.description.toLowerCase().trim() ===
-        newCostDescription.toLowerCase().trim()
+        newCostDescription.toLowerCase().trim(),
     );
 
     if (duplicateCost) {
       notifyAlert(
         "Já existe um custo com esta descrição. Escolha outro nome.",
-        "red"
+        "red",
       );
       return;
     }
@@ -327,7 +327,7 @@ export function FinancialResources({ headers, id, plan }) {
         parseFloat(newCostAmount),
         currentMonthYear,
         newCostDescription,
-        typeOfItem
+        typeOfItem,
       );
       notifyAlert("Custo fixo adicionado com sucesso!", "green");
       setShowGenerateButton(false);
@@ -367,10 +367,10 @@ export function FinancialResources({ headers, id, plan }) {
       setFee(response.data.formattedStudentData.fee);
       setNewAddress(response.data.formattedStudentData.address);
       setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone
+        response.data.formattedStudentData.homeworkAssignmentsDone,
       );
       setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews
+        response.data.formattedStudentData.flashcards25Reviews,
       );
     } catch (error) {
       notifyAlert(error);
@@ -389,7 +389,7 @@ export function FinancialResources({ headers, id, plan }) {
         setFinancialReports(
           response.data.financialReportsOfTheMonth?.length > 0
             ? response.data.financialReportsOfTheMonth
-            : []
+            : [],
         );
         setThereAreReports(false);
       } else {
@@ -413,7 +413,7 @@ export function FinancialResources({ headers, id, plan }) {
         `${backDomain}/api/v1/fixed-costs/${id}`,
         {
           headers,
-        }
+        },
       );
       setFixedCosts(response.data.fixedCosts);
     } catch (error) {
@@ -431,7 +431,7 @@ export function FinancialResources({ headers, id, plan }) {
             description,
             amount,
           },
-        }
+        },
       );
       setFixedCosts(response.data.remainingCosts);
       notifyAlert("Custo excluído com sucesso!", "green");
@@ -449,7 +449,7 @@ export function FinancialResources({ headers, id, plan }) {
         `${backDomain}/api/v1/finance-item/${id}`,
         {
           headers,
-        }
+        },
       );
       notifyAlert("Ítem excluído com sucesso!", "green");
       await seeReports(currentMonthYear);
@@ -465,7 +465,7 @@ export function FinancialResources({ headers, id, plan }) {
     oldDescription,
     oldAmount,
     newDescription,
-    newAmount
+    newAmount,
   ) => {
     try {
       const response = await axios.put(
@@ -479,7 +479,7 @@ export function FinancialResources({ headers, id, plan }) {
         },
         {
           headers,
-        }
+        },
       );
       setFixedCosts(response.data.remainingCosts);
       notifyAlert("Custo editado com sucesso!", "green");
@@ -502,13 +502,13 @@ export function FinancialResources({ headers, id, plan }) {
         },
         {
           headers,
-        }
+        },
       );
       notifyAlert(response.data.message, partnerColor());
       setFinancialReports(
         response.data.financialReportsOfTheMonth?.length > 0
           ? response.data.financialReportsOfTheMonth
-          : []
+          : [],
       );
       setLoadingReports(false);
     } catch (error) {
@@ -528,12 +528,12 @@ export function FinancialResources({ headers, id, plan }) {
         },
         {
           headers,
-        }
+        },
       );
       setFinancialReports(
         response.data.financialReportsOfTheMonth?.length > 0
           ? response.data.financialReportsOfTheMonth
-          : []
+          : [],
       );
     } catch (error) {
       console.log("error", error);
@@ -566,7 +566,7 @@ export function FinancialResources({ headers, id, plan }) {
         newItem,
         {
           headers,
-        }
+        },
       );
 
       notifyAlert("Item financeiro criado com sucesso!", "green");
@@ -603,14 +603,14 @@ export function FinancialResources({ headers, id, plan }) {
         },
         {
           headers,
-        }
+        },
       );
 
       seeReports(currentMonthYear);
       handleFinancialReportModal(); // Close modal
       notifyAlert(
         "Relatório financeiro atualizado com sucesso!",
-        partnerColor()
+        partnerColor(),
       );
     } catch (error) {
       console.log("error", error);
@@ -633,13 +633,13 @@ export function FinancialResources({ headers, id, plan }) {
         },
         {
           headers,
-        }
+        },
       );
       setFixedCosts(response.data.fixedCosts);
       setFinancialReports(
         response.data.reportsThisMonth.length > 0
           ? response.data.reportsThisMonth
-          : financialReports
+          : financialReports,
       );
       setIncludeThisMonth(false);
     } catch (error) {
@@ -667,7 +667,7 @@ export function FinancialResources({ headers, id, plan }) {
       const response = await axios.put(
         `${backDomain}/api/v1/students/${id}`,
         editedStudent,
-        { headers }
+        { headers },
       );
       notifyAlert("Usuário editado com sucesso!", "green");
       handleSeeModal();
@@ -684,7 +684,7 @@ export function FinancialResources({ headers, id, plan }) {
         `${backDomain}/api/v1/studentsfinancialreports/${id}`,
         {
           headers,
-        }
+        },
       );
       setStudents(response.data.listOfStudentsFees);
       setLoading(false);
@@ -698,7 +698,7 @@ export function FinancialResources({ headers, id, plan }) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/my-first-month/${id}`,
-        { headers }
+        { headers },
       );
       setMyFirstMonth(response.data.myFirstMonth);
       setLoadingFM(false);
@@ -712,7 +712,7 @@ export function FinancialResources({ headers, id, plan }) {
     try {
       const response = await axios.delete(
         `${backDomain}/api/v1/students/${id}`,
-        { headers }
+        { headers },
       );
       notifyAlert("Aluno excluído");
       fetchStudents();
@@ -731,7 +731,7 @@ export function FinancialResources({ headers, id, plan }) {
         {},
         {
           headers,
-        }
+        },
       );
       setOnHold(response.data.newValue);
 
@@ -747,7 +747,7 @@ export function FinancialResources({ headers, id, plan }) {
         {},
         {
           headers,
-        }
+        },
       );
       fetchStudents();
     } catch (error) {
@@ -760,7 +760,7 @@ export function FinancialResources({ headers, id, plan }) {
       const response = await axios.put(
         `${backDomain}/api/v1/tutoree/${id}`,
         {},
-        { headers }
+        { headers },
       );
       fetchStudents();
     } catch (error) {
@@ -776,7 +776,7 @@ export function FinancialResources({ headers, id, plan }) {
     return fixedCosts.some(
       (cost) =>
         cost.description.toLowerCase().trim() ===
-        newCostDescription.toLowerCase().trim()
+        newCostDescription.toLowerCase().trim(),
     );
   };
 
@@ -803,7 +803,8 @@ export function FinancialResources({ headers, id, plan }) {
   // Get only active students (not on hold) with fees
   const getActiveStudentsWithFees = () => {
     return students.filter(
-      (student) => student.fee && parseFloat(student.fee) > 0 && !student.onHold
+      (student) =>
+        student.fee && parseFloat(student.fee) > 0 && !student.onHold,
     );
   };
 
@@ -840,7 +841,7 @@ export function FinancialResources({ headers, id, plan }) {
     const startDate = new Date(
       parseInt(firstYear),
       parseInt(firstMonth) - 1,
-      1
+      1,
     );
 
     // Data atual + 1 mês
@@ -870,7 +871,7 @@ export function FinancialResources({ headers, id, plan }) {
     const selectedDate = new Date(
       parseInt(selectedYear),
       parseInt(selectedMonthNum) - 1,
-      1
+      1,
     );
 
     const today = new Date();
@@ -928,7 +929,7 @@ export function FinancialResources({ headers, id, plan }) {
       .reduce(
         (total, report) =>
           total + (Math.abs(report.amount || 0) - (report.discount || 0)),
-        0
+        0,
       );
 
     const entradasRecebidas = financialReports
@@ -936,7 +937,7 @@ export function FinancialResources({ headers, id, plan }) {
         (report) =>
           report.accountFor &&
           report.typeOfItem !== "debt" &&
-          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
+          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0)),
       )
       .reduce((total, report) => {
         // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
@@ -960,7 +961,7 @@ export function FinancialResources({ headers, id, plan }) {
         (report) =>
           report.accountFor &&
           report.typeOfItem === "debt" &&
-          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
+          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0)),
       )
       .reduce((total, report) => {
         // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
@@ -1025,10 +1026,10 @@ export function FinancialResources({ headers, id, plan }) {
 
     // Filtrar os dados conforme seleção
     let entradas = financialReports.filter(
-      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem !== "debt"
+      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem !== "debt",
     );
     let saidas = financialReports.filter(
-      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem == "debt"
+      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem == "debt",
     );
     let filteredReports;
     if (pdfType === "entradas") filteredReports = entradas;
@@ -1045,11 +1046,11 @@ export function FinancialResources({ headers, id, plan }) {
         pdfType === "entradas"
           ? "Entradas"
           : pdfType === "saidas"
-          ? "Saídas"
-          : "Entradas e Saídas"
+            ? "Saídas"
+            : "Entradas e Saídas"
       } | Simples`,
       margin,
-      yPosition
+      yPosition,
     );
     yPosition += 10;
     pdf.setLineWidth(0.5);
@@ -1087,7 +1088,7 @@ export function FinancialResources({ headers, id, plan }) {
       pdf.text(
         "Total Entradas: R$ " + totalEntradas.toFixed(2),
         margin,
-        yPosition
+        yPosition,
       );
       addFooter(pdf, pageNum, pageNum, studentName);
     } else if (pdfType === "saidas") {
@@ -1130,7 +1131,7 @@ export function FinancialResources({ headers, id, plan }) {
       pdf.text(
         "Total Entradas: R$ " + totalEntradas.toFixed(2),
         margin,
-        yPosition
+        yPosition,
       );
       addFooter(pdf, pageNum, pageNum + 2, studentName);
       // Nova página para saídas
@@ -1175,7 +1176,7 @@ export function FinancialResources({ headers, id, plan }) {
       pdf.text(
         "Total Entradas: R$ " + totalEntradas.toFixed(2),
         margin,
-        yPosition
+        yPosition,
       );
       yPosition += 10;
       pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
@@ -1183,7 +1184,7 @@ export function FinancialResources({ headers, id, plan }) {
       pdf.text(
         "Balanço: R$ " + (totalEntradas - totalSaidas).toFixed(2),
         margin,
-        yPosition
+        yPosition,
       );
       addFooter(pdf, pageNum, pageNum, studentName);
     }
@@ -1200,7 +1201,7 @@ export function FinancialResources({ headers, id, plan }) {
       `${studentName}  -  Página ${pageNum} de ${totalPages}`,
       pageWidth / 2,
       pageHeight - 10,
-      { align: "center" }
+      { align: "center" },
     );
   }
 
@@ -1305,83 +1306,83 @@ export function FinancialResources({ headers, id, plan }) {
                     >
                       Nenhum relatório disponível para este mês.
                     </p>
-                    {isCurrentOrFutureMonth(selectedMonth) && (
-                      <>
-                        {!showGenerateButton && (
-                          <>
-                            {goldVisible ? (
-                              <UpgradeGoldButton />
-                            ) : (
-                              <button
-                                className="linguee-btn linguee-btn-outline"
-                                onClick={() => {
-                                  setShowGenerateButton(!showGenerateButton);
-                                }}
-                              >
-                                Gerar relatório para{" "}
-                                {transformMonth(selectedMonth)}
-                              </button>
-                            )}
-                          </>
-                        )}
-                        {showGenerateButton && (
-                          <>
-                            <div
-                              style={{
-                                backgroundColor: "#e8f4fd",
-                                border: "1px solid #bee5eb",
-                                borderRadius: "4px",
-                                padding: "16px",
-                                margin: "16px 0",
-                                display: "grid",
-                                gap: "12px",
-                              }}
-                            >
-                              <div
-                                style={{ fontSize: "20px", color: "#0c5460" }}
-                              >
-                                💡
-                              </div>
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "600",
-                                    color: "#0c5460",
-                                    marginBottom: "8px",
-                                  }}
-                                >
-                                  DICA: Verifique antes de gerar o relatório
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "13px",
-                                    color: "#0c5460",
-                                    lineHeight: "1.5",
-                                  }}
-                                >
-                                  • Confirme se as{" "}
-                                  <strong>mensalidades dos alunos</strong> estão
-                                  atualizadas
-                                  <br />• Verifique se há{" "}
-                                  <strong>alunos trancados</strong> que devem
-                                  ser removidos
-                                  <br />• O relatório será gerado com base nas
-                                  informações atuais dos alunos
-                                </div>
-                              </div>
-                            </div>
+                    {/* {isCurrentOrFutureMonth(selectedMonth) && */}
 
+                    <>
+                      {!showGenerateButton && (
+                        <>
+                          {goldVisible ? (
+                            <UpgradeGoldButton />
+                          ) : (
                             <button
                               className="linguee-btn linguee-btn-outline"
-                              onClick={() => generateReports(selectedMonth)}
+                              onClick={() => {
+                                setShowGenerateButton(!showGenerateButton);
+                              }}
                             >
-                              Gerar relatório para {selectedMonth}
+                              Gerar relatório para{" "}
+                              {transformMonth(selectedMonth)}
                             </button>
-                          </>
-                        )}
-                      </>
-                    )}
+                          )}
+                        </>
+                      )}
+                      {showGenerateButton && (
+                        <>
+                          <div
+                            style={{
+                              backgroundColor: "#e8f4fd",
+                              border: "1px solid #bee5eb",
+                              borderRadius: "4px",
+                              padding: "16px",
+                              margin: "16px 0",
+                              display: "grid",
+                              gap: "12px",
+                            }}
+                          >
+                            <div style={{ fontSize: "20px", color: "#0c5460" }}>
+                              💡
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "600",
+                                  color: "#0c5460",
+                                  marginBottom: "8px",
+                                }}
+                              >
+                                DICA: Verifique antes de gerar o relatório
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "13px",
+                                  color: "#0c5460",
+                                  lineHeight: "1.5",
+                                }}
+                              >
+                                • Confirme se as{" "}
+                                <strong>mensalidades dos alunos</strong> estão
+                                atualizadas
+                                <br />• Verifique se há{" "}
+                                <strong>alunos trancados</strong> que devem ser
+                                removidos
+                                <br />• O relatório será gerado com base nas
+                                informações atuais dos alunos
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            className="linguee-btn linguee-btn-outline"
+                            onClick={() => generateReports(selectedMonth)}
+                          >
+                            Gerar relatório para {selectedMonth}
+                          </button>
+                        </>
+                      )}
+                    </>
+
+                    {/* } */}
                   </div>
                 ) : (
                   <div
@@ -1479,7 +1480,7 @@ export function FinancialResources({ headers, id, plan }) {
                       <HTwo>{transformMonth(selectedMonth)}</HTwo>
                       <button
                         title={`Novo ítem para o mês de ${transformMonth(
-                          selectedMonth
+                          selectedMonth,
                         )}`}
                         className="linguee-btn linguee-btn-primary"
                         style={{
@@ -1562,11 +1563,11 @@ export function FinancialResources({ headers, id, plan }) {
                       {/* ENTRADAS */}
                       {(financialReports.filter(
                         (report) =>
-                          report.accountFor && report.typeOfItem !== "debt"
+                          report.accountFor && report.typeOfItem !== "debt",
                       ).length > 0 ||
                         financialReports.filter(
                           (report) =>
-                            !report.accountFor && report.typeOfItem !== "debt"
+                            !report.accountFor && report.typeOfItem !== "debt",
                         ).length > 0) && (
                         <div
                           style={{
@@ -1600,10 +1601,10 @@ export function FinancialResources({ headers, id, plan }) {
                               .filter(
                                 (report) =>
                                   report.accountFor &&
-                                  report.typeOfItem !== "debt"
+                                  report.typeOfItem !== "debt",
                               )
                               .sort((a, b) =>
-                                a.description.localeCompare(b.description)
+                                a.description.localeCompare(b.description),
                               )
                               .map((report, index) => (
                                 <div
@@ -1642,9 +1643,9 @@ export function FinancialResources({ headers, id, plan }) {
                                       color: report.paidFor
                                         ? "#2e7d32"
                                         : report.paidSoFar &&
-                                          report.paidSoFar > 0
-                                        ? "#f59e0b"
-                                        : "#c62828",
+                                            report.paidSoFar > 0
+                                          ? "#f59e0b"
+                                          : "#c62828",
                                     }}
                                   >
                                     {report.paidFor &&
@@ -1707,7 +1708,7 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {truncateString(
                                         report.description,
-                                        isMobile ? 25 : 50
+                                        isMobile ? 25 : 50,
                                       )}
                                     </div>
                                     <div
@@ -1718,9 +1719,9 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {report.discount > 0 &&
                                         `Original: R$ ${formatNumber(
-                                          report.amount
+                                          report.amount,
                                         )} • Desconto: R$ ${formatNumber(
-                                          report.discount
+                                          report.discount,
                                         )}`}
                                     </div>
                                   </div>
@@ -1743,7 +1744,7 @@ export function FinancialResources({ headers, id, plan }) {
                                       R${" "}
                                       {formatNumber(
                                         Math.abs(report.amount) -
-                                          (report.discount || 0)
+                                          (report.discount || 0),
                                       )}
                                     </div>
                                   </div>
@@ -1755,10 +1756,10 @@ export function FinancialResources({ headers, id, plan }) {
                               .filter(
                                 (report) =>
                                   !report.accountFor &&
-                                  report.typeOfItem !== "debt"
+                                  report.typeOfItem !== "debt",
                               )
                               .sort((a, b) =>
-                                a.description.localeCompare(b.description)
+                                a.description.localeCompare(b.description),
                               )
                               .map((report, index) => (
                                 <div
@@ -1816,7 +1817,7 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {truncateString(
                                         report.description,
-                                        isMobile ? 25 : 50
+                                        isMobile ? 25 : 50,
                                       )}
                                     </div>
                                     <div
@@ -1846,7 +1847,7 @@ export function FinancialResources({ headers, id, plan }) {
                                       R${" "}
                                       {formatNumber(
                                         Math.abs(report.amount) -
-                                          (report.discount || 0)
+                                          (report.discount || 0),
                                       )}
                                     </div>
                                     <div
@@ -1873,11 +1874,11 @@ export function FinancialResources({ headers, id, plan }) {
                       {/* SAÍDAS */}
                       {(financialReports.filter(
                         (report) =>
-                          report.accountFor && report.typeOfItem === "debt"
+                          report.accountFor && report.typeOfItem === "debt",
                       ).length > 0 ||
                         financialReports.filter(
                           (report) =>
-                            !report.accountFor && report.typeOfItem === "debt"
+                            !report.accountFor && report.typeOfItem === "debt",
                         ).length > 0) && (
                         <div
                           style={{
@@ -1912,10 +1913,10 @@ export function FinancialResources({ headers, id, plan }) {
                               .filter(
                                 (report) =>
                                   report.accountFor &&
-                                  report.typeOfItem === "debt"
+                                  report.typeOfItem === "debt",
                               )
                               .sort((a, b) =>
-                                a.description.localeCompare(b.description)
+                                a.description.localeCompare(b.description),
                               )
                               .map((report, index) => (
                                 <div
@@ -1954,9 +1955,9 @@ export function FinancialResources({ headers, id, plan }) {
                                       color: report.paidFor
                                         ? "#2e7d32"
                                         : report.paidSoFar &&
-                                          report.paidSoFar > 0
-                                        ? "#f59e0b"
-                                        : "#c62828",
+                                            report.paidSoFar > 0
+                                          ? "#f59e0b"
+                                          : "#c62828",
                                     }}
                                   >
                                     {report.paidFor &&
@@ -2019,7 +2020,7 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {truncateString(
                                         report.description,
-                                        isMobile ? 25 : 50
+                                        isMobile ? 25 : 50,
                                       )}
                                     </div>
                                     <div
@@ -2030,9 +2031,9 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {report.discount > 0 &&
                                         `Original: R$ ${formatNumber(
-                                          report.amount
+                                          report.amount,
                                         )} • Desconto: R$ ${formatNumber(
-                                          report.discount
+                                          report.discount,
                                         )}`}
                                     </div>
                                   </div>
@@ -2055,7 +2056,7 @@ export function FinancialResources({ headers, id, plan }) {
                                       R${" "}
                                       {formatNumber(
                                         Math.abs(report.amount) -
-                                          (report.discount || 0)
+                                          (report.discount || 0),
                                       )}
                                     </div>
                                   </div>
@@ -2067,10 +2068,10 @@ export function FinancialResources({ headers, id, plan }) {
                               .filter(
                                 (report) =>
                                   !report.accountFor &&
-                                  report.typeOfItem === "debt"
+                                  report.typeOfItem === "debt",
                               )
                               .sort((a, b) =>
-                                a.description.localeCompare(b.description)
+                                a.description.localeCompare(b.description),
                               )
                               .map((report, index) => (
                                 <div
@@ -2128,7 +2129,7 @@ export function FinancialResources({ headers, id, plan }) {
                                     >
                                       {truncateString(
                                         report.description,
-                                        isMobile ? 25 : 50
+                                        isMobile ? 25 : 50,
                                       )}
                                     </div>
                                     <div
@@ -2158,7 +2159,7 @@ export function FinancialResources({ headers, id, plan }) {
                                       R${" "}
                                       {formatNumber(
                                         Math.abs(report.amount) -
-                                          (report.discount || 0)
+                                          (report.discount || 0),
                                       )}
                                     </div>
                                     <div
@@ -2610,8 +2611,8 @@ export function FinancialResources({ headers, id, plan }) {
                   {formatNumber(
                     fixedCosts.reduce(
                       (total, cost) => total + (parseFloat(cost.amount) || 0),
-                      0
-                    )
+                      0,
+                    ),
                   )}
                 </div>
               )}
@@ -3140,7 +3141,7 @@ export function FinancialResources({ headers, id, plan }) {
                         selectedCost.description,
                         selectedCost.amount,
                         editCostDescription,
-                        editCostAmount
+                        editCostAmount,
                       )
                     }
                     variant="contained"
@@ -3180,7 +3181,7 @@ export function FinancialResources({ headers, id, plan }) {
                       selectedCost &&
                       handleDeleteCost(
                         selectedCost.description,
-                        selectedCost.amount
+                        selectedCost.amount,
                       )
                     }
                     color="red"
@@ -3346,7 +3347,7 @@ export function FinancialResources({ headers, id, plan }) {
                                   const percentage =
                                     (currentDiscount / amount) * 100;
                                   setEditReportDiscountPercentage(
-                                    percentage.toFixed(2)
+                                    percentage.toFixed(2),
                                   );
                                 }
                               }}
@@ -3378,7 +3379,7 @@ export function FinancialResources({ headers, id, plan }) {
                               const absoluteDiscount =
                                 (amount * percentage) / 100;
                               setEditReportDiscount(
-                                absoluteDiscount.toString()
+                                absoluteDiscount.toString(),
                               );
                             }
 
@@ -3835,7 +3836,7 @@ export function FinancialResources({ headers, id, plan }) {
                               const percentage =
                                 (currentDiscount / amount) * 100;
                               setNewItemDiscountPercentage(
-                                percentage.toFixed(2)
+                                percentage.toFixed(2),
                               );
                             }
                           }}
@@ -4031,8 +4032,8 @@ export function FinancialResources({ headers, id, plan }) {
                     !newItemDescription.trim() || !newItemAmount
                       ? "#9ca3af"
                       : newItemTypeOfItem === "debt"
-                      ? "#dc2626"
-                      : "#16a34a",
+                        ? "#dc2626"
+                        : "#16a34a",
                   cursor:
                     !newItemDescription.trim() || !newItemAmount
                       ? "not-allowed"
