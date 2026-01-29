@@ -39,7 +39,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         `${backDomain}/api/v1/lesson/${classid}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       var cour = response.data.course.title;
@@ -77,7 +77,6 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       id: "flash-cards",
       title: "Flashcards",
       description: UniversalTexts.revise,
-
       display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcardsssss?updatedAt=1756841095355",
       link: "/flash-cards",
@@ -110,7 +109,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       id: "sentence-mining",
       title: UniversalTexts.vocabulary,
       description: UniversalTexts.enriqueça,
-      display: isArthurVincent ? "flex" : "none",
+      display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mininggggg?updatedAt=1756841096059",
       link: "/sentence-mining",
     },
