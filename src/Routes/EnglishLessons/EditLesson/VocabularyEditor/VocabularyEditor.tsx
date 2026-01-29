@@ -78,10 +78,10 @@ export default function VocabularyEditor({
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
-    (defaultBlockLang1 as LangCode) || "en"
+    (defaultBlockLang1 as LangCode) || "en",
   );
   const [defaultLang2, setDefaultLang2] = useState<LangCode>(
-    (defaultBlockLang2 as LangCode) || "pt"
+    (defaultBlockLang2 as LangCode) || "pt",
   );
   const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
 
@@ -127,7 +127,7 @@ export default function VocabularyEditor({
 
   const updateSentence = (
     index: number,
-    updater: (prev: SentenceItem) => SentenceItem
+    updater: (prev: SentenceItem) => SentenceItem,
   ) => {
     const next = value.sentences.slice();
     next[index] = updater(next[index]);
@@ -135,14 +135,18 @@ export default function VocabularyEditor({
   };
 
   const addSentence = () => {
-    const next = value.sentences.concat({
-      english: "",
-      portuguese: "",
-      languages: {
-        language1: defaultLang1 || "en",
-        language2: defaultLang2 || "pt",
+    const next = [
+      {
+        english: "",
+        portuguese: "",
+        languages: {
+          language1: defaultLang1 || "en",
+          language2: defaultLang2 || "pt",
+        },
       },
-    });
+      ...value.sentences,
+    ];
+
     onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
@@ -280,7 +284,7 @@ export default function VocabularyEditor({
     if (!Array.isArray(arr) || arr.length === 0) {
       notifyAlert(
         "A IA gerou conteúdo, mas não reconheci a lista. Ajuste o prompt/retorno para ser um ARRAY de {english, portuguese}.",
-        partnerColor()
+        partnerColor(),
       );
       console.warn("Conteúdo recebido da IA (bruto):", raw);
       return;
@@ -328,7 +332,7 @@ export default function VocabularyEditor({
     onChange({
       ...value,
       type: "vocabulary",
-      sentences: mapped,
+      sentences: [...mapped, ...value.sentences], // IA entra no topo
     });
 
     // 4) abre a seção
@@ -341,7 +345,7 @@ export default function VocabularyEditor({
   const renderLangSelect = (
     current: string | undefined,
     onChangeLang: (code: LangCode) => void,
-    label: string
+    label: string,
   ) => (
     <div style={{ display: "grid", gap: 6 }}>
       <label style={{ fontSize: 12, color: "#334155" }}>{label}</label>
@@ -644,7 +648,7 @@ export default function VocabularyEditor({
                               (defaultLang2 || "pt"),
                           },
                         })),
-                      'language1 (para "english")'
+                      'language1 (para "english")',
                     )}
                     {renderLangSelect(
                       s.languages?.language2,
@@ -658,7 +662,7 @@ export default function VocabularyEditor({
                             language2: code,
                           },
                         })),
-                      'language2 (para "portuguese")'
+                      'language2 (para "portuguese")',
                     )}
                   </div>
 

@@ -67,10 +67,10 @@ const SentencesEditor: React.FC<Props> = ({
   language,
 }) => {
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
-    (defaultBlockLang1 as LangCode) || "en"
+    (defaultBlockLang1 as LangCode) || "en",
   );
   const [defaultLang2, setDefaultLang2] = useState<LangCode>(
-    (defaultBlockLang2 as LangCode) || "pt"
+    (defaultBlockLang2 as LangCode) || "pt",
   );
   const [showConfig, setShowConfig] = useState(false);
   const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
@@ -117,7 +117,7 @@ const SentencesEditor: React.FC<Props> = ({
 
   const updateSentence = (
     index: number,
-    updater: (prev: SentenceItem) => SentenceItem
+    updater: (prev: SentenceItem) => SentenceItem,
   ) => {
     const next = value.sentences.slice();
     next[index] = updater(next[index]);
@@ -125,14 +125,18 @@ const SentencesEditor: React.FC<Props> = ({
   };
 
   const addSentence = () => {
-    const next = value.sentences.concat({
-      english: "",
-      portuguese: "",
-      languages: {
-        language1: defaultLang1 || "en",
-        language2: defaultLang2 || "pt",
+    const next = [
+      {
+        english: "",
+        portuguese: "",
+        languages: {
+          language1: defaultLang1 || "en",
+          language2: defaultLang2 || "pt",
+        },
       },
-    });
+      ...value.sentences,
+    ];
+
     onChange({ ...value, type: "sentences", sentences: next });
   };
 
@@ -170,7 +174,7 @@ const SentencesEditor: React.FC<Props> = ({
     if (!sentence) {
       notifyAlert(
         "Preencha o Front antes de gerar a tradução/definição.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -271,7 +275,7 @@ const SentencesEditor: React.FC<Props> = ({
     if (!Array.isArray(arr) || arr.length === 0) {
       notifyAlert(
         "Esperado um ARRAY de objetos {english, portuguese} (ou equivalente). Ajuste o prompt/retorno.",
-        partnerColor()
+        partnerColor(),
       );
       console.warn("Conteúdo recebido (bruto):", raw);
       return;
@@ -317,7 +321,7 @@ const SentencesEditor: React.FC<Props> = ({
     onChange({
       ...value,
       type: "sentences",
-      sentences: mapped,
+      sentences: [...mapped, ...value.sentences], // IA entra no topo
     });
 
     setShowConfig(true);
@@ -328,7 +332,7 @@ const SentencesEditor: React.FC<Props> = ({
   const renderLangSelect = (
     current: string | undefined,
     onChangeLang: (code: LangCode) => void,
-    label: string
+    label: string,
   ) => (
     <div className="se-field">
       <label className="se-label">{label}</label>
@@ -722,7 +726,7 @@ const SentencesEditor: React.FC<Props> = ({
                           prev.languages?.language2 ?? (defaultLang2 || "pt"),
                       },
                     })),
-                  'language1 (para "english")'
+                  'language1 (para "english")',
                 )}
                 {renderLangSelect(
                   s.languages?.language2,
@@ -735,7 +739,7 @@ const SentencesEditor: React.FC<Props> = ({
                         language2: code,
                       },
                     })),
-                  'language2 (para "portuguese")'
+                  'language2 (para "portuguese")',
                 )}
               </div>
             </div>
