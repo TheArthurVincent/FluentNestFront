@@ -162,7 +162,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Alunos",
     Icon: UserIcon,
-    father: "Alunos",
+    father: "Histórico",
     orderSideBar: 2,
     path: "/students",
     showInBottomBar: true,
@@ -173,7 +173,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Turmas",
     orderSideBar: 3,
-    father: "Alunos",
+    father: "Histórico",
     Icon: UsersIcon,
     showInBottomBar: true,
     justBottom: false,
@@ -184,7 +184,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Responsáveis",
     orderSideBar: 4,
-    father: "Alunos",
+    father: "Histórico",
     showInBottomBar: true,
     justBottom: false,
     admin: true,
@@ -195,7 +195,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Aulas Passadas",
     showInBottomBar: !!studentId,
-    father: "Alunos",
+    father: "Histórico",
     orderSideBar: 5,
     justBottom: false,
     Icon: ScreencastIcon,
@@ -206,7 +206,7 @@ export const menuItems: MenuItem[] = [
   {
     showInBottomBar: false,
     label: "Lições de Casa",
-    father: "Alunos",
+    father: "Histórico",
     Icon: NotebookIcon,
     path:
       permissions == "student"
@@ -220,7 +220,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Ranking",
     showInBottomBar: true,
-    father: "Alunos",
+    father: "Histórico",
     orderSideBar: 7,
     Icon: TrophyIcon,
     path: "/ranking",
