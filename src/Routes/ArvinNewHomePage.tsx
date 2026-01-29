@@ -363,7 +363,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       levelcard: true,
-      title: "Responsables",
+      title: "Responsibles",
       showLeftBar: true,
       component: (
         <ResponsibleMainFile headers={headers} isDesktop={isDesktop} id={id} />
