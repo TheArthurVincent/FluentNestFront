@@ -300,7 +300,6 @@ export const menuItems: MenuItem[] = [
     showInBottomBar: true,
     path: "/my-profile",
   },
-
   {
     label: "Sair",
     Icon: SignOutIcon,
