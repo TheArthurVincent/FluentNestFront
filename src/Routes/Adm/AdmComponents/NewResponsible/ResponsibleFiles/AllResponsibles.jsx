@@ -19,7 +19,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/responsibles/${id}`,
-        { headers }
+        { headers },
       );
       setResponsibles(response.data.responsibles || []);
     } catch (error) {
@@ -46,25 +46,14 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
       resp.students.some(
         (student) =>
           student.name?.toLowerCase().includes(term) ||
-          student.lastname?.toLowerCase().includes(term)
+          student.lastname?.toLowerCase().includes(term),
       );
 
     return responsibleMatch || studentsMatch;
   });
 
   return (
-    <div
-      style={{
-        background: "#fff",
-        borderRadius: "4px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
-        padding: "24px",
-        margin: "16px 0",
-      }}
-    >
-      <HOne style={{ color: partnerColor(), marginBottom: 16 }}>
-        Lista de Responsáveis
-      </HOne>
+    <>
       <input
         style={{
           width: "100%",
@@ -190,7 +179,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           <span>Você não possui responsáveis cadastrados.</span>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

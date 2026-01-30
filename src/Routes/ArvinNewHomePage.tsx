@@ -2,15 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { isArthurVincent, verifyToken } from "../App";
-import {
-  Link,
-  NavLink,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { localStorageLoggedIn, verifyToken } from "../App";
+import { NavLink, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import {
   backDomain,
   onLoggOut,
@@ -39,7 +32,6 @@ import {
   logoPartner,
   partnerColor,
 } from "../Styles/Styles";
-import Redirect from "../Redirect";
 import { ArvinTopBar } from "./ArvinComponents/ArvinTopSideBar/NewTopSideBar";
 import {
   ItemRow,
@@ -56,6 +48,8 @@ import HWUp from "./ArvinComponents/Students/HomeworkUp/HomeworkUp";
 import GroupPage from "./ArvinComponents/Groups/theGroup/TheGroup";
 import GroupClassesHistory from "./ArvinComponents/Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
 import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
+import FinancialResources from "./Adm/AdmComponents/FinancialResources/FinancialResources";
+import ResponsibleMainFile from "./Adm/AdmComponents/NewResponsible/ResponsibleMainFile";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -202,6 +196,8 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       }
     }
   };
+
+  const { id, plan } = localStorageLoggedIn;
 
   useEffect(() => {
     setTimeout(() => {
@@ -354,22 +350,38 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       levelcard: true,
+      title: "Finance",
+      showLeftBar: true,
+      component: (
+        <FinancialResources
+          headers={headers}
+          isDesktop={isDesktop}
+          id={id}
+          plan={plan}
+        />
+      ),
+    },
+    {
+      levelcard: true,
+      title: "Responsibles",
+      showLeftBar: true,
+      component: (
+        <ResponsibleMainFile headers={headers} isDesktop={isDesktop} id={id} />
+      ),
+    },
+    {
+      levelcard: true,
       title: "Sentence Mining",
       showLeftBar: true,
-      component:
-        thePermissions === "teacher" ||
-        thePermissions === "superadmin" ||
-        isArthurVincent ? (
-          <SentenceMining
-            myPermissions={thePermissions}
-            onChange={setChange}
-            change={change}
-            isDesktop={isDesktop}
-            headers={headers}
-          />
-        ) : (
-          <Redirect to="/" />
-        ),
+      component: (
+        <SentenceMining
+          myPermissions={thePermissions}
+          onChange={setChange}
+          change={change}
+          isDesktop={isDesktop}
+          headers={headers}
+        />
+      ),
     },
     {
       title: "Live Classes",

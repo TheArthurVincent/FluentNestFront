@@ -70,7 +70,7 @@ export default function WhiteLabelPreview({ headers }) {
         const resizedBase64 = canvas.toDataURL("image/jpeg", 0.8);
         const base64WithoutPrefix = resizedBase64.replace(
           /^data:image\/jpeg;base64,/,
-          ""
+          "",
         );
 
         resolve(base64WithoutPrefix);
@@ -290,7 +290,7 @@ export default function WhiteLabelPreview({ headers }) {
       const response = await axios.post(
         `${backDomain}/api/v1/whitelabel/${studentID}`,
         { finalFormData },
-        { headers }
+        { headers },
       );
       notifyAlert("Tema salvo com sucesso!", partnerColor());
       setFormData(finalFormData);
@@ -302,7 +302,7 @@ export default function WhiteLabelPreview({ headers }) {
       console.error(error);
       notifyAlert(
         error.response?.data?.message || "Erro ao salvar tema.",
-        partnerColor()
+        partnerColor(),
       );
       setGoldVisible(true);
       setLoading(false);
@@ -368,7 +368,6 @@ export default function WhiteLabelPreview({ headers }) {
 
   return (
     <div className="page-wrapper" style={{ padding: "40px" }}>
-      <HOne>🎨 Personalizar Tema</HOne>
       {goldVisible && <UpgradeGoldButton />}
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />

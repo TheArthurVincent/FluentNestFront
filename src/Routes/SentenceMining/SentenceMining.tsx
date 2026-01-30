@@ -516,7 +516,6 @@ const SentenceMining = ({
                       />
                     ))}
                   </RadioGroup>
-
                   <button
                     type="submit"
                     title="-15"
@@ -530,7 +529,7 @@ const SentenceMining = ({
                     }}
                     disabled={word.trim() === "" || dis}
                   >
-                    ✨ Minerar sentenças (-15)
+                    ✨ Minerar sentenças (-5)
                   </button>
                 </>
               )}

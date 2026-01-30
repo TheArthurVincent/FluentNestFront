@@ -43,7 +43,7 @@ export const TopBar: FC = () => {
   const updateNumberOfNotifications = async (id: any) => {
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/numberofnotifications/${id}`
+        `${backDomain}/api/v1/numberofnotifications/${id}`,
       );
 
       const notifications = response.data.notifications;
@@ -60,7 +60,7 @@ export const TopBar: FC = () => {
   const handleSeeAll = async () => {
     try {
       const response = await axios.put(
-        `${backDomain}/api/v1/notificationsseeall/${id}`
+        `${backDomain}/api/v1/notificationsseeall/${id}`,
       );
     } catch (error) {
       console.log(error, "Erro ao atualizar dados");
@@ -78,7 +78,7 @@ export const TopBar: FC = () => {
   const updateViewed = async (id: any) => {
     try {
       const response = await axios.put(
-        `${backDomain}/api/v1/notification/${id}`
+        `${backDomain}/api/v1/notification/${id}`,
       );
     } catch (error) {
       console.log(error, "Erro ao atualizar dados");
@@ -169,12 +169,6 @@ export const TopBar: FC = () => {
       display: "block",
       icon: "user-o",
     },
-    // {
-    //   title: UniversalTexts.faq,
-    //   endpoint: "/faq",
-    //   icon: "question",
-    //   display: "block",
-    // },
   ];
 
   const learningLinks = allLinksForUser
@@ -346,8 +340,8 @@ export const TopBar: FC = () => {
               permissions == "superadmin"
                 ? "block"
                 : permissions == "teacher"
-                ? "block"
-                : "none",
+                  ? "block"
+                  : "none",
           }}
         >
           {toAdm.map((link, index) => {
@@ -400,7 +394,7 @@ export const TopBar: FC = () => {
                   style={{
                     cursor: "pointer",
                     color: linksToShow.some((link) =>
-                      location.pathname.includes(link)
+                      location.pathname.includes(link),
                     )
                       ? partnerColor()
                       : "#000",
