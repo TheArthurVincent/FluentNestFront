@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { partnerColor } from "../../../../Styles/Styles";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
@@ -39,9 +39,9 @@ interface ArvinSideDownBarProps {
   collapsed?: boolean;
 }
 
-const permissions = JSON.parse(
-  localStorage.getItem("loggedIn") || "null",
-)?.permissions;
+const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+const permissions = loggedIn?.permissions; // "student" | ...
+const studentId = loggedIn?.id;
 
 function normalize(p: string) {
   return p.replace(/\/+$/, "") || "/";
@@ -126,9 +126,23 @@ const ParentHeader: FC<{
   Icon: any;
   collapsed?: boolean;
   baseTextColor: string;
-}> = ({ label, Icon, collapsed, baseTextColor }) => {
+  bgHover: string;
+  expanded: boolean;
+  onToggle: () => void;
+}> = ({
+  label,
+  Icon,
+  collapsed,
+  baseTextColor,
+  bgHover,
+  expanded,
+  onToggle,
+}) => {
   return (
     <li
+      onClick={() => {
+        if (!collapsed) onToggle();
+      }}
       style={{
         listStyleType: "none",
         display: "grid",
@@ -137,8 +151,15 @@ const ParentHeader: FC<{
         padding: collapsed ? "10px 0" : "8px 12px",
         backgroundColor: "transparent",
         justifyItems: collapsed ? "center" : "stretch",
-        cursor: "default",
+        cursor: collapsed ? "default" : "pointer",
         userSelect: "none",
+        transition: "background-color 0.15s ease-in-out",
+      }}
+      onMouseOver={(e) => {
+        if (!collapsed) e.currentTarget.style.backgroundColor = bgHover;
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.backgroundColor = "transparent";
       }}
     >
       <div
@@ -146,27 +167,40 @@ const ParentHeader: FC<{
           display: "flex",
           alignItems: "center",
           justifyContent: collapsed ? "center" : "flex-start",
-          pointerEvents: "none",
         }}
       >
         <Icon color={baseTextColor} weight="bold" size={20} />
+
         {!collapsed && (
           <span
             style={{
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
-              fontStyle: "SemiBold",
               fontSize: 14,
               lineHeight: "100%",
               letterSpacing: "0%",
               color: baseTextColor,
-              marginLeft: "12px",
+              marginLeft: 12,
               whiteSpace: "nowrap",
-              textTransform: "none", // pai minúsculo
               opacity: 0.85,
+              textTransform: "none",
             }}
           >
             {label}
+          </span>
+        )}
+
+        {!collapsed && (
+          <span
+            style={{
+              marginLeft: "auto",
+              opacity: 0.55,
+              fontSize: 12,
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 700,
+            }}
+          >
+            {expanded ? "–" : "+"}
           </span>
         )}
       </div>
@@ -179,6 +213,7 @@ const ItemRow: FC<{
   admin?: boolean;
   currentPath: string;
   bgActive: string;
+  bgHover: string;
   baseTextColor: string;
   partnerColor: () => string;
   collapsed?: boolean;
@@ -190,6 +225,7 @@ const ItemRow: FC<{
   admin,
   currentPath,
   bgActive,
+  bgHover,
   baseTextColor,
   partnerColor,
   collapsed,
@@ -206,7 +242,6 @@ const ItemRow: FC<{
       : curr === target || curr.startsWith(`${target}/`);
 
   const showItem = item.admin ? !!admin : true;
-
   const iconSize = collapsed ? 16 : compact ? 14 : 20;
 
   return (
@@ -226,7 +261,7 @@ const ItemRow: FC<{
         marginLeft: collapsed ? 0 : indent,
       }}
       onMouseOver={(e) => {
-        e.currentTarget.style.backgroundColor = bgActive;
+        e.currentTarget.style.backgroundColor = bgHover;
       }}
       onMouseOut={(e) => {
         e.currentTarget.style.backgroundColor = active
@@ -275,6 +310,14 @@ const ItemRow: FC<{
   );
 };
 
+function getDefaultOpenGroups(): Record<string, boolean> {
+  // regra do usuário:
+  // - se permissions === "student": abrir "Estudos"
+  // - senão: abrir "Histórico"
+  if (permissions === "student") return { Estudos: true };
+  return { Histórico: true };
+}
+
 export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
   isDesktop,
   admin,
@@ -282,8 +325,21 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
 }) => {
   const location = useLocation();
   const currentPath = normalize(location.pathname);
+
   const bgActive = `${partnerColor()}09`;
+  const bgHover = `${partnerColor()}07`; // hover leve
   const baseTextColor = "#030303";
+
+  const [openGroups, setOpenGroups] =
+    useState<Record<string, boolean>>(getDefaultOpenGroups);
+
+  const isActivePath = (path: string) => {
+    const curr = normalize(currentPath);
+    const target = normalize(path);
+    return target === "/"
+      ? curr === "/"
+      : curr === target || curr.startsWith(`${target}/`);
+  };
 
   const topNodes = useMemo(() => {
     const topItems = menuItems.filter((it) => !(isDesktop && it.justBottom));
@@ -294,6 +350,26 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
     const bottomItems = menuItems.filter((it) => it.justBottom);
     return buildSidebarModel(bottomItems, admin);
   }, [admin]);
+
+  // auto-abrir grupo que contém a rota atual (mas sem sobrescrever escolha do usuário)
+  useEffect(() => {
+    if (collapsed) return;
+
+    const all = [...topNodes, ...bottomNodes];
+    for (const node of all) {
+      if (node.type !== "group") continue;
+
+      const hasActiveChild = node.items.some((ch) => isActivePath(ch.path));
+
+      if (hasActiveChild) {
+        setOpenGroups((prev) => {
+          if (prev[node.label] !== undefined) return prev;
+          return { ...prev, [node.label]: true };
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collapsed, currentPath, topNodes, bottomNodes]);
 
   const renderNodes = (nodes: SidebarNode[]) => {
     const list = flattenIfCollapsed(nodes, collapsed);
@@ -307,6 +383,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
             admin={admin}
             currentPath={currentPath}
             bgActive={bgActive}
+            bgHover={bgHover}
             baseTextColor={baseTextColor}
             partnerColor={partnerColor}
             collapsed={!!collapsed}
@@ -315,6 +392,10 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
       }
 
       // Só chega aqui quando NÃO colapsado
+      const hasActiveChild = node.items.some((ch) => isActivePath(ch.path));
+      // importante: permitir "false" explícito fechar mesmo com rota ativa
+      const expanded = openGroups[node.label] ?? hasActiveChild;
+
       return (
         <li
           key={`node-group-${node.label}-${idx}`}
@@ -326,10 +407,25 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
               Icon={node.Icon}
               collapsed={!!collapsed}
               baseTextColor={baseTextColor}
+              bgHover={bgHover}
+              expanded={expanded}
+              onToggle={() => {
+                setOpenGroups((prev) => ({
+                  ...prev,
+                  [node.label]: !(prev[node.label] ?? hasActiveChild),
+                }));
+              }}
             />
           </ul>
 
-          <ul style={{ display: "grid", padding: 0, margin: 0, gap: 6 }}>
+          <ul
+            style={{
+              display: expanded ? "grid" : "none",
+              padding: 0,
+              margin: 0,
+              gap: 6,
+            }}
+          >
             {node.items.map((child, cidx) => (
               <ItemRow
                 key={`node-child-${child.path}-${cidx}`}
@@ -337,6 +433,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
                 admin={admin}
                 currentPath={currentPath}
                 bgActive={bgActive}
+                bgHover={bgHover}
                 baseTextColor={baseTextColor}
                 partnerColor={partnerColor}
                 collapsed={!!collapsed}

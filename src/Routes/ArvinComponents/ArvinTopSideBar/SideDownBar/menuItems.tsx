@@ -246,7 +246,7 @@ export const menuItems: MenuItem[] = [
     path: "/listening",
     orderMobile: 5,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {
@@ -257,7 +257,7 @@ export const menuItems: MenuItem[] = [
     path: "/sentence-mining",
     orderMobile: 5.1,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {
@@ -267,7 +267,7 @@ export const menuItems: MenuItem[] = [
     path: "/teaching-materials",
     orderSideBar: 11,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {

@@ -730,7 +730,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               position: "fixed",
               bottom: 70,
               zIndex: 99,
-              height: "50vh",
+              height: "75vh",
               width: "100%",
               left: 0,
               right: 0,
