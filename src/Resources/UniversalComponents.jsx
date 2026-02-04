@@ -1822,7 +1822,7 @@ export const onLoggOutFee = () => {
   localStorage.removeItem("voiceGender");
   localStorage.removeItem("voiceLang");
   localStorage.removeItem("voiceOption");
-  notifyAlert("Sua mensalidade não está em dia. Faça login novamente", "red");
+  notifyAlert("Sua mensalidade não está em dia. Fale com seu professor", "red");
   setTimeout(() => {
     window.location.assign("/login");
   }, 1000);
