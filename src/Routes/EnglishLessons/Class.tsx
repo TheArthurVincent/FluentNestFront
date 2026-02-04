@@ -57,6 +57,7 @@ interface EnglishClassCourse2ModelProps {
   fetchEventData?: any;
   canEditCourse: boolean | undefined;
   seeExercise?: boolean;
+  studentsIds?: string[];
 }
 
 export default function EnglishClassCourse2({
@@ -71,11 +72,12 @@ export default function EnglishClassCourse2({
   mainStudentID,
   canEditCourse,
   seeExercise,
+  studentsIds,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
 
   const [isDesktop, setIsDesktop] = React.useState(
-    typeof window !== "undefined" ? window.innerWidth > 700 : false
+    typeof window !== "undefined" ? window.innerWidth > 700 : false,
   );
 
   React.useEffect(() => {
@@ -110,7 +112,7 @@ export default function EnglishClassCourse2({
   const [theclass, setheClass] = useState<any>({});
   const [classTitle, setClassTitle] = useState<string>("");
   const [theStudentsWhoCompletedIt, setStudentsWhoCompletedIt] = useState<any>(
-    []
+    [],
   );
   const [exercise, setExercise] = useState<boolean>(seeExercise || false);
   const [seeEdit, setSeeEdit] = useState<boolean>(false);
@@ -125,7 +127,7 @@ export default function EnglishClassCourse2({
   const sectionElems = React.useMemo(
     () =>
       (theclass?.elements || []).sort((a: any, b: any) => a.order - b.order),
-    [theclass?.elements]
+    [theclass?.elements],
   );
 
   const makeId = (title: string, idx: number) =>
@@ -136,7 +138,7 @@ export default function EnglishClassCourse2({
     const measure = () => {
       if (!barRef.current) return;
       setBarOffset(
-        Math.ceil(barRef.current.getBoundingClientRect().height + 10)
+        Math.ceil(barRef.current.getBoundingClientRect().height + 10),
       ); // +10px respiro
     };
     measure();
@@ -160,7 +162,7 @@ export default function EnglishClassCourse2({
   React.useEffect(() => {
     const els = sectionElems
       .map((e: any, i: number) =>
-        document.getElementById(makeId(e.subtitle, i))
+        document.getElementById(makeId(e.subtitle, i)),
       )
       .filter(Boolean) as Element[];
     if (!els.length) return;
@@ -177,7 +179,7 @@ export default function EnglishClassCourse2({
         // disparar quando ~30% visível, considerando a barra
         rootMargin: `-${barOffset}px 0px 0px 0px`,
         threshold: [0.3, 0.6, 0.9],
-      }
+      },
     );
     els.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
@@ -223,7 +225,7 @@ export default function EnglishClassCourse2({
     setFlag(!flag);
     var theid = event.target.value;
     const selectedStudent = studentsList.find(
-      (student: any) => student.id === theid
+      (student: any) => student.id === theid,
     );
     setStudentID(theid);
     handleGetBoard(theid);
@@ -238,7 +240,7 @@ export default function EnglishClassCourse2({
   var exerciseScore = async (
     score: number,
     description: string,
-    id?: string
+    id?: string,
   ) => {
     try {
       var response = await axios.put(
@@ -247,7 +249,7 @@ export default function EnglishClassCourse2({
           score,
           description,
         },
-        { headers: actualHeaders || undefined }
+        { headers: actualHeaders || undefined },
       );
       notifyAlert(response.data.message || "Sucesso", partnerColor());
     } catch (error) {
@@ -269,14 +271,14 @@ export default function EnglishClassCourse2({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       var clss = response.data.classDetails;
       setClassLanguage(response.data.classDetails.language);
       setClassTitle(response.data.classDetails.title);
       setStudentsWhoCompletedIt(
-        response.data.classDetails.studentsWhoCompletedIt
+        response.data.classDetails.studentsWhoCompletedIt,
       );
       if (response.data.classDetails.studentsWhoCompletedIt.includes(id)) {
         setIsCompleted(true);
@@ -297,7 +299,7 @@ export default function EnglishClassCourse2({
       const response = await axios.put(
         `${backDomain}/api/v1/course/${classId}`,
         { studentID },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       var studentsWhoCompletedItUpdated = response.data.studentsWhoCompletedIt;
       setStudentsWhoCompletedIt(studentsWhoCompletedItUpdated);
@@ -320,7 +322,7 @@ export default function EnglishClassCourse2({
       const response = await axios.put(
         `${backDomain}/api/v1/handlecurrentclass`,
         { classId },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
     } catch (error) {
       console.error("Erro ao atualizar o status:", error);
@@ -383,7 +385,7 @@ export default function EnglishClassCourse2({
     ];
 
     const hasProblematicDomain = problematicDomains.some((domain) =>
-      url.toLowerCase().includes(domain)
+      url.toLowerCase().includes(domain),
     );
 
     if (hasProblematicDomain) {
@@ -397,12 +399,12 @@ export default function EnglishClassCourse2({
   const addImageSafely = async (
     slide: any,
     imagePath: string,
-    options: any
+    options: any,
   ): Promise<boolean> => {
     try {
       if (!isValidImageUrl(imagePath)) {
         console.log(
-          `⚠️ Imagem ignorada devido a possíveis problemas de CORS: ${imagePath}`
+          `⚠️ Imagem ignorada devido a possíveis problemas de CORS: ${imagePath}`,
         );
         return false;
       }
@@ -466,7 +468,7 @@ export default function EnglishClassCourse2({
         } catch (imageError) {
           console.log(
             "⚠️ Erro ao adicionar imagem da aula no slide de título, continuando sem imagem:",
-            imageError
+            imageError,
           );
         }
       }
@@ -506,7 +508,7 @@ export default function EnglishClassCourse2({
         } catch (logoError) {
           console.log(
             "⚠️ Erro ao adicionar logo do partner no slide de título, continuando sem logo:",
-            logoError
+            logoError,
           );
         }
       }
@@ -519,7 +521,7 @@ export default function EnglishClassCourse2({
             console.log(
               `📄 Processando elemento: ${element.type} - ${
                 element.subtitle || "Sem título"
-              }`
+              }`,
             );
 
             if (element.subtitle || element.description) {
@@ -547,7 +549,7 @@ export default function EnglishClassCourse2({
                   } catch (imageError) {
                     console.log(
                       "⚠️ Erro ao adicionar imagem do slide de subtítulo, continuando sem imagem:",
-                      imageError
+                      imageError,
                     );
                   }
                 }
@@ -569,7 +571,7 @@ export default function EnglishClassCourse2({
                 if (element.description) {
                   const safeDescription = sanitizeText(
                     element.description,
-                    300
+                    300,
                   );
                   subtitleSlide.addText(safeDescription, {
                     x: 1,
@@ -608,14 +610,14 @@ export default function EnglishClassCourse2({
                   } catch (logoError) {
                     console.log(
                       "⚠️ Erro ao adicionar logo do partner, continuando sem logo:",
-                      logoError
+                      logoError,
                     );
                   }
                 }
               } catch (subtitleSlideError) {
                 console.log(
                   "⚠️ Erro ao criar slide de subtítulo, pulando para o conteúdo:",
-                  subtitleSlideError
+                  subtitleSlideError,
                 );
               }
             }
@@ -641,7 +643,7 @@ export default function EnglishClassCourse2({
                 } catch (textError) {
                   console.log(
                     "⚠️ Erro ao processar elemento text, pulando sessão:",
-                    textError
+                    textError,
                   );
                 }
                 break;
@@ -662,7 +664,7 @@ export default function EnglishClassCourse2({
                           ? ` (${groupIndex + 1}/${sentenceGroups.length})`
                           : ""
                       }`,
-                      100
+                      100,
                     );
                     sentencesSlide.addText(safeSubtitle, {
                       x: 0.5,
@@ -693,7 +695,7 @@ export default function EnglishClassCourse2({
                         if (sentence.portuguese) {
                           const safePortuguese = sanitizeText(
                             sentence.portuguese,
-                            200
+                            200,
                           );
                           sentencesSlide.addText(`${safePortuguese}`, {
                             x: 0.5,
@@ -727,7 +729,7 @@ export default function EnglishClassCourse2({
                           ? ` (${groupIndex + 1}/${sentenceGroups.length})`
                           : ""
                       }`,
-                      100
+                      100,
                     );
                     sentencesSlide.addText(safeSubtitle, {
                       x: 0.5,
@@ -758,7 +760,7 @@ export default function EnglishClassCourse2({
                         if (sentence.portuguese) {
                           const safePortuguese = sanitizeText(
                             sentence.portuguese,
-                            200
+                            200,
                           );
                           sentencesSlide.addText(` ${safePortuguese}`, {
                             x: 0.5,
@@ -787,7 +789,7 @@ export default function EnglishClassCourse2({
                       i += itemsPerSlide
                     ) {
                       exerciseGroups.push(
-                        element.items.slice(i, i + itemsPerSlide)
+                        element.items.slice(i, i + itemsPerSlide),
                       );
                     }
 
@@ -801,7 +803,7 @@ export default function EnglishClassCourse2({
                               ? ` (${groupIndex + 1}/${exerciseGroups.length})`
                               : ""
                           }`,
-                          100
+                          100,
                         );
                         exerciseSlide.addText(safeTitle, {
                           x: 0.5,
@@ -833,14 +835,14 @@ export default function EnglishClassCourse2({
                               color: darkGreyColor().replace("#", ""),
 
                               valign: "top",
-                            }
+                            },
                           );
                           yPos += 1;
                         });
                       } catch (exerciseSlideError) {
                         console.log(
                           "⚠️ Erro ao criar slide de exercise, pulando slide:",
-                          exerciseSlideError
+                          exerciseSlideError,
                         );
                       }
                     });
@@ -848,7 +850,7 @@ export default function EnglishClassCourse2({
                 } catch (exerciseError) {
                   console.log(
                     "⚠️ Erro ao processar elemento exercise, pulando sessão:",
-                    exerciseError
+                    exerciseError,
                   );
                 }
                 break;
@@ -871,7 +873,7 @@ export default function EnglishClassCourse2({
                       i += maxParagraphsPerSlide
                     ) {
                       paragraphGroups.push(
-                        paragraphs.slice(i, i + maxParagraphsPerSlide)
+                        paragraphs.slice(i, i + maxParagraphsPerSlide),
                       );
                     }
 
@@ -885,7 +887,7 @@ export default function EnglishClassCourse2({
                               ? ` (${groupIndex + 1}/${paragraphGroups.length})`
                               : ""
                           }`,
-                          100
+                          100,
                         );
                         htmlSlide.addText(safeHtmlTitle, {
                           x: 0.5,
@@ -917,7 +919,7 @@ export default function EnglishClassCourse2({
                       } catch (htmlSlideError) {
                         console.log(
                           "⚠️ Erro ao criar slide de HTML, pulando slide:",
-                          htmlSlideError
+                          htmlSlideError,
                         );
                       }
                     });
@@ -925,7 +927,7 @@ export default function EnglishClassCourse2({
                 } catch (htmlError) {
                   console.log(
                     "⚠️ Erro ao processar elemento html, pulando sessão:",
-                    htmlError
+                    htmlError,
                   );
                 }
                 break;
@@ -948,7 +950,7 @@ export default function EnglishClassCourse2({
                               ? ` (${groupIndex + 1}/${imageGroups.length})`
                               : ""
                           }`,
-                          100
+                          100,
                         );
                         imageSlide.addText(safeImageTitle, {
                           x: 0.5,
@@ -985,7 +987,7 @@ export default function EnglishClassCourse2({
                               if (imageItem.text) {
                                 const safeImageText = sanitizeText(
                                   imageItem.text,
-                                  100
+                                  100,
                                 );
                                 imageSlide.addText(safeImageText, {
                                   x: pos.x,
@@ -1001,14 +1003,14 @@ export default function EnglishClassCourse2({
                           } catch (imageError) {
                             console.log(
                               "⚠️ Erro ao adicionar imagem individual no slide, pulando imagem:",
-                              imageError
+                              imageError,
                             );
                           }
                         });
                       } catch (imageSlideError) {
                         console.log(
                           "⚠️ Erro ao criar slide de images, pulando slide:",
-                          imageSlideError
+                          imageSlideError,
                         );
                       }
                     });
@@ -1016,7 +1018,7 @@ export default function EnglishClassCourse2({
                 } catch (imagesError) {
                   console.log(
                     "⚠️ Erro ao processar elemento images, pulando sessão:",
-                    imagesError
+                    imagesError,
                   );
                 }
                 break;
@@ -1039,7 +1041,7 @@ export default function EnglishClassCourse2({
                               ? ` (${imageIndex + 1}/${element.images.length})`
                               : ""
                           }`,
-                          100
+                          100,
                         );
                         imageSlide.addText(safeImageTitle, {
                           x: 0.5,
@@ -1062,13 +1064,13 @@ export default function EnglishClassCourse2({
                         } catch (imageError) {
                           console.log(
                             "⚠️ Erro ao adicionar imagem single, pulando imagem:",
-                            imageError
+                            imageError,
                           );
                         }
                       } catch (singleImageSlideError) {
                         console.log(
                           "⚠️ Erro ao criar slide de single image, pulando slide:",
-                          singleImageSlideError
+                          singleImageSlideError,
                         );
                       }
                     }
@@ -1076,7 +1078,7 @@ export default function EnglishClassCourse2({
                 } catch (singleImagesError) {
                   console.log(
                     "⚠️ Erro ao processar elemento singleimages, pulando sessão:",
-                    singleImagesError
+                    singleImagesError,
                   );
                 }
                 break;
@@ -1087,7 +1089,7 @@ export default function EnglishClassCourse2({
 
                   const safeAudioTitle = sanitizeText(
                     element.subtitle || "Audio Content",
-                    100
+                    100,
                   );
                   audioTextSlide.addText(safeAudioTitle, {
                     x: 0.5,
@@ -1129,7 +1131,7 @@ export default function EnglishClassCourse2({
                           ? ` (${groupIndex + 1}/${sentenceGroups.length})`
                           : ""
                       }`,
-                      100
+                      100,
                     );
                     audioSentencesSlide.addText(safeTitle, {
                       x: 0.5,
@@ -1161,7 +1163,7 @@ export default function EnglishClassCourse2({
                         if (sentence.portuguese) {
                           const safePortuguese = sanitizeText(
                             sentence.portuguese,
-                            200
+                            200,
                           );
                           audioSentencesSlide.addText(`   ${safePortuguese}`, {
                             x: 0.5,
@@ -1196,7 +1198,7 @@ export default function EnglishClassCourse2({
                         if (explanationItem.title) {
                           const safeTitle = sanitizeText(
                             explanationItem.title,
-                            100
+                            100,
                           );
                           explanationSlide.addText(safeTitle, {
                             x: 0.5,
@@ -1223,12 +1225,12 @@ export default function EnglishClassCourse2({
                                 y: yPos,
                                 w: 2,
                                 h: 2,
-                              }
+                              },
                             );
                           } catch (imageError) {
                             console.log(
                               "⚠️ Erro ao adicionar imagem da explicação:",
-                              imageError
+                              imageError,
                             );
                           }
                         }
@@ -1252,16 +1254,16 @@ export default function EnglishClassCourse2({
                                 valign: "top",
                               });
                               yPos += 0.8;
-                            }
+                            },
                           );
                         }
-                      }
+                      },
                     );
                   }
                 } catch (explanationError) {
                   console.log(
                     "⚠️ Erro ao processar elemento explanation:",
-                    explanationError
+                    explanationError,
                   );
                 }
                 break;
@@ -1303,7 +1305,7 @@ export default function EnglishClassCourse2({
                           if (element.subtitle) {
                             const safeSubtitle = sanitizeText(
                               element.subtitle + " (cont.)",
-                              100
+                              100,
                             );
                             currentSlide.addText(safeSubtitle, {
                               x: 0.5,
@@ -1324,7 +1326,7 @@ export default function EnglishClassCourse2({
                           const safeEnglish = sanitizeText(vocab.english, 50);
                           const safePortuguese = sanitizeText(
                             vocab.portuguese,
-                            50
+                            50,
                           );
 
                           // Texto em inglês (lado esquerdo)
@@ -1367,13 +1369,13 @@ export default function EnglishClassCourse2({
                           yPos += 0.7;
                           itemCount++;
                         }
-                      }
+                      },
                     );
                   }
                 } catch (vocabularyError) {
                   console.log(
                     "⚠️ Erro ao processar elemento vocabulary:",
-                    vocabularyError
+                    vocabularyError,
                   );
                 }
                 break;
@@ -1389,7 +1391,7 @@ export default function EnglishClassCourse2({
                       if (i === 0 && element.subtitle) {
                         const safeSubtitle = sanitizeText(
                           element.subtitle,
-                          100
+                          100,
                         );
                         dialogueSlide.addText(safeSubtitle, {
                           x: 0.5,
@@ -1409,7 +1411,7 @@ export default function EnglishClassCourse2({
                       if (element.dialogue[i]) {
                         const safeDialogueA = sanitizeText(
                           element.dialogue[i],
-                          150
+                          150,
                         );
 
                         // Label da pessoa A
@@ -1444,7 +1446,7 @@ export default function EnglishClassCourse2({
                       if (element.dialogue[i + 1]) {
                         const safeDialogueB = sanitizeText(
                           element.dialogue[i + 1],
-                          150
+                          150,
                         );
 
                         // Label da pessoa B
@@ -1477,7 +1479,7 @@ export default function EnglishClassCourse2({
                 } catch (dialogueError) {
                   console.log(
                     "⚠️ Erro ao processar elemento dialogue:",
-                    dialogueError
+                    dialogueError,
                   );
                 }
                 break;
@@ -1498,7 +1500,7 @@ export default function EnglishClassCourse2({
 
                     const safeGenericTitle = sanitizeText(
                       element.subtitle || `Elemento: ${element.type}`,
-                      100
+                      100,
                     );
                     genericSlide.addText(safeGenericTitle, {
                       x: 0.5,
@@ -1525,7 +1527,7 @@ export default function EnglishClassCourse2({
                 } catch (defaultError) {
                   console.log(
                     "⚠️ Erro ao processar elemento genérico, pulando sessão:",
-                    defaultError
+                    defaultError,
                   );
                 }
                 break;
@@ -1535,7 +1537,7 @@ export default function EnglishClassCourse2({
               `⚠️ Erro ao processar elemento "${
                 element.subtitle || element.type
               }", pulando sessão:`,
-              elementError
+              elementError,
             );
           }
         }
@@ -1543,7 +1545,7 @@ export default function EnglishClassCourse2({
 
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
-        "_"
+        "_",
       );
       const fileName = `${safeFileName}.pptx`;
 
@@ -1577,7 +1579,7 @@ export default function EnglishClassCourse2({
           heading: HeadingLevel.TITLE,
           alignment: AlignmentType.CENTER,
           spacing: { after: 400 },
-        })
+        }),
       );
 
       // Subtítulo
@@ -1593,7 +1595,7 @@ export default function EnglishClassCourse2({
           ],
           alignment: AlignmentType.CENTER,
           spacing: { after: 200 },
-        })
+        }),
       );
 
       // Data
@@ -1608,7 +1610,7 @@ export default function EnglishClassCourse2({
           ],
           alignment: AlignmentType.CENTER,
           spacing: { after: 600 },
-        })
+        }),
       );
 
       // Descrição da aula (se houver)
@@ -1625,7 +1627,7 @@ export default function EnglishClassCourse2({
             ],
             heading: HeadingLevel.HEADING_1,
             spacing: { before: 400, after: 200 },
-          })
+          }),
         );
 
         const safeDescription = sanitizeText(theclass.description, 500);
@@ -1638,14 +1640,14 @@ export default function EnglishClassCourse2({
               }),
             ],
             spacing: { after: 400 },
-          })
+          }),
         );
       }
 
       // Processar elementos da aula
       if (theclass.elements && Array.isArray(theclass.elements)) {
         const sortedElements = theclass.elements.sort(
-          (a: any, b: any) => (a.order || 0) - (b.order || 0)
+          (a: any, b: any) => (a.order || 0) - (b.order || 0),
         );
 
         for (const element of sortedElements) {
@@ -1664,7 +1666,7 @@ export default function EnglishClassCourse2({
                   ],
                   heading: HeadingLevel.HEADING_1,
                   spacing: { before: 600, after: 300 },
-                })
+                }),
               );
             }
 
@@ -1681,7 +1683,7 @@ export default function EnglishClassCourse2({
                     }),
                   ],
                   spacing: { after: 300 },
-                })
+                }),
               );
             }
 
@@ -1699,7 +1701,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { after: 300 },
-                    })
+                    }),
                   );
                 }
                 break;
@@ -1721,13 +1723,13 @@ export default function EnglishClassCourse2({
                             }),
                           ],
                           spacing: { after: 100 },
-                        })
+                        }),
                       );
 
                       if (sentence.portuguese) {
                         const safePortuguese = sanitizeText(
                           sentence.portuguese,
-                          200
+                          200,
                         );
                         children.push(
                           new Paragraph({
@@ -1740,7 +1742,7 @@ export default function EnglishClassCourse2({
                               }),
                             ],
                             spacing: { after: 200 },
-                          })
+                          }),
                         );
                       }
                     }
@@ -1761,7 +1763,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
 
                   element.items.forEach((item: any, index: number) => {
@@ -1775,7 +1777,7 @@ export default function EnglishClassCourse2({
                           }),
                         ],
                         spacing: { after: 150 },
-                      })
+                      }),
                     );
                   });
                 }
@@ -1800,7 +1802,7 @@ export default function EnglishClassCourse2({
                           }),
                         ],
                         spacing: { after: 200 },
-                      })
+                      }),
                     );
                   });
                 }
@@ -1822,7 +1824,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
 
                   children.push(
@@ -1834,7 +1836,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { after: 300 },
-                    })
+                    }),
                   );
                 }
 
@@ -1850,7 +1852,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
 
                   element.sentences.forEach((sentence: any, index: number) => {
@@ -1867,13 +1869,13 @@ export default function EnglishClassCourse2({
                             }),
                           ],
                           spacing: { after: 100 },
-                        })
+                        }),
                       );
 
                       if (sentence.portuguese) {
                         const safePortuguese = sanitizeText(
                           sentence.portuguese,
-                          200
+                          200,
                         );
                         children.push(
                           new Paragraph({
@@ -1885,7 +1887,7 @@ export default function EnglishClassCourse2({
                               }),
                             ],
                             spacing: { after: 200 },
-                          })
+                          }),
                         );
                       }
                     }
@@ -1906,7 +1908,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
 
                   element.images.forEach((imageItem: any, index: number) => {
@@ -1921,13 +1923,13 @@ export default function EnglishClassCourse2({
                             }),
                           ],
                           spacing: { after: 100 },
-                        })
+                        }),
                       );
                     }
                     if (imageItem.portuguese) {
                       const safePortuguese = sanitizeText(
                         imageItem.portuguese,
-                        100
+                        100,
                       );
                       children.push(
                         new Paragraph({
@@ -1939,7 +1941,7 @@ export default function EnglishClassCourse2({
                             }),
                           ],
                           spacing: { after: 150 },
-                        })
+                        }),
                       );
                     }
                   });
@@ -1959,7 +1961,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
                 }
                 break;
@@ -1982,7 +1984,7 @@ export default function EnglishClassCourse2({
                             ],
                             heading: HeadingLevel.HEADING_2,
                             spacing: { before: 400, after: 300 },
-                          })
+                          }),
                         );
                       }
 
@@ -2003,9 +2005,9 @@ export default function EnglishClassCourse2({
                                   }),
                                 ],
                                 spacing: { after: 200 },
-                              })
+                              }),
                             );
-                          }
+                          },
                         );
                       }
 
@@ -2015,10 +2017,10 @@ export default function EnglishClassCourse2({
                           new Paragraph({
                             children: [new TextRun({ text: "" })],
                             spacing: { after: 400 },
-                          })
+                          }),
                         );
                       }
-                    }
+                    },
                   );
                 }
                 break;
@@ -2036,7 +2038,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 400, after: 300 },
-                    })
+                    }),
                   );
 
                   element.sentences.forEach(
@@ -2045,7 +2047,7 @@ export default function EnglishClassCourse2({
                         const safeEnglish = sanitizeText(vocab.english, 100);
                         const safePortuguese = sanitizeText(
                           vocab.portuguese,
-                          100
+                          100,
                         );
 
                         // Palavra em inglês - tradução em português
@@ -2073,10 +2075,10 @@ export default function EnglishClassCourse2({
                               }),
                             ],
                             spacing: { after: 150 },
-                          })
+                          }),
                         );
                       }
-                    }
+                    },
                   );
                 }
                 break;
@@ -2094,7 +2096,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 400, after: 300 },
-                    })
+                    }),
                   );
 
                   element.dialogue.forEach(
@@ -2118,9 +2120,9 @@ export default function EnglishClassCourse2({
                             }),
                           ],
                           spacing: { after: 150 },
-                        })
+                        }),
                       );
-                    }
+                    },
                   );
                 }
                 break;
@@ -2146,7 +2148,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
-                    })
+                    }),
                   );
 
                   children.push(
@@ -2160,7 +2162,7 @@ export default function EnglishClassCourse2({
                         }),
                       ],
                       spacing: { after: 300 },
-                    })
+                    }),
                   );
                 }
                 break;
@@ -2178,14 +2180,14 @@ export default function EnglishClassCourse2({
                 ],
                 alignment: AlignmentType.CENTER,
                 spacing: { before: 400, after: 400 },
-              })
+              }),
             );
           } catch (elementError) {
             console.log(
               `⚠️ Erro ao processar elemento "${
                 element.subtitle || element.type
               }" no Word, pulando sessão:`,
-              elementError
+              elementError,
             );
           }
         }
@@ -2203,7 +2205,7 @@ export default function EnglishClassCourse2({
 
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
-        "_"
+        "_",
       );
       const fileName = `${safeFileName}.docx`;
 
@@ -2239,7 +2241,7 @@ export default function EnglishClassCourse2({
       const splitTextToSize = (
         text: string,
         maxWidth: number,
-        fontSize: number
+        fontSize: number,
       ) => {
         pdf.setFontSize(fontSize);
         return pdf.splitTextToSize(text, maxWidth);
@@ -2270,7 +2272,7 @@ export default function EnglishClassCourse2({
       // Processar elementos da aula (apenas conteúdo essencial)
       if (theclass.elements && Array.isArray(theclass.elements)) {
         const sortedElements = theclass.elements.sort(
-          (a: any, b: any) => (a.order || 0) - (b.order || 0)
+          (a: any, b: any) => (a.order || 0) - (b.order || 0),
         );
 
         for (const element of sortedElements) {
@@ -2283,7 +2285,7 @@ export default function EnglishClassCourse2({
               const subtitleLines = splitTextToSize(
                 element.subtitle,
                 maxWidth,
-                16
+                16,
               );
               pdf.text(subtitleLines, margin, yPosition);
               yPosition += subtitleLines.length * 6 + 8;
@@ -2339,7 +2341,7 @@ export default function EnglishClassCourse2({
                       const englishLines = splitTextToSize(
                         safeEnglish,
                         maxWidth,
-                        11
+                        11,
                       );
                       checkPageBreak(englishLines.length * 4);
                       pdf.text(englishLines, margin, yPosition);
@@ -2348,14 +2350,14 @@ export default function EnglishClassCourse2({
                       if (sentence.portuguese) {
                         const safePortuguese = sanitizeText(
                           sentence.portuguese,
-                          200
+                          200,
                         );
                         pdf.setFontSize(9);
                         pdf.setTextColor(120, 120, 120);
                         const portugueseLines = splitTextToSize(
                           `   ${safePortuguese}`,
                           maxWidth,
-                          9
+                          9,
                         );
                         checkPageBreak(portugueseLines.length * 3);
                         pdf.text(portugueseLines, margin, yPosition);
@@ -2403,7 +2405,7 @@ export default function EnglishClassCourse2({
                   const audioLines = splitTextToSize(
                     safeAudioText,
                     maxWidth,
-                    11
+                    11,
                   );
                   checkPageBreak(audioLines.length * 4);
                   pdf.text(audioLines, margin, yPosition);
@@ -2419,7 +2421,7 @@ export default function EnglishClassCourse2({
                       const englishLines = splitTextToSize(
                         safeEnglish,
                         maxWidth,
-                        10
+                        10,
                       );
                       checkPageBreak(englishLines.length * 3);
                       pdf.text(englishLines, margin, yPosition);
@@ -2428,14 +2430,14 @@ export default function EnglishClassCourse2({
                       if (sentence.portuguese) {
                         const safePortuguese = sanitizeText(
                           sentence.portuguese,
-                          200
+                          200,
                         );
                         pdf.setFontSize(9);
                         pdf.setTextColor(120, 120, 120);
                         const portugueseLines = splitTextToSize(
                           `   ${safePortuguese}`,
                           maxWidth,
-                          9
+                          9,
                         );
                         checkPageBreak(portugueseLines.length * 3);
                         pdf.text(portugueseLines, margin, yPosition);
@@ -2462,7 +2464,7 @@ export default function EnglishClassCourse2({
                       const englishLines = splitTextToSize(
                         safeEnglish,
                         maxWidth,
-                        11
+                        11,
                       );
                       checkPageBreak(englishLines.length * 4);
                       pdf.text(englishLines, margin, yPosition);
@@ -2473,7 +2475,7 @@ export default function EnglishClassCourse2({
                     if (imageItem.portuguese) {
                       const safePortuguese = sanitizeText(
                         imageItem.portuguese,
-                        100
+                        100,
                       );
                     }
                   });
@@ -2496,7 +2498,7 @@ export default function EnglishClassCourse2({
                       const englishLines = splitTextToSize(
                         `• ${safeEnglish}`,
                         maxWidth,
-                        10
+                        10,
                       );
                       checkPageBreak(englishLines.length * 3);
                       pdf.text(englishLines, margin, yPosition);
@@ -2505,14 +2507,14 @@ export default function EnglishClassCourse2({
                     if (imageItem.portuguese) {
                       const safePortuguese = sanitizeText(
                         imageItem.portuguese,
-                        150
+                        150,
                       );
                       pdf.setFontSize(9);
                       pdf.setTextColor(120, 120, 120);
                       const portugueseLines = splitTextToSize(
                         `   ${safePortuguese}`,
                         maxWidth,
-                        9
+                        9,
                       );
                       checkPageBreak(portugueseLines.length * 3);
                       pdf.text(portugueseLines, margin, yPosition);
@@ -2534,7 +2536,7 @@ export default function EnglishClassCourse2({
                         const titleLines = splitTextToSize(
                           explanationItem.title,
                           maxWidth,
-                          16
+                          16,
                         );
                         pdf.text(titleLines, margin, yPosition);
                         yPosition += titleLines.length * 6 + 10;
@@ -2553,12 +2555,12 @@ export default function EnglishClassCourse2({
                             const listLines = splitTextToSize(
                               `• ${safeListItem}`,
                               maxWidth,
-                              11
+                              11,
                             );
                             checkPageBreak(listLines.length * 4);
                             pdf.text(listLines, margin, yPosition);
                             yPosition += listLines.length * 4 + 4;
-                          }
+                          },
                         );
                       }
 
@@ -2566,7 +2568,7 @@ export default function EnglishClassCourse2({
                       if (explIndex < element.explanation.length - 1) {
                         yPosition += 8;
                       }
-                    }
+                    },
                   );
                 }
                 break;
@@ -2585,7 +2587,7 @@ export default function EnglishClassCourse2({
                         const safeEnglish = sanitizeText(vocab.english, 60);
                         const safePortuguese = sanitizeText(
                           vocab.portuguese,
-                          60
+                          60,
                         );
 
                         // Palavra em inglês (em negrito)
@@ -2595,7 +2597,7 @@ export default function EnglishClassCourse2({
                         const englishLines = splitTextToSize(
                           safeEnglish,
                           maxWidth * 0.4,
-                          12
+                          12,
                         );
                         checkPageBreak(englishLines.length * 4);
                         pdf.text(englishLines, margin, yPosition);
@@ -2607,7 +2609,7 @@ export default function EnglishClassCourse2({
                         const portugueseLines = splitTextToSize(
                           safePortuguese,
                           maxWidth * 0.4,
-                          12
+                          12,
                         );
                         pdf.text(portugueseLines, margin + 100, yPosition);
                         pdf.setFont("helvetica", "normal");
@@ -2615,12 +2617,12 @@ export default function EnglishClassCourse2({
                         yPosition +=
                           Math.max(
                             englishLines.length,
-                            portugueseLines.length
+                            portugueseLines.length,
                           ) *
                             4 +
                           5;
                       }
-                    }
+                    },
                   );
 
                   yPosition += 8;
@@ -2646,12 +2648,12 @@ export default function EnglishClassCourse2({
                       const dialogueLines = splitTextToSize(
                         dialogueLine,
                         maxWidth,
-                        11
+                        11,
                       );
                       checkPageBreak(dialogueLines.length * 4);
                       pdf.text(dialogueLines, margin, yPosition);
                       yPosition += dialogueLines.length * 4 + 4;
-                    }
+                    },
                   );
 
                   // Espaço extra após diálogo
@@ -2680,7 +2682,7 @@ export default function EnglishClassCourse2({
               `⚠️ Erro ao processar elemento "${
                 element.subtitle || element.type
               }" no PDF, pulando sessão:`,
-              elementError
+              elementError,
             );
           }
         }
@@ -2688,7 +2690,7 @@ export default function EnglishClassCourse2({
 
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
-        "_"
+        "_",
       );
       const fileName = `${safeFileName}_conteudo.pdf`;
 
@@ -2746,7 +2748,7 @@ export default function EnglishClassCourse2({
         `${backDomain}/api/v1/students/${myId}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       setStudentsList(response.data.listOfStudents);
     } catch (error) {
@@ -2758,7 +2760,7 @@ export default function EnglishClassCourse2({
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle || "")}/${
         nextClass || ""
-      }`
+      }`,
     );
   };
 
@@ -2766,7 +2768,7 @@ export default function EnglishClassCourse2({
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle || "")}/${
         previousClass || ""
-      }`
+      }`,
     );
   };
 
@@ -2778,7 +2780,7 @@ export default function EnglishClassCourse2({
       const response = await axios.put(
         `${backDomain}/api/v1/board/${classId}?student=${studentID}`,
         { content: newHWDescription, date: new Date() },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       setConfirm(false);
       setSeeCheck(true);
@@ -2801,7 +2803,7 @@ export default function EnglishClassCourse2({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/board/${classId}?student=${id}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       if (!response.data.studentSavedBoard) {
         setNewHWDescription(generateInitialBoardContent());
@@ -2839,7 +2841,7 @@ export default function EnglishClassCourse2({
     if (theclass.elements && Array.isArray(theclass.elements)) {
       // ordena
       const sortedElements = [...theclass.elements].sort(
-        (a: any, b: any) => (a.order || 0) - (b.order || 0)
+        (a: any, b: any) => (a.order || 0) - (b.order || 0),
       );
 
       sortedElements.forEach((element: any) => {
@@ -2882,7 +2884,7 @@ export default function EnglishClassCourse2({
     if (theclass?.elements && Array.isArray(theclass.elements)) {
       const found = theclass.elements.some(
         (el: any) =>
-          (el && el.type === "audio") || (el && el.type === "audiosoundtrack")
+          (el && el.type === "audio") || (el && el.type === "audiosoundtrack"),
       );
       setHasAudioElement(found);
       // Reset audio index when class changes
@@ -2942,7 +2944,7 @@ export default function EnglishClassCourse2({
                         color: "#000",
                       }}
                       to={`/teaching-materials/${pathGenerator(
-                        courseTitle || "" || ""
+                        courseTitle || "" || "",
                       )}`}
                     >
                       {courseTitle || ""
@@ -3112,7 +3114,7 @@ export default function EnglishClassCourse2({
                             <option key={index} value={student.id}>
                               {truncateString(
                                 student.name + " " + student.lastname,
-                                15
+                                15,
                               )}
                             </option>
                           ))}
@@ -3504,6 +3506,17 @@ export default function EnglishClassCourse2({
                                       studentId={mainStudentID || studentID}
                                       headers={headers}
                                       selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
+                                    />
+                                  ) : element.type === "images" ? (
+                                    <ImageLessonModel
+                                      studentId={studentID}
+                                      mainTag={theclass.mainTag}
+                                      id={myId}
+                                      headers={headers}
+                                      element={element}
+                                      selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
                                     />
                                   ) : element.type === "vocabulary" ? (
                                     <VocabularyLesson
@@ -3513,6 +3526,7 @@ export default function EnglishClassCourse2({
                                       studentId={mainStudentID || studentID}
                                       headers={headers}
                                       selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
                                     />
                                   ) : element.type === "nfsentences" ? (
                                     <NoFlashcardsSentenceLessonModel
@@ -3547,21 +3561,6 @@ export default function EnglishClassCourse2({
                                     <MultipleTextsLessonModel
                                       headers={headers}
                                       element={element}
-                                    />
-                                  ) : // ) : element.type === "selectexercise" ? (
-                                  //   <SelectExercise
-                                  //     headers={headers}
-                                  //     element={element}
-                                  //     selectedVoice={selectedVoice}
-                                  //   />
-                                  element.type === "images" ? (
-                                    <ImageLessonModel
-                                      studentId={studentID}
-                                      mainTag={theclass.mainTag}
-                                      id={myId}
-                                      headers={headers}
-                                      element={element}
-                                      selectedVoice={selectedVoice}
                                     />
                                   ) : element.type === "explanation" ? (
                                     <ExplanationLesson
@@ -3909,7 +3908,7 @@ export default function EnglishClassCourse2({
                                     (theclass?.elements || []).filter(
                                       (el: any) =>
                                         el.type === "audio" ||
-                                        el.type === "audiosoundtrack"
+                                        el.type === "audiosoundtrack",
                                     ) || [];
                                   const currentAudio =
                                     audioElements[currentAudioIndex];
@@ -3956,7 +3955,7 @@ export default function EnglishClassCourse2({
                                           <button
                                             onClick={() =>
                                               setCurrentAudioIndex((i) =>
-                                                Math.max(0, i - 1)
+                                                Math.max(0, i - 1),
                                               )
                                             }
                                             disabled={currentAudioIndex === 0}
@@ -3989,14 +3988,14 @@ export default function EnglishClassCourse2({
                                           >
                                             {Math.min(
                                               currentAudioIndex + 1,
-                                              total
+                                              total,
                                             )}{" "}
                                             / {total}
                                           </span>
                                           <button
                                             onClick={() =>
                                               setCurrentAudioIndex((i) =>
-                                                Math.min(total - 1, i + 1)
+                                                Math.min(total - 1, i + 1),
                                               )
                                             }
                                             disabled={

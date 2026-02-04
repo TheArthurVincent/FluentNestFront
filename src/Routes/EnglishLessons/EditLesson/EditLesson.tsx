@@ -734,7 +734,7 @@ export default function EditLesson({
                   </button>
                 </div>
               </div>
-              {!fetchEventData && (
+     
                 <div>
                   <div style={labelStyle}>Language</div>
                   <select
@@ -758,7 +758,7 @@ export default function EditLesson({
                     <option value="pt">Portuguese (pt)</option>
                   </select>
                 </div>
-              )}
+
             </div>
 
             {!fetchEventData && (
