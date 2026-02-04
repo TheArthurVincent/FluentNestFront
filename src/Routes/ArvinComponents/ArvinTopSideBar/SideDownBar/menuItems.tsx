@@ -5,6 +5,7 @@ import {
   EarIcon,
   FeatherIcon,
   GearIcon,
+  GoogleDriveLogoIcon,
   MoneyIcon,
   NotebookIcon,
   ScreencastIcon,
@@ -135,6 +136,9 @@ const permissions = JSON.parse(
   localStorage.getItem("loggedIn") || "null",
 )?.permissions;
 
+const { googleDriveLink } =
+  JSON.parse(localStorage.getItem("loggedIn") || "null") || {};
+
 export const menuItems: MenuItem[] = [
   {
     label: "Início",
@@ -246,7 +250,7 @@ export const menuItems: MenuItem[] = [
     path: "/listening",
     orderMobile: 5,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {
@@ -257,7 +261,7 @@ export const menuItems: MenuItem[] = [
     path: "/sentence-mining",
     orderMobile: 5.1,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {
@@ -267,12 +271,22 @@ export const menuItems: MenuItem[] = [
     path: "/teaching-materials",
     orderSideBar: 11,
     isMobile: false,
-    showInBottomBar: false,
+    showInBottomBar: true,
+    justBottom: false,
+  },
+  {
+    label: "Minha Pasta",
+    father: "Estudos",
+    Icon: GoogleDriveLogoIcon,
+    path: googleDriveLink,
+    orderSideBar: 12,
+    isMobile: false,
+    showInBottomBar: true,
     justBottom: false,
   },
   {
     label: "Finanças",
-    orderSideBar: 12,
+    orderSideBar: 13,
     father: "Gestão",
     showInBottomBar: true,
     justBottom: false,
@@ -284,7 +298,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Configurações",
     father: "Gestão",
-    orderSideBar: 13,
+    orderSideBar: 14,
     Icon: GearIcon,
     path: "/adm-businessmanagement",
     justBottom: false,
@@ -292,10 +306,10 @@ export const menuItems: MenuItem[] = [
     admin: true,
   },
   {
-    label: "Perfil",
+    label: "Meu Perfil",
     Icon: UserCircleIcon,
     justBottom: false,
-    orderSideBar: 14,
+    orderSideBar: 15,
     father: "Gestão",
     showInBottomBar: true,
     path: "/my-profile",
@@ -303,7 +317,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Sair",
     Icon: SignOutIcon,
-    orderSideBar: 15,
+    orderSideBar: 16,
     path: "/login",
     showInBottomBar: true,
     justBottom: true,
