@@ -5,6 +5,7 @@ import {
   EarIcon,
   FeatherIcon,
   GearIcon,
+  GoogleDriveLogoIcon,
   MoneyIcon,
   NotebookIcon,
   ScreencastIcon,
@@ -134,6 +135,9 @@ const studentId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
 const permissions = JSON.parse(
   localStorage.getItem("loggedIn") || "null",
 )?.permissions;
+
+const { googleDriveLink } =
+  JSON.parse(localStorage.getItem("loggedIn") || "null") || {};
 
 export const menuItems: MenuItem[] = [
   {
@@ -271,8 +275,18 @@ export const menuItems: MenuItem[] = [
     justBottom: false,
   },
   {
-    label: "Finanças",
+    label: "Minha Pasta",
+    father: "Estudos",
+    Icon: GoogleDriveLogoIcon,
+    path: googleDriveLink,
     orderSideBar: 12,
+    isMobile: false,
+    showInBottomBar: true,
+    justBottom: false,
+  },
+  {
+    label: "Finanças",
+    orderSideBar: 13,
     father: "Gestão",
     showInBottomBar: true,
     justBottom: false,
@@ -284,7 +298,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Configurações",
     father: "Gestão",
-    orderSideBar: 13,
+    orderSideBar: 14,
     Icon: GearIcon,
     path: "/adm-businessmanagement",
     justBottom: false,
@@ -292,10 +306,10 @@ export const menuItems: MenuItem[] = [
     admin: true,
   },
   {
-    label: "Perfil",
+    label: "Meu Perfil",
     Icon: UserCircleIcon,
     justBottom: false,
-    orderSideBar: 14,
+    orderSideBar: 15,
     father: "Gestão",
     showInBottomBar: true,
     path: "/my-profile",
@@ -303,7 +317,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Sair",
     Icon: SignOutIcon,
-    orderSideBar: 15,
+    orderSideBar: 16,
     path: "/login",
     showInBottomBar: true,
     justBottom: true,

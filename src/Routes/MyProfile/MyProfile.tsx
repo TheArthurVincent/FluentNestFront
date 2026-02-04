@@ -85,7 +85,7 @@ const styles = {
    =============================== */
 const useIsDesktop = (bp = 700) => {
   const [isDesktop, setIsDesktop] = useState(
-    typeof window !== "undefined" ? window.innerWidth > bp : true
+    typeof window !== "undefined" ? window.innerWidth > bp : true,
   );
   useEffect(() => {
     const onResize = () => setIsDesktop(window.innerWidth > bp);
@@ -177,7 +177,7 @@ export function MyProfile({
       await axios.put(
         `${backDomain}/api/v1/students/${user.id}`,
         { ...editData },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       notifyAlert("Dados atualizados com sucesso!", partnerColor());
       updateInfo(user.id, headers);
@@ -196,14 +196,14 @@ export function MyProfile({
   const subscriptionStatus = user.askedToCancel
     ? "Cancelamento solicitado"
     : isSubscriptionActive
-    ? "Ativa"
-    : "Inativa";
+      ? "Ativa"
+      : "Inativa";
 
   const subscriptionType = user.subscriptionAsaas
     ? "Assinatura recorrente (cartão)"
     : user.paymentId
-    ? "Pagamento único / plano à vista"
-    : "Nenhuma assinatura encontrada";
+      ? "Pagamento único / plano à vista"
+      : "Nenhuma assinatura encontrada";
 
   const subscriptionInfoList = [
     {
@@ -253,7 +253,7 @@ export function MyProfile({
         const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7);
         const base64WithoutPrefix = resizedBase64.replace(
           /^data:image\/jpeg;base64,/,
-          ""
+          "",
         );
 
         resolve(base64WithoutPrefix);
@@ -270,7 +270,7 @@ export function MyProfile({
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/upload-picture/${user.id}`,
-        { file: base64 }
+        { file: base64 },
       );
 
       return response.data.pictureUrl;
@@ -290,7 +290,7 @@ export function MyProfile({
       await axios.put(
         `${backDomain}/api/v1/studentperspassword/${user.id}`,
         { newPassword },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       notifyAlert("Senha editada com sucesso!", "#000");
       setConfirmPassword("");
@@ -305,7 +305,7 @@ export function MyProfile({
     setLoading(true);
     try {
       const getLoggedUser: User = JSON.parse(
-        localStorage.getItem("loggedIn") || ""
+        localStorage.getItem("loggedIn") || "",
       );
       setUser(getLoggedUser);
       setLoading(false);
@@ -325,8 +325,8 @@ export function MyProfile({
       title: UniversalTexts.dateOfBirth,
       data: formatDateBr(
         new Date(user.dateOfBirth).setDate(
-          new Date(user.dateOfBirth).getDate() + 1
-        )
+          new Date(user.dateOfBirth).getDate() + 1,
+        ),
       ),
     },
   ];
@@ -335,7 +335,7 @@ export function MyProfile({
     if (user.subscriptionAsaas) {
       try {
         await axios.delete(
-          `${backDomain}/api/v1/asaas-teacher/cancel-subscription/${user.id}`
+          `${backDomain}/api/v1/asaas-teacher/cancel-subscription/${user.id}`,
         );
         notifyAlert("Assinatura cancelada com sucesso.");
         updateInfo(user.id, headers);
@@ -350,7 +350,7 @@ export function MyProfile({
       }
     } else if (user.paymentId) {
       notifyAlert(
-        "Fale comigo por WhatsApp, e prosseguirei com seu cancelamento. :)"
+        "Fale comigo por WhatsApp, e prosseguirei com seu cancelamento. :)",
       );
       setTimeout(() => {
         window.location.assign("https://wa.me/5511915857807");
@@ -705,18 +705,6 @@ export function MyProfile({
                         flexDirection: isDesktop ? "row" : "column",
                       }}
                     >
-                      <div>
-                        <p
-                          style={{
-                            color: "#6c757d",
-                            fontSize: "14px",
-                            margin: "0",
-                          }}
-                        >
-                          Gerencie suas informações pessoais
-                        </p>
-                      </div>
-
                       <div
                         style={{
                           display: "flex",
@@ -766,6 +754,35 @@ export function MyProfile({
                     </h2>
 
                     <div>
+                      <div
+                        style={{
+                          ...styles.profileItem,
+                          borderBottom: "none",
+                        }}
+                      >
+                        <span
+                          style={{
+                            ...styles.profileLabel,
+                            fontWeight: 1000,
+                            fontSize: "16px",
+                          }}
+                        >
+                          Minha Pasta
+                        </span>
+                        <a
+                          href={user.googleDriveLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: partnerColor(),
+                            fontWeight: 1000,
+                            textDecoration: "none",
+                            fontSize: "16px",
+                          }}
+                        >
+                          Acessar Minha Pasta →
+                        </a>
+                      </div>
                       {myProfileList.map((item, index) => (
                         <div key={index} style={styles.profileItem}>
                           <span style={styles.profileLabel}>{item.title}</span>
@@ -792,30 +809,6 @@ export function MyProfile({
                           {user.tutoree ? "Sim" : "Não"}
                         </span>
                       </div>
-
-                      {user.permissions === "teacher" && (
-                        <div
-                          style={{
-                            ...styles.profileItem,
-                            borderBottom: "none",
-                          }}
-                        >
-                          <span style={styles.profileLabel}>Google Drive</span>
-                          <a
-                            href={user.googleDriveLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              color: partnerColor(),
-                              textDecoration: "none",
-                              fontSize: "14px",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Acessar Drive →
-                          </a>
-                        </div>
-                      )}
                     </div>
 
                     {/* Botões ações perfil */}
@@ -862,7 +855,7 @@ export function MyProfile({
                           <button
                             onClick={() =>
                               window.location.assign(
-                                "https://wa.me/5511972369299"
+                                "https://wa.me/5511972369299",
                               )
                             }
                             style={styles.button}
@@ -872,7 +865,7 @@ export function MyProfile({
                           <Countdown
                             targetDate={new Date(user.limitDate)}
                             text={`Você e seus alunos podem continuar acessando o Arvin até ${formatDateBrWithHour(
-                              user.limitDate
+                              user.limitDate,
                             )}`}
                           />
                         </div>
@@ -936,13 +929,13 @@ export function MyProfile({
                               backgroundColor: user.askedToCancel
                                 ? "#fff3cd"
                                 : isSubscriptionActive
-                                ? "#e8f5e8"
-                                : "#f8d7da",
+                                  ? "#e8f5e8"
+                                  : "#f8d7da",
                               color: user.askedToCancel
                                 ? "#856404"
                                 : isSubscriptionActive
-                                ? "#388e3c"
-                                : "#721c24",
+                                  ? "#388e3c"
+                                  : "#721c24",
                             }}
                           >
                             {subscriptionStatus}
@@ -977,7 +970,7 @@ export function MyProfile({
                         <button
                           onClick={() =>
                             window.location.assign(
-                              "https://wa.me/5511972369299"
+                              "https://wa.me/5511972369299",
                             )
                           }
                           style={{

@@ -311,9 +311,6 @@ const ItemRow: FC<{
 };
 
 function getDefaultOpenGroups(): Record<string, boolean> {
-  // regra do usuário:
-  // - se permissions === "student": abrir "Estudos"
-  // - senão: abrir "Histórico"
   if (permissions === "student") return { Estudos: true };
   return { Histórico: true };
 }
