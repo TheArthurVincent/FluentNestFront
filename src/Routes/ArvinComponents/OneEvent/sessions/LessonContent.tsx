@@ -10,6 +10,7 @@ type LessonContentProps = {
   studentID: string;
   date?: string;
   seeExercise: boolean;
+  studentsIds?: string[];
 };
 
 const LessonContent: FC<LessonContentProps> = ({
@@ -18,6 +19,7 @@ const LessonContent: FC<LessonContentProps> = ({
   fetchEventData,
   studentID,
   seeExercise = false,
+  studentsIds,
 }) => {
   return (
     <>
@@ -39,6 +41,7 @@ const LessonContent: FC<LessonContentProps> = ({
           mainStudentID={studentID}
           classId={theLessonRender}
           headers={headers}
+          studentsIds={studentsIds}
         />
       </div>
     </>

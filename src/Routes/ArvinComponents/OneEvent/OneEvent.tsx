@@ -184,23 +184,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     }
   };
 
-  const handleScheduleReplenish = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("loggedIn") || "null");
-      const { id } = user;
-
-      const response = await axios.put(
-        `${backDomain}/api/v1/scheduleclass/${id}?eventId=${eventId}`,
-        {
-          headers,
-        },
-      );
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div
       style={{
@@ -802,6 +785,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       theLessonRender={event.theLessonRender}
                       eventId={event._id}
                       studentID={event.studentID}
+                      studentsIds={event.listOfStudents.map((a: any) => a._id)}
                     />
                   </div>
                 )}

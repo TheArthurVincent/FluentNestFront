@@ -57,6 +57,7 @@ interface EnglishClassCourse2ModelProps {
   fetchEventData?: any;
   canEditCourse: boolean | undefined;
   seeExercise?: boolean;
+  studentsIds?: string[];
 }
 
 export default function EnglishClassCourse2({
@@ -71,6 +72,7 @@ export default function EnglishClassCourse2({
   mainStudentID,
   canEditCourse,
   seeExercise,
+  studentsIds,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
 
@@ -3504,6 +3506,17 @@ export default function EnglishClassCourse2({
                                       studentId={mainStudentID || studentID}
                                       headers={headers}
                                       selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
+                                    />
+                                  ) : element.type === "images" ? (
+                                    <ImageLessonModel
+                                      studentId={studentID}
+                                      mainTag={theclass.mainTag}
+                                      id={myId}
+                                      headers={headers}
+                                      element={element}
+                                      selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
                                     />
                                   ) : element.type === "vocabulary" ? (
                                     <VocabularyLesson
@@ -3513,6 +3526,7 @@ export default function EnglishClassCourse2({
                                       studentId={mainStudentID || studentID}
                                       headers={headers}
                                       selectedVoice={selectedVoice}
+                                      studentsIds={studentsIds}
                                     />
                                   ) : element.type === "nfsentences" ? (
                                     <NoFlashcardsSentenceLessonModel
@@ -3547,22 +3561,6 @@ export default function EnglishClassCourse2({
                                     <MultipleTextsLessonModel
                                       headers={headers}
                                       element={element}
-                                    />
-                                  ) : 
-                                  // ) : element.type === "selectexercise" ? (
-                                  //   <SelectExercise
-                                  //     headers={headers}
-                                  //     element={element}
-                                  //     selectedVoice={selectedVoice}
-                                  //   />
-                                  element.type === "images" ? (
-                                    <ImageLessonModel
-                                      studentId={studentID}
-                                      mainTag={theclass.mainTag}
-                                      id={myId}
-                                      headers={headers}
-                                      element={element}
-                                      selectedVoice={selectedVoice}
                                     />
                                   ) : element.type === "explanation" ? (
                                     <ExplanationLesson

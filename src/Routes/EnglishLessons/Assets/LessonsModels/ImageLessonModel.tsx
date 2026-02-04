@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import axios from "axios";
@@ -27,13 +27,12 @@ interface ImageLessonModelProps {
   studentId: string;
   mainTag: string;
   selectedVoice: any;
+  studentsIds?: string[];
 }
 
-/** Codifica APENAS itens que dão problema em <img> e CSS: parênteses e espaços */
 const sanitizeUrlForImg = (u: string): string =>
   u.replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/ /g, "%20");
 
-/** Data URI de fallback */
 const fallbackSvgDataUri = (txt = "Imagem indisponível") => {
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
     <rect width='100%' height='100%' fill='#eaeaea'/>
@@ -48,16 +47,66 @@ export default function ImageLessonModel({
   studentId,
   mainTag,
   selectedVoice,
+  studentsIds,
 }: ImageLessonModelProps) {
   const actualHeaders = (headers as any) || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const { permissions } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+
+  const images: ImageItem[] = useMemo(() => {
+    return Array.isArray(element?.images) ? element.images : [];
+  }, [element?.images]);
+
+  useEffect(() => {
+    setClickedButtons(new Set());
+    setLoading(false);
+    setDone(false);
+  }, [element?.images]);
+
+  const getTargetIds = (): string[] => {
+    if (
+      permissions !== "student" &&
+      Array.isArray(studentsIds) &&
+      studentsIds.length > 0
+    ) {
+      return studentsIds;
+    }
+    return studentId ? [studentId] : [];
+  };
+
+  const resolveImgUrl = (item: ImageItem): string => {
+    const raw = item.img || item.image || item.url || "";
+    return raw ? sanitizeUrlForImg(raw) : "";
+  };
+
+  const handleSpeak = (item: ImageItem) => {
+    const toSpeak = item.english ?? item.text ?? "";
+    if (!toSpeak) {
+      notifyAlert("Sem texto para ler.");
+      return;
+    }
+    const lang = item.languages?.language1 ?? "en";
+    readText(toSpeak, true, lang, selectedVoice);
+  };
 
   const addNewCardsInverted = async (
     frontText: string,
     backText: string,
     img: string,
-    languages: Langs | null
+    languages: Langs | null,
   ) => {
+    const targetIds = getTargetIds();
+    if (targetIds.length === 0) {
+      notifyAlert(
+        "Nenhum aluno selecionado para adicionar flashcards.",
+        "orange",
+      );
+      return;
+    }
+
     const newCards = [
       {
         back: {
@@ -72,40 +121,106 @@ export default function ImageLessonModel({
         tags: [mainTag || ""],
       },
     ];
+
     try {
-      const response = await axios.post(
-        `${backDomain}/api/v1/flashcard/${studentId}`,
-        { newCards },
-        { headers: actualHeaders }
-      );
-      const showThis =
-        `${response?.data?.addedNewFlashcards ?? ""}` +
-        `${response?.data?.invalidNewCards ?? ""}`;
-      notifyAlert(showThis || "Enviado.", "green");
+      const messages: string[] = [];
+
+      for (const sid of targetIds) {
+        const response = await axios.post(
+          `${backDomain}/api/v1/flashcard/${sid}`,
+          { newCards },
+          { headers: actualHeaders },
+        );
+
+        const showThis =
+          `${response?.data?.addedNewFlashcards ?? ""}` +
+          `${response?.data?.invalidNewCards ?? ""}`;
+
+        if (showThis) messages.push(showThis);
+      }
+
+      notifyAlert(messages.join(" | ") || "Enviado.", "green");
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
       onLoggOut();
     }
   };
 
-  const handleSpeak = (item: ImageItem) => {
-    const toSpeak = item.english ?? item.text ?? "";
-    if (!toSpeak) {
-      notifyAlert("Sem texto para ler.");
+  const addAllCards = async () => {
+    if (loading) return;
+
+    const targetIds = getTargetIds();
+    if (!images.length) {
+      notifyAlert("Nenhuma imagem para adicionar.", "orange");
       return;
     }
-    const lang = item.languages?.language1 ?? "en";
-    readText(toSpeak, true, lang, selectedVoice);
-  };
+    if (targetIds.length === 0) {
+      notifyAlert(
+        "Nenhum aluno selecionado para adicionar flashcards.",
+        "orange",
+      );
+      return;
+    }
 
-  const resolveImgUrl = (item: ImageItem): string => {
-    const raw = item.img || item.image || item.url || "";
-    return raw ? sanitizeUrlForImg(raw) : "";
-  };
+    const newCards = images
+      .map((it) => {
+        const english = (it.english ?? it.text ?? "").trim();
+        const portuguese = (it.portuguese ?? "").trim();
+        const imgUrl = resolveImgUrl(it);
 
-  const images: ImageItem[] = Array.isArray(element?.images)
-    ? element.images
-    : [];
+        return {
+          back: {
+            text: english,
+            language: it.languages ? it.languages.language1 : "en",
+          },
+          front: {
+            text: portuguese,
+            language: it.languages ? it.languages.language2 : "pt",
+          },
+          img: imgUrl || "",
+          tags: [mainTag || ""],
+          __valid: Boolean(english && portuguese),
+        };
+      })
+      .filter((c: any) => c.__valid)
+      .map(({ __valid, ...rest }: any) => rest);
+
+    if (!newCards.length) {
+      notifyAlert(
+        "Para criar os flashcards invertidos, preciso de 'english' e 'portuguese' nos itens.",
+        "orange",
+      );
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const messages: string[] = [];
+
+      for (const sid of targetIds) {
+        const response = await axios.post(
+          `${backDomain}/api/v1/flashcard/${sid}`,
+          { newCards },
+          { headers: actualHeaders },
+        );
+
+        const showThis =
+          `${response?.data?.addedNewFlashcards ?? ""}` +
+          `${response?.data?.invalidNewCards ?? ""}`;
+
+        if (showThis) messages.push(showThis);
+      }
+
+      notifyAlert(messages.join(" | ") || "Enviado.", "green");
+      setClickedButtons(new Set(images.map((_, idx) => idx)));
+      setDone(true);
+    } catch (error) {
+      notifyAlert("Erro ao enviar cards");
+      onLoggOut();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!images.length) {
     return (
@@ -117,6 +232,35 @@ export default function ImageLessonModel({
 
   return (
     <div style={{ padding: 8 }}>
+      {/* Top bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 10,
+          gap: 8,
+        }}
+      >
+        {!done && (
+          <button
+            onClick={addAllCards}
+            disabled={loading}
+            style={{
+              border: "1px solid #e3e6ea",
+              background: "#fff",
+              color: loading ? "#ccc" : "#111",
+              fontWeight: 700,
+              padding: "6px 10px",
+              borderRadius: 6,
+              fontSize: 12,
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            {loading ? "Adding..." : "Add all"}
+          </button>
+        )}
+      </div>
+
       <div
         style={{
           display: "grid",
@@ -124,15 +268,14 @@ export default function ImageLessonModel({
           gap: 10,
           alignItems: "center",
           justifyItems: "center",
+          opacity: loading ? 0.9 : 1,
         }}
       >
         {images.map((image, i) => {
           const url = resolveImgUrl(image);
           const label = image.english ?? image.text ?? "";
-          const english = image.english ?? image.text ?? "";
-          const portuguese = image.portuguese ?? "";
-
-          // Escolhe um src final já com fallback imediato quando não houver URL
+          const english = (image.english ?? image.text ?? "").trim();
+          const portuguese = (image.portuguese ?? "").trim();
           const finalSrc = url || fallbackSvgDataUri();
 
           return (
@@ -153,10 +296,9 @@ export default function ImageLessonModel({
                 overflow: "hidden",
               }}
             >
-              {/* Imagem com onError para fallback */}
               <div style={{ position: "absolute", inset: 0 }}>
                 <img
-                  src={image.img || image.image || image.url || ""}
+                  src={finalSrc}
                   alt={label || `image-${i}`}
                   loading="lazy"
                   style={{
@@ -170,7 +312,6 @@ export default function ImageLessonModel({
                       fallbackSvgDataUri();
                   }}
                 />
-                {/* Gradiente para legibilidade dos botões */}
                 <div
                   style={{
                     position: "absolute",
@@ -181,7 +322,6 @@ export default function ImageLessonModel({
                 />
               </div>
 
-              {/* Barra superior: áudio e + / check */}
               <div
                 style={{
                   position: "relative",
@@ -195,8 +335,10 @@ export default function ImageLessonModel({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (loading) return;
                       handleSpeak(image);
                     }}
+                    disabled={loading}
                     style={{
                       backgroundColor: "transparent",
                       color: "white",
@@ -206,11 +348,11 @@ export default function ImageLessonModel({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      cursor: "pointer",
+                      cursor: loading ? "not-allowed" : "pointer",
                       fontSize: 14,
                       textShadow: "0 0 3px #555",
+                      opacity: loading ? 0.6 : 1,
                     }}
-                    aria-label="Ouvir texto"
                   >
                     <i className="fa fa-volume-up" />
                   </button>
@@ -221,25 +363,31 @@ export default function ImageLessonModel({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        if (loading) return;
+
                         const imgUrl = resolveImgUrl(image);
                         if (!english || !portuguese) {
                           notifyAlert(
-                            "Para criar o flashcard invertido, preciso de 'english' e 'portuguese' no item."
+                            "Para criar o flashcard invertido, preciso de 'english' e 'portuguese' no item.",
+                            "orange",
                           );
                           return;
                         }
+
                         addNewCardsInverted(
                           english,
                           portuguese,
                           imgUrl || "",
-                          image.languages ?? null
+                          image.languages ?? null,
                         );
+
                         setClickedButtons((prev) => {
                           const next = new Set(prev);
                           next.add(i);
                           return next;
                         });
                       }}
+                      disabled={loading}
                       style={{
                         backgroundColor: "transparent",
                         color: "white",
@@ -249,11 +397,11 @@ export default function ImageLessonModel({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        cursor: "pointer",
+                        cursor: loading ? "not-allowed" : "pointer",
                         fontSize: 14,
                         textShadow: "0 0 3px #555",
+                        opacity: loading ? 0.6 : 1,
                       }}
-                      aria-label="Adicionar aos flashcards"
                     >
                       <i className="fa fa-plus" />
                     </button>
@@ -269,21 +417,23 @@ export default function ImageLessonModel({
                       justifyContent: "center",
                       textShadow: "0 0 3px #555",
                     }}
-                    aria-label="Adicionado"
                   >
                     <i className="fa fa-check" />
                   </div>
                 )}
               </div>
 
-              {/* Botão inferior com o nome (agora realmente fala ao clicar) */}
               <div
                 role="button"
                 tabIndex={0}
-                onClick={() => handleSpeak(image)}
+                onClick={() => {
+                  if (loading) return;
+                  handleSpeak(image);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
+                    if (loading) return;
                     handleSpeak(image);
                   }
                 }}
@@ -300,8 +450,9 @@ export default function ImageLessonModel({
                   fontWeight: "bold",
                   letterSpacing: "0.5px",
                   textShadow: "0 0 3px #555",
-                  cursor: "pointer",
+                  cursor: loading ? "not-allowed" : "pointer",
                   userSelect: "none",
+                  opacity: loading ? 0.7 : 1,
                 }}
                 aria-label={`Falar: ${label || "—"}`}
               >
