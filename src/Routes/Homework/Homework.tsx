@@ -379,7 +379,7 @@ export default function Homework({
       fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
-        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
+        error.error || "Erro ao encontrar alunos"
       );
     } finally {
       setIsDeleting(false);
