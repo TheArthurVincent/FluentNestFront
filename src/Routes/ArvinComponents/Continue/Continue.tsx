@@ -35,7 +35,7 @@ export const Continue: FC<ContinueProps> = ({
         `${backDomain}/api/v1/next-event/${user.id}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       console.log("Response Next Event:", response);
       if (response.data.nextEvent) {
@@ -109,7 +109,7 @@ export const Continue: FC<ContinueProps> = ({
     if (loading) return "Carregando...";
     if (!hasNextClass) return "Acessar calendário";
     if (isLive) return "Entrar na aula ao vivo";
-    return "Acessar próxima aula";
+    return "Acessar";
   })();
 
   const titleLine = (() => {
@@ -123,8 +123,7 @@ export const Continue: FC<ContinueProps> = ({
 
   const timeLine = (() => {
     if (!hasNextClass || !NXTCLASS.date || !NXTCLASS.time) return "";
-    const dateBr = formatDateBr ? formatDateBr(NXTCLASS.date) : NXTCLASS.date;
-    return `${dateBr} • ${NXTCLASS.time}${
+    return `${NXTCLASS.date} • ${NXTCLASS.time}${
       endTimeStr ? ` - ${endTimeStr}` : ""
     }`;
   })();
