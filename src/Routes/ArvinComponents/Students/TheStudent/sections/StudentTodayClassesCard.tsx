@@ -37,7 +37,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
         `${backDomain}/api/v1/next-event/${student.id}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       if (response.data.nextEvent) {
@@ -260,6 +260,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
       <StudentTutoringEditorModal
         student={student}
         actualHeaders={actualHeaders}
+        onUpdated={fetchLastClassId}
       />
     </div>
   );
