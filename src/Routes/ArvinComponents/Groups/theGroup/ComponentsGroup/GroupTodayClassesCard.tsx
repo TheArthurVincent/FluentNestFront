@@ -12,6 +12,7 @@ import {
   cardTitle,
 } from "../../../Students/TheStudent/types/studentPage.styles";
 import { ModalEditClassesGroup } from "./ModalEditClassesGroup/ModalEditClassesGroup";
+import { GroupTutoringEditorModal } from "../../../../MyCalendar/CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendarGroup";
 
 interface GroupTodayClassesCardProps {
   group?: any;
@@ -40,7 +41,7 @@ export const GroupTodayClassesCard: FC<GroupTodayClassesCardProps> = ({
         `${backDomain}/api/v1/next-event/${group._id}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       if (response.data.nextEvent) {
@@ -260,7 +261,14 @@ export const GroupTodayClassesCard: FC<GroupTodayClassesCardProps> = ({
           </span>
         )}
       </>
-      <ModalEditClassesGroup group={group} actualHeaders={actualHeaders} />
+      {/* <ModalEditClassesGroup group={group} actualHeaders={actualHeaders} /> */}
+      <GroupTutoringEditorModal
+        group={group}
+        actualHeaders={actualHeaders}
+        onUpdated={() => {
+          fetchLastClassId();
+        }}
+      />
     </div>
   );
 };
