@@ -366,8 +366,10 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             maxWidth: "560px",
             background: "#fff",
             borderRadius: "12px",
+            height: "80vh",
             boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-            overflow: "hidden",
+            overflow: "auto",
+            padding: "5px",
           }}
           onClick={(e) => e.stopPropagation()}
         >
@@ -1021,8 +1023,12 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             color: "#4B5563",
           }}
         >
-          <Row label="Telefone" value={student.phoneNumber || "-"} />
-          <Row label="Endereço" value={student.address || "-"} />
+          <Row label="Nasc." value={student.dateOfBirth.split("T")[0] || "-"} />
+          <Row label="Tel." value={student.phoneNumber || "-"} />
+          <Row label="End." value={student.address || "-"} />
+          <Row label="CPF" value={student.doc || "-"} />
+          <Row label="Email" value={student.email || "-"} />
+          <Row label="ID" value={student.theId || "-"} />
           <div style={{ display: "flex", gap: 8 }}>
             <span
               style={{
@@ -1052,27 +1058,30 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               )}
             </span>
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <span
-              style={{
-                width: 60,
-                fontWeight: 600,
-                color: "#9CA3AF",
-              }}
-            >
-              Drive
-            </span>
-            <span style={{ flex: 1 }}>
-              {student.fee
-                ? student.fee.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })
-                : "-"}
-            </span>
-          </div>
+          {student.fee ? (
+            <div style={{ display: "flex", gap: 8 }}>
+              <span
+                style={{
+                  width: 60,
+                  fontWeight: 600,
+                  color: "#9CA3AF",
+                }}
+              >
+                Mensalidade
+              </span>
+              <span style={{ flex: 1 }}>
+                {student.fee
+                  ? student.fee.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })
+                  : "-"}
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
-
         <div
           style={{
             marginTop: 14,

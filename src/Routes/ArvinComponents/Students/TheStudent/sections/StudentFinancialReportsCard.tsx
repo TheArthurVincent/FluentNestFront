@@ -24,7 +24,7 @@ export const StudentFinancialReportsCard: FC<
     >
       <div style={cardTitle}>
         <MoneyIcon size={18} weight="bold" color="#111827" />
-        <span>Financial Reports</span>
+        <span>Financeiro</span>
       </div>
       {hasReports ? (
         <div
@@ -50,7 +50,6 @@ export const StudentFinancialReportsCard: FC<
                 <Th>Descrição</Th>
                 <Th>Valor</Th>
                 <Th>Pago</Th>
-                <Th>Criado em</Th>
               </tr>
             </thead>
             <tbody>
@@ -60,7 +59,6 @@ export const StudentFinancialReportsCard: FC<
                   <Td>{fr.description}</Td>
                   <Td>R$ {fr.amount}</Td>
                   <Td>{fr.paidFor ? "✅" : "⚠️"}</Td>
-                  <Td>{formatDate(fr.createdAt)}</Td>
                 </tr>
               ))}
             </tbody>
