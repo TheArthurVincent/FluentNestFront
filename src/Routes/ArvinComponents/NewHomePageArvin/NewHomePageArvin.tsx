@@ -20,7 +20,7 @@ import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMater
 import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
-import { Birthdays } from "../GridHomePageComponents/BirthDays";
+import { Birthdays } from "../GridHomePageComponents/Birthdays";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
