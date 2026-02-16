@@ -674,22 +674,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 Dados da aula
               </button>
               <button
-                onClick={() => handleChangeTab("conteudo")}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  borderRadius: 0,
-                  cursor: "pointer",
-                  border: "none",
-                  background: "transparent",
-                  color: activeTab === "conteudo" ? partnerColor() : "#64748B",
-                  outline: "none",
-                }}
-              >
-                Conteúdo da aula
-              </button>
-              <button
                 onClick={() => handleChangeTab("homework")}
                 style={{
                   padding: "6px 12px",
@@ -710,91 +694,42 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             {/* ABA: DADOS DA AULA */}
             {activeTab === "dados" && (
               <>
-                {(event.video || permissionsUser !== "student") && (
-                  <EventVideo
-                    allowedToEdit={permissionsUser !== "student"}
-                    fetchEventData={fetchEventData}
-                    headers={headers}
-                    videoUrl={event.video}
-                    evendId={event._id}
-                  />
-                )}
                 <div
                   style={{
                     display: "grid",
                     gap: 12,
-                    gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+                    gridTemplateColumns: "1fr",
                   }}
                 >
                   <MainInfoClass
                     event={event}
-                    allowedToEdit={permissionsUser !== "student"}
                     headers={headers}
+                    permissionsUser={permissionsUser}
                     isDesktop={isDesktop}
                     fetchEventData={fetchEventData}
                     evendId={event._id}
+                    allowedToEdit={permissionsUser !== "student"}
+                    theDescription={event.description}
+                    theTeacherDescription={event.teacherDescription}
+                    lesson={event.theLesson}
+                    status={event.status}
+                    title={event.student || "Aluno particular"}
                   />
-                  {(event.description || permissionsUser !== "student") && (
-                    <Description
-                      title={event.student || "Aluno particular"}
-                      status={event.status}
-                      allowedToEdit={permissionsUser !== "student"}
-                      lesson={event.theLesson}
-                      headers={headers}
-                      theDescription={event.description}
-                      theTeacherDescription={event.teacherDescription}
-                      evendId={event._id}
-                      fetchEventData={fetchEventData}
-                    />
-                  )}
-                  {lastLesson && permissionsUser !== "student" && (
-                    <LastClass
-                      replicateLastEvent={replicateLastEvent}
-                      headers={headers}
-                      evendId={event._id}
-                      allowedToEdit={permissionsUser !== "student"}
-                      isDesktop={isDesktop}
-                      lastLesson={lastLesson}
-                    />
-                  )}
                 </div>
-              </>
-            )}
-
-            {/* ABA: CONTEÚDO DA AULA */}
-            {activeTab === "conteudo" && (
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr",
-                  gap: 12,
-                }}
-              >
-                {(event.theLessonRender || permissionsUser !== "student") && (
-                  <div
-                    style={{
-                      paddingLeft: isDesktop ? 12 : 0,
-                      overflowY: "visible",
-                    }}
-                  >
-                    <LessonContent
-                      headers={headers}
-                      fetchEventData={fetchEventData}
-                      seeExercise={false}
-                      date={event.date}
-                      theLessonRender={event.theLessonRender}
-                      eventId={event._id}
-                      studentID={event.studentID}
-                      studentsIds={event.listOfStudents.map((a: any) => a._id)}
-                    />
-                  </div>
-                )}
+                <LessonContent
+                  headers={headers}
+                  fetchEventData={fetchEventData}
+                  permissionsUser={permissionsUser}
+                  seeExercise={false}
+                  date={event.date}
+                  theLessonRender={event.theLessonRender}
+                  eventId={event._id}
+                  studentID={event.studentID}
+                  studentsIds={event.listOfStudents.map((a: any) => a._id)}
+                />
                 {(event.board || permissionsUser !== "student") && (
                   <div
                     style={{
-                      position: isDesktop ? "sticky" : "relative",
-                      top: isDesktop ? 20 : 0,
-                      alignSelf: "start", // mantém o sticky no topo
                       height: "fit-content",
                       maxHeight: isDesktop ? "90vw" : "none",
                       zIndex: 5, // garante sobreposição
@@ -808,7 +743,17 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     />
                   </div>
                 )}
-              </div>
+                {lastLesson && permissionsUser !== "student" && (
+                  <LastClass
+                    replicateLastEvent={replicateLastEvent}
+                    headers={headers}
+                    evendId={event._id}
+                    allowedToEdit={permissionsUser !== "student"}
+                    isDesktop={isDesktop}
+                    lastLesson={lastLesson}
+                  />
+                )}
+              </>
             )}
             {activeTab === "homework" && (
               <>
@@ -839,6 +784,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   {(event.theLessonRender || permissionsUser !== "student") && (
                     <LessonContent
                       headers={headers}
+                      permissionsUser={permissionsUser}
                       fetchEventData={fetchEventData}
                       date={event.date}
                       seeExercise={true}
@@ -892,16 +838,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           </div>
         )}
       </div>
-
-      {isDesktop && (
-        <div
-          style={{
-            minHeight: 200,
-          }}
-        >
-          <Outlet />
-        </div>
-      )}
     </div>
   );
 };

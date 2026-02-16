@@ -49,18 +49,14 @@ export const SpanDisapear = styled.span`
   }
 `;
 export const IFrameVideoBlog = styled.iframe`
-  min-width: 800px;
-  min-height: 420px;
+    min-width: 700px;
+    min-height: 360px;
   box-sizing: border-box;
   margin-top: 1rem;
   margin-right: auto;
   margin-left: auto;
   position: relative;
   border: none;
-  @media (max-width: 860px) {
-    min-width: 700px;
-    min-height: 360px;
-  }
   @media (max-width: 780px) {
     min-width: 660px;
     min-height: 340px;

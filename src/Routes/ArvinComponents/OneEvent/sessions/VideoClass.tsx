@@ -90,7 +90,7 @@ const EventVideo: FC<EventVideoProps> = ({
       const response = await axios.put(
         `${backDomain}/api/v1/eventvideo/${id}`,
         { video },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       if (response) {
         fetchEventData();
@@ -199,7 +199,7 @@ const EventVideo: FC<EventVideoProps> = ({
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 
@@ -208,47 +208,34 @@ const EventVideo: FC<EventVideoProps> = ({
   return (
     <div
       style={{
-        ...cardBase,
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
+        display: "grid",
+        gap: 12,
       }}
     >
-      <div
-        style={{
-          ...cardTitle,
-          marginBottom: 12,
-          justifyContent: "space-between",
-        }}
-      >
-        <span>Vídeo</span>
-      </div>
+      {allowedToEdit && hasVideo && (
+        <button
+          style={{
+            padding: "8px 16px",
+            backgroundColor: partnerColor(),
+            color: "#fff",
+            maxWidth: "fit-content",
+            border: "none",
+            marginLeft: "auto",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+          onClick={openModal}
+        >
+          Editar vídeo
+        </button>
+      )}
+
       {hasVideo ? (
         <>
           {/* Preview do vídeo existente */}
           <IFrameVideoBlog src={getEmbedUrl(videoUrl!)} />
-
-          {/* Botão que abre o modal */}
-          {allowedToEdit && (
-            <button
-              style={{
-                padding: "8px 16px",
-                backgroundColor: partnerColor(),
-                color: "#fff",
-                maxWidth: "fit-content",
-                border: "none",
-                marginLeft: "auto",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-              onClick={openModal}
-            >
-              Editar vídeo
-            </button>
-          )}
-
           {renderModal()}
         </>
       ) : (

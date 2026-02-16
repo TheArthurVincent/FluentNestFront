@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import axios from "axios";
@@ -7,6 +8,12 @@ import {
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import { Tooltip } from "@mui/material";
+import ImageToWordExercise, {
+  defaultLabels as imageToWordDefaultLabels,
+} from "../../Exercises/Exercises/ImageToWordExercise";
+import WordToImageExercise, {
+  defaultLabels as wordToImageDefaultLabels,
+} from "../../Exercises/Exercises/WordToImageExercise";
 
 type Langs = { language1: string; language2: string };
 
@@ -22,12 +29,17 @@ type ImageItem = {
 
 interface ImageLessonModelProps {
   headers: MyHeadersType | null;
-  element: { images?: ImageItem[] } | any;
+  element: { images?: ImageItem[]; courseId?: string; language?: string } | any;
   id?: string;
   studentId: string;
   mainTag: string;
   selectedVoice: any;
   studentsIds?: string[];
+
+  // para registrar /exercise-done/:courseId
+  courseId?: string;
+  language?: string;
+  exerciseScore?: (points: number, description?: string, id?: string) => void;
 }
 
 const sanitizeUrlForImg = (u: string): string =>
@@ -48,11 +60,20 @@ export default function ImageLessonModel({
   mainTag,
   selectedVoice,
   studentsIds,
+  courseId,
+  language,
+  exerciseScore,
 }: ImageLessonModelProps) {
   const actualHeaders = (headers as any) || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+
+  // Modal + Tabs (exercícios)
+  const [showExercisesModal, setShowExercisesModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"imageToWord" | "wordToImage">(
+    "imageToWord",
+  );
 
   const { permissions } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
 
@@ -222,6 +243,35 @@ export default function ImageLessonModel({
     }
   };
 
+  // Pool para os exercícios (shape: { img, english/portuguese/text })
+  const exerciseImages = useMemo(() => {
+    return (Array.isArray(images) ? images : [])
+      .map((it) => {
+        const img = resolveImgUrl(it);
+        return {
+          img,
+          english: (it.english ?? it.text ?? "").trim(),
+          portuguese: (it.portuguese ?? "").trim(),
+          text: (it.text ?? "").trim(),
+        };
+      })
+      .filter((it) => it.img && (it.english || it.portuguese || it.text));
+  }, [images]);
+
+  const effectiveCourseId = courseId || element?.courseId;
+  const effectiveLanguage = (language || element?.language || "en") as string;
+
+  const tabBtn = (active: boolean): React.CSSProperties => ({
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: `1px solid ${active ? "#111" : "#E5E7EB"}`,
+    background: active ? "#111" : "#FFFFFF",
+    color: active ? "#fff" : "#111827",
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 700,
+  });
+
   if (!images.length) {
     return (
       <div style={{ padding: 8, opacity: 0.8 }}>
@@ -259,6 +309,23 @@ export default function ImageLessonModel({
             {loading ? "Adding..." : "Add all"}
           </button>
         )}
+
+        {/* Abrir exercícios */}
+        <button
+          onClick={() => setShowExercisesModal(true)}
+          style={{
+            border: "1px solid #111",
+            background: "#111",
+            color: "#fff",
+            fontWeight: 700,
+            padding: "6px 10px",
+            borderRadius: 6,
+            fontSize: 12,
+            cursor: "pointer",
+          }}
+        >
+          Exercises
+        </button>
       </div>
 
       <div
@@ -462,6 +529,122 @@ export default function ImageLessonModel({
           );
         })}
       </div>
+
+      {/* MODAL DOS EXERCÍCIOS (2 tabs) */}
+      {showExercisesModal &&
+        ReactDOM.createPortal(
+          <>
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(15, 23, 42, 0.90)",
+                zIndex: 999,
+              }}
+              onClick={() => setShowExercisesModal(false)}
+            />
+
+            <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 20px 40px rgba(15, 23, 42, 0.25)",
+                width: "92vw",
+                maxWidth: 980,
+                maxHeight: "88vh",
+                padding: 12,
+                zIndex: 1000,
+                overflow: "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
+                >
+                  Image Exercises
+                </div>
+
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <button
+                    style={tabBtn(activeTab === "imageToWord")}
+                    onClick={() => setActiveTab("imageToWord")}
+                  >
+                    Image to Word
+                  </button>
+                  <button
+                    style={tabBtn(activeTab === "wordToImage")}
+                    onClick={() => setActiveTab("wordToImage")}
+                  >
+                    Word to Image
+                  </button>
+
+                  <button
+                    onClick={() => setShowExercisesModal(false)}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      fontSize: 18,
+                      lineHeight: 1,
+                      marginLeft: 4,
+                    }}
+                    aria-label="Fechar"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {activeTab === "imageToWord" && (
+                <ImageToWordExercise
+                  images={exerciseImages}
+                  labels={imageToWordDefaultLabels}
+                  studentId={studentId}
+                  courseId={effectiveCourseId}
+                  selectedVoice={selectedVoice}
+                  language={effectiveLanguage}
+                  exerciseScore={(points, desc) => {
+                    exerciseScore?.(
+                      points,
+                      desc || "ImageToWord",
+                      element?._id || element?.id,
+                    );
+                  }}
+                />
+              )}
+
+              {activeTab === "wordToImage" && (
+                <WordToImageExercise
+                  images={exerciseImages}
+                  labels={wordToImageDefaultLabels}
+                  studentId={studentId}
+                  courseId={effectiveCourseId}
+                  exerciseScore={(points, desc) => {
+                    exerciseScore?.(
+                      points,
+                      desc || "WordToImage",
+                      element?._id || element?.id,
+                    );
+                  }}
+                />
+              )}
+            </div>
+          </>,
+          document.body,
+        )}
     </div>
   );
 }

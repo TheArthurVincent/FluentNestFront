@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import { categoryList } from "../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
@@ -9,15 +9,8 @@ import {
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
-
-type MainInfoClassProps = {
-  headers: MyHeadersType;
-  evendId: string;
-  fetchEventData: () => void;
-  isDesktop?: boolean;
-  event?: any;
-  allowedToEdit?: boolean;
-};
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import EventVideo from "./VideoClass";
 
 type FreeEventItem = {
   _id: string;
@@ -25,7 +18,31 @@ type FreeEventItem = {
   time: string; // "10:00"
 };
 
-// ---------- estilos ----------
+type LessonShape = {
+  id: string;
+  title: string;
+  module: string;
+  course: string;
+};
+
+type MainInfoClassProps = {
+  headers: MyHeadersType;
+  evendId: string;
+  fetchEventData: () => void;
+  isDesktop?: boolean;
+  event?: any;
+  permissionsUser?: string;
+  allowedToEdit?: boolean;
+
+  // Description props (mantendo compatibilidade)
+  theDescription?: string;
+  theTeacherDescription?: string;
+  lesson?: LessonShape | null;
+  status: string;
+  title: string;
+};
+
+// ---------- estilos (mesma vibe, menor) ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -74,25 +91,6 @@ const primaryBtnStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
-// tabs
-const tabsRowStyle: React.CSSProperties = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: 8,
-  padding: "0 12px 12px 12px",
-};
-
-const tabBtnStyle = (active: boolean): React.CSSProperties => ({
-  borderRadius: 10,
-  border: `1px solid ${active ? partnerColor() : "#e2e8f0"}`,
-  background: active ? "rgba(84,191,8,0.10)" : "#fff",
-  color: "#0f172a",
-  padding: "10px 10px",
-  cursor: "pointer",
-  fontSize: 13,
-  fontWeight: active ? 700 : 600,
-});
-
 const MainInfoClass: FC<MainInfoClassProps> = ({
   headers,
   evendId,
@@ -100,36 +98,57 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   event,
   fetchEventData,
   allowedToEdit,
+  permissionsUser,
+  theDescription,
+  theTeacherDescription,
+  lesson,
+  status,
+  title,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
+  // ===================== MODAIS / ESTADOS (MAIN INFO) =====================
+  const [isMainInfoModalOpen, setIsMainInfoModalOpen] = useState(false);
+  const [savingMainInfo, setSavingMainInfo] = useState(false);
 
-  // modal "Reagendar"
-  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
-  const [rescheduleTab, setRescheduleTab] = useState<"fixed" | "free">("fixed");
-  const [rescheduling, setRescheduling] = useState(false);
-
-  // estados para edição (modal antigo)
   const [date, setDate] = useState<string>(event?.date || "");
   const [time, setTime] = useState<string>(event?.time || "");
   const [link, setLink] = useState<string>(event?.link || "");
   const [category, setCategory] = useState<string>(event?.category || "");
   const [duration, setDuration] = useState<number | "">(event?.duration ?? "");
 
-  // estados para reagendar (tab livre)
+  const presetOptions = [30, 45, 60, 90];
+  const [preset, setPreset] = useState<string>("");
+
+  // ===================== MODAIS / ESTADOS (REAGENDAR) =====================
+  const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
+  const [rescheduleTab, setRescheduleTab] = useState<"fixed" | "free">("fixed");
+  const [rescheduling, setRescheduling] = useState(false);
+
   const [newDate, setNewDate] = useState<string>(event?.date || "");
   const [newTime, setNewTime] = useState<string>(event?.time || "");
 
-  // estados para tab "fixo"
   const [loadingEventsFree, setLoadingEventsFree] = useState(false);
   const [eventsFreeArray, setEventsFreeArray] = useState<FreeEventItem[]>([]);
   const [selectedFreeEvent, setSelectedFreeEvent] =
     useState<FreeEventItem | null>(null);
 
-  // presets de duração
-  const presetOptions = [30, 45, 60, 90];
-  const [preset, setPreset] = useState<string>("");
+  const [allowedToReschedule, setAllowedToReschedule] = useState(false);
 
+  // ===================== MODAIS / ESTADOS (DESCRIÇÕES) =====================
+  const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+  const [savingDescription, setSavingDescription] = useState(false);
+
+  const [description, setDescription] = useState<string>(theDescription || "");
+  const [teacherDescription, setTeacherDescription] = useState<string>(
+    theTeacherDescription || "",
+  );
+
+  const [theLesson, setTheLesson] = useState<LessonShape | null>(
+    lesson || null,
+  );
+  const [loadingDescriptionAI, setLoadingDescriptionAI] = useState(false);
+  const [change, setChange] = useState(false);
+
+  // ===================== SYNC COM EVENT / PROPS =====================
   useEffect(() => {
     setDate(event?.date || "");
     setTime(event?.time || "");
@@ -145,14 +164,30 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
     setNewDate(event?.date || "");
     setNewTime(event?.time || "");
-
-    // ao trocar evento, limpa seleção do fixo
     setSelectedFreeEvent(null);
   }, [event]);
 
+  useEffect(() => {
+    setDescription(theDescription || "");
+  }, [theDescription]);
+
+  useEffect(() => {
+    setTeacherDescription(theTeacherDescription || "");
+  }, [theTeacherDescription]);
+
+  useEffect(() => {
+    setTheLesson(lesson || null);
+  }, [lesson]);
+
+  const hasDescription = useMemo(
+    () => !!theDescription && theDescription.trim().length > 0,
+    [theDescription],
+  );
+
+  // ===================== API: MAIN INFO =====================
   const updateMainInfo = async (id: string) => {
     try {
-      setSaving(true);
+      setSavingMainInfo(true);
 
       const payload: any = {
         date,
@@ -171,38 +206,24 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       if (response) fetchEventData();
     } catch (error) {
       console.error("Erro ao atualizar informações do evento", error);
+      notifyAlert("Erro ao salvar informações do evento.", partnerColor());
     } finally {
-      setSaving(false);
+      setSavingMainInfo(false);
     }
   };
 
-  const rescheduleEvent = async (
-    id: string,
-    forced?: { date: string; time: string; idNew?: string },
-  ) => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/event-reschedule/${id}`,
-        { forced },
-        { headers: headers as any },
-      );
-
-      window.location.reload();
-    } catch (error) {
-      console.error("Erro ao reagendar o evento", error);
-    } finally {
-      setRescheduling(false);
-    }
+  const handleSaveMainInfo = async () => {
+    await updateMainInfo(evendId);
+    setIsMainInfoModalOpen(false);
   };
 
-  const [allowedToReschedule, setAllowedToReschedule] = useState(false);
+  // ===================== API: REAGENDAR =====================
   const fetchEventsFree = async () => {
     const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "false");
     if (!loggedIn) return;
 
     try {
       setLoadingEventsFree(true);
-
       const response = await axios.get(
         `${backDomain}/api/v1/free-events/${loggedIn.id || loggedIn._id}`,
         { headers: headers as any },
@@ -218,13 +239,26 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     }
   };
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    if (!saving) setIsModalOpen(false);
-  };
-  const handleSave = async () => {
-    await updateMainInfo(evendId);
-    setIsModalOpen(false);
+  const rescheduleEvent = async (
+    id: string,
+    forced?: { date: string; time: string; idNew?: string },
+  ) => {
+    try {
+      setRescheduling(true);
+      await axios.put(
+        `${backDomain}/api/v1/event-reschedule/${id}`,
+        { forced },
+        { headers: headers as any },
+      );
+
+      // mantém seu comportamento atual
+      window.location.reload();
+    } catch (error) {
+      console.error("Erro ao reagendar o evento", error);
+      notifyAlert("Erro ao reagendar a aula.", partnerColor());
+    } finally {
+      setRescheduling(false);
+    }
   };
 
   const openRescheduleModal = () => {
@@ -234,29 +268,147 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     setIsRescheduleOpen(true);
   };
 
-  const closeRescheduleModal = () => {
-    if (!rescheduling) setIsRescheduleOpen(false);
+  // ===================== API: DESCRIÇÃO =====================
+  const updateDescription = async (id: string) => {
+    try {
+      setSavingDescription(true);
+      const response = await axios.put(
+        `${backDomain}/api/v1/eventdescription/${id}`,
+        { description, theLesson, teacherDescription },
+        { headers: headers as any },
+      );
+      if (response) fetchEventData();
+    } catch (error) {
+      console.log(error, "Erro ao atualizar descrição do evento");
+      notifyAlert("Erro ao salvar descrição da aula.", partnerColor());
+    } finally {
+      setSavingDescription(false);
+    }
   };
 
-  const renderModal = () => {
-    if (!isModalOpen) return null;
+  const handleSaveDescription = async () => {
+    await updateDescription(evendId);
+    setIsDescriptionModalOpen(false);
+  };
+
+  const handleClassSummary = async () => {
+    setLoadingDescriptionAI(true);
+
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description/${myId}`,
+          {
+            status,
+            description: description
+              ? description
+              : `Aula particular de ${title}`,
+            classTitle: theLesson?.title,
+            evendId: evendId || "",
+          },
+          { headers: headers as any },
+        );
+
+        const adapted = response.data.adapted;
+        setDescription(adapted);
+        setTeacherDescription(response.data.teacherDescription);
+        setChange(!change);
+      } catch (error) {
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      } finally {
+        setLoadingDescriptionAI(false);
+      }
+    } else {
+      setLoadingDescriptionAI(false);
+    }
+  };
+
+  // ===================== LISTA DE HORÁRIOS FUTUROS (FIXO) =====================
+  const futureEventsFree = useMemo(() => {
+    const now = new Date();
+    return (eventsFreeArray || []).filter((it) => {
+      const [y, m, d] = it.date.slice(0, 10).split("-").map(Number);
+      const [hh, mm] = (it.time || "00:00").split(":").map(Number);
+      const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
+      return dt >= now;
+    });
+  }, [eventsFreeArray]);
+
+  const FreeEventItemButton = ({
+    item,
+    selected,
+    onClick,
+  }: {
+    item: FreeEventItem;
+    selected: boolean;
+    onClick: () => void;
+  }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={rescheduling}
+      style={{
+        width: "100%",
+        textAlign: "left",
+        padding: "10px 12px",
+        borderRadius: 8,
+        color: "#0f172a",
+        border: `1px solid ${selected ? partnerColor() : "#e2e8f0"}`,
+        background: selected ? "rgba(84,191,8,0.12)" : "#fff",
+        cursor: "pointer",
+        fontSize: 13,
+        fontWeight: selected ? 700 : 500,
+      }}
+    >
+      {(() => {
+        const [y, m, d] = item.date.slice(0, 10).split("-").map(Number);
+        const [hh, mm] = (item.time || "00:00").split(":").map(Number);
+        const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
+
+        const dateWithWeekday = dt.toLocaleDateString("pt-BR", {
+          weekday: "short",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+
+        const timeBR = dt.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        return `${dateWithWeekday} • ${timeBR}`;
+      })()}
+    </button>
+  );
+
+  // ===================== MODAL: EDITAR INFORMAÇÕES DO EVENTO =====================
+  const renderMainInfoModal = () => {
+    if (!isMainInfoModalOpen) return null;
     if (typeof document === "undefined") return null;
 
+    const close = () => {
+      if (!savingMainInfo) setIsMainInfoModalOpen(false);
+    };
+
     return createPortal(
-      <div style={overlayStyle}>
+      <div style={overlayStyle} onClick={close}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           <div
             style={{
-              padding: "20px 16px",
-              maxWidth: "fit-content",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 16,
-              fontWeight: 600,
+              padding: "16px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#0f172a",
             }}
           >
-            Editar informações da aula
+            Editar informações do evento
           </div>
 
           <div style={{ padding: 12, display: "grid", gap: 12 }}>
@@ -264,7 +416,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               <label style={{ fontSize: 12, color: "#334155" }}>Data</label>
               <input
                 type="date"
-                disabled={saving}
+                disabled={savingMainInfo}
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 style={inputStyle}
@@ -275,7 +427,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               <label style={{ fontSize: 12, color: "#334155" }}>Horário</label>
               <input
                 type="time"
-                disabled={saving}
+                disabled={savingMainInfo}
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 style={inputStyle}
@@ -288,7 +440,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               </label>
               <input
                 type="text"
-                disabled={saving}
+                disabled={savingMainInfo}
                 value={link}
                 onChange={(e) => setLink(e.target.value)}
                 style={inputStyle}
@@ -300,19 +452,20 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 Categoria
               </label>
               <select
-                disabled={saving}
+                disabled={savingMainInfo}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 style={{ ...inputStyle, paddingRight: 24 }}
               >
                 <option value="">Selecione uma categoria...</option>
                 {categoryList.map((cat) => {
-                  if (cat.forStudent == true)
+                  if (cat.forStudent === true) {
                     return (
                       <option key={cat.value} value={cat.value}>
                         {cat.text}
                       </option>
                     );
+                  }
                   return null;
                 })}
               </select>
@@ -324,7 +477,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               </label>
 
               <select
-                disabled={saving}
+                disabled={savingMainInfo}
                 value={preset}
                 onChange={(e) => {
                   const v = e.target.value;
@@ -348,7 +501,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               <input
                 type="number"
                 min={1}
-                disabled={saving || preset !== "custom"}
+                disabled={savingMainInfo || preset !== "custom"}
                 value={duration === "" ? "" : duration}
                 onChange={(e) => {
                   const val = e.target.value;
@@ -362,11 +515,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 placeholder="Digite a duração em minutos"
                 style={inputStyle}
               />
-
-              <span style={{ fontSize: 11, color: "#94a3b8" }}>
-                Escolha uma duração padrão ou selecione &quot;Outro&quot; e
-                digite um valor manualmente.
-              </span>
             </div>
           </div>
 
@@ -382,17 +530,20 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             >
               <button
                 style={ghostBtnStyle}
-                onClick={closeModal}
-                disabled={saving}
+                onClick={close}
+                disabled={savingMainInfo}
               >
                 Cancelar
               </button>
               <button
-                onClick={handleSave}
-                style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-                disabled={saving}
+                onClick={handleSaveMainInfo}
+                style={{
+                  ...primaryBtnStyle,
+                  opacity: savingMainInfo ? 0.7 : 1,
+                }}
+                disabled={savingMainInfo}
               >
-                {saving ? "Salvando..." : "Salvar"}
+                {savingMainInfo ? "Salvando..." : "Salvar"}
               </button>
             </div>
           )}
@@ -402,109 +553,72 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
-  const FreeEventItemButton = ({
-    item,
-    selected,
-    onClick,
-  }: {
-    item: FreeEventItem;
-    selected: boolean;
-    onClick: () => void;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={rescheduling}
-      style={{
-        width: "100%",
-        textAlign: "left",
-        padding: "10px 12px",
-        borderRadius: 8,
-        color: "#0f172a",
-        display:
-          new Date(item.date + "T" + (item.time || "00:00")) < new Date()
-            ? "none"
-            : "block",
-        border: `1px solid ${selected ? partnerColor() : "#e2e8f0"}`,
-        background: selected ? "rgba(84,191,8,0.12)" : "#fff",
-        cursor: "pointer",
-        fontSize: 13,
-        fontWeight: selected ? 700 : 500,
-      }}
-    >
-      {(() => {
-        // item.date = "yyyy-mm-dd"
-        const [y, m, d] = item.date.slice(0, 10).split("-").map(Number);
-        const [hh, mm] = (item.time || "00:00").split(":").map(Number);
-
-        // Data local (sem UTC shift)
-        const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0, 0);
-
-        const dateWithWeekday = dt.toLocaleDateString("pt-BR", {
-          weekday: "short",
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
-
-        const timeBR = dt.toLocaleTimeString("pt-BR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-
-        return `${dateWithWeekday} • ${timeBR}`;
-      })()}
-    </button>
-  );
-
-  // modal Reagendar
+  // ===================== MODAL: REAGENDAR =====================
   const renderRescheduleModal = () => {
     if (!isRescheduleOpen) return null;
     if (typeof document === "undefined") return null;
 
+    const close = () => {
+      if (!rescheduling) setIsRescheduleOpen(false);
+    };
+
     return createPortal(
-      <div style={overlayStyle} onClick={closeRescheduleModal}>
+      <div style={overlayStyle} onClick={close}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           <div
             style={{
-              padding: "20px 16px 10px 16px",
-              maxWidth: "fit-content",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 16,
-              fontWeight: 600,
+              padding: "16px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#0f172a",
             }}
           >
             Reagendar aula
           </div>
 
-          {/* {allowedToEdit && (
-            <div style={tabsRowStyle}>
-              <button
-                type="button"
-                style={tabBtnStyle(rescheduleTab === "fixed")}
-                onClick={() => setRescheduleTab("fixed")}
-                disabled={rescheduling}
-              >
-                Horários fixos
-              </button>
-              <button
-                type="button"
-                style={tabBtnStyle(rescheduleTab === "free")}
-                onClick={() => setRescheduleTab("free")}
-                disabled={rescheduling}
-              >
-                Horário livre
-              </button>
-            </div>
-          )} */}
-          {!allowedToReschedule ? (
-            <div
+          {/* Tabs preservadas (estão no componente original; continuam aqui) */}
+          {/* 
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: "12px" }}>
+            <button
+              type="button"
               style={{
-                padding: 12,
+                borderRadius: 10,
+                border: `1px solid ${rescheduleTab === "fixed" ? partnerColor() : "#e2e8f0"}`,
+                background: rescheduleTab === "fixed" ? "rgba(84,191,8,0.10)" : "#fff",
+                color: "#0f172a",
+                padding: "10px 10px",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: rescheduleTab === "fixed" ? 700 : 600,
               }}
+              onClick={() => setRescheduleTab("fixed")}
+              disabled={rescheduling}
             >
+              Horários fixos
+            </button>
+            <button
+              type="button"
+              style={{
+                borderRadius: 10,
+                border: `1px solid ${rescheduleTab === "free" ? partnerColor() : "#e2e8f0"}`,
+                background: rescheduleTab === "free" ? "rgba(84,191,8,0.10)" : "#fff",
+                color: "#0f172a",
+                padding: "10px 10px",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: rescheduleTab === "free" ? 700 : 600,
+              }}
+              onClick={() => setRescheduleTab("free")}
+              disabled={rescheduling}
+            >
+              Horário livre
+            </button>
+          </div>
+          */}
+
+          {!allowedToReschedule ? (
+            <div style={{ padding: 12 }}>
               Você excedeu o limite de reagendamentos.
             </div>
           ) : (
@@ -527,7 +641,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     >
                       Carregando horários...
                     </div>
-                  ) : eventsFreeArray.length === 0 ? (
+                  ) : futureEventsFree.length === 0 ? (
                     <div
                       style={{
                         border: "1px dashed #e2e8f0",
@@ -549,7 +663,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         paddingRight: 4,
                       }}
                     >
-                      {eventsFreeArray.map((it) => (
+                      {futureEventsFree.map((it) => (
                         <FreeEventItemButton
                           key={it._id}
                           item={it}
@@ -560,7 +674,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     </div>
                   )}
 
-                  {/* confirmação irreversível */}
                   {selectedFreeEvent && (
                     <div
                       style={{
@@ -583,20 +696,14 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         Reagendar para esse horário (esta ação não pode ser
                         desfeita)
                       </div>
+
                       <div
-                        style={{
-                          display: "flex",
-                          gap: 8,
-                          marginTop: 6,
-                          marginLeft: "auto",
-                        }}
+                        style={{ display: "flex", gap: 8, marginLeft: "auto" }}
                       >
                         <button
                           type="button"
                           disabled={rescheduling}
-                          onClick={async () => {
-                            setSelectedFreeEvent(null);
-                          }}
+                          onClick={() => setSelectedFreeEvent(null)}
                           style={{
                             ...primaryBtnStyle,
                             border: "1px solid #eee",
@@ -606,12 +713,12 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                           }}
                         >
                           Cancelar
-                        </button>{" "}
+                        </button>
+
                         <button
                           type="button"
                           disabled={rescheduling}
                           onClick={async () => {
-                            // ação irreversível: reage na hora
                             await rescheduleEvent(evendId, {
                               date: selectedFreeEvent.date,
                               time: selectedFreeEvent.time,
@@ -662,7 +769,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               )}
             </div>
           )}
-          {/* Footer com Salvar (não faz nada) e Cancelar */}
+
           <div
             style={{
               padding: 12,
@@ -674,7 +781,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           >
             <button
               style={ghostBtnStyle}
-              onClick={closeRescheduleModal}
+              onClick={close}
               disabled={rescheduling}
             >
               Cancelar
@@ -682,9 +789,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
             <button
               type="button"
-              onClick={() => {
-                // por enquanto não faz nada
-              }}
+              onClick={() => {}}
               style={{
                 ...primaryBtnStyle,
                 opacity: 0.7,
@@ -702,162 +807,358 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
+  // ===================== MODAL: EDITAR DESCRIÇÕES =====================
+  const renderDescriptionModal = () => {
+    if (!isDescriptionModalOpen) return null;
+    if (typeof document === "undefined") return null;
+
+    const close = () => {
+      if (!savingDescription) setIsDescriptionModalOpen(false);
+    };
+
+    return createPortal(
+      <div style={overlayStyle} onClick={close}>
+        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+          <div
+            style={{
+              padding: "16px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#0f172a",
+            }}
+          >
+            Editar descrições
+          </div>
+
+          <div style={{ padding: 12, display: "grid", gap: 12 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 6,
+                fontSize: 13,
+                color: "#0f172a",
+              }}
+            >
+              <div>Descrição geral (visível para aluno):</div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                  gridTemplateColumns: "1fr auto",
+                  alignItems: "flex-end",
+                }}
+              >
+                <textarea
+                  disabled={savingDescription || loadingDescriptionAI}
+                  value={loadingDescriptionAI ? "Carregando..." : description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
+                  style={{
+                    ...inputStyle,
+                    minHeight: 120,
+                    resize: "vertical",
+                    fontFamily: "Plus Jakarta Sans",
+                  }}
+                />
+
+                <button
+                  onClick={handleClassSummary}
+                  disabled={
+                    savingDescription ||
+                    loadingDescriptionAI ||
+                    !description.trim()
+                  }
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "fit-content",
+                    height: 32,
+                    borderRadius: 6,
+                    border: "1px solid #cbd5e1",
+                    backgroundColor:
+                      savingDescription ||
+                      loadingDescriptionAI ||
+                      !description.trim()
+                        ? "grey"
+                        : "white",
+                    cursor:
+                      savingDescription ||
+                      loadingDescriptionAI ||
+                      !description.trim()
+                        ? "not-allowed"
+                        : "pointer",
+                  }}
+                  title="Resumo com IA"
+                >
+                  ✨ (-10)
+                </button>
+              </div>
+
+              <div style={{ marginTop: 8 }}>
+                Descrição do professor (invisível para aluno):
+              </div>
+              <textarea
+                disabled={savingDescription}
+                value={teacherDescription}
+                onChange={(e) => setTeacherDescription(e.target.value)}
+                placeholder="Tome notas particulares sobre a aula aqui (invisível para o aluno)."
+                style={{
+                  ...inputStyle,
+                  minHeight: 120,
+                  resize: "vertical",
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: 12,
+              borderTop: "1px solid #e2e8f0",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              style={ghostBtnStyle}
+              onClick={close}
+              disabled={savingDescription}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleSaveDescription}
+              style={{
+                ...primaryBtnStyle,
+                opacity: savingDescription ? 0.7 : 1,
+              }}
+              disabled={savingDescription || !description.trim()}
+            >
+              {savingDescription ? "Salvando..." : "Salvar"}
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body,
+    );
+  };
+
+  // ===================== RENDER PRINCIPAL (layout pedido) =====================
   if (!event) return null;
 
   return (
     <>
       <div
         style={{
+          maxHeight: "fit-content",
           ...cardBase,
           display: "flex",
           flexDirection: "column",
-          gap: 12,
+          gap: 10,
           position: "relative",
         }}
       >
-        <div
+        <article
           style={{
-            ...cardTitle,
-            marginBottom: 12,
-            justifyContent: "space-between",
+            display: "grid",
+            gap: 20,
+            gridTemplateColumns: isDesktop && event.video ? "1fr 1fr" : "1fr",
           }}
         >
-          <span>Informações do Evento</span>
-        </div>
-        {event.rescheduledDescription && event.rescheduled && (
           <div
             style={{
-              display: "grid",
-              background: `linear-gradient(to right, ${partnerColor()}bb, ${partnerColor()}ff)`,
-              color: "#fff",
-              textAlign: "center",
-              padding: 8,
-              borderRadius: 6,
-            }}
-          >
-            <span style={{ fontWeight: 600, fontSize: 14 }}>
-              {event.rescheduledDescription}
-            </span>
-          </div>
-        )}
-        {event.link && (
-          <a
-            href={event.link}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              marginTop: 14,
-              display: "flex",
-              fontWeight: 700,
-              color: partnerColor(),
-              textDecoration: "none",
-              fontSize: 18,
-              textTransform: "uppercase",
+              ...cardTitle,
+              marginBottom: 6,
               alignItems: "center",
-              gap: 6,
+              justifyContent: "center",
+              fontSize: 14,
             }}
           >
-            <i className="fa fa-external-link" />
-            Link da Sala
-          </a>
-        )}
-
-        <div
-          style={{
-            marginTop: 12,
-            borderLeft: `4px solid ${partnerColor()}`,
-            paddingLeft: 12,
-            display: "grid",
-            gap: 8,
-          }}
-        >
-          {!isDesktop && (
-            <div style={{ display: "grid" }}>
-              <span style={{ fontSize: 12, color: "#606060" }}>Aluno</span>
-              <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
-                {event.student}
+            {(event.video || permissionsUser !== "student") && (
+              <EventVideo
+                allowedToEdit={permissionsUser !== "student"}
+                fetchEventData={fetchEventData}
+                headers={headers}
+                videoUrl={event.video}
+                evendId={event._id}
+              />
+            )}
+          </div>
+          {event.rescheduledDescription && event.rescheduled && (
+            <div
+              style={{
+                display: "grid",
+                background: `linear-gradient(to right, ${partnerColor()}bb, ${partnerColor()}ff)`,
+                color: "#fff",
+                textAlign: "center",
+                padding: 8,
+              }}
+            >
+              <span style={{ fontWeight: 600, fontSize: 13 }}>
+                {event.rescheduledDescription}
               </span>
             </div>
           )}
-
-          <div style={{ display: "grid" }}>
-            <span style={{ fontSize: 12, color: "#606060" }}>
-              Data e horário
-            </span>
-            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
-              {event.date} ({event.time})
-            </span>
-          </div>
-
-          <div style={{ display: "grid" }}>
-            <span style={{ fontSize: 12, color: "#606060" }}>Duração</span>
-            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
-              {event.duration} min
-            </span>
-          </div>
-
-          <div style={{ display: "grid" }}>
-            <span style={{ fontSize: 12, color: "#606060" }}>Categoria</span>
-            <span style={{ fontWeight: 600, color: "#030303", fontSize: 14 }}>
-              {categoryList.find((c) => c.value === event.category)?.text ||
-                "-"}
-            </span>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          {event.status == "marcado" &&
-            event.category !== "Established Group Class" && (
-              <button
-                onClick={openRescheduleModal}
+          <div>
+            {/* Link da Sala */}
+            {event.link && (
+              <a
+                href={event.link}
+                target="_blank"
+                rel="noreferrer"
                 style={{
-                  padding: "8px 16px",
-                  backgroundColor: partnerColor(),
-                  color: "#fff",
+                  display: "flex",
                   maxWidth: "fit-content",
-                  border: "none",
-                  marginLeft: "auto",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 700,
+                  color: partnerColor(),
+                  textDecoration: "none",
+                  fontSize: 14,
+                  textTransform: "uppercase",
+                  alignItems: "center",
+                  gap: 6,
+                  marginTop: 2,
                 }}
               >
-                Reagendar
-              </button>
+                <i className="fa fa-external-link" />
+                Link da Sala
+              </a>
             )}
-
-          {allowedToEdit && (
-            <button
-              onClick={openModal}
+            {/* Bloco compacto: Data/Hora, Duração */}
+            <div
               style={{
-                padding: "8px 16px",
-                backgroundColor: partnerColor(),
-                color: "#fff",
-                maxWidth: "fit-content",
-                border: "none",
-                marginLeft: "auto",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: 600,
+                marginTop: 6,
+                borderLeft: `4px solid ${partnerColor()}`,
+                paddingLeft: 12,
+                display: "grid",
+                gap: 8,
               }}
             >
-              Editar informações
-            </button>
-          )}
-        </div>
-      </div>
+              {!isDesktop && event.student && (
+                <div style={{ display: "grid" }}>
+                  <span style={{ fontSize: 11, color: "#606060" }}>Aluno</span>
+                  <span
+                    style={{ fontWeight: 600, color: "#030303", fontSize: 13 }}
+                  >
+                    {event.student}
+                  </span>
+                </div>
+              )}
 
-      {renderModal()}
+              <div style={{ display: "grid" }}>
+                <span style={{ fontSize: 11, color: "#606060" }}>
+                  Data e horário
+                </span>
+                <span
+                  style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
+                >
+                  {event.date} ({event.time})
+                </span>
+              </div>
+              <div style={{ display: "grid", gap: 4 }}>
+                <span style={{ fontSize: 11, color: "#606060" }}>
+                  Descrição
+                </span>
+                <span
+                  style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
+                >
+                  {theDescription && theDescription.trim()
+                    ? theDescription
+                    : "Nenhuma descrição cadastrada para esta aula."}
+                </span>
+              </div>
+              {allowedToEdit && (
+                <div style={{ display: "grid", gap: 4 }}>
+                  <span style={{ fontSize: 11, color: "#606060" }}>
+                    Descrição do prof
+                  </span>
+                  <span
+                    style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
+                  >
+                    {theTeacherDescription && theTeacherDescription.trim()
+                      ? theTeacherDescription
+                      : ""}
+                  </span>
+                </div>
+              )}
+            </div>
+            {/* Botões (mantendo todas as ações/modais) */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 8,
+              }}
+            >
+              {event.status === "marcado" &&
+                event.category !== "Established Group Class" && (
+                  <button
+                    onClick={openRescheduleModal}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Reagendar
+                  </button>
+                )}
+
+              {allowedToEdit && (
+                <>
+                  <button
+                    onClick={() => setIsMainInfoModalOpen(true)}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setDescription(theDescription || "");
+                      setTeacherDescription(theTeacherDescription || "");
+                      setIsDescriptionModalOpen(true);
+                    }}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Descrição
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </article>
+      </div>
+      {renderMainInfoModal()}
       {renderRescheduleModal()}
+      {renderDescriptionModal()}
     </>
   );
 };
