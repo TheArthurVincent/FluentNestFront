@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  formatNumber,
-  updateInfo,
-  updateScore,
-} from "../../../Resources/UniversalComponents";
+import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { Continue } from "../Continue/Continue";

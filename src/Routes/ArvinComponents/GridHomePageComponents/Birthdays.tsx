@@ -14,6 +14,7 @@ type BirthdayStudent = {
   picture: string;
   name: string;
   lastname: string;
+  id: string;
   dateOfBirth: string; // "yyyy-mm-dd"
   isToday: boolean;
 };
@@ -160,15 +161,23 @@ export const Birthdays: FC<BirthdaysProps> = ({
                       objectFit: "cover",
                     }}
                   />
-                  <span style={{ display: "flex", flexDirection: "column" }}>
+                  <a
+                    href={`/students/${s.id}`}
+                    target="_blank"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      textDecoration: "none",
+                      color: "#030303",
+                    }}
+                  >
                     <span style={{ fontSize: "13px", fontWeight: 600 }}>
                       {s.name} {s.lastname}
                     </span>
-
                     <span style={{ fontSize: "12px", color: "#666" }}>
                       {s.isToday ? "Hoje" : formatDob(s.dateOfBirth)}
-                    </span>
-                  </span>
+                    </span>{" "}
+                  </a>
                 </span>
 
                 {/* badge discreto de hoje */}
