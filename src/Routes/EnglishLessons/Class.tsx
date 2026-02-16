@@ -44,6 +44,7 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import ExerciseRunner from "./Exercises/Exercises";
 import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
+import { SelectExercise } from "./Exercises/Exercises/SelectExercise";
 
 interface EnglishClassCourse2ModelProps {
   headers: any;
@@ -3033,21 +3034,7 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-          <>
-            {canEditCourse && !seeBoard && thePermissions !== "student" && (
-              <EditLesson
-                setChange={setChange}
-                change={change}
-                studentId={myId}
-                buttonText={"Adaptar Conteúdo"}
-                setSeeEdit={setSeeEdit}
-                headers={actualHeaders}
-                classId={classId}
-                language={classLanguage}
-                fetchEventData={fetchEventData}
-              />
-            )}
-          </>
+     
           {!seeEdit && (
             <>
               <>
@@ -4098,6 +4085,22 @@ export default function EnglishClassCourse2({
                       <i className="fa fa-arrow-left" aria-hidden="true" />
                     </span>
                   )}
+
+                       <>
+            {canEditCourse && !seeBoard && thePermissions !== "student" && (
+              <EditLesson
+                setChange={setChange}
+                change={change}
+                studentId={myId}
+                buttonText={"Adaptar Conteúdo"}
+                setSeeEdit={setSeeEdit}
+                headers={actualHeaders}
+                classId={classId}
+                language={classLanguage}
+                fetchEventData={fetchEventData}
+              />
+            )}
+          </>
 
                   {nextClass && (
                     <span
