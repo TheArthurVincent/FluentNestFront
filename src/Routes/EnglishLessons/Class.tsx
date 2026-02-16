@@ -3021,20 +3021,22 @@ export default function EnglishClassCourse2({
                 </>
               ) : (
                 <>
-                  <HOne
-                    style={{
-                      textAlign: "center",
-                      fontSize: "18px",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {theclass.title}
-                  </HOne>
+                  {!fetchEventData && (
+                    <HOne
+                      style={{
+                        textAlign: "center",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {theclass.title}
+                    </HOne>
+                  )}
                 </>
               )}
             </>
           )}
-     
+
           {!seeEdit && (
             <>
               <>
@@ -4086,21 +4088,23 @@ export default function EnglishClassCourse2({
                     </span>
                   )}
 
-                       <>
-            {canEditCourse && !seeBoard && thePermissions !== "student" && (
-              <EditLesson
-                setChange={setChange}
-                change={change}
-                studentId={myId}
-                buttonText={"Adaptar Conteúdo"}
-                setSeeEdit={setSeeEdit}
-                headers={actualHeaders}
-                classId={classId}
-                language={classLanguage}
-                fetchEventData={fetchEventData}
-              />
-            )}
-          </>
+                  <>
+                    {canEditCourse &&
+                      !seeBoard &&
+                      thePermissions !== "student" && (
+                        <EditLesson
+                          setChange={setChange}
+                          change={change}
+                          studentId={myId}
+                          buttonText={"Adicionar Elementos"}
+                          setSeeEdit={setSeeEdit}
+                          headers={actualHeaders}
+                          classId={classId}
+                          language={classLanguage}
+                          fetchEventData={fetchEventData}
+                        />
+                      )}
+                  </>
 
                   {nextClass && (
                     <span

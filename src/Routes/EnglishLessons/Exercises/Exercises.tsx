@@ -189,7 +189,7 @@ function getExerciseElements(elements?: ElementItem[]): ElementExercise[] {
 }
 
 function getListenInEnglishElements(
-  elements?: ElementItem[]
+  elements?: ElementItem[],
 ): ElementListenInEnglish[] {
   const list: ElementListenInEnglish[] = [];
   const els = safeElements(elements);
@@ -207,7 +207,7 @@ function getListenInEnglishElements(
 }
 
 function getSelectExerciseElements(
-  elements?: ElementItem[]
+  elements?: ElementItem[],
 ): ElementSelectExercise[] {
   const list: ElementSelectExercise[] = [];
   const els = safeElements(elements);
@@ -421,22 +421,22 @@ export default function ExerciseRunner({
   // blocos vocabulary
   const vocabularyElements = useMemo(
     () => getVocabularyElements(safeEls),
-    [safeEls]
+    [safeEls],
   );
 
   const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
   const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
   const exerciseElements = useMemo(
     () => getExerciseElements(safeEls),
-    [safeEls]
+    [safeEls],
   );
   const listenInEnglishElements = useMemo(
     () => getListenInEnglishElements(safeEls),
-    [safeEls]
+    [safeEls],
   );
   const selectExerciseElements = useMemo(
     () => getSelectExerciseElements(safeEls),
-    [safeEls]
+    [safeEls],
   );
 
   const hasExerciseBlocks = exerciseElements.length > 0;
@@ -572,7 +572,7 @@ export default function ExerciseRunner({
           (a) => ({
             english: a.enusAudio,
             portuguese: "",
-          })
+          }),
         );
         if (!mappedSentences.length) return null;
         return (
@@ -670,13 +670,7 @@ export default function ExerciseRunner({
   // ===================== SEM EXERCÍCIOS =====================
 
   if (!available.length) {
-    return (
-      <Card>
-        <p style={{ color: "#4B5563", marginTop: 0 }}>
-          Esta aula não possui exercícios automáticos.
-        </p>
-      </Card>
-    );
+    return <></>;
   }
 
   // ===================== RENDER =====================

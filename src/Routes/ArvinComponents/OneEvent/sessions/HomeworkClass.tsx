@@ -15,9 +15,13 @@ type HomeworkClassProps = {
   fetchEventData: () => void;
   isDesktop?: boolean;
   event?: any;
+
   allowedToEdit?: boolean;
+  allowedToAnswer?: boolean;
+
   homeworkID?: string;
-  homeworkData: string; // vem do backend como HTML/texto
+  homeworkData: string;
+  homeworkAnswer?: string;
 };
 
 // ---------- estilos ----------
@@ -63,7 +67,7 @@ const primaryBtnStyle: React.CSSProperties = {
 
 const textareaStyle: React.CSSProperties = {
   width: "100%",
-  minHeight: 180,
+  minHeight: 170,
   resize: "vertical",
   borderRadius: 8,
   border: "1px solid #e2e8f0",
@@ -74,84 +78,94 @@ const textareaStyle: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
+// ---- Switch sem MUI (estilo iOS) ----
+const switchRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+  padding: "10px 12px",
+  border: "1px solid #e2e8f0",
+  borderRadius: 10,
+  background: "#fff",
+  marginBottom: 12,
+};
+
+const switchTrackBase: React.CSSProperties = {
+  width: 44,
+  height: 24,
+  borderRadius: 999,
+  position: "relative",
+  border: "1px solid #e2e8f0",
+  transition: "background-color 180ms ease",
+  cursor: "pointer",
+  flexShrink: 0,
+};
+
+const switchThumbBase: React.CSSProperties = {
+  width: 20,
+  height: 20,
+  borderRadius: 999,
+  background: "#fff",
+  position: "absolute",
+  top: 1.5,
+  transition: "transform 180ms ease",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+};
+
+type ModalMode = "description" | "answer";
+
 const HomeworkClass: FC<HomeworkClassProps> = ({
   headers,
   evendId,
   fetchEventData,
   homeworkData,
+  homeworkAnswer,
   allowedToEdit,
+  allowedToAnswer,
   homeworkID,
   event,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mode, setMode] = useState<ModalMode>("description");
   const [saving, setSaving] = useState(false);
 
-  /**
-   * Aqui o textarea trabalha com TEXTO (com \n).
-   * O backend recebe HTML (com <br />) pra manter as quebras no preview.
-   */
+  // NOVO: notificar teacher?
+  const [notifyTeacher, setNotifyTeacher] = useState<boolean>(true);
+
+  const hasHomework = !!homeworkID;
+  const hasAnswer = !!(homeworkAnswer || "").trim();
+
   const htmlToTextarea = (html: string) =>
     (html || "").replace(/<br\s*\/?>/gi, "\n");
-
   const textareaToHtml = (text: string) =>
     (text || "").replace(/\r?\n/g, "<br />");
 
   const [descriptionText, setDescriptionText] = useState<string>(
     htmlToTextarea(homeworkData || ""),
   );
+  const [answerText, setAnswerText] = useState<string>(
+    htmlToTextarea(homeworkAnswer || ""),
+  );
 
-  // sincroniza com o backend quando muda
   useEffect(() => {
     setDescriptionText(htmlToTextarea(homeworkData || ""));
-  }, [homeworkData]);
+    setAnswerText(htmlToTextarea(homeworkAnswer || ""));
+  }, [homeworkData, homeworkAnswer]);
 
-  const hasHomework = !!homeworkID;
-
-  const canSave = useMemo(() => {
-    return !!allowedToEdit && !saving && !!descriptionText.trim();
-  }, [allowedToEdit, saving, descriptionText]);
-
-  // ========= API =========
-  const saveHomework = async () => {
+  const openModalDescription = () => {
     if (!allowedToEdit) return;
-
-    const descriptionToSave = textareaToHtml(descriptionText);
-
-    try {
-      setSaving(true);
-
-      // 1. EDITAR HOMEWORK EXISTENTE
-      if (homeworkID) {
-        await axios.put(
-          `${backDomain}/api/v1/edithomeworkdescription/${homeworkID}`,
-          { description: descriptionToSave },
-          { headers: headers as any },
-        );
-      }
-      // 2. CRIAR NOVO HOMEWORK
-      else {
-        await axios.post(
-          `${backDomain}/api/v1/homework/${event.studentID}`,
-          {
-            description: descriptionToSave,
-            dueDate: null,
-            eventID: evendId,
-          },
-          { headers: headers as any },
-        );
-      }
-
-      await fetchEventData();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Erro ao salvar lição de casa", error);
-    } finally {
-      setSaving(false);
-    }
+    setMode("description");
+    setIsModalOpen(true);
   };
 
-  const openModal = () => {
-    if (!allowedToEdit) return;
+  const openModalAnswer = () => {
+    if (!allowedToAnswer) return;
+    if (!homeworkID) return;
+
+    setAnswerText(htmlToTextarea(homeworkAnswer || ""));
+    setNotifyTeacher(true); // default quando abre (ajuste se quiser persistir isso)
+    setMode("answer");
     setIsModalOpen(true);
   };
 
@@ -159,9 +173,85 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     if (!saving) setIsModalOpen(false);
   };
 
+  const canSave = useMemo(() => {
+    if (saving) return false;
+
+    if (mode === "description") {
+      return !!allowedToEdit && !!descriptionText.trim();
+    }
+
+    return !!homeworkID;
+  }, [saving, mode, allowedToEdit, homeworkID, descriptionText]);
+
+  const save = async () => {
+    try {
+      setSaving(true);
+
+      // ===== salvar DESCRIPTION (prof/admin) =====
+      if (mode === "description") {
+        if (!allowedToEdit) return;
+
+        const descriptionToSave = textareaToHtml(descriptionText);
+
+        if (homeworkID) {
+          await axios.put(
+            `${backDomain}/api/v1/edithomeworkdescription/${homeworkID}`,
+            { description: descriptionToSave },
+            { headers: headers as any },
+          );
+        } else {
+          await axios.post(
+            `${backDomain}/api/v1/homework/${event.studentID}`,
+            {
+              description: descriptionToSave,
+              dueDate: null,
+              eventID: evendId,
+            },
+            { headers: headers as any },
+          );
+        }
+      }
+
+      // ===== salvar ANSWER (aluno) =====
+      if (mode === "answer") {
+        if (!allowedToAnswer) return;
+        if (!homeworkID) return;
+
+        const answerToSave = textareaToHtml(answerText);
+
+        const response = await axios.put(
+          `${backDomain}/api/v1/homeworkanswer/${homeworkID}`,
+          {
+            answers: answerToSave,
+            notifyTeacher, // NOVO: manda pro backend
+          },
+          { headers: headers as any },
+        );
+
+        console.log(response.data, "Resposta salva:");
+      }
+
+      fetchEventData();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao salvar", error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null;
+
+    const title =
+      mode === "description"
+        ? hasHomework
+          ? "Editar lição de casa"
+          : "Criar lição de casa"
+        : hasAnswer
+          ? "Editar resposta"
+          : "Responder lição de casa";
 
     return createPortal(
       <div style={overlayStyle} onClick={closeModal}>
@@ -176,18 +266,85 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               color: "#0f172a",
             }}
           >
-            {hasHomework ? "Editar lição de casa" : "Criar lição de casa"}
+            {title}
           </div>
 
+          {/* Body */}
           <div style={{ padding: 16 }}>
+            {/* Sempre mostra o enunciado (descrição) no modo answer */}
+            {mode === "answer" && (
+              <>
+                <div
+                  style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
+                >
+                  Enunciado
+                </div>
+
+                <div
+                  style={{
+                    borderLeft: `4px solid ${partnerColor()}`,
+                    paddingLeft: 10,
+                    color: "#334155",
+                    marginBottom: 14,
+                  }}
+                >
+                  <div
+                    dangerouslySetInnerHTML={{ __html: homeworkData || "" }}
+                  />
+                </div>
+              </>
+            )}
+
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
+              {mode === "description" ? "Descrição" : "Sua resposta"}
+            </div>
+
             <textarea
               style={textareaStyle}
-              onChange={(e) => setDescriptionText(e.target.value)}
-              value={descriptionText}
-              placeholder="Escreva aqui... (Enter quebra linha e será salvo)"
+              value={mode === "description" ? descriptionText : answerText}
+              onChange={(e) => {
+                if (mode === "description") setDescriptionText(e.target.value);
+                else setAnswerText(e.target.value);
+              }}
+              placeholder={
+                mode === "answer"
+                  ? "Digite sua resposta..."
+                  : "Digite a descrição..."
+              }
             />
           </div>
+          {/* Switch de notificação (só no modo answer) */}
+          {mode === "answer" && (
+            <div style={switchRowStyle}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <div
+                  style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}
+                >
+                  Notificar professor
+                </div>
+              </div>
 
+              <button
+                type="button"
+                aria-pressed={notifyTeacher}
+                onClick={() => setNotifyTeacher((v) => !v)}
+                style={{
+                  ...switchTrackBase,
+                  backgroundColor: notifyTeacher ? partnerColor() : "#e5e7eb",
+                }}
+              >
+                <span
+                  style={{
+                    ...switchThumbBase,
+                    left: 2,
+                    transform: notifyTeacher
+                      ? "translateX(20px)"
+                      : "translateX(0px)",
+                  }}
+                />
+              </button>
+            </div>
+          )}
           {/* Footer */}
           <div
             style={{
@@ -205,13 +362,12 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             >
               Cancelar
             </button>
-
             <button
-              onClick={saveHomework}
+              onClick={save}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
               disabled={!canSave}
             >
-              {saving ? "Salvando..." : "Salvar"}
+              {saving ? "Salvando..." : "Salvar Resposta"}
             </button>
           </div>
         </div>
@@ -230,34 +386,52 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           gap: 12,
         }}
       >
-        <div
-          style={{
-            ...cardTitle,
-            justifyContent: "space-between",
-          }}
-        >
+        {/* Header do Card */}
+        <div style={{ ...cardTitle, justifyContent: "space-between" }}>
           <span>Lição de Casa</span>
 
-          {allowedToEdit && (
-            <button
-              onClick={openModal}
-              style={{
-                padding: "6px 12px",
-                backgroundColor: partnerColor(),
-                color: "#fff",
-                border: "none",
-                borderRadius: 6,
-                cursor: "pointer",
-                fontSize: 12,
-                fontWeight: 600,
-              }}
-            >
-              {hasHomework ? "Editar" : "Criar"}
-            </button>
-          )}
+          <div style={{ display: "flex", gap: 8 }}>
+            {allowedToEdit && (
+              <button
+                onClick={openModalDescription}
+                style={{
+                  padding: "6px 12px",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {hasHomework ? "Editar" : "Criar"}
+              </button>
+            )}
+
+            {allowedToAnswer && (
+              <button
+                onClick={openModalAnswer}
+                style={{
+                  padding: "6px 12px",
+                  backgroundColor: "#0f172a",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                  cursor: hasHomework ? "pointer" : "not-allowed",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  opacity: hasHomework ? 1 : 0.6,
+                }}
+                disabled={!hasHomework}
+              >
+                {hasAnswer ? "Editar resposta" : "Responder"}
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* preview */}
+        {/* Preview DESCRIÇÃO */}
         {hasHomework ? (
           <div
             style={{
@@ -266,16 +440,31 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               color: "#4B5563",
             }}
           >
-            <div
-              dangerouslySetInnerHTML={{
-                __html: homeworkData || "",
-              }}
-            />
+            <div dangerouslySetInnerHTML={{ __html: homeworkData || "" }} />
           </div>
         ) : (
           <span style={{ fontSize: 12, color: "#6B7280" }}>
             Nenhuma lição de casa definida.
           </span>
+        )}
+
+        {/* Preview ANSWER (se existir) */}
+        {hasHomework && hasAnswer && (
+          <div
+            style={{
+              padding: 12,
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              background: "#fafafa",
+              color: "#334155",
+            }}
+          >
+            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 6 }}>
+              Resposta do aluno
+            </div>
+
+            <div dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }} />
+          </div>
         )}
       </div>
 

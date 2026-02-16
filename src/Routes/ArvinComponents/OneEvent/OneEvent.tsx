@@ -93,6 +93,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
       setEventData(res.data.event);
+      console.log(res.data.event);
       setReplicateLastEvent(
         res.data.event.replicateLastEvent &&
           res.data.event.category !== "Established Group Class",
@@ -669,7 +670,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   outline: "none",
                 }}
               >
-                Dados da aula
+                Conteúdo da Aula
               </button>
               <button
                 onClick={() => handleChangeTab("homework")}
@@ -685,7 +686,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   outline: "none",
                 }}
               >
-                Exercícios
+                Lição de Casa e Exercícios
               </button>
             </div>
 
@@ -764,20 +765,31 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   }}
                 >
                   {(event.homeworkDetails || permissionsUser !== "student") && (
-                    <HomeworkClass
-                      homeworkID={event.homeworkID}
-                      homeworkData={
-                        event.homeworkDetails
-                          ? event.homeworkDetails.description
-                          : "Type here"
-                      }
-                      headers={headers}
-                      evendId={event._id}
-                      event={event}
-                      isDesktop={isDesktop}
-                      fetchEventData={fetchEventData}
-                      allowedToEdit={permissionsUser !== "student"}
-                    />
+                    <>
+                      <HomeworkClass
+                        homeworkID={event.homeworkID}
+                        homeworkData={event.homeworkDetails?.description || ""}
+                        homeworkAnswer={event.homeworkDetails?.answers || ""}
+                        headers={headers}
+                        evendId={event._id}
+                        event={event}
+                        isDesktop={isDesktop}
+                        fetchEventData={fetchEventData}
+                        allowedToEdit={permissionsUser !== "student"}
+                        allowedToAnswer={permissionsUser === "student"} // ou true
+                      />
+
+                      {/* <HomeworkAnswer
+                        headers={headers}
+                        fetchEventData={fetchEventData}
+                        allowedToEdit={true} // aluno
+                        homeworkID={event.homeworkID} // ID do homework
+                        homeworkDescription={
+                          event?.homeworkDetails?.description || ""
+                        }
+                        homeworkAnswer={event?.homeworkDetails?.answer || ""}
+                      /> */}
+                    </>
                   )}
                   {(event.theLessonRender || permissionsUser !== "student") && (
                     <LessonContent
