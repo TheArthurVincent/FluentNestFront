@@ -102,12 +102,21 @@ function EventPreviewModal({ event, onClose }) {
             <strong>Horário:</strong> {event.time}
           </p>
 
-          <p>
+          <p
+            style={{
+              color:
+                event.status === "realizada"
+                  ? "green"
+                  : event.status === "desmarcado"
+                    ? "red"
+                    : "blue",
+            }}
+          >
             <strong>Status:</strong> {event.status}
           </p>
 
           <div style={{ marginTop: "20px" }}>
-            <button onClick={onClose}>Close</button>
+            <button onClick={onClose}>Fechar</button>
 
             <a
               href={`/my-calendar/event/${event._id}`}
@@ -122,7 +131,7 @@ function EventPreviewModal({ event, onClose }) {
                 textAlign: "center",
               }}
             >
-              Go to event page
+              Ir para o evento
             </a>
           </div>
         </div>
