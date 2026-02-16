@@ -1,12 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import { useSearchParams, Outlet, useParams } from "react-router-dom";
+import { useSearchParams, useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
+import { backDomain } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
-import EventVideo from "./sessions/VideoClass";
 import MainInfoClass from "./sessions/MainInfoClass";
-import Description from "./sessions/Description";
 import LastClass from "./sessions/LastEvent";
 import Board from "./sessions/BoardLesson";
 import LessonContent from "./sessions/LessonContent";

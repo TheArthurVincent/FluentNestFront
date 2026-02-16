@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import {
@@ -8,7 +8,6 @@ import {
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
-import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 
 type HomeworkClassProps = {
   headers: MyHeadersType;
@@ -18,7 +17,7 @@ type HomeworkClassProps = {
   event?: any;
   allowedToEdit?: boolean;
   homeworkID?: string;
-  homeworkData: string;
+  homeworkData: string; // vem do backend como HTML/texto
 };
 
 // ---------- estilos ----------
@@ -62,6 +61,19 @@ const primaryBtnStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
+const textareaStyle: React.CSSProperties = {
+  width: "100%",
+  minHeight: 180,
+  resize: "vertical",
+  borderRadius: 8,
+  border: "1px solid #e2e8f0",
+  padding: 10,
+  fontSize: 14,
+  lineHeight: 1.4,
+  outline: "none",
+  boxSizing: "border-box",
+};
+
 const HomeworkClass: FC<HomeworkClassProps> = ({
   headers,
   evendId,
@@ -74,45 +86,58 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const [descriptionHtml, setDescriptionHtml] = useState<string>(
-    homeworkData || ""
+  /**
+   * Aqui o textarea trabalha com TEXTO (com \n).
+   * O backend recebe HTML (com <br />) pra manter as quebras no preview.
+   */
+  const htmlToTextarea = (html: string) =>
+    (html || "").replace(/<br\s*\/?>/gi, "\n");
+
+  const textareaToHtml = (text: string) =>
+    (text || "").replace(/\r?\n/g, "<br />");
+
+  const [descriptionText, setDescriptionText] = useState<string>(
+    htmlToTextarea(homeworkData || ""),
   );
 
-  // sincroniza com o backend
+  // sincroniza com o backend quando muda
   useEffect(() => {
-    setDescriptionHtml(homeworkData || "");
+    setDescriptionText(htmlToTextarea(homeworkData || ""));
   }, [homeworkData]);
 
   const hasHomework = !!homeworkID;
 
-  // ========= API =========
+  const canSave = useMemo(() => {
+    return !!allowedToEdit && !saving && !!descriptionText.trim();
+  }, [allowedToEdit, saving, descriptionText]);
 
+  // ========= API =========
   const saveHomework = async () => {
     if (!allowedToEdit) return;
-    console.log("saving homework", { homeworkID, descriptionHtml });
+
+    const descriptionToSave = textareaToHtml(descriptionText);
+
     try {
       setSaving(true);
+
       // 1. EDITAR HOMEWORK EXISTENTE
       if (homeworkID) {
         await axios.put(
           `${backDomain}/api/v1/edithomeworkdescription/${homeworkID}`,
-          {
-            description: descriptionHtml || "",
-          },
-          { headers: headers as any }
+          { description: descriptionToSave },
+          { headers: headers as any },
         );
       }
-
       // 2. CRIAR NOVO HOMEWORK
-      else if (!homeworkID) {
+      else {
         await axios.post(
           `${backDomain}/api/v1/homework/${event.studentID}`,
           {
-            description: descriptionHtml,
-            dueDate: null, // você pode ajustar depois
+            description: descriptionToSave,
+            dueDate: null,
             eventID: evendId,
           },
-          { headers: headers as any }
+          { headers: headers as any },
         );
       }
 
@@ -156,8 +181,10 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
           <div style={{ padding: 16 }}>
             <textarea
-              onChange={(e) => setDescriptionHtml(e.target.value)}
-              value={descriptionHtml}
+              style={textareaStyle}
+              onChange={(e) => setDescriptionText(e.target.value)}
+              value={descriptionText}
+              placeholder="Escreva aqui... (Enter quebra linha e será salvo)"
             />
           </div>
 
@@ -182,14 +209,14 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             <button
               onClick={saveHomework}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !descriptionHtml.trim()}
+              disabled={!canSave}
             >
               {saving ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 
@@ -241,7 +268,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           >
             <div
               dangerouslySetInnerHTML={{
-                __html: homeworkData,
+                __html: homeworkData || "",
               }}
             />
           </div>
