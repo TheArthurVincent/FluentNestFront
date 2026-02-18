@@ -2128,7 +2128,13 @@ function MyCalendar({
                                           : event.category ===
                                               "Marcar Reposição"
                                             ? "Disponível"
-                                            : "No description"}
+                                            : event.category == "Rep"
+                                              ? "Reposição"
+                                              : event.category == "Standalone"
+                                                ? "Aula Única"
+                                                : event.category == "Test"
+                                                  ? "Experimental"
+                                                  : event.category}
                                   </div>
                                 </div>
 

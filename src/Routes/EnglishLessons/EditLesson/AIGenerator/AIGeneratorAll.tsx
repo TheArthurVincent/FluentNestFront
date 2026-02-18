@@ -263,7 +263,7 @@ export default function GenerateEVSModal({
       return;
     }
     const payload = {
-      theme: base,
+      theme: "",
       classId: classId,
       input: input,
       language1: language1 || "en",
@@ -448,22 +448,6 @@ export default function GenerateEVSModal({
             </div>
 
             <div style={styles.divider} />
-
-            <div style={{ display: "grid", gap: 6 }}>
-              <div style={styles.miniLabel}>Tema (opcional)</div>
-              <input
-                disabled={loading}
-                value={theme || ""}
-                placeholder="Opcional: use se você quiser mandar um tema fixo via prop"
-                style={styles.input}
-                readOnly
-              />
-              <div style={{ fontSize: 12, color: "#6b7280" }}>
-                Se quiser editar o tema aqui, passe theme controlado por fora,
-                ou troque esse input para state.
-              </div>
-            </div>
-
             <div style={{ display: "grid", gap: 6 }}>
               <div style={styles.miniLabel}>Prompt / Conteúdo</div>
               <textarea

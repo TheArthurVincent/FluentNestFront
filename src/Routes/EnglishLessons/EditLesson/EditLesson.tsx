@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
@@ -31,8 +31,6 @@ import { partnerColor } from "../../../Styles/Styles";
 import DeleteClassButton from "./DeleteLesson/DeleteLesson";
 import ImportElementsEditor from "./ImportNewElements/SelectExercise/ImportNewElements";
 import { notifyAlert } from "../Assets/Functions/FunctionLessons";
-
-// NOVO: Modal de geração (IA)
 import GenerateEVSModal from "./AIGenerator/AIGeneratorAll";
 
 type ElementBase = {
@@ -134,10 +132,7 @@ export default function EditLesson({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Modal principal
   const [open, setOpen] = useState(false);
-
-  // NOVO: modal de IA separado (não abre automaticamente)
   const [openAIGenerator, setOpenAIGenerator] = useState(false);
 
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
@@ -154,11 +149,85 @@ export default function EditLesson({
 
   const [loadingTitle, setLoadingTitle] = useState(false);
 
-  // idioma da aula (usado no payload)
   const [theLanguage, setTheLanguage] = useState<string>("en");
-
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
+  const initialSnapshotRef = useRef<string>("");
+
+  // -----------------------------
+  // Utils
+  // -----------------------------
+  const sanitizeElements = (arr: any[]): ElementItem[] => {
+    if (!Array.isArray(arr)) return [];
+    return arr.map((el: any) => {
+      const { order: _ignored, _id: _ignoredId, ...rest } = el || {};
+      return rest as ElementItem;
+    });
+  };
+
+  const buildSnapshot = (data?: {
+    title?: string;
+    description?: string;
+    image?: string;
+    order?: number;
+    tags?: string[];
+    language?: string;
+    elements?: any[];
+  }) => {
+    const snap = {
+      title: data?.title ?? "",
+      description: data?.description ?? "",
+      image: data?.image ?? "",
+      order: Number(data?.order ?? 0),
+      tags: Array.isArray(data?.tags) ? data?.tags : [],
+      language: data?.language ?? "en",
+      elements: sanitizeElements(
+        Array.isArray(data?.elements) ? data?.elements : [],
+      ),
+    };
+    return JSON.stringify(snap);
+  };
+
+  const isDirty = useMemo(() => {
+    if (!initialSnapshotRef.current) return false;
+
+    const current = buildSnapshot({
+      title,
+      description,
+      image,
+      order,
+      tags,
+      language: theLanguage,
+      elements,
+    });
+
+    return current !== initialSnapshotRef.current;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, description, image, order, tags, theLanguage, elements]);
+
+  const confirmCloseIfDirty = () => {
+    if (!isDirty) return true;
+    return window.confirm("Você tem alterações não salvas. Fechar sem salvar?");
+  };
+
+  const closeModal = () => {
+    setOpen(false);
+    setOpenAIGenerator(false);
+    setSeeEdit?.(false);
+  };
+
+  const tryCloseModal = () => {
+    if (openAIGenerator) {
+      setOpenAIGenerator(false);
+      return;
+    }
+    if (!confirmCloseIfDirty()) return;
+    closeModal();
+  };
+
+  // -----------------------------
+  // Responsive
+  // -----------------------------
   useEffect(() => {
     if (typeof window === "undefined") return;
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -167,7 +236,9 @@ export default function EditLesson({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ========= MODAL: trava scroll + fecha ESC =========
+  // -----------------------------
+  // Modal behavior (scroll lock + ESC)
+  // -----------------------------
   useEffect(() => {
     if (!open) return;
 
@@ -176,12 +247,7 @@ export default function EditLesson({
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        // se o modal da IA estiver aberto, fecha ele primeiro
-        if (openAIGenerator) {
-          setOpenAIGenerator(false);
-          return;
-        }
-        closeModal();
+        tryCloseModal();
       }
     };
 
@@ -192,86 +258,95 @@ export default function EditLesson({
       window.removeEventListener("keydown", onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, openAIGenerator]);
+  }, [open, openAIGenerator, isDirty]);
 
-  const closeModal = () => {
-    setOpen(false);
-    setOpenAIGenerator(false);
-    setSeeEdit?.(false);
-  };
+  // beforeunload: alerta ao fechar aba/navegador
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
+  //   if (!open) return;
 
-  const sanitizeElements = (arr: any[]): ElementItem[] => {
-    if (!Array.isArray(arr)) return [];
-    return arr.map((el: any) => {
-      const { order: _ignored, _id: _ignoredId, ...rest } = el || {};
-      return rest as ElementItem;
-    });
-  };
+  //   const onBeforeUnload = (e: BeforeUnloadEvent) => {
+  //     if (!isDirty) return;
+  //     e.preventDefault();
+  //     e.returnValue = "";
+  //   };
 
-  // ===================== IA: TÍTULO =====================
+  //   window.addEventListener("beforeunload", onBeforeUnload);
+  //   return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  // }, [open, isDirty]);
+
+  // -----------------------------
+  // IA: título e descrição
+  // -----------------------------
   const handleTitle = async () => {
     setLoadingTitle(true);
+
     const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
     const thePermissions = logged?.permissions;
     const myId = logged?.id;
 
-    if (thePermissions === "superadmin" || thePermissions === "teacher") {
-      try {
-        const response = await axios.put(
-          `${backDomain}/api/v1/ai-title-class/${myId}`,
-          {
-            elements: elements || {},
-            language: language || "en",
-            studentId: studentId || "",
-          },
-          { headers: headers as any },
-        );
-        setTitle(response.data.titleAdapted);
-      } catch (err) {
-        setLoadingTitle(false);
-        notifyAlert("Erro", partnerColor());
-        // eslint-disable-next-line no-console
-        console.log(err, "Erro");
-      } finally {
-        setLoadingTitle(false);
-      }
-    } else {
+    if (thePermissions !== "superadmin" && thePermissions !== "teacher") {
+      setLoadingTitle(false);
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/ai-title-class/${myId}`,
+        {
+          elements: elements || {},
+          language: language || "en",
+          studentId: studentId || "",
+        },
+        { headers: headers as any },
+      );
+
+      setTitle(response.data.titleAdapted);
+    } catch (err) {
+      notifyAlert("Erro", partnerColor());
+      // eslint-disable-next-line no-console
+      console.log(err, "Erro");
+    } finally {
       setLoadingTitle(false);
     }
   };
 
-  // ===================== IA: DESCRIÇÃO =====================
   const handleDescription = async () => {
     setLoadingTitle(true);
+
     const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
     const thePermissions = logged?.permissions;
     const myId = logged?.id;
 
-    if (thePermissions === "superadmin" || thePermissions === "teacher") {
-      try {
-        const response = await axios.put(
-          `${backDomain}/api/v1/ai-description-class/${myId}`,
-          {
-            elements: elements || {},
-            language: language || "en",
-            studentId: studentId || "",
-          },
-          { headers: headers as any },
-        );
-        setDescription(response.data.descriptionAdapted);
-      } catch (err) {
-        notifyAlert("Erro", partnerColor());
-        // eslint-disable-next-line no-console
-        console.log(err, "Erro");
-      } finally {
-        setLoadingTitle(false);
-      }
-    } else {
+    if (thePermissions !== "superadmin" && thePermissions !== "teacher") {
+      setLoadingTitle(false);
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/ai-description-class/${myId}`,
+        {
+          elements: elements || {},
+          language: language || "en",
+          studentId: studentId || "",
+        },
+        { headers: headers as any },
+      );
+
+      setDescription(response.data.descriptionAdapted);
+    } catch (err) {
+      notifyAlert("Erro", partnerColor());
+      // eslint-disable-next-line no-console
+      console.log(err, "Erro");
+    } finally {
       setLoadingTitle(false);
     }
   };
 
-  // ===================== CARREGAR AULA =====================
+  // -----------------------------
+  // Carregar aula
+  // -----------------------------
   const getClass = async () => {
     setLoading(true);
     setError(null);
@@ -279,7 +354,9 @@ export default function EditLesson({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        { headers },
+        {
+          headers,
+        },
       );
 
       const data: ClassDetails =
@@ -287,7 +364,7 @@ export default function EditLesson({
 
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
-      const sanitizedElements = sanitizeElements(data.elements);
+      const sanitized = sanitizeElements(data.elements);
 
       setLesson(data);
       setTitle(data.title ?? "");
@@ -295,8 +372,18 @@ export default function EditLesson({
       setImage(data.image ?? "");
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
-      setElements(sanitizedElements);
+      setElements(sanitized);
       setTheLanguage(data.language || language || "en");
+
+      initialSnapshotRef.current = buildSnapshot({
+        title: data.title ?? "",
+        description: data.description ?? "",
+        image: data.image ?? "",
+        order: Number(data.order ?? 0),
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        language: data.language || language || "en",
+        elements: sanitized,
+      });
 
       setOpen(true);
     } catch (err: any) {
@@ -308,7 +395,7 @@ export default function EditLesson({
     }
   };
 
-  // Recarrega se change sinaliza atualização (mantém modal aberto)
+  // Recarrega quando change sinaliza atualização (mantém modal aberto)
   useEffect(() => {
     if (!open) return;
     if (!classId) return;
@@ -317,9 +404,12 @@ export default function EditLesson({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [change]);
 
-  // ===================== SALVAR AULA =====================
+  // -----------------------------
+  // Salvar aula
+  // -----------------------------
   const handleSave = async () => {
     if (!lesson) return;
+
     if (!isValid) {
       alert("Por favor, corrija os erros nos elementos antes de salvar.");
       return;
@@ -328,7 +418,7 @@ export default function EditLesson({
     setSaving(true);
     setError(null);
 
-    const sanitizedElements = sanitizeElements(elements as any);
+    const sanitized = sanitizeElements(elements as any);
 
     const payload: ClassDetails = {
       ...lesson,
@@ -338,7 +428,7 @@ export default function EditLesson({
       image,
       order: Number(order),
       tags,
-      elements: sanitizedElements,
+      elements: sanitized,
     };
 
     try {
@@ -351,14 +441,24 @@ export default function EditLesson({
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
-      const updatedSanitizedElements = sanitizeElements(updated.elements);
+      const updatedSanitized = sanitizeElements(updated.elements);
 
       setLesson(updated);
-      if (updated?.image) setImage(updated.image);
+      setImage(updated?.image ?? image);
       setTitle(updated?.title ?? title);
       setDescription(updated?.description ?? description);
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
-      setElements(updatedSanitizedElements);
+      setElements(updatedSanitized);
+
+      initialSnapshotRef.current = buildSnapshot({
+        title: updated?.title ?? title,
+        description: updated?.description ?? description,
+        image: updated?.image ?? image,
+        order: Number(updated?.order ?? order),
+        tags: Array.isArray(updated?.tags) ? updated.tags : tags,
+        language: updated?.language ?? theLanguage,
+        elements: updatedSanitized,
+      });
 
       onUpdated?.(updated);
 
@@ -376,17 +476,22 @@ export default function EditLesson({
     }
   };
 
-  // ===================== IMAGEM PRINCIPAL =====================
+  // -----------------------------
+  // Imagem principal
+  // -----------------------------
   const onPickLessonImage = async (f?: File | null) => {
     if (!f) return;
+
     try {
       setUploadError(null);
       setUploadingImage(true);
+
       const url = await uploadImageViaBackend(f, {
         folder: "/lessons",
         fileName: `lesson_${classId}_main_${Date.now()}.jpg`,
         headers,
       });
+
       setImage(url);
     } catch (e: any) {
       // eslint-disable-next-line no-console
@@ -397,7 +502,9 @@ export default function EditLesson({
     }
   };
 
-  // ===================== HELPERS ELEMENTS =====================
+  // -----------------------------
+  // Elements helpers
+  // -----------------------------
   const updateElementAt = (index: number, next: ElementItem) => {
     setElements((prev) => {
       const clone = [...prev];
@@ -427,7 +534,9 @@ export default function EditLesson({
   const moveElementUp = (index: number) => moveElement(index, index - 1);
   const moveElementDown = (index: number) => moveElement(index, index + 1);
 
-  // ---------- Adicionar novo bloco ----------
+  // -----------------------------
+  // Novo bloco
+  // -----------------------------
   const getSubtitle = (type: string, lang: string) => {
     const subtitles: Record<string, any> = {
       singleimages: {
@@ -573,7 +682,9 @@ export default function EditLesson({
     );
   };
 
-  // ===================== Import de elementos =====================
+  // -----------------------------
+  // Import de elementos
+  // -----------------------------
   const handleImportChange = (info: {
     mode: "one" | "all";
     fromClassId: string;
@@ -589,24 +700,17 @@ export default function EditLesson({
           return rest as ElementItem;
         },
       );
-
       return [...prev, ...cleanImported];
     });
   };
 
-  // ===================== ESTILOS BASE =====================
+  // -----------------------------
+  // Styles
+  // -----------------------------
   const outerWrapStyle: React.CSSProperties = useMemo(
     () => ({
-      width: "98%",
+      width: "100%",
       margin: "0 auto",
-      boxSizing: "border-box",
-      borderRadius: 12,
-    }),
-    [],
-  );
-
-  const sectionCard: React.CSSProperties = useMemo(
-    () => ({
       boxSizing: "border-box",
     }),
     [],
@@ -616,7 +720,8 @@ export default function EditLesson({
     () => ({
       fontSize: 12,
       color: "#334155",
-      marginBottom: 4,
+      marginBottom: 6,
+      fontWeight: 600,
     }),
     [],
   );
@@ -625,38 +730,56 @@ export default function EditLesson({
     () => ({
       width: "100%",
       border: "1px solid #e2e8f0",
-      borderRadius: 8,
-      padding: 8,
+      borderRadius: 10,
+      padding: "10px 12px",
       fontSize: 13,
       boxSizing: "border-box",
+      background: "#fff",
+      color: "#0f172a",
+      outline: "none",
+      transition: "box-shadow 0.15s ease, border-color 0.15s ease",
     }),
     [],
   );
 
-  const fullWidthButton: React.CSSProperties = useMemo(
+  const ghostButton: React.CSSProperties = useMemo(
     () => ({
-      borderRadius: 8,
+      borderRadius: 10,
       border: "1px solid #e2e8f0",
       color: "#0f172a",
-      padding: "8px 12px",
+      padding: "10px 12px",
       cursor: "pointer",
       fontSize: 13,
-      width: "100%",
       boxSizing: "border-box",
-      backgroundColor: "#f9fafb",
+      backgroundColor: "#ffffff",
+      transition: "transform 0.05s ease, box-shadow 0.15s ease",
+      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
 
   const primaryButton: React.CSSProperties = useMemo(
     () => ({
-      ...fullWidthButton,
+      ...ghostButton,
       backgroundColor: partnerColor(),
       color: "white",
-      fontWeight: 600,
+      fontWeight: 700,
       border: "none",
+      boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
     }),
-    [fullWidthButton],
+    [ghostButton],
+  );
+
+  const subtleCard: React.CSSProperties = useMemo(
+    () => ({
+      boxSizing: "border-box",
+      background: "#ffffff",
+      border: "1px solid #eef2f7",
+      borderRadius: 14,
+      padding: isMobile ? 12 : 14,
+      boxShadow: "0 10px 25px rgba(2,6,23,0.05)",
+    }),
+    [isMobile],
   );
 
   const modalBackdropStyle: React.CSSProperties = useMemo(
@@ -678,9 +801,9 @@ export default function EditLesson({
       width: "min(1100px, 100%)",
       maxHeight: "92vh",
       overflow: "auto",
-      background: "white",
-      borderRadius: 14,
-      boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+      background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
+      borderRadius: 16,
+      boxShadow: "0 30px 90px rgba(2, 6, 23, 0.35)",
       border: "1px solid rgba(226, 232, 240, 0.9)",
     }),
     [],
@@ -691,9 +814,10 @@ export default function EditLesson({
       position: "sticky",
       top: 0,
       zIndex: 2,
-      background: "white",
+      background: "rgba(255,255,255,0.92)",
+      backdropFilter: "blur(8px)",
       borderBottom: "1px solid #e2e8f0",
-      padding: isMobile ? "10px 12px" : "12px 16px",
+      padding: isMobile ? "12px 12px" : "14px 16px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -702,18 +826,45 @@ export default function EditLesson({
     [isMobile],
   );
 
-  const modalCloseButtonStyle: React.CSSProperties = useMemo(
+  const closeBtnStyle: React.CSSProperties = useMemo(
     () => ({
-      borderRadius: 10,
+      borderRadius: 12,
       border: "1px solid #e2e8f0",
       background: "#fff",
-      padding: "8px 10px",
+      padding: "8px 12px",
       cursor: "pointer",
       fontSize: 12,
+      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
 
+  const topActionRowStyle: React.CSSProperties = useMemo(
+    () => ({
+      display: "flex",
+      gap: 12,
+      justifyContent: "center",
+      flexWrap: "wrap",
+    }),
+    [],
+  );
+
+  const errorBoxStyle: React.CSSProperties = useMemo(
+    () => ({
+      background: "#fee2e2",
+      color: "#991b1b",
+      padding: 10,
+      borderRadius: 12,
+      marginBottom: 12,
+      fontSize: 12,
+      border: "1px solid rgba(153, 27, 27, 0.15)",
+    }),
+    [],
+  );
+
+  // -----------------------------
+  // Render
+  // -----------------------------
   return (
     <>
       {!open && (
@@ -721,17 +872,22 @@ export default function EditLesson({
           onClick={getClass}
           disabled={loading}
           style={{
-            borderRadius: 6,
-            width: "150px",
+            borderRadius: 10,
+            width: "fit-content",
             backgroundColor: partnerColor(),
             color: "#fff",
             fontSize: 12,
-            fontWeight: 400,
-            padding: "6px 10px",
-            height: 18,
+            fontWeight: 600,
+            padding: "10px 12px",
+            height: 36,
+            border: "none",
             outline: "none",
-            cursor: "pointer",
-            display: "block",
+            cursor: loading ? "not-allowed" : "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
+            opacity: loading ? 0.8 : 1,
           }}
         >
           {loading ? "Carregando..." : buttonText || "Adaptar Conteúdo"}
@@ -745,61 +901,81 @@ export default function EditLesson({
           aria-label={buttonText || "Adaptar Conteúdo"}
           style={modalBackdropStyle}
           onMouseDown={(e) => {
-            if (e.target === e.currentTarget) closeModal();
+            if (e.target === e.currentTarget) tryCloseModal();
           }}
         >
           <div style={modalPanelStyle} onMouseDown={(e) => e.stopPropagation()}>
             <div style={modalHeaderStyle}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <strong style={{ fontSize: 14, color: "#0f172a" }}>
-                  {buttonText || "Adaptar Conteúdo"}
-                </strong>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <strong style={{ fontSize: 14, color: "#0f172a" }}>
+                    {buttonText || "Adaptar Conteúdo"}
+                  </strong>
+
+                  {isDirty ? (
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "#b45309",
+                        background: "rgba(245, 158, 11, 0.10)",
+                        border: "1px solid rgba(245, 158, 11, 0.20)",
+                        padding: "4px 8px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      Alterações não salvas
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: "#16a34a",
+                        background: "rgba(34, 197, 94, 0.10)",
+                        border: "1px solid rgba(34, 197, 94, 0.20)",
+                        padding: "4px 8px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      Salvo
+                    </span>
+                  )}
+                </div>
+
                 <span style={{ fontSize: 12, color: "#64748b" }}>
                   ESC fecha • Clique fora fecha
                 </span>
               </div>
 
               <button
-                onClick={closeModal}
-                style={modalCloseButtonStyle}
+                onClick={tryCloseModal}
+                style={closeBtnStyle}
                 title="Fechar"
               >
-                X
+                Fechar
               </button>
             </div>
 
-            <div style={{ padding: isMobile ? 10 : 14 }}>
+            <div style={{ padding: isMobile ? 12 : 16 }}>
               <div aria-label="Editor de aula" style={outerWrapStyle}>
-                {error && (
-                  <div
-                    style={{
-                      background: "#fee2e2",
-                      color: "#991b1b",
-                      padding: 8,
-                      borderRadius: 8,
-                      marginBottom: 10,
-                      fontSize: 12,
-                    }}
-                  >
-                    {error}
-                  </div>
-                )}
+                {error && <div style={errorBoxStyle}>{error}</div>}
 
-                {/* CABEÇALHO E METADADOS */}
-                <div style={{ ...sectionCard, marginBottom: 12 }}>
+                {/* METADADOS */}
+                <div style={{ ...subtleCard, marginBottom: 12 }}>
                   <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: isMobile
                         ? "1fr"
                         : "minmax(0, 2fr) minmax(0, 1fr)",
-                      gap: 10,
-                      marginBottom: 10,
+                      gap: 12,
+                      marginBottom: 12,
                     }}
                   >
                     <div>
                       <div style={labelStyle}>Título da aula</div>
-                      <div style={{ display: "flex", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 10 }}>
                         <input
                           disabled={loadingTitle}
                           type="text"
@@ -808,16 +984,19 @@ export default function EditLesson({
                           placeholder="Ex.: Business Essentials — Vocabulary & Usage"
                           style={inputBase}
                         />
+
                         <button
                           onClick={handleTitle}
+                          disabled={loadingTitle}
                           style={{
-                            width: 100,
-                            borderRadius: 8,
-                            border: "1px solid #e2e8f0",
-                            background: "#fff",
-                            cursor: "pointer",
+                            ...ghostButton,
+                            width: 120,
                             fontSize: 12,
+                            fontWeight: 700,
+                            opacity: loadingTitle ? 0.7 : 1,
+                            cursor: loadingTitle ? "not-allowed" : "pointer",
                           }}
+                          title="Gerar título por IA"
                         >
                           AI -2
                         </button>
@@ -838,7 +1017,8 @@ export default function EditLesson({
                         style={{
                           ...inputBase,
                           background: "white",
-                          paddingRight: 24,
+                          paddingRight: 26,
+                          cursor: "pointer",
                         }}
                       >
                         <option value="en">English (en)</option>
@@ -850,14 +1030,16 @@ export default function EditLesson({
                   </div>
 
                   {!fetchEventData && (
-                    <TagsEditor
-                      value={tags}
-                      onChange={setTags}
-                      helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
-                    />
+                    <div style={{ marginBottom: 12 }}>
+                      <TagsEditor
+                        value={tags}
+                        onChange={setTags}
+                        helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+                      />
+                    </div>
                   )}
 
-                  <div style={{ marginTop: 10 }}>
+                  <div style={{ marginBottom: 12 }}>
                     <div style={labelStyle}>Description</div>
                     <textarea
                       disabled={loadingTitle}
@@ -867,75 +1049,97 @@ export default function EditLesson({
                       placeholder="Descrição da aula"
                       style={{ ...inputBase, resize: "vertical" }}
                     />
-                    <button
-                      onClick={handleDescription}
-                      style={{
-                        marginTop: 8,
-                        width: 100,
-                        borderRadius: 8,
-                        border: "1px solid #e2e8f0",
-                        background: "#fff",
-                        cursor: "pointer",
-                        fontSize: 12,
-                      }}
+
+                    <div
+                      style={{ display: "flex", justifyContent: "flex-start" }}
                     >
-                      AI -2
-                    </button>
+                      <button
+                        onClick={handleDescription}
+                        disabled={loadingTitle}
+                        style={{
+                          ...ghostButton,
+                          width: 120,
+                          fontSize: 12,
+                          fontWeight: 700,
+                          marginTop: 10,
+                          opacity: loadingTitle ? 0.7 : 1,
+                          cursor: loadingTitle ? "not-allowed" : "pointer",
+                        }}
+                        title="Gerar descrição por IA"
+                      >
+                        AI -2
+                      </button>
+                    </div>
                   </div>
 
                   {!fetchEventData && (
-                    <div style={{ marginTop: 10 }}>
+                    <div>
                       <div style={labelStyle}>Imagem da aula</div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          onPickLessonImage(e.target.files?.[0] || null)
-                        }
-                        disabled={uploadingImage}
-                      />
-                      {uploadingImage && (
-                        <small style={{ color: "#0ea5e9" }}>
-                          Enviando imagem...
-                        </small>
-                      )}
-                      {uploadError && (
-                        <small style={{ color: "#b91c1c" }}>
-                          {uploadError}
-                        </small>
-                      )}
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            onPickLessonImage(e.target.files?.[0] || null)
+                          }
+                          disabled={uploadingImage}
+                        />
+
+                        {uploadingImage && (
+                          <small style={{ color: "#0ea5e9", fontWeight: 600 }}>
+                            Enviando imagem...
+                          </small>
+                        )}
+
+                        {uploadError && (
+                          <small style={{ color: "#b91c1c", fontWeight: 600 }}>
+                            {uploadError}
+                          </small>
+                        )}
+                      </div>
 
                       {image && (
                         <div
                           style={{
-                            marginTop: 8,
+                            marginTop: 12,
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            gap: 8,
+                            gap: 10,
                           }}
                         >
                           <img
                             src={image}
                             alt="Lesson thumbnail"
                             style={{
-                              width: isMobile ? "100%" : 240,
-                              maxWidth: 300,
-                              height: isMobile ? "auto" : 240,
+                              width: isMobile ? "100%" : 260,
+                              maxWidth: 320,
+                              height: isMobile ? "auto" : 260,
                               objectFit: "cover",
-                              borderRadius: 8,
+                              borderRadius: 14,
                               border: "1px solid #e2e8f0",
+                              boxShadow: "0 20px 40px rgba(2,6,23,0.10)",
                             }}
                             onError={(e) =>
                               (e.currentTarget.style.display = "none")
                             }
                           />
+
                           <button
                             onClick={() => setImage("")}
                             style={{
-                              ...fullWidthButton,
-                              maxWidth: 180,
+                              ...ghostButton,
+                              width: "min(220px, 100%)",
                               fontSize: 12,
+                              fontWeight: 700,
                             }}
                           >
                             Remover imagem
@@ -947,21 +1151,14 @@ export default function EditLesson({
                 </div>
 
                 {/* TOOLBAR */}
-                <div style={{ margin: "auto", display: "inline" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: 12,
-                      justifyContent: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
+                <div style={{ ...subtleCard, marginBottom: 12 }}>
+                  <div style={topActionRowStyle}>
                     <button
                       onClick={() => addBlock("start")}
-                      style={{ ...fullWidthButton, maxWidth: 100 }}
+                      style={{ ...ghostButton, width: 140, fontWeight: 700 }}
                       title="Adicionar no início"
                     >
-                      + Início
+                      Adicionar no início
                     </button>
 
                     <select
@@ -972,8 +1169,9 @@ export default function EditLesson({
                       style={{
                         ...inputBase,
                         background: "white",
-                        maxWidth: 160,
-                        paddingRight: 24,
+                        maxWidth: 220,
+                        paddingRight: 26,
+                        cursor: "pointer",
                       }}
                       title="Tipo do novo bloco"
                     >
@@ -995,71 +1193,89 @@ export default function EditLesson({
 
                     <button
                       onClick={() => addBlock("end")}
-                      style={{ ...primaryButton, maxWidth: 100 }}
+                      style={{ ...primaryButton, width: 160 }}
                       title="Adicionar ao final"
                     >
-                      + Final
+                      Adicionar ao final
                     </button>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: 12,
+                      marginTop: 14,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    <ImportElementsEditor
+                      lessonId={classId}
+                      studentId={studentId}
+                      setTheLanguage={setTheLanguage}
+                      theLanguage={theLanguage}
+                      headers={headers}
+                      onChange={handleImportChange}
+                      fetchEventData={fetchEventData}
+                    />
+
+                    <button
+                      onClick={() => setOpenAIGenerator(true)}
+                      style={{ ...ghostButton, fontWeight: 800 }}
+                      title="Abrir gerador"
+                    >
+                      Gerar aula por IA
+                    </button>
+
+                    <GenerateEVSModal
+                      visible={openAIGenerator}
+                      studentId={studentId}
+                      classId={classId}
+                      headers={headers}
+                      theme={title || lesson?.title || ""}
+                      language1={theLanguage || language || "en"}
+                      onClose={() => setOpenAIGenerator(false)}
+                      onAppendElements={(newEls: any[]) => {
+                        const clean = sanitizeElements(newEls || []);
+                        setElements((prev) => [...prev, ...clean]);
+                        setOpenAIGenerator(false);
+                      }}
+                    />
                   </div>
                 </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: 12,
-                    marginTop: 20,
-                    marginBottom: 20,
-                    marginLeft: "auto",
-                    marginRight: "auto",
-                  }}
-                >
-                  <ImportElementsEditor
-                    lessonId={classId}
-                    studentId={studentId}
-                    setTheLanguage={setTheLanguage}
-                    theLanguage={theLanguage}
-                    headers={headers}
-                    onChange={handleImportChange}
-                    fetchEventData={fetchEventData}
-                  />
-                  <button
-                    onClick={() => setOpenAIGenerator(true)}
-                    style={{ ...fullWidthButton, maxWidth: "fit-content" }}
-                    title="Abrir gerador"
-                  >
-                    Gerar Aula Por IA
-                  </button>
-                  <GenerateEVSModal
-                    visible={openAIGenerator}
-                    studentId={studentId}
-                    classId={classId}
-                    headers={headers}
-                    // sem currentTheme: usa o próprio título (ou fallback)
-                    theme={title || lesson?.title || ""}
-                    // mantém a língua selecionada no modal
-                    language1={theLanguage || language || "en"}
-                    onClose={() => setOpenAIGenerator(false)}
-                    onAppendElements={(newEls: any[]) => {
-                      const clean = sanitizeElements(newEls || []);
-                      setElements((prev) => [...prev, ...clean]);
-                      setOpenAIGenerator(false);
-                    }}
-                  />
-                </div>
-
-                {/* CONTEÚDO DA AULA */}
-                <div style={{ ...sectionCard, marginBottom: 12 }}>
-                  <h3
+                {/* CONTEÚDO */}
+                <div style={{ ...subtleCard, marginBottom: 12 }}>
+                  <div
                     style={{
-                      fontSize: "clamp(16px, 3vw, 18px)",
-                      textAlign: "center",
-                      margin: "0 0 8px 0",
-                      color: "#0f172a",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 10,
+                      marginBottom: 10,
+                      flexWrap: "wrap",
                     }}
                   >
-                    Conteúdo da Aula
-                  </h3>
+                    <h3
+                      style={{
+                        fontSize: "clamp(16px, 3vw, 18px)",
+                        margin: 0,
+                        color: "#0f172a",
+                      }}
+                    >
+                      Conteúdo da aula
+                    </h3>
+
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#64748b",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {elements.length} bloco(s)
+                    </span>
+                  </div>
 
                   <div
                     style={{
@@ -1072,11 +1288,12 @@ export default function EditLesson({
                       <div
                         style={{
                           border: "1px dashed #94a3b8",
-                          borderRadius: 8,
-                          padding: 14,
+                          borderRadius: 14,
+                          padding: 16,
                           color: "#64748b",
                           fontSize: 13,
                           textAlign: "center",
+                          background: "rgba(148,163,184,0.06)",
                         }}
                       >
                         Nenhum elemento cadastrado.
@@ -1247,14 +1464,17 @@ export default function EditLesson({
                 {/* AÇÕES FINAIS */}
                 <div
                   style={{
-                    ...sectionCard,
+                    ...subtleCard,
                     display: "flex",
                     flexDirection: isMobile ? "column" : "row",
-                    gap: 8,
-                    justifyContent: isMobile ? "stretch" : "flex-end",
+                    gap: 10,
+                    justifyContent: isMobile ? "stretch" : "space-between",
+                    alignItems: isMobile ? "stretch" : "center",
                   }}
                 >
-                  <div style={{ flex: isMobile ? "unset" : 0 }}>
+                  <div
+                    style={{ display: "flex", gap: 10, alignItems: "center" }}
+                  >
                     <DeleteClassButton
                       classId={classId}
                       headers={headers}
@@ -1268,12 +1488,18 @@ export default function EditLesson({
                     style={{
                       display: "flex",
                       flexDirection: isMobile ? "column" : "row",
-                      gap: 8,
+                      gap: 10,
                       width: isMobile ? "100%" : "auto",
-                      marginLeft: isMobile ? 0 : "auto",
                     }}
                   >
-                    <button onClick={closeModal} style={{ ...fullWidthButton }}>
+                    <button
+                      onClick={tryCloseModal}
+                      style={{
+                        ...ghostButton,
+                        width: isMobile ? "100%" : 160,
+                        fontWeight: 800,
+                      }}
+                    >
                       Cancelar
                     </button>
 
@@ -1282,7 +1508,8 @@ export default function EditLesson({
                       disabled={saving}
                       style={{
                         ...primaryButton,
-                        opacity: saving ? 0.8 : 1,
+                        width: isMobile ? "100%" : 160,
+                        opacity: saving ? 0.85 : 1,
                         cursor: saving ? "not-allowed" : "pointer",
                       }}
                     >

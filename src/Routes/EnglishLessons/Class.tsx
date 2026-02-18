@@ -4096,7 +4096,9 @@ export default function EnglishClassCourse2({
                           setChange={setChange}
                           change={change}
                           studentId={myId}
-                          buttonText={"Adicionar Elementos"}
+                          buttonText={
+                            "Adicionar ou Remover Elementos Dinâmicos"
+                          }
                           setSeeEdit={setSeeEdit}
                           headers={actualHeaders}
                           classId={classId}
