@@ -26,7 +26,7 @@ export default function VideoEditor({
   onMoveDown,
 }: Props) {
   const [forcePreviewKey, setForcePreviewKey] = useState(0); // para recarregar preview
-  const [showConfig, setShowConfig] = useState(false);
+  const [showConfig, setShowConfig] = useState(true);
 
   const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
   const updateVideo = (video: string) => onChange({ ...value, video });

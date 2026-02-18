@@ -32,6 +32,9 @@ import DeleteClassButton from "./DeleteLesson/DeleteLesson";
 import ImportElementsEditor from "./ImportNewElements/SelectExercise/ImportNewElements";
 import { notifyAlert } from "../Assets/Functions/FunctionLessons";
 
+// NOVO: Modal de geração (IA)
+import GenerateEVSModal from "./AIGenerator/AIGeneratorAll";
+
 type ElementBase = {
   subtitle?: string;
   grid?: number;
@@ -64,7 +67,7 @@ interface ClassDetails {
   image: string;
   module: string;
   moduleId?: string;
-  order: number; // só aqui continua
+  order: number;
   title?: string;
   tags?: string[];
   language?: string;
@@ -73,7 +76,7 @@ interface ClassDetails {
 
 interface EditLessonModelProps {
   classId: string;
-  setSeeEdit?: (v: boolean) => void; // NÃO usaremos pra abrir modal (só se você quiser fechar no pai)
+  setSeeEdit?: (v: boolean) => void;
   headers?: any;
   fetchEventData?: any;
   buttonText?: any;
@@ -131,8 +134,11 @@ export default function EditLesson({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // open agora é MODAL
+  // Modal principal
   const [open, setOpen] = useState(false);
+
+  // NOVO: modal de IA separado (não abre automaticamente)
+  const [openAIGenerator, setOpenAIGenerator] = useState(false);
 
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
   const [title, setTitle] = useState("");
@@ -151,7 +157,6 @@ export default function EditLesson({
   // idioma da aula (usado no payload)
   const [theLanguage, setTheLanguage] = useState<string>("en");
 
-  // --- Responsividade simples (mobile)
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
   useEffect(() => {
@@ -170,7 +175,14 @@ export default function EditLesson({
     document.body.style.overflow = "hidden";
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeModal();
+      if (e.key === "Escape") {
+        // se o modal da IA estiver aberto, fecha ele primeiro
+        if (openAIGenerator) {
+          setOpenAIGenerator(false);
+          return;
+        }
+        closeModal();
+      }
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -180,12 +192,20 @@ export default function EditLesson({
       window.removeEventListener("keydown", onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, openAIGenerator]);
 
   const closeModal = () => {
     setOpen(false);
-    // se você usa isso no pai pra algo visual, pode deixar:
+    setOpenAIGenerator(false);
     setSeeEdit?.(false);
+  };
+
+  const sanitizeElements = (arr: any[]): ElementItem[] => {
+    if (!Array.isArray(arr)) return [];
+    return arr.map((el: any) => {
+      const { order: _ignored, _id: _ignoredId, ...rest } = el || {};
+      return rest as ElementItem;
+    });
   };
 
   // ===================== IA: TÍTULO =====================
@@ -253,7 +273,6 @@ export default function EditLesson({
 
   // ===================== CARREGAR AULA =====================
   const getClass = async () => {
-    // IMPORTANTÍSSIMO: não chamar setSeeEdit(true) aqui, senão o pai pode desmontar o componente
     setLoading(true);
     setError(null);
 
@@ -268,12 +287,7 @@ export default function EditLesson({
 
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
-      const sanitizedElements: ElementItem[] = Array.isArray(data.elements)
-        ? data.elements.map((el: any) => {
-            const { order: _ignored, _id: _ignoredId, ...rest } = el;
-            return rest;
-          })
-        : [];
+      const sanitizedElements = sanitizeElements(data.elements);
 
       setLesson(data);
       setTitle(data.title ?? "");
@@ -294,7 +308,7 @@ export default function EditLesson({
     }
   };
 
-  // Recarrega se o back atualiza e você sinaliza change (mantém modal aberto)
+  // Recarrega se change sinaliza atualização (mantém modal aberto)
   useEffect(() => {
     if (!open) return;
     if (!classId) return;
@@ -314,10 +328,7 @@ export default function EditLesson({
     setSaving(true);
     setError(null);
 
-    const sanitizedElements: ElementItem[] = (elements || []).map((el: any) => {
-      const { order: _ignored, _id: _ignoredId, ...rest } = el;
-      return rest;
-    });
+    const sanitizedElements = sanitizeElements(elements as any);
 
     const payload: ClassDetails = {
       ...lesson,
@@ -340,14 +351,7 @@ export default function EditLesson({
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
-      const updatedSanitizedElements: ElementItem[] = Array.isArray(
-        updated.elements,
-      )
-        ? updated.elements.map((el: any) => {
-            const { order: _ignored, _id: _ignoredId, ...rest } = el;
-            return rest;
-          })
-        : [];
+      const updatedSanitizedElements = sanitizeElements(updated.elements);
 
       setLesson(updated);
       if (updated?.image) setImage(updated.image);
@@ -569,7 +573,7 @@ export default function EditLesson({
     );
   };
 
-  // ===================== Import de elementos (no front) =====================
+  // ===================== Import de elementos =====================
   const handleImportChange = (info: {
     mode: "one" | "all";
     fromClassId: string;
@@ -579,10 +583,12 @@ export default function EditLesson({
     const { elements: imported } = info;
 
     setElements((prev) => {
-      const cleanImported: ElementItem[] = imported.map((plain: any) => {
-        const { _id, order, ...rest } = plain;
-        return rest as ElementItem;
-      });
+      const cleanImported: ElementItem[] = (imported || []).map(
+        (plain: any) => {
+          const { _id, order, ...rest } = plain;
+          return rest as ElementItem;
+        },
+      );
 
       return [...prev, ...cleanImported];
     });
@@ -653,7 +659,6 @@ export default function EditLesson({
     [fullWidthButton],
   );
 
-  // ===================== MODAL STYLES (fixo no BODY) =====================
   const modalBackdropStyle: React.CSSProperties = useMemo(
     () => ({
       position: "fixed",
@@ -711,7 +716,6 @@ export default function EditLesson({
 
   return (
     <>
-      {/* Botão que abre o modal */}
       {!open && (
         <button
           onClick={getClass}
@@ -734,7 +738,6 @@ export default function EditLesson({
         </button>
       )}
 
-      {/* MODAL colado no body via Portal */}
       <ModalPortal open={open}>
         <div
           role="dialog"
@@ -742,7 +745,6 @@ export default function EditLesson({
           aria-label={buttonText || "Adaptar Conteúdo"}
           style={modalBackdropStyle}
           onMouseDown={(e) => {
-            // clique fora fecha
             if (e.target === e.currentTarget) closeModal();
           }}
         >
@@ -768,7 +770,6 @@ export default function EditLesson({
 
             <div style={{ padding: isMobile ? 10 : 14 }}>
               <div aria-label="Editor de aula" style={outerWrapStyle}>
-                {/* ERRO */}
                 {error && (
                   <div
                     style={{
@@ -1004,10 +1005,13 @@ export default function EditLesson({
 
                 <div
                   style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 12,
                     marginTop: 20,
+                    marginBottom: 20,
                     marginLeft: "auto",
                     marginRight: "auto",
-                    maxWidth: 600,
                   }}
                 >
                   <ImportElementsEditor
@@ -1018,6 +1022,29 @@ export default function EditLesson({
                     headers={headers}
                     onChange={handleImportChange}
                     fetchEventData={fetchEventData}
+                  />
+                  <button
+                    onClick={() => setOpenAIGenerator(true)}
+                    style={{ ...fullWidthButton, maxWidth: "fit-content" }}
+                    title="Abrir gerador"
+                  >
+                    Gerar Aula Por IA
+                  </button>
+                  <GenerateEVSModal
+                    visible={openAIGenerator}
+                    studentId={studentId}
+                    classId={classId}
+                    headers={headers}
+                    // sem currentTheme: usa o próprio título (ou fallback)
+                    theme={title || lesson?.title || ""}
+                    // mantém a língua selecionada no modal
+                    language1={theLanguage || language || "en"}
+                    onClose={() => setOpenAIGenerator(false)}
+                    onAppendElements={(newEls: any[]) => {
+                      const clean = sanitizeElements(newEls || []);
+                      setElements((prev) => [...prev, ...clean]);
+                      setOpenAIGenerator(false);
+                    }}
                   />
                 </div>
 
@@ -1232,9 +1259,7 @@ export default function EditLesson({
                       classId={classId}
                       headers={headers}
                       onDeleted={() => {
-                        window.location.href = `/teaching-materials/${
-                          lesson?.courseId || ""
-                        }`;
+                        window.location.href = `/teaching-materials/${lesson?.courseId || ""}`;
                       }}
                     />
                   </div>

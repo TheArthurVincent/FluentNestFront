@@ -82,7 +82,7 @@ export default function ImagesEditor({
   onMoveDown,
   headers,
 }: Props) {
-  const [showConfig, setShowConfig] = useState(false);
+  const [showConfig, setShowConfig] = useState(true);
   const images = useMemo(() => value.images ?? [], [value.images]);
 
   const ensureLanguages = (item: ImageEntry): ImageEntry => {

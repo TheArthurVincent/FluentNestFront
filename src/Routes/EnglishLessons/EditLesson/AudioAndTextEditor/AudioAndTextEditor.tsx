@@ -79,7 +79,7 @@ export default function AudioAndTextEditor({
     localStorage.getItem("loggedIn") || "null",
   );
 
-  const [showConfig, setShowConfig] = useState(false);
+  const [showConfig, setShowConfig] = useState(true);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [coverError, setCoverError] = useState<string | null>(null);
 
