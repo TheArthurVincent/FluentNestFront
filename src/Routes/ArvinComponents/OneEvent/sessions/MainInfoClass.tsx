@@ -14,8 +14,8 @@ import EventVideo from "./VideoClass";
 
 type FreeEventItem = {
   _id: string;
-  date: string; // "2025-12-17"
-  time: string; // "10:00"
+  date: string;
+  time: string;
 };
 
 type LessonShape = {
@@ -34,7 +34,6 @@ type MainInfoClassProps = {
   permissionsUser?: string;
   allowedToEdit?: boolean;
 
-  // Description props (mantendo compatibilidade)
   theDescription?: string;
   theTeacherDescription?: string;
   lesson?: LessonShape | null;
@@ -42,7 +41,6 @@ type MainInfoClassProps = {
   title: string;
 };
 
-// ---------- estilos (mesma vibe, menor) ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -105,7 +103,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   status,
   title,
 }) => {
-  // ===================== MODAIS / ESTADOS (MAIN INFO) =====================
   const [isMainInfoModalOpen, setIsMainInfoModalOpen] = useState(false);
   const [savingMainInfo, setSavingMainInfo] = useState(false);
 
@@ -121,7 +118,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const presetOptions = [30, 45, 60, 90];
   const [preset, setPreset] = useState<string>("");
 
-  // ===================== MODAIS / ESTADOS (REAGENDAR) =====================
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
   const [rescheduleTab, setRescheduleTab] = useState<"fixed" | "free">("fixed");
   const [rescheduling, setRescheduling] = useState(false);
@@ -136,7 +132,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   const [allowedToReschedule, setAllowedToReschedule] = useState(false);
 
-  // ===================== MODAIS / ESTADOS (DESCRIÇÕES) =====================
   const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
   const [savingDescription, setSavingDescription] = useState(false);
 
@@ -151,7 +146,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const [loadingDescriptionAI, setLoadingDescriptionAI] = useState(false);
   const [change, setChange] = useState(false);
 
-  // ===================== SYNC COM EVENT / PROPS =====================
   useEffect(() => {
     setDate(event?.date || "");
     setTime(event?.time || "");
@@ -187,7 +181,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     [theDescription],
   );
 
-  // ===================== API: MAIN INFO =====================
   const updateMainInfo = async (id: string) => {
     try {
       setSavingMainInfo(true);
@@ -221,7 +214,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     setIsMainInfoModalOpen(false);
   };
 
-  // ===================== API: REAGENDAR =====================
   const fetchEventsFree = async () => {
     const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "false");
     if (!loggedIn) return;
@@ -256,7 +248,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         { headers: headers as any },
       );
 
-      // mantém seu comportamento atual
       window.location.reload();
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
@@ -273,7 +264,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     setIsRescheduleOpen(true);
   };
 
-  // ===================== API: DESCRIÇÃO =====================
   const updateDescription = async (id: string) => {
     try {
       setSavingDescription(true);
@@ -333,7 +323,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     }
   };
 
-  // ===================== LISTA DE HORÁRIOS FUTUROS (FIXO) =====================
   const futureEventsFree = useMemo(() => {
     const now = new Date();
     return (eventsFreeArray || []).filter((it) => {
@@ -392,7 +381,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     </button>
   );
 
-  // ===================== MODAL: EDITAR INFORMAÇÕES DO EVENTO =====================
   const renderMainInfoModal = () => {
     if (!isMainInfoModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -570,7 +558,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
-  // ===================== MODAL: REAGENDAR =====================
   const renderRescheduleModal = () => {
     if (!isRescheduleOpen) return null;
     if (typeof document === "undefined") return null;
@@ -783,7 +770,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
-  // ===================== MODAL: EDITAR DESCRIÇÕES =====================
   const renderDescriptionModal = () => {
     if (!isDescriptionModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -924,7 +910,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     );
   };
 
-  // ===================== RENDER PRINCIPAL (layout pedido) =====================
   if (!event) return null;
 
   return (
