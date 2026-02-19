@@ -5,14 +5,12 @@ import {
   cardBase,
   cardTitle,
   pillStatus,
-  statCardBase,
-  statLabel,
-  statValue,
 } from "../../Students/TheStudent/types/studentPage.styles";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../Styles/Styles";
+
 type LastClassProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
@@ -20,6 +18,50 @@ type LastClassProps = {
   evendId?: string;
   allowedToEdit?: boolean;
   replicateLastEvent?: boolean;
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "#606060",
+};
+
+const valueStyle: React.CSSProperties = {
+  fontWeight: 600,
+  color: "#030303",
+  fontSize: 13,
+  whiteSpace: "pre-wrap",
+};
+
+const btnStyle: React.CSSProperties = {
+  padding: "8px 12px",
+  backgroundColor: partnerColor(),
+  color: "#fff",
+  border: "none",
+  borderRadius: 6,
+  cursor: "pointer",
+  fontSize: 12,
+  fontWeight: 700,
+};
+
+const linkGhostStyle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  padding: "6px 10px",
+  borderRadius: 999,
+  border: `1px solid ${partnerColor()}`,
+  color: partnerColor(),
+  textDecoration: "none",
+  background: "#fff",
+};
+
+const linkPrimaryStyle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  padding: "6px 10px",
+  borderRadius: 999,
+  backgroundColor: partnerColor(),
+  color: "#FFFFFF",
+  textDecoration: "none",
 };
 
 const LastClass: FC<LastClassProps> = ({
@@ -35,19 +77,16 @@ const LastClass: FC<LastClassProps> = ({
     return <span style={pillStatus}>{status}</span>;
   };
 
-  useEffect(() => {
-    console.log(lastLesson);
-  }, [lastLesson]);
-
   const handleClassSummary = async () => {
     const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
     const thePermissions = logged?.permissions;
-    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
       try {
-        const response = await axios.put(
+        await axios.put(
           `${backDomain}/api/v1/replicate-last-event/${evendId}`,
           { lastLesson: lastLesson._id },
-          { headers: headers as any }
+          { headers: headers as any },
         );
         window.location.reload();
       } catch (error) {
@@ -58,132 +97,123 @@ const LastClass: FC<LastClassProps> = ({
   };
 
   return (
-    <div
-      style={{
-        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
-      }}
-    >
-      {/* WRAPPER PRINCIPAL */}
+    <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
       <div
         style={{
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 600,
-          fontStyle: "SemiBold",
           fontSize: "14px",
           borderRadius: "12px",
           margin: !isDesktop ? "12px" : "0px",
           display: "grid",
-          gridAutoColumns: "1fr",
           gap: 12,
         }}
       >
-        <>
-          {lastLesson && (
-            <div style={cardBase}>
-              <div
-                style={{
-                  ...cardTitle,
-                  marginBottom: 12,
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Aula Passada</span>
-                {lastLesson.status && renderStatusPill(lastLesson.status)}
+        {lastLesson && (
+          <div
+            style={{
+              ...cardBase,
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                ...cardTitle,
+                marginBottom: 6,
+                justifyContent: "space-between",
+                fontSize: 14,
+              }}
+            >
+              <span>Aula Passada</span>
+              {lastLesson.status && renderStatusPill(lastLesson.status)}
+            </div>
+
+            <div
+              style={{
+                marginTop: 4,
+                borderLeft: `4px solid ${partnerColor()}`,
+                paddingLeft: 12,
+                display: "grid",
+                gap: 8,
+              }}
+            >
+              <div style={{ display: "grid", gap: 3 }}>
+                <span style={labelStyle}>Quando foi</span>
+                <span style={valueStyle}>
+                  {lastLesson.date} ({lastLesson.time})
+                </span>
               </div>
-              <div
-                style={{
-                  display: "grid",
-                  gap: 10,
-                  marginBottom: 10,
-                }}
-              >
-                <div style={statCardBase}>
-                  <span style={statLabel}>Quando foi</span>
-                  <span style={statValue}>
-                    {lastLesson.date} ({lastLesson.time})
-                  </span>
-                </div>{" "}
-                <div style={statCardBase}>
-                  <span style={statLabel}>Descrição</span>
-                  <span style={statValue}>
-                    {lastLesson.description || "Sem descrição"}
-                  </span>
-                </div>{" "}
-                <div style={statCardBase}>
-                  <span style={statLabel}> Descrição do Professor </span>
-                  <span style={statValue}>
-                    {lastLesson.teacherDescription || "Sem descrição"}
-                  </span>
-                </div>{" "}
+
+              <div style={{ display: "grid", gap: 3 }}>
+                <span style={labelStyle}>Descrição</span>
+                <span style={valueStyle}>
+                  {lastLesson.description || "Sem descrição"}
+                </span>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                }}
-              >
-                {lastLesson.googleDriveLink && (
-                  <a
-                    href={lastLesson.googleDriveLink}
-                    rel="noreferrer"
-                    style={{
-                      fontWeight: 600,
-                      padding: "6px 12px",
-                      borderRadius: 999,
-                      color: partnerColor(),
-                      textDecoration: "none",
-                    }}
-                  >
-                    Important Link
-                  </a>
-                )}
-                {lastLesson.importantLink && !lastLesson.googleDriveLink && (
-                  <a
-                    href={lastLesson.importantLink}
-                    rel="noreferrer"
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: "6px 12px",
-                      borderRadius: 999,
-                      backgroundColor: partnerColor(),
-                      color: "#FFFFFF",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Link importante
-                  </a>
-                )}
-                {allowedToEdit && replicateLastEvent && (
-                  <button
-                    style={{
-                      marginTop: 8,
-                      borderRadius: "8px",
-                      backgroundColor: partnerColor(),
-                      color: "#FFFFFF",
-                      fontWeight: 600,
-                      border: "none",
-                      maxWidth: "fit-content",
-                      cursor: "pointer",
-                      marginLeft: " auto",
-                    }}
-                    onClick={handleClassSummary}
-                  >
-                    Replicar conteúdo da última aula
-                  </button>
-                )}{" "}
+
+              <div style={{ display: "grid", gap: 3 }}>
+                <span style={labelStyle}>Descrição do Professor</span>
+                <span
+                  style={{
+                    ...valueStyle,
+                    fontStyle: "italic",
+                    color: "#4B5563",
+                  }}
+                >
+                  {lastLesson.teacherDescription || "Sem descrição"}
+                </span>
               </div>
             </div>
-          )}
-        </>
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+                marginTop: 8,
+              }}
+            >
+              {lastLesson.googleDriveLink && (
+                <a
+                  href={lastLesson.googleDriveLink}
+                  rel="noreferrer"
+                  style={linkGhostStyle}
+                >
+                  Important Link
+                </a>
+              )}
+
+              {lastLesson.importantLink && !lastLesson.googleDriveLink && (
+                <a
+                  href={lastLesson.importantLink}
+                  rel="noreferrer"
+                  style={linkPrimaryStyle}
+                >
+                  Link importante
+                </a>
+              )}
+
+              {allowedToEdit && replicateLastEvent && (
+                <button
+                  style={{
+                    ...btnStyle,
+                    marginLeft: "auto",
+                    opacity: !evendId ? 0.7 : 1,
+                  }}
+                  onClick={handleClassSummary}
+                  disabled={!evendId}
+                  title={!evendId ? "Evento atual não encontrado" : ""}
+                >
+                  Replicar conteúdo
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {isDesktop && (
-        <div
-          style={{
-            minHeight: 200,
-          }}
-        >
+        <div style={{ minHeight: 200 }}>
           <Outlet />
         </div>
       )}

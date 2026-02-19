@@ -81,7 +81,7 @@ export default function SelectExerciseEditor({
   headers,
   language,
 }: Props) {
-  const [showConfig, setShowConfig] = useState(false);
+  const [showConfig, setShowConfig] = useState(true);
 
   // ✅ Modal IA
   const [aiOpen, setAiOpen] = useState(false);

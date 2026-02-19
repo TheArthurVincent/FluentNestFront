@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
+import { CircularProgress } from "@mui/material";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../../../Styles/Styles";
-import { CircularProgress } from "@mui/material";
 
 interface ImportElementsEditorProps {
   lessonId: string;
@@ -47,6 +47,8 @@ export default function ImportElementsEditor({
   onChange,
   fetchEventData,
 }: ImportElementsEditorProps) {
+  const BRAND = partnerColor();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const [language, setLanguage] = useState<"en" | "pt" | "fr" | "es">(
@@ -59,7 +61,7 @@ export default function ImportElementsEditor({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [openClassId, setOpenClassId] = useState<string | null>(null);
-  const [importMsg, setImportMsg] = useState<string | null>(null);
+  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
 
   const openModal = () => setIsOpen(true);
 
@@ -70,171 +72,343 @@ export default function ImportElementsEditor({
     setErrorMsg(null);
     setLoadingLessons(false);
     setOpenClassId(null);
-    setImportMsg(null);
+    setFeedbackMsg(null);
     fetchEventData?.();
   };
 
-  // Sincroniza idioma interno quando prop mudar
+  // Mantém o idioma interno sincronizado com a prop
   useEffect(() => {
-    if (theLanguage) {
-      setLanguage(theLanguage as any);
-    }
+    if (theLanguage) setLanguage(theLanguage as any);
   }, [theLanguage]);
 
   // ============================================
-  // Preview de cada elemento (cartãozinho)
+  // Helpers: UI
   // ============================================
-  const renderElementPreview = (el: ElementType, index: number) => {
-    const baseStyle: React.CSSProperties = {
-      borderRadius: 6,
+  const styles = useMemo(() => {
+    const softBrand = `${BRAND}14`;
+    const borderBrand = `${BRAND}40`;
+
+    const buttonBase: React.CSSProperties = {
+      borderRadius: 12,
       border: "1px solid #e5e7eb",
-      padding: 10,
-      marginBottom: 8,
-      background: "#ffffff",
+      padding: "10px 12px",
+      fontSize: 13,
+      fontWeight: 800,
+      cursor: "pointer",
+      transition:
+        "transform 0.08s ease, box-shadow 0.12s ease, background 0.12s ease",
+      userSelect: "none",
     };
 
-    const subtitle = el.subtitle || `(Elemento ${index + 1})`;
+    return {
+      backdrop: {
+        position: "fixed" as const,
+        inset: 0,
+        zIndex: 99999999,
+        background: "rgba(0,0,0,0.55)",
+      },
+      modal: {
+        position: "fixed" as const,
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        zIndex: 1000000,
+        width: "95%",
+        maxWidth: 820,
+        maxHeight: "90vh",
+        overflow: "auto",
+        background: "#fff",
+        borderRadius: 16,
+        border: "1px solid #e5e7eb",
+        boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
+        padding: 18,
+        fontFamily: "Plus Jakarta Sans, system-ui, sans-serif",
+      },
+      headerRow: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        gap: 12,
+        marginBottom: 12,
+      },
+      title: {
+        margin: 0,
+        fontSize: 18,
+        fontWeight: 900,
+        color: "#111827",
+      },
+      subtitle: {
+        margin: "6px 0 0 0",
+        fontSize: 13,
+        color: "#6b7280",
+        lineHeight: 1.35,
+      },
+      chip: {
+        fontSize: 11,
+        padding: "3px 9px",
+        borderRadius: 999,
+        background: softBrand,
+        border: `1px solid ${borderBrand}`,
+        color: "#111827",
+        fontWeight: 700,
+        whiteSpace: "nowrap" as const,
+      },
+      sectionBox: {
+        background: "#f9fafb",
+        borderRadius: 14,
+        border: "1px solid #e5e7eb",
+        padding: 12,
+      },
+      lessonCard: {
+        padding: 12,
+        borderRadius: 14,
+        background: "#fff",
+        border: "1px solid #e5e7eb",
+        marginBottom: 10,
+      },
+      lessonHeader: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        gap: 12,
+        cursor: "pointer",
+      },
+      lessonTitle: {
+        fontSize: 14,
+        fontWeight: 900,
+        color: "#111827",
+        whiteSpace: "nowrap" as const,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
+      lessonMeta: {
+        fontSize: 12,
+        color: "#6b7280",
+        marginTop: 2,
+      },
+      primaryBtn: {
+        ...buttonBase,
+        border: `1px solid ${borderBrand}`,
+        background: BRAND,
+        color: "#fff",
+        boxShadow: "0 8px 20px rgba(0,0,0,0.12)",
+      },
+      secondaryBtn: {
+        ...buttonBase,
+        border: `1px solid ${borderBrand}`,
+        background: `${BRAND}12`,
+        color: "#111827",
+      },
+      ghostBtn: {
+        ...buttonBase,
+        border: "1px solid #e5e7eb",
+        background: "#fff",
+        color: "#111827",
+        fontWeight: 900,
+        width: 36,
+        height: 36,
+        padding: 0,
+        display: "grid",
+        placeItems: "center",
+      },
+      input: {
+        width: "100%",
+        padding: "10px 12px",
+        borderRadius: 12,
+        border: "1px solid #d1d5db",
+        fontSize: 14,
+        outline: "none",
+      },
+      select: {
+        padding: "9px 10px",
+        borderRadius: 12,
+        border: "1px solid #d1d5db",
+        fontSize: 13,
+        background: "#fff",
+        outline: "none",
+      },
+      infoBox: {
+        marginBottom: 12,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: `${BRAND}10`,
+        border: `1px solid ${borderBrand}`,
+        color: "#111827",
+        fontSize: 13,
+      },
+      successBox: {
+        marginBottom: 12,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "#ecfdf5",
+        border: "1px solid #a7f3d0",
+        color: "#065f46",
+        fontSize: 13,
+      },
+      errorBox: {
+        marginBottom: 12,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "#fef2f2",
+        border: "1px solid #fecaca",
+        color: "#991b1b",
+        fontSize: 13,
+      },
+      row: {
+        display: "flex",
+        flexWrap: "wrap" as const,
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 12,
+      },
+      elementRow: {
+        display: "flex",
+        gap: 10,
+        alignItems: "flex-start",
+      },
+    };
+  }, [BRAND]);
 
-    if (el.type === "vocabulary") {
-      return (
-        <div key={index} style={baseStyle}>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              marginBottom: 4,
-              color: "#111827",
-            }}
-          >
-            {subtitle}
-          </div>
-          <div style={{ fontSize: 12, color: "#6b7280" }}>
-            Elemento de frases (sentences)
-            {el.sentences && el.sentences.length > 0 && (
-              <ul
-                style={{
-                  margin: "8px 0 0 16px",
-                  padding: 0,
-                  listStyleType: "disc",
-                  maxHeight: 50,
-                  overflowY: "auto",
-                }}
-              >
-                {el.sentences.map((s: any, i: any) => (
-                  <li key={i}>
-                    {s.english}, {s.portuguese}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+  const applyPressEffect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.currentTarget as any).style.transform = "translateY(1px)";
+    (e.currentTarget as any).style.boxShadow = "none";
+  };
+
+  const clearPressEffect = (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e.currentTarget as any).style.transform = "translateY(0px)";
+    (e.currentTarget as any).style.boxShadow = "";
+  };
+
+  // ============================================
+  // Preview de cada elemento
+  // ============================================
+  const renderElementPreview = (el: ElementType, index: number) => {
+    const box: React.CSSProperties = {
+      borderRadius: 14,
+      border: "1px solid #e5e7eb",
+      padding: 12,
+      background: "#ffffff",
+      width: "100%",
+      boxShadow: "0 6px 18px rgba(17,24,39,0.06)",
+    };
+
+    const title = el.subtitle || `Elemento ${index + 1}`;
+    const typeLabel = String(el.type || "unknown");
+
+    const header = (
+      <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+        <div style={{ fontSize: 13, fontWeight: 900, color: "#111827" }}>
+          {title}
         </div>
-      );
-    }
+        <span style={{ fontSize: 11, color: "#6b7280" }}>{typeLabel}</span>
+      </div>
+    );
 
-    if (el.type === "sentences") {
+    if (el.type === "vocabulary" || el.type === "sentences") {
       return (
-        <div key={index} style={baseStyle}>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              marginBottom: 4,
-              color: "#111827",
-            }}
-          >
-            {subtitle}
+        <div key={index} style={box}>
+          {header}
+          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            Prévia de frases:
           </div>
-          <div style={{ fontSize: 12, color: "#6b7280" }}>
-            Elemento de frases (sentences)
-            {el.sentences && el.sentences.length > 0 && (
-              <ul
-                style={{
-                  margin: "8px 0 0 16px",
-                  padding: 0,
-                  maxHeight: 50,
-                  overflowY: "auto",
-                  listStyleType: "disc",
-                }}
-              >
-                {el.sentences.map((s: any, i: any) => (
-                  <li key={i}>
-                    {s.english}, {s.portuguese}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+
+          {el.sentences && el.sentences.length > 0 ? (
+            <ul
+              style={{
+                margin: "8px 0 0 16px",
+                padding: 0,
+                listStyleType: "disc",
+                maxHeight: 70,
+                overflowY: "auto",
+                fontSize: 12,
+                color: "#374151",
+              }}
+            >
+              {el.sentences.slice(0, 6).map((s: any, i: any) => (
+                <li key={i}>
+                  {s.english}
+                  {s.portuguese ? ` — ${s.portuguese}` : ""}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+              Sem prévia disponível.
+            </div>
+          )}
         </div>
       );
     }
 
     if (el.type === "audio") {
       return (
-        <div key={index} style={baseStyle}>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              marginBottom: 4,
-              color: "#111827",
-            }}
-          >
-            {subtitle}
+        <div key={index} style={box}>
+          {header}
+
+          <div style={{ marginTop: 6, fontSize: 12, color: "#374151" }}>
+            {el.text ? (
+              <>
+                {el.text.slice(0, 160)}
+                {el.text.length > 160 ? "..." : ""}
+              </>
+            ) : (
+              <span style={{ color: "#6b7280" }}>Sem texto de áudio.</span>
+            )}
           </div>
-          {el.text && (
-            <div
-              style={{
-                fontSize: 12,
-                color: "#4b5563",
-                marginBottom: 4,
-              }}
-            >
-              {el.text.slice(0, 160)}
-              {el.text.length > 160 ? "..." : ""}
-            </div>
-          )}
-          {el.link && (
-            <a
-              href={el.link}
-              target="_blank"
-              rel="noreferrer"
-              style={{ fontSize: 12, color: "#2563eb" }}
-            >
-              Abrir áudio
-            </a>
-          )}
+
+          <div style={{ marginTop: 8 }}>
+            {el.link ? (
+              <a
+                href={el.link}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  fontSize: 12,
+                  color: "#2563eb",
+                  fontWeight: 800,
+                  textDecoration: "none",
+                }}
+                title="Abre o link do áudio em uma nova aba"
+              >
+                Abrir áudio
+              </a>
+            ) : (
+              <div style={{ fontSize: 12, color: "#6b7280" }}>Sem link.</div>
+            )}
+          </div>
         </div>
       );
     }
 
     if (el.type === "exercise") {
       return (
-        <div key={index} style={baseStyle}>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              marginBottom: 4,
-              color: "#111827",
-            }}
-          >
-            {subtitle}
-          </div>
-          {el.items && el.items.length > 0 && (
-            <ul
-              style={{
-                margin: 0,
-                marginTop: 4,
-                paddingLeft: 18,
-                fontSize: 12,
-                color: "#374151",
-              }}
-            >
-              {el.items.slice(0, 3).map((q, i) => (
-                <li key={i}>{q}</li>
-              ))}
-            </ul>
+        <div key={index} style={box}>
+          {header}
+
+          {el.items && el.items.length > 0 ? (
+            <>
+              <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+                Prévia de questões:
+              </div>
+
+              <ul
+                style={{
+                  margin: "8px 0 0 16px",
+                  padding: 0,
+                  listStyleType: "disc",
+                  fontSize: 12,
+                  color: "#374151",
+                }}
+              >
+                {el.items.slice(0, 3).map((q, i) => (
+                  <li key={i}>{q}</li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+              Sem itens no exercício.
+            </div>
           )}
         </div>
       );
@@ -242,40 +416,27 @@ export default function ImportElementsEditor({
 
     if (el.type === "video") {
       return (
-        <div key={index} style={baseStyle}>
-          <div
-            style={{
-              fontSize: 13,
-              fontWeight: 600,
-              marginBottom: 4,
-              color: "#111827",
-            }}
-          >
-            {subtitle} - Vídeo
+        <div key={index} style={box}>
+          {header}
+          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            Elemento de vídeo (sem prévia).
           </div>
         </div>
       );
     }
 
-    // fallback genérico
     return (
-      <div key={index} style={baseStyle}>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 600,
-            marginBottom: 4,
-            color: "#111827",
-          }}
-        >
-          {subtitle} <span style={{ fontWeight: 400 }}>({el.type})</span>
+      <div key={index} style={box}>
+        {header}
+        <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+          Tipo de elemento sem prévia específica.
         </div>
       </div>
     );
   };
 
   // ============================================
-  // Buscar aulas (título / tags / idioma)
+  // Busca de aulas (debounce)
   // ============================================
   useEffect(() => {
     const term = search.trim();
@@ -299,15 +460,11 @@ export default function ImportElementsEditor({
           `${backDomain}/api/v1/courses-organized-query/${studentId}`,
           {
             headers: headers ? { ...headers } : {},
-            params: {
-              q: term,
-              language,
-            },
+            params: { q: term, language },
           },
         );
 
-        const res: LessonFromApi[] = data?.lessons ?? [];
-        setLessons(res);
+        setLessons(data?.lessons ?? []);
       } catch (error: any) {
         console.error("Erro ao buscar aulas:", error);
         const msg =
@@ -318,34 +475,29 @@ export default function ImportElementsEditor({
       } finally {
         setLoadingLessons(false);
       }
-    }, 400); // debounce
+    }, 400);
 
     return () => clearTimeout(timeout);
   }, [search, language, isOpen, studentId, headers]);
 
   // ============================================
-  // Import "no front" – só manda pro pai
+  // Importa "no front": dispara onChange com elementos
   // ============================================
-  const importElementsToLesson = (params: {
+  const sendElementsToParent = (params: {
     mode: "one" | "all";
     fromClassId: string;
     fromTitle: string;
     elements: ElementType[];
   }) => {
     const { mode, fromClassId, fromTitle, elements } = params;
-
     if (!elements || elements.length === 0) return;
 
-    setImportMsg(
-      `Selecionados ${elements.length} elemento(s) de "${fromTitle}" para importar para o editor.`,
+    const how = mode === "all" ? "AULA INTEIRA" : "1 ELEMENTO";
+    setFeedbackMsg(
+      `Importação pronta: ${how} de "${fromTitle}". Os elementos foram puxados para o editor.`,
     );
 
-    onChange?.({
-      mode,
-      fromClassId,
-      fromTitle,
-      elements,
-    });
+    onChange?.({ mode, fromClassId, fromTitle, elements });
   };
 
   // ============================================
@@ -353,87 +505,55 @@ export default function ImportElementsEditor({
   // ============================================
   const modalContent = !isOpen ? null : (
     <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        background: "rgba(0,0,0,0.4)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      onClick={closeModal}
+      style={styles.backdrop}
+      onMouseDown={closeModal}
+      title="Clique fora para fechar"
     >
       <div
-        style={{
-          background: "#fff",
-          borderRadius: 10,
-          boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-          width: "95%",
-          maxWidth: 720,
-          maxHeight: "90vh",
-          overflow: "auto",
-          padding: 20,
-          fontFamily: "Plus Jakarta Sans, system-ui, sans-serif",
-        }}
-        onClick={(e) => e.stopPropagation()}
+        style={styles.modal}
+        onMouseDown={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Importar elementos de outra aula"
       >
         {/* HEADER */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 16,
-          }}
-        >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 18,
-              fontWeight: 600,
-            }}
-          >
-            Importar elementos de aulas prontas
-          </h2>
+        <div style={styles.headerRow}>
+          <div style={{ minWidth: 0 }}>
+            <h2 style={styles.title}>Importar elementos de outra aula</h2>
+            <p style={styles.subtitle}>
+              Procure uma aula, abra ela e clique em <b>Importar</b> para{" "}
+              <b>puxar os elementos</b> (frases, exercícios, áudio, etc.) para o
+              seu editor.
+            </p>
+          </div>
+
           <button
             onClick={closeModal}
-            style={{
-              border: "none",
-              background: "transparent",
-              fontSize: 18,
-              cursor: "pointer",
-            }}
+            style={styles.ghostBtn}
+            title="Fechar o modal"
+            onMouseDown={applyPressEffect}
+            onMouseUp={clearPressEffect}
+            onMouseLeave={clearPressEffect}
           >
             ×
           </button>
         </div>
 
-        {/* MENSAGEM DE IMPORT */}
-        {importMsg && (
-          <p
-            style={{
-              marginTop: 4,
-              marginBottom: 12,
-              fontSize: 12,
-              color: "#047857",
-            }}
-          >
-            {importMsg}
-          </p>
-        )}
+        {/* INFO */}
+        <div style={styles.infoBox}>
+          Dica: use <b>Importar tudo</b> para trazer a aula completa, ou{" "}
+          <b>Importar este elemento</b> para puxar só um bloco específico.
+        </div>
 
-        {/* FILTROS */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            marginTop: 10,
-            marginBottom: 12,
-          }}
-        >
-          <div style={{ fontSize: 13 }}>Idioma:</div>
+        {/* FEEDBACK */}
+        {feedbackMsg && <div style={styles.successBox}>{feedbackMsg}</div>}
+
+        {/* CONTROLES */}
+        <div style={styles.row}>
+          <div style={{ fontSize: 13, color: "#111827", fontWeight: 900 }}>
+            Idioma
+          </div>
+
           <select
             value={language}
             onChange={(e) => {
@@ -441,83 +561,65 @@ export default function ImportElementsEditor({
               setLanguage(lang);
               setTheLanguage?.(lang);
             }}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 6,
-              border: "1px solid #d1d5db",
-              fontSize: 13,
-            }}
+            style={styles.select}
+            title="Filtra as aulas por idioma"
           >
             <option value="en">Inglês (EN)</option>
             <option value="pt">Português (PT)</option>
             <option value="fr">Francês (FR)</option>
             <option value="es">Espanhol (ES)</option>
           </select>
-        </div>
 
-        {/* CAMPO DE BUSCA */}
-        <input
-          type="text"
-          placeholder="Pesquisar aulas (título ou tags)..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "8px 12px",
-            borderRadius: 6,
-            border: "1px solid #d1d5db",
-            fontSize: 14,
-            marginBottom: 14,
-          }}
-        />
+          <div style={{ flex: 1, minWidth: 240 }}>
+            <input
+              type="text"
+              placeholder="Buscar por título ou tags…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={styles.input}
+              title="Digite para buscar aulas (título ou tags)"
+            />
+          </div>
+        </div>
 
         {/* RESULTADOS */}
         {search.trim().length > 0 && (
-          <div
-            style={{
-              background: "#f9fafb",
-              borderRadius: 8,
-              padding: 12,
-              border: "1px solid #e5e7eb",
-            }}
-          >
+          <div style={styles.sectionBox}>
             {loadingLessons && (
-              <CircularProgress style={{ color: partnerColor() }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <CircularProgress style={{ color: BRAND }} size={18} />
+                <span style={{ fontSize: 13, color: "#6b7280" }}>
+                  Buscando aulas…
+                </span>
+              </div>
             )}
 
             {errorMsg && !loadingLessons && (
-              <p
-                style={{
-                  fontSize: 13,
-                  color: "#b91c1c",
-                  margin: "0 0 8px 0",
-                }}
-              >
-                {errorMsg}
-              </p>
+              <div style={styles.errorBox}>{errorMsg}</div>
             )}
 
             {!loadingLessons && !errorMsg && (
               <>
-                <h4
+                <div
                   style={{
-                    margin: "0 0 8px 0",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#374151",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "baseline",
+                    marginBottom: 10,
                   }}
                 >
-                  Resultados ({lessons.length})
-                </h4>
+                  <div
+                    style={{ fontSize: 14, fontWeight: 900, color: "#374151" }}
+                  >
+                    Resultados
+                  </div>
+                  <div style={{ fontSize: 12, color: "#6b7280" }}>
+                    {lessons.length} aula(s)
+                  </div>
+                </div>
 
                 {lessons.length === 0 ? (
-                  <p
-                    style={{
-                      fontSize: 13,
-                      color: "#6b7280",
-                      margin: 0,
-                    }}
-                  >
+                  <p style={{ fontSize: 13, color: "#6b7280", margin: 0 }}>
                     Nenhuma aula encontrada para esse termo.
                   </p>
                 ) : (
@@ -526,36 +628,26 @@ export default function ImportElementsEditor({
                     const elements = lesson.elements || [];
 
                     return (
-                      <div
-                        key={lesson.classId}
-                        style={{
-                          padding: "10px 12px",
-                          borderRadius: 6,
-                          background: "#fff",
-                          border: "1px solid #e5e7eb",
-                          marginBottom: 8,
-                        }}
-                      >
-                        {/* HEADER DA AULA */}
+                      <div key={lesson.classId} style={styles.lessonCard}>
+                        {/* CABEÇALHO DA AULA */}
                         <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            gap: 8,
-                            cursor: "pointer",
-                          }}
+                          style={styles.lessonHeader}
                           onClick={() =>
                             setOpenClassId(isOpenLesson ? null : lesson.classId)
+                          }
+                          title={
+                            isOpenLesson
+                              ? "Recolher esta aula"
+                              : "Abrir esta aula"
                           }
                         >
                           <div
                             style={{
                               display: "flex",
+                              gap: 12,
                               alignItems: "center",
-                              gap: 8,
-                              flex: 1,
                               minWidth: 0,
+                              flex: 1,
                             }}
                           >
                             <span
@@ -565,21 +657,19 @@ export default function ImportElementsEditor({
                                   ? "rotate(180deg)"
                                   : "rotate(0deg)",
                                 transition: "transform 0.15s ease",
+                                color: "#111827",
                               }}
                             >
                               ▾
                             </span>
-                            <div
-                              style={{
-                                fontSize: 14,
-                                fontWeight: 500,
-                                color: "#111827",
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
-                              {lesson.title}
+
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <div style={styles.lessonTitle}>
+                                {lesson.title}
+                              </div>
+                              <div style={styles.lessonMeta}>
+                                {elements.length} elemento(s)
+                              </div>
                             </div>
                           </div>
 
@@ -588,20 +678,16 @@ export default function ImportElementsEditor({
                               style={{
                                 display: "flex",
                                 flexWrap: "wrap",
-                                gap: 4,
+                                gap: 6,
                                 justifyContent: "flex-end",
+                                maxWidth: "52%",
                               }}
                             >
-                              {lesson.tags.map((tag) => (
+                              {lesson.tags.slice(0, 8).map((tag) => (
                                 <span
                                   key={tag}
-                                  style={{
-                                    fontSize: 11,
-                                    padding: "2px 6px",
-                                    borderRadius: 999,
-                                    background: "#e5e7eb",
-                                    color: "#4b5563",
-                                  }}
+                                  style={styles.chip}
+                                  title={`Tag: ${tag}`}
                                 >
                                   {tag}
                                 </span>
@@ -610,53 +696,80 @@ export default function ImportElementsEditor({
                           )}
                         </div>
 
-                        {/* CONTEÚDO EXPANDIDO */}
+                        {/* CONTEÚDO */}
                         {isOpenLesson && (
                           <div
                             style={{
-                              marginTop: 10,
+                              marginTop: 12,
                               borderTop: "1px solid #e5e7eb",
-                              paddingTop: 10,
+                              paddingTop: 12,
                             }}
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            {/* BOTÃO COPIAR TODOS (no front) */}
-                            {elements.length > 0 && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "flex-end",
-                                  marginBottom: 8,
-                                }}
-                              >
-                                <button
+                            {/* IMPORTAR AULA INTEIRA */}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 12,
+                                marginBottom: 12,
+                                padding: "12px 12px",
+                                borderRadius: 14,
+                                background: `${BRAND}0D`,
+                                border: `1px solid ${BRAND}2A`,
+                              }}
+                            >
+                              <div style={{ minWidth: 0 }}>
+                                <div
                                   style={{
-                                    padding: "6px 10px",
-                                    background: partnerColor(),
-                                    border: "none",
-                                    color: "#fff",
-                                    borderRadius: 6,
-                                    cursor: "pointer",
-                                    fontSize: 12,
-                                  }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    importElementsToLesson({
-                                      mode: "all",
-                                      fromClassId: lesson.classId,
-                                      fromTitle: lesson.title,
-                                      elements,
-                                    });
+                                    fontSize: 13,
+                                    fontWeight: 900,
+                                    color: "#111827",
                                   }}
                                 >
-                                  Copiar aula completa
-                                </button>
+                                  Importar aula inteira
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: 12,
+                                    color: "#6b7280",
+                                    marginTop: 3,
+                                  }}
+                                >
+                                  Puxa todos os elementos dessa aula para o
+                                  editor.
+                                </div>
                               </div>
-                            )}
 
+                              <button
+                                style={{
+                                  ...styles.primaryBtn,
+                                  opacity: elements.length === 0 ? 0.5 : 1,
+                                }}
+                                disabled={elements.length === 0}
+                                onClick={() =>
+                                  sendElementsToParent({
+                                    mode: "all",
+                                    fromClassId: lesson.classId,
+                                    fromTitle: lesson.title,
+                                    elements,
+                                  })
+                                }
+                                title="Importa todos os elementos dessa aula para o editor"
+                                onMouseDown={applyPressEffect}
+                                onMouseUp={clearPressEffect}
+                                onMouseLeave={clearPressEffect}
+                              >
+                                Importar tudo
+                              </button>
+                            </div>
+
+                            {/* LISTA DE ELEMENTOS */}
                             {elements.length === 0 ? (
                               <p
                                 style={{
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   color: "#6b7280",
                                   margin: 0,
                                 }}
@@ -664,52 +777,52 @@ export default function ImportElementsEditor({
                                 Esta aula não possui elementos disponíveis.
                               </p>
                             ) : (
-                              elements.map((el, idx) => (
-                                <div
-                                  key={idx}
-                                  style={{
-                                    marginBottom: 8,
-                                    gap: 16,
-                                    display: "flex",
-                                    flexDirection: "row",
-                                  }}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "flex-end",
-                                      marginTop: 4,
-                                      width: "100%",
-                                      gap: 8,
-                                    }}
-                                  >
-                                    {renderElementPreview(el, idx)}
-                                    <button
-                                      style={{
-                                        padding: "4px 8px",
-                                        background: `${partnerColor()}30`,
-                                        border: "none",
-                                        borderRadius: 6,
-                                        cursor: "pointer",
-                                        fontSize: 12,
-                                        height: "fit-content",
-                                        alignSelf: "flex-start",
-                                      }}
-                                      onClick={() =>
-                                        importElementsToLesson({
-                                          mode: "one",
-                                          fromClassId: lesson.classId,
-                                          fromTitle: lesson.title,
-                                          elements: [el],
-                                        })
-                                      }
-                                    >
-                                      Importar de outra aula
-                                    </button>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: 12,
+                                }}
+                              >
+                                {elements.map((el, idx) => (
+                                  <div key={idx} style={styles.elementRow}>
+                                    <div style={{ flex: 1, minWidth: 0 }}>
+                                      {renderElementPreview(el, idx)}
+                                    </div>
+
+                                    <div style={{ width: 230 }}>
+                                      <button
+                                        style={styles.secondaryBtn}
+                                        onClick={() =>
+                                          sendElementsToParent({
+                                            mode: "one",
+                                            fromClassId: lesson.classId,
+                                            fromTitle: lesson.title,
+                                            elements: [el],
+                                          })
+                                        }
+                                        title="Puxa somente este elemento para o editor (não importa a aula inteira)"
+                                        onMouseDown={applyPressEffect}
+                                        onMouseUp={clearPressEffect}
+                                        onMouseLeave={clearPressEffect}
+                                      >
+                                        Importar este elemento
+                                        <div
+                                          style={{
+                                            fontSize: 12,
+                                            fontWeight: 700,
+                                            color: "#6b7280",
+                                            marginTop: 4,
+                                            lineHeight: 1.25,
+                                          }}
+                                        >
+                                          Puxa só este bloco
+                                        </div>
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
-                              ))
+                                ))}
+                              </div>
                             )}
                           </div>
                         )}
@@ -734,14 +847,21 @@ export default function ImportElementsEditor({
         type="button"
         onClick={openModal}
         style={{
-          borderRadius: 6,
-          border: "none",
-          padding: "6px 10px",
+          borderRadius: 14,
+          border: `1px solid ${BRAND}4A`,
+          padding: "10px 12px",
           fontSize: 13,
-          background: "#f9fafb",
+          fontWeight: 900,
+          background: `linear-gradient(180deg, ${BRAND}18, ${BRAND}10)`,
           cursor: "pointer",
           whiteSpace: "nowrap",
+          color: "#111827",
+          boxShadow: "0 10px 24px rgba(0,0,0,0.08)",
         }}
+        title="Abrir o modal para buscar aulas e puxar elementos para o editor"
+        onMouseDown={applyPressEffect}
+        onMouseUp={clearPressEffect}
+        onMouseLeave={clearPressEffect}
       >
         Importar de outra aula
       </button>

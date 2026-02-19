@@ -59,7 +59,6 @@ export function FindStudent({
   headers,
   id,
   isResponsible,
-  plan,
 }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");

@@ -49,46 +49,12 @@ export const SpanDisapear = styled.span`
   }
 `;
 export const IFrameVideoBlog = styled.iframe`
-  min-width: 800px;
-  min-height: 420px;
-  box-sizing: border-box;
-  margin-top: 1rem;
-  margin-right: auto;
-  margin-left: auto;
-  position: relative;
+  width: clamp(225px, 68vw, 475px);
+  aspect-ratio: 16 / 9;
+
+  display: block;
+  margin: 1rem auto;
   border: none;
-  @media (max-width: 860px) {
-    min-width: 700px;
-    min-height: 360px;
-  }
-  @media (max-width: 780px) {
-    min-width: 660px;
-    min-height: 340px;
-  }
-  @media (max-width: 750px) {
-    min-width: 610px;
-    min-height: 315px;
-  }
-  @media (max-width: 700px) {
-    min-width: 550px;
-    min-height: 285px;
-  }
-  @media (max-width: 650px) {
-    min-width: 525px;
-    min-height: 265px;
-  }
-  @media (max-width: 600px) {
-    min-width: 450px;
-    min-height: 300px;
-  }
-  @media (max-width: 500px) {
-    min-width: 350px;
-    min-height: 200px;
-  }
-  @media (max-width: 400px) {
-    min-width: 300px;
-    min-height: 170px;
-  }
 `;
 
 export const IFrameAsaas = styled.iframe`

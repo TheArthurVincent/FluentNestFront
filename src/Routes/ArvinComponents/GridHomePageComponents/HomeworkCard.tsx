@@ -19,7 +19,7 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
   // ====== GET recommended classes ======
 
   const [studentIdState, setStudentIdState] = React.useState<string | null>(
-    null
+    null,
   );
   const [loading, setLoading] = React.useState(true);
   const [homeworkData, setHomeworkData] = React.useState<any>(null);
@@ -30,7 +30,7 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
         `${backDomain}/api/v1/last-hw/${studentId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       setHomeworkData(response.data.homework[0].description);
     } catch (error) {

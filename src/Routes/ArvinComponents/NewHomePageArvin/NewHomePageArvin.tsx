@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  formatNumber,
-  updateInfo,
-  updateScore,
-} from "../../../Resources/UniversalComponents";
+import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { Continue } from "../Continue/Continue";
@@ -20,6 +15,7 @@ import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMater
 import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
+import { Birthdays } from "../GridHomePageComponents/Birthdays";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -68,6 +64,10 @@ export function MyHomePage({
       });
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
+      setAppLoaded(!appLoaded);
+      setTimeout(() => {
+        setAppLoaded(!appLoaded);
+      }, 500);
     } catch (error) {
       console.error(error);
     }
@@ -80,20 +80,22 @@ export function MyHomePage({
     setId(id);
     setPERMISSIONS(permissions);
     seeScore(id);
+    setAppLoaded(!appLoaded);
   }, [change]);
 
   const cards = [
-    // {
-    //   showToStudent: true,
-    //   showToTeacher: true,
-    //   component: (
-    //     <NextClass
-    //       isDesktop={isDesktop}
-    //       studentId={id}
-    //       actualHeaders={actualHeaders}
-    //     />
-    //   ),
-    // },
+    {
+      showToStudent: false,
+      showToTeacher: true,
+      component: (
+        <Birthdays
+          studentId={id}
+          appLoaded={appLoaded}
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+        />
+      ),
+    },
     {
       showToStudent: true,
       showToTeacher: false,
@@ -119,7 +121,7 @@ export function MyHomePage({
       ),
     },
     {
-      showToTeacher: true,
+      showToTeacher: false,
       showToStudent: true,
       component: (
         <RankingCard
@@ -145,6 +147,7 @@ export function MyHomePage({
         />
       ),
     },
+
     {
       showToStudent: false,
       showToTeacher: true,
@@ -156,6 +159,7 @@ export function MyHomePage({
         />
       ),
     },
+
     {
       showToStudent: true,
       showToTeacher: false,
@@ -182,7 +186,7 @@ export function MyHomePage({
         {
           headers: headers ? { ...headers } : {},
           params: { month: `${currentMonth}-${currentYear}` },
-        }
+        },
       );
       console.log("Financial reports response:", response.data);
       setTotalPaidSoFar(response.data.totalPaidSoFar || 0);

@@ -35,7 +35,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
   const [theNewLink, setTheNewLink] = useState<string>("");
   const [numberOfWeeks, setNumberOfWeeks] = useState<number>(4);
   const [endDateForTutoring, setEndDateForTutoring] = useState<Date | null>(
-    null
+    null,
   );
 
   // ✅ Aqui é MODAL DE GRUPO, então o dono é sempre o group
@@ -73,7 +73,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/tutoringsevents/${ownerId}?ownerType=${ownerType}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       setTutorings(response.data.tutorings || []);
     } catch (error) {
@@ -134,7 +134,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
     if (!myId) {
       notifyAlert(
         "Não foi possível identificar quem está editando.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -156,7 +156,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
           duration,
           link,
         },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       await fetchTutorings();
@@ -175,7 +175,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
     if (!groupId || !myId) {
       notifyAlert(
         "Não foi possível identificar grupo ou editor.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -192,7 +192,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
-          }
+          },
         );
         const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
         // eslint-disable-next-line no-restricted-globals
@@ -214,7 +214,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
           numberOfWeeks: numberOfWeeks || 4,
           endDate: endDateForTutoring,
         },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       await fetchTutorings();
@@ -690,7 +690,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
           )}
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
 

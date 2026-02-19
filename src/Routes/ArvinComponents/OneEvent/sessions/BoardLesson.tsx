@@ -36,7 +36,7 @@ const Board: FC<BoardProps> = ({
       const response = await axios.put(
         `${backDomain}/api/v1/event-board/${evendId}`,
         { board: newHWDescription, date: new Date() },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       setLoading(false);
       // notifyAlert("Notas salvas com sucesso!", partnerColor());

@@ -50,6 +50,8 @@ type Props = {
 const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
+type FieldSide = "english" | "portuguese";
+
 /* ===================== COMPONENT ===================== */
 const SentencesEditor: React.FC<Props> = ({
   value,
@@ -62,8 +64,6 @@ const SentencesEditor: React.FC<Props> = ({
   defaultBlockLang2 = "pt",
   studentId,
   headers,
-  setChange,
-  change,
   language,
 }) => {
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
@@ -72,8 +72,10 @@ const SentencesEditor: React.FC<Props> = ({
   const [defaultLang2, setDefaultLang2] = useState<LangCode>(
     (defaultBlockLang2 as LangCode) || "pt",
   );
-  const [showConfig, setShowConfig] = useState(false);
-  const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
+  const [showConfig, setShowConfig] = useState(true);
+
+  // ✅ loading por item + lado (IA nas duas linhas)
+  const [loadingKey, setLoadingKey] = useState<string | null>(null);
 
   // Modal IA (gerador isolado)
   const [aiOpen, setAiOpen] = useState(false);
@@ -92,6 +94,7 @@ const SentencesEditor: React.FC<Props> = ({
     ) {
       setDefaultLang2(defaultBlockLang2 as LangCode);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultBlockLang1, defaultBlockLang2]);
 
   /* ====== backfill languages ====== */
@@ -160,72 +163,129 @@ const SentencesEditor: React.FC<Props> = ({
     onChange({ ...value, type: "sentences", sentences: next });
   };
 
-  /* ===================== IA: enviar FRONT e preencher BACK ===================== */
-  const handleAI = async (idx: number) => {
+  /* ===================== PER-CARD SWAP (NOVO) ===================== */
+  // ✅ Botão em CADA card: troca os textos e também os idiomas do item.
+  const swapCardSides = (idx: number) => {
+    updateSentence(idx, (prev) => ({
+      ...prev,
+      english: prev.portuguese ?? "",
+      portuguese: prev.english ?? "",
+      languages: {
+        language1: prev.languages?.language2 ?? (defaultLang2 || "pt"),
+        language2: prev.languages?.language1 ?? (defaultLang1 || "en"),
+      },
+    }));
+  };
+
+  /* ===================== IA: GERA A PRÓPRIA LINHA (NOVO) ===================== */
+  const isLoading = (idx: number, side: FieldSide) =>
+    loadingKey === `${idx}:${side}`;
+
+  /**
+   * ✅ Clicou no botão daquela linha => escreve NA PRÓPRIA linha.
+   * - IA no Front (english) => preenche english
+   * - IA no Back (portuguese) => preenche portuguese
+   *
+   * O outro campo pode ser usado apenas como seed quando a linha está vazia.
+   */
+  const handleAI = async (idx: number, targetSide: FieldSide) => {
     const s = value.sentences[idx];
-    const sentence = (s?.english || "").trim();
-    const language1 = (s?.languages?.language1 || defaultLang1 || "en").trim();
-    const language2 = (s?.languages?.language2 || defaultLang2 || "pt").trim();
 
     if (!studentId) {
       notifyAlert("ID do aluno não informado.", partnerColor());
       return;
     }
-    if (!sentence) {
+
+    const baseText =
+      targetSide === "english"
+        ? String(s?.english ?? "").trim()
+        : String(s?.portuguese ?? "").trim();
+
+    const otherText =
+      targetSide === "english"
+        ? String(s?.portuguese ?? "").trim()
+        : String(s?.english ?? "").trim();
+
+    if (!baseText && !otherText) {
       notifyAlert(
-        "Preencha o Front antes de gerar a tradução/definição.",
+        "Preencha ao menos um dos lados antes de usar IA.",
         partnerColor(),
       );
       return;
     }
 
+    const lang1 = String(
+      s?.languages?.language1 || defaultLang1 || "en",
+    ).trim();
+    const lang2 = String(
+      s?.languages?.language2 || defaultLang2 || "pt",
+    ).trim();
+
+    const targetLang = targetSide === "english" ? lang1 : lang2;
+
+    const seedText = baseText || otherText;
+
+    // Se a própria linha tiver texto, assume que já está no idioma alvo.
+    // Se estiver vazia, usa o outro lado como seed, então o seedLang é o idioma do outro lado.
+    const seedLang = baseText
+      ? targetLang
+      : targetSide === "english"
+        ? lang2
+        : lang1;
+
+    const key = `${idx}:${targetSide}`;
+
     try {
-      setLoadingIdx(idx);
+      setLoadingKey(key);
+
       const url = `${backDomain}/api/v1/translateOrDefineSentence/${studentId}`;
-      const payload = { sentence, language1, language2 };
+      const payload = {
+        sentence: seedText,
+        language1: seedLang,
+        language2: targetLang,
+      };
 
       const response =
         headers && Object.keys(headers).length > 0
           ? await axios.post(url, payload, { headers })
           : await axios.post(url, payload);
 
-      const backText = String(response?.data?.backText || "").trim();
-      if (!backText) {
+      const out = String(response?.data?.backText || "").trim();
+      if (!out) {
         notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
         return;
       }
 
-      updateSentence(idx, (prev) => ({
-        ...prev,
-        portuguese: backText,
-      }));
-
-      // 🔥 antes chamava setChange?.(!change), o que disparava getClass() e resetava a aula
-      // agora a IA só atualiza o estado local do bloco
+      if (targetSide === "english") {
+        updateSentence(idx, (prev) => ({ ...prev, english: out }));
+      } else {
+        updateSentence(idx, (prev) => ({ ...prev, portuguese: out }));
+      }
     } catch (error: any) {
       console.error(error);
       const msg =
         error?.response?.data?.error ||
         error?.response?.data?.message ||
-        "Erro ao gerar tradução/definição.";
+        "Erro ao gerar conteúdo por IA.";
       notifyAlert(msg, partnerColor());
     } finally {
-      setLoadingIdx(null);
+      setLoadingKey(null);
     }
   };
 
   /* ============ IA (lista inteira via gerador isolado) ============ */
-  // helper: remove ```json ... ``` e tenta dar JSON.parse com fallback
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
     if (typeof input !== "string") return input;
+
     const cleaned = input
       .trim()
       .replace(/^```json/i, "")
       .replace(/^```/i, "")
       .replace(/```$/, "")
       .trim();
+
     try {
       return JSON.parse(cleaned);
     } catch {
@@ -236,7 +296,6 @@ const SentencesEditor: React.FC<Props> = ({
   const handleReceiveJson = (raw: any) => {
     const json = parseMaybeJson(raw);
 
-    // 1) extrair array (tolerante a envelopes)
     let arr: any[] = [];
     if (Array.isArray(json)) {
       arr = json;
@@ -246,7 +305,7 @@ const SentencesEditor: React.FC<Props> = ({
         json.items ||
         json.list ||
         json.data ||
-        json.vocabulary || // caso o prompt gere "vocabulary" por engano
+        json.vocabulary ||
         null;
 
       if (Array.isArray(candidate)) {
@@ -281,7 +340,6 @@ const SentencesEditor: React.FC<Props> = ({
       return;
     }
 
-    // 2) mapear chaves flexíveis
     const mapped: SentenceItem[] = arr
       .map((it: any) => {
         const english =
@@ -303,7 +361,6 @@ const SentencesEditor: React.FC<Props> = ({
 
         const lang1 =
           it?.languages?.language1 ?? it?.language1 ?? defaultLang1 ?? "en";
-
         const lang2 =
           it?.languages?.language2 ?? it?.language2 ?? defaultLang2 ?? "pt";
 
@@ -316,16 +373,17 @@ const SentencesEditor: React.FC<Props> = ({
           },
         };
       })
-      .filter((it) => (it.english || it.portuguese).trim().length > 0);
+      .filter(
+        (it: SentenceItem) => (it.english || it.portuguese).trim().length > 0,
+      );
 
     onChange({
       ...value,
       type: "sentences",
-      sentences: [...mapped, ...value.sentences], // IA entra no topo
+      sentences: [...mapped, ...value.sentences],
     });
 
     setShowConfig(true);
-    // 🔥 removido setChange?.(!change) aqui também, para não recarregar a aula do back
   };
 
   /* ===================== RENDER HELPERS ===================== */
@@ -374,12 +432,6 @@ const SentencesEditor: React.FC<Props> = ({
           gap: 8px;
           flex-wrap: wrap;
         }
-        .se-title {
-          font-size: 14px;
-          color: #0f172a;
-          cursor: pointer;
-          word-break: break-word;
-        }
         .se-actions {
           display: flex;
           gap: 8px;
@@ -409,7 +461,6 @@ const SentencesEditor: React.FC<Props> = ({
           color: #fff;
           font-weight: 600;
         }
-
         .se-empty {
           border: 1px dashed #94a3b8;
           border-radius: 8px;
@@ -418,12 +469,10 @@ const SentencesEditor: React.FC<Props> = ({
           font-size: 13px;
           background: #fff;
         }
-
         .se-list {
           display: grid;
           gap: 8px;
         }
-
         .se-item {
           border: 1px solid #e2e8f0;
           border-radius: 8px;
@@ -432,7 +481,6 @@ const SentencesEditor: React.FC<Props> = ({
           gap: 10px;
           background: #fff;
         }
-
         .se-item-controls {
           display: flex;
           gap: 6px;
@@ -440,23 +488,19 @@ const SentencesEditor: React.FC<Props> = ({
           align-items: center;
           flex-wrap: wrap;
         }
-
         .se-row {
           display: grid;
           gap: 8px;
         }
-
-        .se-back-row-inline {
+        .se-row-inline {
           display: flex;
           gap: 6px;
           align-items: stretch;
         }
-
         .se-label {
           font-size: 12px;
           color: #334155;
         }
-
         .se-input {
           width: 100%;
           border: 1px solid #e2e8f0;
@@ -465,7 +509,6 @@ const SentencesEditor: React.FC<Props> = ({
           font-size: 13px;
           box-sizing: border-box;
         }
-
         .se-lang-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -475,7 +518,6 @@ const SentencesEditor: React.FC<Props> = ({
           border-radius: 8px;
           border: 1px solid #e2e8f0;
         }
-
         .se-topbar {
           display: flex;
           justify-content: space-between;
@@ -483,13 +525,10 @@ const SentencesEditor: React.FC<Props> = ({
           gap: 8px;
           flex-wrap: wrap;
         }
-
         .se-field {
           display: grid;
           gap: 6px;
         }
-
-        /* ================== RESPONSIVO ================== */
         @media (max-width: 768px) {
           .se-header {
             flex-direction: column;
@@ -498,14 +537,10 @@ const SentencesEditor: React.FC<Props> = ({
           .se-item-controls {
             justify-content: space-between;
           }
-          .se-language-note {
-            display: block;
-          }
           .se-lang-grid {
             grid-template-columns: 1fr;
           }
         }
-
         @media (max-width: 480px) {
           .se-root {
             padding: 8px;
@@ -546,12 +581,7 @@ const SentencesEditor: React.FC<Props> = ({
         <span className="se-actions">
           {titleRightExtra}
 
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-            }}
-          >
+          <div style={{ display: "flex", gap: 8 }}>
             <div>
               <button
                 onClick={(e) => {
@@ -576,14 +606,14 @@ const SentencesEditor: React.FC<Props> = ({
                 ↓
               </button>
             </div>
+
             <button
               className="se-btn se-btn--primary"
-              onClick={() => {
-                setAiOpen(true);
-              }}
+              onClick={() => setAiOpen(true)}
             >
               ✨ IA
             </button>
+
             {onRemove && (
               <button
                 onClick={onRemove}
@@ -624,7 +654,7 @@ const SentencesEditor: React.FC<Props> = ({
 
           {value.sentences.length === 0 && (
             <div className="se-empty">
-              Nenhuma sentença. Use “Adicionar sentença” ou ✨ IA.
+              Nenhuma sentença. Use “Adicionar sentença” ou IA.
             </div>
           )}
 
@@ -653,6 +683,17 @@ const SentencesEditor: React.FC<Props> = ({
                     ↓
                   </button>
                 )}
+
+                {/* ✅ NOVO: trocar Front/Back por card */}
+                <button
+                  onClick={() => swapCardSides(idx)}
+                  className="se-btn"
+                  title="Trocar Front/Back deste card (swap dos textos e dos idiomas)"
+                  aria-label="Trocar Front/Back"
+                >
+                  Trocar
+                </button>
+
                 <button
                   onClick={() => removeSentence(idx)}
                   className="se-btn se-btn--danger"
@@ -665,26 +706,44 @@ const SentencesEditor: React.FC<Props> = ({
 
               {/* FRONT / BACK */}
               <div className="se-row">
-                {/* FRONT */}
+                {/* FRONT + IA (gera a própria linha) */}
                 <div className="se-field">
                   <label className="se-label">Front</label>
-                  <input
-                    value={s.english}
-                    onChange={(e) =>
-                      updateSentence(idx, (prev) => ({
-                        ...prev,
-                        english: e.target.value,
-                      }))
-                    }
-                    placeholder="Ex.: She went to the supermarket to buy groceries."
-                    className="se-input"
-                  />
+
+                  <div className="se-row-inline">
+                    <input
+                      value={s.english}
+                      onChange={(e) =>
+                        updateSentence(idx, (prev) => ({
+                          ...prev,
+                          english: e.target.value,
+                        }))
+                      }
+                      placeholder="Ex.: She went to the supermarket to buy groceries."
+                      className="se-input"
+                    />
+
+                    <button
+                      className="se-btn"
+                      style={{ opacity: isLoading(idx, "english") ? 0.6 : 1 }}
+                      onClick={() => handleAI(idx, "english")}
+                      disabled={
+                        isLoading(idx, "english") ||
+                        isLoading(idx, "portuguese")
+                      }
+                      title="Gerar/revisar o Front usando IA"
+                      aria-label="Gerar/revisar Front"
+                    >
+                      {isLoading(idx, "english") ? "..." : "IA"}
+                    </button>
+                  </div>
                 </div>
 
-                {/* BACK + IA item-a-item */}
+                {/* BACK + IA (gera a própria linha) */}
                 <div className="se-field">
                   <label className="se-label">Back</label>
-                  <div className="se-back-row-inline">
+
+                  <div className="se-row-inline">
                     <input
                       value={s.portuguese}
                       onChange={(e) =>
@@ -696,18 +755,21 @@ const SentencesEditor: React.FC<Props> = ({
                       placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
                       className="se-input"
                     />
+
                     <button
                       className="se-btn"
                       style={{
-                        opacity: loadingIdx === idx ? 0.6 : 1,
-                        whiteSpace: "nowrap",
+                        opacity: isLoading(idx, "portuguese") ? 0.6 : 1,
                       }}
-                      onClick={() => handleAI(idx)}
-                      disabled={loadingIdx === idx}
-                      title="Gerar tradução/definição e preencher o Back"
-                      aria-label="Gerar tradução/definição"
+                      onClick={() => handleAI(idx, "portuguese")}
+                      disabled={
+                        isLoading(idx, "portuguese") ||
+                        isLoading(idx, "english")
+                      }
+                      title="Gerar/revisar o Back usando IA"
+                      aria-label="Gerar/revisar Back"
                     >
-                      {loadingIdx === idx ? "..." : "✨"}
+                      {isLoading(idx, "portuguese") ? "..." : "IA"}
                     </button>
                   </div>
                 </div>
@@ -746,10 +808,7 @@ const SentencesEditor: React.FC<Props> = ({
           ))}
 
           {defaultLang2 === defaultLang1 && (
-            <span
-              className="se-language-note"
-              style={{ fontSize: 12, color: "#475569" }}
-            >
+            <span style={{ fontSize: 12, color: "#475569" }}>
               Se language1 e language2 forem iguais, a IA gera{" "}
               <strong>definição</strong> (não tradução).
             </span>
@@ -757,7 +816,7 @@ const SentencesEditor: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Gerador isolado (tema + instruções → prompt; studentId nos params) */}
+      {/* Gerador isolado */}
       <SimpleAIGenerator
         visible={aiOpen}
         language1={language}

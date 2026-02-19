@@ -2,13 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 
-// Se já tiver essa constante no seu projeto, importe de onde você usa:
-
 type DeleteClassButtonProps = {
   classId: string;
-  headers?: Record<string, string>; // seus headers (Authorization, etc.)
-  onDeleted?: (classId: string) => void; // chamado após exclusão com sucesso
-  label?: string; // texto opcional do botão
+  headers?: Record<string, string>;
+  onDeleted?: (classId: string) => void;
+  label?: string;
 };
 
 const DeleteClassButton: React.FC<DeleteClassButtonProps> = ({
@@ -22,7 +20,6 @@ const DeleteClassButton: React.FC<DeleteClassButtonProps> = ({
   const [err, setErr] = useState<string | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
-  // fechar com ESC
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -31,7 +28,6 @@ const DeleteClassButton: React.FC<DeleteClassButtonProps> = ({
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  // fechar clicando fora
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === overlayRef.current) setOpen(false);
   }
@@ -40,8 +36,6 @@ const DeleteClassButton: React.FC<DeleteClassButtonProps> = ({
     setErr(null);
     setLoading(true);
     try {
-      // Ajuste a rota conforme seu backend; com base no seu padrão:
-      // GET/PUT já usam /course-class/:id, então DELETE deve seguir igual.
       await axios.delete(`${backDomain}/api/v1/class/${classId}`, {
         headers,
       });

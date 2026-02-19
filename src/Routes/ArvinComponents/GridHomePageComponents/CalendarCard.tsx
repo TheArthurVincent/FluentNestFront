@@ -58,21 +58,33 @@ export const CalendarCard: FC<CalendarCardProps> = ({
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
           params: { today: dateStr },
-        }
+        },
       );
 
       const data = response.data || {};
       const events = data.events || [];
 
+      setModalDateLabel(
+        date.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }),
+      );
       setDayEvents(events);
-      setModalDateLabel(date.toLocaleDateString("pt-BR"));
       setLoadingModal(false);
 
       console.log("EVENTS FOR", dateStr, data);
     } catch (error) {
       console.log("Erro ao buscar eventos do dia:", error);
+      setModalDateLabel(
+        date.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }),
+      );
       setDayEvents([]);
-      setModalDateLabel(date.toLocaleDateString("pt-BR"));
       setIsModalOpen(true);
       setLoadingModal(false);
     }
@@ -94,8 +106,8 @@ export const CalendarCard: FC<CalendarCardProps> = ({
         i < startIndex
           ? prevMonthDays - (startIndex - 1 - i) // mês anterior
           : i - startIndex + 1 <= totalDays
-          ? i - startIndex + 1 // mês atual
-          : i - startIndex - totalDays + 1; // próximo mês
+            ? i - startIndex + 1 // mês atual
+            : i - startIndex - totalDays + 1; // próximo mês
 
       const isCurrentMonth = i >= startIndex && i < startIndex + totalDays;
 
@@ -104,9 +116,9 @@ export const CalendarCard: FC<CalendarCardProps> = ({
         isCurrentMonth
           ? selectedMonth
           : i < startIndex
-          ? selectedMonth - 1
-          : selectedMonth + 1,
-        dayNumber
+            ? selectedMonth - 1
+            : selectedMonth + 1,
+        dayNumber,
       );
 
       arr.push({
@@ -236,8 +248,8 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                 backgroundColor: isToday
                   ? partnerColor()
                   : d.current
-                  ? "#ffffff"
-                  : "#f0f0f0",
+                    ? "#ffffff"
+                    : "#f0f0f0",
                 color: isToday ? "white" : d.current ? "#030303" : "#9e9e9e",
                 border: "1px solid #E3E8F0",
                 cursor: "pointer",
@@ -501,7 +513,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
               )}
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

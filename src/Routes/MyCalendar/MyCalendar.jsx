@@ -60,7 +60,88 @@ import { newArvinTitleStyle } from "../ArvinComponents/NewHomePageArvin/NewHomeP
 import NewRecurringEventCalendar from "./CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendar";
 import TodoModal from "./EditToDoModal";
 import NewClassModal from "./NewEvent";
+import { createPortal } from "react-dom";
 
+function EventPreviewModal({ event, onClose }) {
+  if (!event) return null;
+  const portalTarget = document.getElementById("modal-root") || document.body;
+
+  const modal = (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 999999,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "500px",
+          maxWidth: "90vw",
+          background: "#fff",
+          borderRadius: "12px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+        }}
+      >
+        <div onClick={(e) => console.log(event)} style={{ padding: "20px" }}>
+          <h2>
+            {event.groupName || event.student || event.description || "Event"}
+          </h2>
+
+          <p>
+            <strong>Data:</strong> {event.date.toString().split("GMT")[0]}
+          </p>
+
+          <p>
+            <strong>Horário:</strong> {event.time}
+          </p>
+
+          <p
+            style={{
+              color:
+                event.status === "realizada"
+                  ? "green"
+                  : event.status === "desmarcado"
+                    ? "red"
+                    : "blue",
+            }}
+          >
+            <strong>Status:</strong> {event.status}
+          </p>
+
+          <div style={{ marginTop: "20px" }}>
+            <button onClick={onClose}>Fechar</button>
+
+            <a
+              href={`/my-calendar/event/${event._id}`}
+              target="_blank"
+              style={{
+                padding: "10px 15px",
+                background: partnerColor(),
+                color: "#fff",
+                marginLeft: "10px",
+                borderRadius: "5px",
+                textDecoration: "none",
+                display: "inline-block",
+                textAlign: "center",
+              }}
+            >
+              Ir para o evento
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return createPortal(modal, portalTarget);
+}
 function MyCalendar({
   headers,
   isDesktop,
@@ -272,6 +353,17 @@ function MyCalendar({
       }
     }
   };
+
+  const [selectedEvent, setSelectedEvent] = React.useState(null);
+
+  const handleOpenEventPreview = (event) => {
+    setSelectedEvent(event);
+  };
+
+  const handleCloseEventPreview = () => {
+    setSelectedEvent(null);
+  };
+
   const handleHWDescription = async () => {
     setLoadingHWDescription(true);
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
@@ -1913,8 +2005,10 @@ function MyCalendar({
                               border: "#ddd",
                             };
                             return (
-                              <a
+                              <div
                                 key={`${event._id}-${eventIndex}`}
+                                role="button"
+                                tabIndex={0}
                                 style={{
                                   marginBottom: "5px",
                                   textDecoration: "none",
@@ -1936,13 +2030,11 @@ function MyCalendar({
                                   e.currentTarget.style.boxShadow =
                                     "0 2px 8px rgba(0,0,0,0.1)";
                                 }}
-                                // onClick={() => handleSeeModal(event)}
-                                // onClick={() => {
-                                //   window.location.assign(
-                                //     `my-calendar/event/${event._id}`
-                                //   );
-                                // }}
-                                href={`my-calendar/event/${event._id}`}
+                                onClick={() => handleOpenEventPreview(event)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter" || e.key === " ")
+                                    handleOpenEventPreview(event);
+                                }}
                               >
                                 {/* Live Event Indicator */}
                                 {event.status !== "desmarcado" &&
@@ -2037,7 +2129,13 @@ function MyCalendar({
                                           : event.category ===
                                               "Marcar Reposição"
                                             ? "Disponível"
-                                            : "No description"}
+                                            : event.category == "Rep"
+                                              ? "Reposição"
+                                              : event.category == "Standalone"
+                                                ? "Aula Única"
+                                                : event.category == "Test"
+                                                  ? "Experimental"
+                                                  : event.category}
                                   </div>
                                 </div>
 
@@ -2092,7 +2190,7 @@ function MyCalendar({
                                     </>
                                   )}
                                 </div>
-                              </a>
+                              </div>
                             );
                           })}
 
@@ -2371,6 +2469,12 @@ function MyCalendar({
         )}
         <Helmets text="Calendar" />
       </div>
+      {selectedEvent && (
+        <EventPreviewModal
+          event={selectedEvent}
+          onClose={handleCloseEventPreview}
+        />
+      )}
     </div>
   );
 }

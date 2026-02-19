@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
@@ -11,6 +12,9 @@ import {
   partnerColor,
   textpartnerColorContrast,
 } from "../../../../Styles/Styles";
+import { DictationExercise } from "../../Exercises/Exercises/DictationExercise";
+import { LessonListeningExercise } from "../../Exercises/Exercises/ListenInEnglishExercise";
+import { defaultLabels } from "../../Exercises/Exercises";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -19,6 +23,11 @@ interface SentenceLessonModelProps {
   mainTag: string;
   selectedVoice: any;
   studentsIds?: string[];
+
+  // ✅ precisa disso pros exercícios gravarem no /exercise-done/:courseId
+  courseId?: string;
+  language?: string; // se você quiser controlar Listening (ele só roda em "en")
+  exerciseScore?: (points: number, description?: string, id?: string) => void;
 }
 
 export default function SentenceLessonModel({
@@ -28,11 +37,20 @@ export default function SentenceLessonModel({
   studentId,
   selectedVoice,
   studentsIds,
+  courseId,
+  language,
+  exerciseScore,
 }: SentenceLessonModelProps) {
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+
+  // ✅ modal exercises
+  const [showExercisesModal, setShowExercisesModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"dictation" | "listening">(
+    "dictation",
+  );
 
   const { permissions } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
 
@@ -177,6 +195,30 @@ export default function SentenceLessonModel({
     }
   };
 
+  // ✅ normaliza o pool pro formato esperado pelos exercícios
+  const exercisePool = useMemo(() => {
+    return (Array.isArray(sentences) ? sentences : [])
+      .map((s: any) => ({
+        portuguese: s?.portuguese || "",
+        english: s?.english || "",
+      }))
+      .filter((s: any) => s.portuguese?.trim() && s.english?.trim());
+  }, [sentences]);
+
+  const effectiveCourseId = courseId || element?.courseId;
+  const effectiveLanguage = (language || element?.language || "en") as string;
+
+  const tabBtn = (active: boolean): React.CSSProperties => ({
+    padding: "8px 12px",
+    borderRadius: 999,
+    border: `1px solid ${active ? partnerColor() : "#E5E7EB"}`,
+    background: active ? partnerColor() : "#FFFFFF",
+    color: active ? "#fff" : "#111827",
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 700,
+  });
+
   return (
     <div
       style={{
@@ -215,6 +257,24 @@ export default function SentenceLessonModel({
             {loading ? "Adding..." : "Add all"}
           </button>
         )}
+
+        {/* ✅ NOVO: abre modal com os 2 exercícios */}
+        <button
+          onClick={() => setShowExercisesModal(true)}
+          style={{
+            border: `1px solid ${partnerColor()}`,
+            background: partnerColor(),
+            color: "#fff",
+            fontWeight: "700",
+            padding: "6px 10px",
+            borderRadius: 6,
+            fontSize: 12,
+            cursor: "pointer",
+            transition: "all .2s",
+          }}
+        >
+          Exercises
+        </button>
       </div>
 
       <div style={{ display: "grid", gap: "10px", opacity: loading ? 0.9 : 1 }}>
@@ -334,6 +394,118 @@ export default function SentenceLessonModel({
           </div>
         ))}
       </div>
+
+      {/* ✅ MODAL DOS EXERCÍCIOS (tabs) */}
+      {showExercisesModal &&
+        ReactDOM.createPortal(
+          <>
+            <div
+              style={{
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(15, 23, 42, 0.70)",
+                zIndex: 999,
+              }}
+              onClick={() => setShowExercisesModal(false)}
+            />
+
+            <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 12,
+                boxShadow: "0 20px 40px rgba(15, 23, 42, 0.25)",
+                width: "92vw",
+                maxWidth: 980,
+                maxHeight: "88vh",
+                padding: 12,
+                zIndex: 1000,
+                overflow: "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* header do modal */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: 10,
+                  gap: 10,
+                }}
+              >
+                <div
+                  style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
+                >
+                  Sentence Exercises
+                </div>
+
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <button
+                    style={tabBtn(activeTab === "dictation")}
+                    onClick={() => setActiveTab("dictation")}
+                  >
+                    Dictation
+                  </button>
+                  <button
+                    style={tabBtn(activeTab === "listening")}
+                    onClick={() => setActiveTab("listening")}
+                  >
+                    Listening
+                  </button>
+
+                  <button
+                    onClick={() => setShowExercisesModal(false)}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      cursor: "pointer",
+                      fontSize: 18,
+                      lineHeight: 1,
+                      marginLeft: 4,
+                    }}
+                    aria-label="Fechar"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+
+              {/* conteúdo do modal */}
+              {activeTab === "dictation" && (
+                <DictationExercise
+                  sentences={exercisePool}
+                  studentId={studentId}
+                  labels={defaultLabels}
+                  selectedVoice={selectedVoice}
+                  language={effectiveLanguage}
+                  courseId={effectiveCourseId}
+                  exerciseScore={(points, desc) => {
+                    exerciseScore?.(points, desc || "Dictation", element?._id);
+                  }}
+                />
+              )}
+
+              {activeTab === "listening" && (
+                <LessonListeningExercise
+                  sentences={exercisePool}
+                  studentId={studentId}
+                  labels={defaultLabels}
+                  selectedVoice={selectedVoice}
+                  language={effectiveLanguage}
+                  courseId={effectiveCourseId}
+                  exerciseScore={(points, desc) => {
+                    exerciseScore?.(points, desc || "Listening", element?._id);
+                  }}
+                />
+              )}
+            </div>
+          </>,
+          document.body,
+        )}
     </div>
   );
 }

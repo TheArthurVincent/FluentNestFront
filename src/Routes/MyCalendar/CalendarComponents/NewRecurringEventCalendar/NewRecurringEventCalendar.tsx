@@ -659,7 +659,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                         fontSize: 18,
                       }}
                     >
-                      {UniversalTexts.editTurorings}
+                      {UniversalTexts.editTutorings}
                     </HTwo>
                     <p
                       style={{

@@ -1,11 +1,11 @@
-// Routes/ArvinComponents/Students/sections/StudentsRecurringTutorings/StudentTutoringEditorModal.tsx
+// Routes/ArvinComponents/Groups/sections/GroupsRecurringTutorings/GroupTutoringEditorModal.tsx
 import React, { FC, useMemo, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import { CircularProgress } from "@mui/material";
 import moment from "moment";
-import { backDomain } from "../../../../../../Resources/UniversalComponents";
-import { alwaysWhite, partnerColor } from "../../../../../../Styles/Styles";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import { alwaysWhite, partnerColor } from "../../../../Styles/Styles";
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const times = [
@@ -99,7 +99,6 @@ const getNextDayOfWeek = (dayOfWeek: string, fromDate: Date) => {
 
   const current = fromDate.getDay();
   const diff = (target - current + 7) % 7; // 0 = hoje
-
   const next = new Date(fromDate);
   next.setDate(fromDate.getDate() + diff);
   return next;
@@ -120,17 +119,21 @@ const formatTime = (timeStr: string) => {
 };
 
 type Props = {
-  student: any;
+  group: any; // precisa ter id/_id
   actualHeaders: any;
   onUpdated?: () => void;
+  buttonLabel?: string; // opcional
+  titleLabel?: string; // opcional
 };
 
-export const StudentTutoringEditorModal: FC<Props> = ({
-  student,
+export const GroupTutoringEditorModal: FC<Props> = ({
+  group,
   actualHeaders,
   onUpdated,
+  buttonLabel = "Gerenciar aulas fixas do grupo",
+  titleLabel = "Aulas fixas do grupo",
 }) => {
-  const studentId = student?.id || student?._id;
+  const groupId = group?.id || group?._id;
 
   // modal
   const [open, setOpen] = useState(false);
@@ -176,16 +179,16 @@ export const StudentTutoringEditorModal: FC<Props> = ({
   };
 
   const fetchTutorings = async () => {
-    if (!studentId) return;
+    if (!groupId) return;
     setLoadingList(true);
     try {
       const { data } = await axios.get(
-        `${backDomain}/api/v1/tutoringsevents/${studentId}`,
+        `${backDomain}/api/v1/groupsrecurrentevents/${groupId}`,
         { headers: actualHeaders },
       );
       setTutorings(data?.tutorings ?? []);
     } catch (e) {
-      console.log(e, "Erro ao buscar recorrências do aluno");
+      console.log(e, "Erro ao buscar recorrências do grupo");
     } finally {
       setLoadingList(false);
     }
@@ -222,8 +225,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
   };
 
   const updateOne = async () => {
-    if (!studentId || !tutoringId || !weekDay || !timeOfTutoring || !link)
-      return;
+    if (!groupId || !tutoringId || !weekDay || !timeOfTutoring || !link) return;
 
     setLoadingList(true);
     try {
@@ -231,7 +233,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
         `${backDomain}/api/v1/tutoringevent`,
         {
           id: tutoringId,
-          studentID: studentId,
+          groupId,
           day: weekDay,
           time: formatTime(timeOfTutoring),
           duration,
@@ -244,14 +246,14 @@ export const StudentTutoringEditorModal: FC<Props> = ({
       await fetchTutorings();
       onUpdated?.();
     } catch (e) {
-      console.log(e, "Erro ao atualizar recorrência do aluno");
+      console.log(e, "Erro ao atualizar recorrência do grupo");
     } finally {
       setLoadingList(false);
     }
   };
 
   const deleteOne = async (item: any) => {
-    if (!studentId) return;
+    if (!groupId) return;
 
     setLoadingList(true);
     try {
@@ -260,7 +262,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
           id: item.id,
           day: item.day,
           time: item.time || item.startTime || "",
-          studentID: studentId,
+          groupId,
         },
         headers: actualHeaders,
       });
@@ -269,20 +271,19 @@ export const StudentTutoringEditorModal: FC<Props> = ({
       await fetchTutorings();
       onUpdated?.();
     } catch (e) {
-      console.log(e, "Erro ao deletar recorrência do aluno");
+      console.log(e, "Erro ao deletar recorrência do grupo");
     } finally {
       setLoadingList(false);
     }
   };
 
   const createNew = async () => {
-    if (!studentId) return;
+    if (!groupId) return;
 
     setLoadingList(true);
     try {
       const base = parseYYYYMMDDToLocalDate(startDate || todayYYYYMMDD());
       const firstDate = theNewWeekDay && getNextDayOfWeek(theNewWeekDay, base);
-
       if (!firstDate) return;
 
       const computedStartDate = buildDateWithTime(firstDate, theNewTime);
@@ -299,7 +300,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
           time: formatTime(theNewTime),
           duration: Number(newDuration) || 60,
           link: theNewLink,
-          studentID: studentId,
+          groupId,
           numberOfWeeks: Number(numberOfWeeks) || 4,
           startDate: computedStartDate,
           endDate,
@@ -313,7 +314,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
       await fetchTutorings();
       onUpdated?.();
     } catch (e) {
-      console.log(e, "Erro ao criar recorrência do aluno");
+      console.log(e, "Erro ao criar recorrência do grupo");
     } finally {
       setLoadingList(false);
     }
@@ -345,9 +346,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
         year: "numeric",
       });
 
-    return `${fmt(first)} até ${fmt(end)} (${numberOfWeeks} semana${
-      Number(numberOfWeeks) > 1 ? "s" : ""
-    })`;
+    return `${fmt(first)} até ${fmt(end)} (${numberOfWeeks} semana${Number(numberOfWeeks) > 1 ? "s" : ""})`;
   }, [numberOfWeeks, theNewWeekDay, startDate]);
 
   return (
@@ -369,7 +368,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
           fontWeight: 700,
         }}
       >
-        Gerenciar aulas fixas
+        {buttonLabel}
       </button>
 
       {open &&
@@ -429,7 +428,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                         fontWeight: 800,
                       }}
                     >
-                      Aulas fixas do aluno
+                      {titleLabel}
                     </div>
 
                     <p
@@ -439,8 +438,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                         color: "#64748b",
                       }}
                     >
-                      Crie, edite e exclua recorrências com os mesmos campos do
-                      calendário.
+                      Crie, edite e exclua recorrências do grupo.
                     </p>
                   </div>
 
@@ -658,7 +656,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                               marginTop: 12,
                             }}
                           >
-                            Nenhuma recorrência encontrada para este aluno.
+                            Nenhuma recorrência encontrada para este grupo.
                           </p>
                         )}
                       </section>
@@ -844,6 +842,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                             >
                               Data de início
                             </label>
+
                             <input
                               type="date"
                               value={startDate}
@@ -926,6 +925,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                               >
                                 Semanas
                               </div>
+
                               <input
                                 value={numberOfWeeks}
                                 onChange={(e) => {
@@ -961,6 +961,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                               >
                                 Duração
                               </div>
+
                               <input
                                 value={newDuration}
                                 onChange={(e) => {

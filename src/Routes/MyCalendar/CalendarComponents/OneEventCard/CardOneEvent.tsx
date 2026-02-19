@@ -11,7 +11,7 @@ interface CalendarEvent {
     event: CalendarEvent,
     hj: Date,
     date: any,
-    duration: number | undefined
+    duration: number | undefined,
   ): unknown;
   _id?: string;
   category?: string;
@@ -128,7 +128,7 @@ const CardOneEvent: React.FC<CardOneEventProps> = ({
           event,
           hj,
           event.date,
-          event.duration
+          event.duration,
         ) && (
           <div
             style={{
@@ -200,10 +200,22 @@ const CardOneEvent: React.FC<CardOneEventProps> = ({
           {event.groupName
             ? truncateString(event.groupName, 11)
             : event.student
-            ? truncateString(event.student, 11)
-            : event.description
-            ? truncateString(event.description, 10)
-            : "No description"}
+              ? truncateString(event.student, 11)
+              : event.description
+                ? truncateString(event.description, 10)
+                : event.groupName
+                  ? truncateString(event.groupName, 11)
+                  : event.student
+                    ? truncateString(event.student, 11)
+                    : event.description
+                      ? truncateString(event.description, 10)
+                      : event.category === "Marcar Reposição"
+                        ? "Disponível"
+                        : event.category == "Rep"
+                          ? "Reposição"
+                          : event.category == "Standalone"
+                            ? "Aula Única"
+                            : event.category}
         </div>
       </div>
 

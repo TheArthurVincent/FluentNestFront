@@ -62,7 +62,7 @@ export default function Homework({
   const [selectedHomeworkContent, setSelectedHomeworkContent] =
     useState<string>("");
   const [submissionMode, setSubmissionMode] = useState<"file" | "editor">(
-    "file"
+    "file",
   );
   const [homeworkAnswer, setHomeworkAnswer] = useState<string>("");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -123,7 +123,7 @@ export default function Homework({
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       notifyAlert("Homework editado com sucesso!", "green");
@@ -139,7 +139,7 @@ export default function Homework({
       }, 500);
     } catch (error) {
       notifyAlert(
-        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework"
+        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework",
       );
       console.error(error);
     } finally {
@@ -152,7 +152,7 @@ export default function Homework({
 
     if (submissionMode === "file" && !selectedFile) {
       notifyAlert(
-        UniversalTexts?.pleaseSelectFile || "Por favor, selecione um arquivo"
+        UniversalTexts?.pleaseSelectFile || "Por favor, selecione um arquivo",
       );
       return;
     }
@@ -160,7 +160,7 @@ export default function Homework({
     if (submissionMode === "editor" && !homeworkAnswer.trim()) {
       notifyAlert(
         UniversalTexts?.pleaseWriteAnswerBeforeSending ||
-          "Por favor, escreva sua resposta antes de enviar"
+          "Por favor, escreva sua resposta antes de enviar",
       );
       return;
     }
@@ -189,13 +189,13 @@ export default function Homework({
         requestData,
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       notifyAlert(
         UniversalTexts?.homeworkSubmittedSuccess ||
           "Homework enviado com sucesso!",
-        "green"
+        "green",
       );
       setSelectedFile(null);
       setHomeworkAnswer("");
@@ -208,7 +208,7 @@ export default function Homework({
       }, 500);
     } catch (error) {
       notifyAlert(
-        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework"
+        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework",
       );
       console.error(error);
     } finally {
@@ -226,14 +226,14 @@ export default function Homework({
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
       setChange(!change);
       fetchHW(studentId || ID);
       setDisabled(false);
     } catch (error) {
       notifyAlert(
-        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
+        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos",
       );
       setDisabled(false);
     }
@@ -242,7 +242,7 @@ export default function Homework({
   const openSubmissionModal = (
     homeworkId: string,
     homeworkDescription?: string,
-    preferredMode?: "file" | "editor"
+    preferredMode?: "file" | "editor",
   ) => {
     setSelectedHomeworkId(homeworkId);
     setSelectedHomeworkContent(homeworkDescription || "");
@@ -280,7 +280,7 @@ export default function Homework({
         `${backDomain}/api/v1/homework/${targetStudentId}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       const tt = response.data.tutoringHomeworkList || [];
       setTutoringList(tt);
@@ -322,15 +322,13 @@ export default function Homework({
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
       setChange(!change);
       fetchHW(studentId || ID);
       setDisabled(false);
     } catch (error) {
-      notifyAlert(
-        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
-      );
+      notifyAlert("Erro ao encontrar alunos");
       setDisabled(false);
     }
   };
@@ -344,13 +342,13 @@ export default function Homework({
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
       setChange(!change);
       fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
-        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
+        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos",
       );
     }
   };
@@ -378,9 +376,7 @@ export default function Homework({
       notifyAlert("Homework deletado com sucesso.", "green");
       fetchHW(studentId || ID);
     } catch (error) {
-      notifyAlert(
-        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
-      );
+      notifyAlert("Erro ao encontrar alunos");
     } finally {
       setIsDeleting(false);
       closeDeleteModal();
@@ -800,7 +796,7 @@ export default function Homework({
                   </div>
                 </div>
               </div>,
-              document.body
+              document.body,
             )}
           {isModalOpen && (
             <div

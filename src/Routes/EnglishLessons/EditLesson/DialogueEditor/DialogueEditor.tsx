@@ -73,7 +73,7 @@ export default function DialogueEditor({
   language,
   headers,
 }: Props) {
-  const [showConfig, setShowConfig] = useState(false);
+  const [showConfig, setShowConfig] = useState(true);
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState((value.dialogue ?? []).join("\n"));
   const [aiOpen, setAiOpen] = useState(false);
