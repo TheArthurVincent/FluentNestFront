@@ -224,8 +224,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
     try {
       setLoadingEventsFree(true);
+
       const response = await axios.get(
-        `${backDomain}/api/v1/free-events/${loggedIn.id || loggedIn._id}`,
+        `${backDomain}/api/v1/free-events/${event.studentID}`,
         { headers: headers as any },
       );
 
@@ -576,47 +577,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           >
             Reagendar aula
           </div>
-
-          {/* Tabs preservadas (estão no componente original; continuam aqui) */}
-          {/* 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, padding: "12px" }}>
-            <button
-              type="button"
-              style={{
-                borderRadius: 10,
-                border: `1px solid ${rescheduleTab === "fixed" ? partnerColor() : "#e2e8f0"}`,
-                background: rescheduleTab === "fixed" ? "rgba(84,191,8,0.10)" : "#fff",
-                color: "#0f172a",
-                padding: "10px 10px",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: rescheduleTab === "fixed" ? 700 : 600,
-              }}
-              onClick={() => setRescheduleTab("fixed")}
-              disabled={rescheduling}
-            >
-              Horários fixos
-            </button>
-            <button
-              type="button"
-              style={{
-                borderRadius: 10,
-                border: `1px solid ${rescheduleTab === "free" ? partnerColor() : "#e2e8f0"}`,
-                background: rescheduleTab === "free" ? "rgba(84,191,8,0.10)" : "#fff",
-                color: "#0f172a",
-                padding: "10px 10px",
-                cursor: "pointer",
-                fontSize: 13,
-                fontWeight: rescheduleTab === "free" ? 700 : 600,
-              }}
-              onClick={() => setRescheduleTab("free")}
-              disabled={rescheduling}
-            >
-              Horário livre
-            </button>
-          </div>
-          */}
-
           {!allowedToReschedule ? (
             <div style={{ padding: 12 }}>
               Você excedeu o limite de reagendamentos.
