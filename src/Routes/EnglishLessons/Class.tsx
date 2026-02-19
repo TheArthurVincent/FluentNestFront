@@ -2910,7 +2910,7 @@ export default function EnglishClassCourse2({
         borderRadius: "12px",
       }}
     >
-      {classTitle && <Helmets text={classTitle || ""} />}
+      {classTitle && !fetchEventData && <Helmets text={classTitle || ""} />}
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (

@@ -120,6 +120,7 @@ function EventPreviewModal({ event, onClose }) {
 
             <a
               href={`/my-calendar/event/${event._id}`}
+              target="_blank"
               style={{
                 padding: "10px 15px",
                 background: partnerColor(),
