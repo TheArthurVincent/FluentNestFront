@@ -441,8 +441,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </div>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
-                Link Externo (Para o aluno acessar, caso use outro sistema de
-                videochamada ou queira deixar um link de backup)
+                Link Externo (Para o aluno acessar, caso use outro local de
+                armazenamento de materiais, por exemplo)
               </label>
               <input
                 type="text"
