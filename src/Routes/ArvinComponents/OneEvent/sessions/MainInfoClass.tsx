@@ -112,6 +112,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const [date, setDate] = useState<string>(event?.date || "");
   const [time, setTime] = useState<string>(event?.time || "");
   const [link, setLink] = useState<string>(event?.link || "");
+  const [importantLink, setExternallink] = useState<string>(
+    event?.importantLink || "",
+  );
   const [category, setCategory] = useState<string>(event?.category || "");
   const [duration, setDuration] = useState<number | "">(event?.duration ?? "");
 
@@ -194,6 +197,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         time,
         link,
         category,
+        importantLink,
         duration: typeof duration === "number" ? duration : undefined,
       };
 
@@ -447,7 +451,19 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 style={inputStyle}
               />
             </div>
-
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Link Externo (Para o aluno acessar, caso use outro sistema de
+                videochamada ou queira deixar um link de backup)
+              </label>
+              <input
+                type="text"
+                disabled={savingMainInfo}
+                value={importantLink}
+                onChange={(e) => setExternallink(e.target.value)}
+                style={inputStyle}
+              />
+            </div>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Categoria
@@ -965,29 +981,71 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </div>
           )}
           <div>
-            {/* Link da Sala */}
-            {event.link && (
-              <a
-                href={event.link}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: "flex",
-                  maxWidth: "fit-content",
-                  fontWeight: 700,
-                  color: partnerColor(),
-                  textDecoration: "none",
-                  fontSize: 14,
-                  textTransform: "uppercase",
-                  alignItems: "center",
-                  gap: 6,
-                  marginTop: 2,
-                }}
-              >
-                <i className="fa fa-external-link" />
-                Link da Sala
-              </a>
-            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                gap: 12,
+                flexWrap: "wrap",
+                padding: "4px 8px",
+                maxWidth: "fit-content",
+              }}
+            >
+              {/* Link da Sala */}
+              {event.link && (
+                <a
+                  href={event.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "flex",
+                    maxWidth: "fit-content",
+                    fontWeight: 700,
+
+                    backgroundColor: `${partnerColor()}22`,
+                    color: partnerColor(),
+                    padding: "4px 8px",
+                    textDecoration: "none",
+                    fontSize: 14,
+                    textTransform: "uppercase",
+                    alignItems: "center",
+                    gap: 6,
+                    marginTop: 2,
+                  }}
+                >
+                  <i className="fa fa-external-link" />
+                  Link da Sala
+                </a>
+              )}
+
+              {/* Link Externo */}
+              {event.importantLink && (
+                <a
+                  href={event.importantLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: "flex",
+                    maxWidth: "fit-content",
+                    fontWeight: 700,
+
+                    backgroundColor: `${partnerColor()}22`,
+                    color: partnerColor(),
+                    padding: "4px 8px",
+                    textDecoration: "none",
+                    fontSize: 14,
+                    textTransform: "uppercase",
+                    alignItems: "center",
+                    gap: 6,
+                    marginTop: 2,
+                  }}
+                >
+                  <i className="fa fa-external-link" />
+                  Link Externo
+                </a>
+              )}
+            </div>
             {/* Bloco compacto: Data/Hora, Duração */}
             <div
               style={{
