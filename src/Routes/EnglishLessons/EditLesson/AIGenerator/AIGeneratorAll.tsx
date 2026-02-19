@@ -8,7 +8,7 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 type HeadersLike = Record<string, string>;
 
 type ElementType = {
-  type: "explanation" | "vocabulary" | "sentences" | "exercise"; // (se quiser, inclua "dialogue" aqui também)
+  type: "explanation" | "vocabulary" | "sentences" | "exercise";
   subtitle?: string;
 
   explanation?: { title: string; image: string | null; list: string[] }[];
@@ -19,7 +19,6 @@ type ElementType = {
     languages: { language1: string; language2: string };
   }[];
 
-  // ✅ para exercise
   items?: string[];
 };
 
@@ -29,18 +28,14 @@ type Props = {
   classId: string;
   headers?: HeadersLike | null;
 
-  // Se quiser, pode pré-preencher com algo como "Lesson: Prepositions"
   theme?: string;
 
-  // Idioma do conteúdo gerado (language1 no seu schema)
   language1: "en" | "pt" | "es" | "fr" | string;
 
-  // Endpoint que gera os blocos (sugestão logo abaixo)
-  postUrl?: string; // default: `${backDomain}/api/v1/generate-evs/${studentId}`
+  postUrl?: string;
 
   onClose: () => void;
 
-  // Recebe os novos elementos para você fazer append no elements existente
   onAppendElements: (newElements: ElementType[]) => void;
 
   title?: string;
@@ -69,16 +64,13 @@ export default function GenerateEVSModal({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // input (prompt ou conteúdo bruto)
   const [textInput, setTextInput] = useState("");
 
-  // quais blocos gerar
   const [wantExplanation, setWantExplanation] = useState(true);
   const [wantVocabulary, setWantVocabulary] = useState(true);
   const [wantSentences, setWantSentences] = useState(true);
   const [wantExercise, setWantExercise] = useState(true);
 
-  // quantidades dentro de cada bloco (1–20)
   const [explanationCount, setExplanationCount] = useState(3);
   const [vocabularyCount, setVocabularyCount] = useState(12);
   const [sentencesCount, setSentencesCount] = useState(12);
@@ -284,19 +276,17 @@ export default function GenerateEVSModal({
       });
 
       const raw =
-        res?.data?.elements ?? // ✅ novos blocos (melhor)
+        res?.data?.elements ??
         res?.data?.sections ??
         res?.data?.json ??
-        res?.data?.insertedElements ?? // ✅ se você retornar isso no backend
-        res?.data?.updatedElements; // ⚠️ último recurso (vem tudo)
+        res?.data?.insertedElements ??
+        res?.data?.updatedElements;
 
-      // Caso backend devolva string JSON, parse:
       let elements: any = raw;
       if (typeof raw === "string") {
         try {
           elements = JSON.parse(raw);
         } catch {
-          // tenta extrair um array
           const match = raw.match(/\[[\s\S]*\]/);
           if (match) {
             elements = JSON.parse(match[0]);
@@ -306,7 +296,6 @@ export default function GenerateEVSModal({
         }
       }
 
-      // Normaliza: se vier {elements:[...]} ou {result:[...]}
       const newElements: ElementType[] = Array.isArray(elements)
         ? elements
         : Array.isArray(elements?.elements)

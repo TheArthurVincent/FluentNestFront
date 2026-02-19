@@ -55,7 +55,7 @@ const overlayStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 99999, // maior que sidebars/topbars
+  zIndex: 99999,
 };
 
 const modalStyle: React.CSSProperties = {
@@ -89,16 +89,16 @@ export default function SimpleAIGenerator({
         language1 == "en"
           ? "Inglês"
           : language1 == "pt"
-          ? "Português"
-          : language1 == "es"
-          ? "Espanhol"
-          : language1 == "fr"
-          ? "Francês"
-          : language1 == "de"
-          ? "Alemão"
-          : language1 == "it"
-          ? "Italiano"
-          : language1
+            ? "Português"
+            : language1 == "es"
+              ? "Espanhol"
+              : language1 == "fr"
+                ? "Francês"
+                : language1 == "de"
+                  ? "Alemão"
+                  : language1 == "it"
+                    ? "Italiano"
+                    : language1
       }.`;
     const i = instructions.trim();
     if (!t && !i) {
@@ -140,7 +140,6 @@ export default function SimpleAIGenerator({
 
   if (!visible) return null;
 
-  // SSR safety (se estiver em Next.js e esse componente for renderizado no server)
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -177,12 +176,12 @@ export default function SimpleAIGenerator({
                 type === "vocabulary"
                   ? "Gere uma lista de palavras e expressões comuns usadas em situações cotidianas, com tradução para o português."
                   : type == "sentences"
-                  ? "Gere frases simples e comuns usadas em situações cotidianas, com tradução para o português."
-                  : type == "dialogue"
-                  ? "Gere um diálogo curto entre duas pessoas em uma situação cotidiana, com tradução para o português."
-                  : type == "text"
-                  ? "Gere uma história curta e simples adequada para estudantes de inglês, com tradução para o português."
-                  : ""
+                    ? "Gere frases simples e comuns usadas em situações cotidianas, com tradução para o português."
+                    : type == "dialogue"
+                      ? "Gere um diálogo curto entre duas pessoas em uma situação cotidiana, com tradução para o português."
+                      : type == "text"
+                        ? "Gere uma história curta e simples adequada para estudantes de inglês, com tradução para o português."
+                        : ""
               }`}
               style={{ ...inputStyle, resize: "vertical" }}
             />
@@ -207,6 +206,6 @@ export default function SimpleAIGenerator({
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

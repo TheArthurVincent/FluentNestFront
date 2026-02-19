@@ -2,14 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import {
-  cardBase,
-  cardTitle,
-  pillStatus,
-  statCardBase,
-  statLabel,
-  statValue,
-} from "../../Students/TheStudent/types/studentPage.styles";
+import { pillStatus } from "../../Students/TheStudent/types/studentPage.styles";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -19,7 +12,7 @@ type DeleteClassProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
   lastLesson?: any;
-  evendId?: string; // id do evento (aula) atual
+  evendId?: string;
   allowedToEdit?: boolean;
 };
 
@@ -32,11 +25,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const renderStatusPill = (status?: string) => {
-    if (!status) return null;
-    return <span style={pillStatus}>{status}</span>;
-  };
 
   const handleOpenDeleteModal = () => {
     if (!allowedToEdit || !evendId) return;
@@ -83,7 +71,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
     }
   };
 
-  // -------- MODAL VIA PORTAL (grudado no body) --------
   const deleteModal =
     showDeleteModal &&
     createPortal(
@@ -97,7 +84,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
           justifyContent: "center",
           zIndex: 99999,
         }}
-        onClick={handleCloseDeleteModal} // clica fora e fecha
+        onClick={handleCloseDeleteModal}
       >
         <div
           style={{
@@ -109,7 +96,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
             boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
             fontFamily: "Plus Jakarta Sans",
           }}
-          onClick={(e) => e.stopPropagation()} // não fecha ao clicar dentro
+          onClick={(e) => e.stopPropagation()}
         >
           <h3
             style={{

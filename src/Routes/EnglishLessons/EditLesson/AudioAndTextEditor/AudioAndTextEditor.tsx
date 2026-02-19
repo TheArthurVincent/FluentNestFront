@@ -12,9 +12,9 @@ export type AudioBlock = {
   type: "audio";
   subtitle?: string;
   order?: number;
-  text: string; // texto que acompanha o áudio
-  link: string; // URL do arquivo de áudio (Drive, CDN, etc.)
-  image?: string; // ícone/capa
+  text: string;
+  link: string;
+  image?: string;
 };
 
 type Props = {
@@ -25,8 +25,8 @@ type Props = {
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-  headers?: any; // para envio autenticado se necessário
-  // opcional: disparar re-render no pai
+  headers?: any;
+
   setChange?: any;
   change?: any;
 };
@@ -110,7 +110,6 @@ export default function AudioAndTextEditor({
     }
   };
 
-  // upload do arquivo de áudio (opcional)
   const onPickAudio = async (file: File | null) => {
     if (!file) return;
     try {
@@ -130,7 +129,6 @@ export default function AudioAndTextEditor({
     }
   };
 
-  // ===== Helpers IA
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
@@ -148,7 +146,6 @@ export default function AudioAndTextEditor({
     }
   }
 
-  // extrai src de iframes (ex.: SoundCloud embed)
   function extractSrcFromIframe(linkOrHtml: string): string {
     if (!linkOrHtml || typeof linkOrHtml !== "string") return linkOrHtml;
     const html = linkOrHtml.trim();
@@ -157,15 +154,12 @@ export default function AudioAndTextEditor({
     return m?.[1] || linkOrHtml;
   }
 
-  // normaliza campos típicos {text, link, image} ou similares
   function normalizeAudioPayload(raw: any): Partial<AudioBlock> {
     if (!raw) return {};
     if (typeof raw === "string") {
-      // se for só texto longo, preenche text
       return { text: raw };
     }
     if (Array.isArray(raw)) {
-      // se vier array, junta em parágrafos
       return {
         text: raw
           .map((x) => (typeof x === "string" ? x : JSON.stringify(x)))
@@ -199,7 +193,6 @@ export default function AudioAndTextEditor({
   const handleReceiveJson = (raw: any) => {
     const json = parseMaybeJson(raw);
 
-    // suporta envelopes {data|result|json|item}
     let payload: any = json;
     if (json && typeof json === "object" && !Array.isArray(json)) {
       const inner =
@@ -232,12 +225,10 @@ export default function AudioAndTextEditor({
     setChange?.(!change);
   };
 
-  // detecta se é embed de soundcloud player
   const isSoundCloudEmbed =
     typeof value.link === "string" &&
     value.link.includes("w.soundcloud.com/player");
 
-  // preview de áudio genérico
   const canHtml5Audio =
     typeof value.link === "string" &&
     /^https?:\/\//i.test(value.link) &&
@@ -480,7 +471,7 @@ export default function AudioAndTextEditor({
         language1={language || "en"}
         type="audio"
         onClose={() => setAiOpen(false)}
-        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`} // seu endpoint: ajuste se preferir usar /:studentId
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
         headers={headers}
         onReceiveJson={handleReceiveJson}
         title="Gerar Text & Audio por IA"

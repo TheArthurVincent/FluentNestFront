@@ -22,7 +22,6 @@ type DescriptionProps = {
   title: string;
 };
 
-// ---------- estilos base (mesmos do MainInfoClass) ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -84,7 +83,7 @@ const Description: FC<DescriptionProps> = ({
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
   const [teacherDescription, setTeacherDescription] = useState<string>(
-    theTeacherDescription || ""
+    theTeacherDescription || "",
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -115,7 +114,7 @@ const Description: FC<DescriptionProps> = ({
             classTitle: theLesson?.title,
             evendId: evendId || "",
           },
-          { headers: headers as any }
+          { headers: headers as any },
         );
         const adapted = response.data.adapted;
         console.log(adapted);
@@ -137,15 +136,13 @@ const Description: FC<DescriptionProps> = ({
 
   const hasDescription = !!theDescription && theDescription.trim().length > 0;
 
-  // ================== API ==================
-
   const updateDescription = async (id: string) => {
     try {
       setSaving(true);
       const response = await axios.put(
         `${backDomain}/api/v1/eventdescription/${id}`,
         { description, theLesson, teacherDescription },
-        { headers: headers as any }
+        { headers: headers as any },
       );
       if (response) {
         fetchEventData();
@@ -290,11 +287,9 @@ const Description: FC<DescriptionProps> = ({
           </div>
         </div>
       </div>,
-      document.body
+      document.body,
     );
   };
-
-  // ================== RENDER PRINCIPAL ==================
 
   return (
     <>

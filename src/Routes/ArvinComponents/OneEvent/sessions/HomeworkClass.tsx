@@ -24,7 +24,6 @@ type HomeworkClassProps = {
   homeworkAnswer?: string;
 };
 
-// ---------- estilos ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -78,7 +77,6 @@ const textareaStyle: React.CSSProperties = {
   boxSizing: "border-box",
 };
 
-// ---- Switch sem MUI (estilo iOS) ----
 const switchRowStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
@@ -130,7 +128,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   const [mode, setMode] = useState<ModalMode>("description");
   const [saving, setSaving] = useState(false);
 
-  // NOVO: notificar teacher?
   const [notifyTeacher, setNotifyTeacher] = useState<boolean>(true);
 
   const hasHomework = !!homeworkID;
@@ -164,7 +161,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     if (!homeworkID) return;
 
     setAnswerText(htmlToTextarea(homeworkAnswer || ""));
-    setNotifyTeacher(true); // default quando abre (ajuste se quiser persistir isso)
+    setNotifyTeacher(true);
     setMode("answer");
     setIsModalOpen(true);
   };
@@ -187,7 +184,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     try {
       setSaving(true);
 
-      // ===== salvar DESCRIPTION (prof/admin) =====
       if (mode === "description") {
         if (!allowedToEdit) return;
 
@@ -212,7 +208,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
         }
       }
 
-      // ===== salvar ANSWER (aluno) =====
       if (mode === "answer") {
         if (!allowedToAnswer) return;
         if (!homeworkID) return;
@@ -223,7 +218,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           `${backDomain}/api/v1/homeworkanswer/${homeworkID}`,
           {
             answers: answerToSave,
-            notifyTeacher, // NOVO: manda pro backend
+            notifyTeacher,
           },
           { headers: headers as any },
         );

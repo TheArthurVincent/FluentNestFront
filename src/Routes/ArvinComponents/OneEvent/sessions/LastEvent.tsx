@@ -77,10 +77,6 @@ const LastClass: FC<LastClassProps> = ({
     return <span style={pillStatus}>{status}</span>;
   };
 
-  useEffect(() => {
-    // console.log(lastLesson);
-  }, [lastLesson]);
-
   const handleClassSummary = async () => {
     const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
     const thePermissions = logged?.permissions;

@@ -19,7 +19,6 @@ type EventVideoProps = {
   allowedToEdit: boolean;
 };
 
-// ---------- estilos reaproveitando a ideia do SimpleAIGenerator ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -79,7 +78,6 @@ const EventVideo: FC<EventVideoProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Mantém o state sincronizado com a prop (caso o evento mude)
   useEffect(() => {
     setVideo(videoUrl || "");
   }, [videoUrl]);
@@ -116,17 +114,13 @@ const EventVideo: FC<EventVideoProps> = ({
     setIsModalOpen(false);
   };
 
-  // Render do modal via portal (usado APENAS quando já existe vídeo)
   const renderModal = () => {
     if (!isModalOpen) return null;
-    if (typeof document === "undefined") return null; // segurança SSR
+    if (typeof document === "undefined") return null;
 
     return createPortal(
       <div style={overlayStyle}>
-        <div
-          style={modalStyle}
-          onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
-        >
+        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           {/* Header do modal */}
           <div
             style={{
