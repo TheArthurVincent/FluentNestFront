@@ -598,7 +598,6 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
           cursor: "pointer",
         }}
       >
-        <i className="fa fa-repeat" style={{ fontSize: 11 }} />
         <span>{UniversalTexts.calendarModal.recurringClasses}</span>
       </button>
 

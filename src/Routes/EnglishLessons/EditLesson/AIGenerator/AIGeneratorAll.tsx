@@ -70,7 +70,7 @@ export default function GenerateEVSModal({
   const [wantVocabulary, setWantVocabulary] = useState(true);
   const [wantSentences, setWantSentences] = useState(true);
   const [wantExercise, setWantExercise] = useState(true);
-
+  const [exerciseCount, setExerciseCount] = useState(5);
   const [explanationCount, setExplanationCount] = useState(3);
   const [vocabularyCount, setVocabularyCount] = useState(12);
   const [sentencesCount, setSentencesCount] = useState(12);
@@ -263,7 +263,7 @@ export default function GenerateEVSModal({
         explanation: wantExplanation ? clampInt(explanationCount, 1, 20) : 0,
         vocabulary: wantVocabulary ? clampInt(vocabularyCount, 1, 20) : 0,
         sentences: wantSentences ? clampInt(sentencesCount, 1, 20) : 0,
-        exercise: wantExercise ? 1 : 0,
+        exercise: wantExercise ? clampInt(exerciseCount, 1, 20) : 0,
       },
     };
 
@@ -428,11 +428,18 @@ export default function GenerateEVSModal({
                   onChange={(e) => setWantExercise(e.target.checked)}
                 />
                 <span style={styles.miniLabel}>exercise</span>
-                <div
-                  style={{ fontSize: 12, color: "#6b7280", fontWeight: 800 }}
-                >
-                  (fixo)
-                </div>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={exerciseCount}
+                  disabled={loading || !wantExercise}
+                  onChange={(e) =>
+                    setExerciseCount(clampInt(e.target.value, 1, 20))
+                  }
+                  style={styles.smallNumber}
+                  title="Quantidade de itens dentro de exercise.exercises (1–20)"
+                />
               </div>
             </div>
 

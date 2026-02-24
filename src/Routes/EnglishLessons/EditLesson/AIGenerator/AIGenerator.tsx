@@ -55,7 +55,7 @@ const overlayStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 99999,
+  zIndex: 99999999,
 };
 
 const modalStyle: React.CSSProperties = {
