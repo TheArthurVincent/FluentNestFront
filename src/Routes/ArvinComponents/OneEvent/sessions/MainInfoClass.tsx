@@ -11,6 +11,8 @@ import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import EventVideo from "./VideoClass";
+import StudentClassesHistory from "../../Students/TheStudent/StudentsClasses/StudentClassesHistory";
+import GroupClassesHistory from "../../Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
 
 type FreeEventItem = {
   _id: string;
@@ -103,6 +105,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   status,
   title,
 }) => {
+  const [isPreviousClassesOpen, setIsPreviousClassesOpen] = useState(false);
   const [isMainInfoModalOpen, setIsMainInfoModalOpen] = useState(false);
   const [savingMainInfo, setSavingMainInfo] = useState(false);
 
@@ -381,6 +384,63 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     </button>
   );
 
+  const renderPreviousClassesModal = () => {
+    if (!isPreviousClassesOpen) return null;
+    if (typeof document === "undefined") return null;
+
+    const close = () => setIsPreviousClassesOpen(false);
+
+    return createPortal(
+      <div style={overlayStyle} onClick={close}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            ...modalStyle,
+            width: "min(96vw, 980px)", // maior pra caber o histórico
+            maxHeight: "86vh",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              padding: "14px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>
+              Aulas anteriores
+            </div>
+
+            <button onClick={close} style={ghostBtnStyle}>
+              Fechar
+            </button>
+          </div>
+
+          <div style={{ padding: 12, overflow: "auto" }}>
+            {event.category !== "Established Group Class" ? (
+              <StudentClassesHistory
+                idFromOtherPlace={event.studentID}
+                headers={headers as any}
+                isDesktop={true}
+              />
+            ) : (
+              <GroupClassesHistory
+                idFromOtherPlace={event.group}
+                headers={headers as any}
+                isDesktop={true}
+              />
+            )}
+          </div>
+        </div>
+      </div>,
+      document.body,
+    );
+  };
   const renderMainInfoModal = () => {
     if (!isMainInfoModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -1135,6 +1195,22 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   </button>
 
                   <button
+                    onClick={() => setIsPreviousClassesOpen(true)}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Aulas anteriores
+                  </button>
+
+                  <button
                     onClick={() => {
                       setDescription(theDescription || "");
                       setTeacherDescription(theTeacherDescription || "");
@@ -1161,6 +1237,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       </div>
       {renderMainInfoModal()}
       {renderRescheduleModal()}
+      {renderPreviousClassesModal()}
       {renderDescriptionModal()}
     </>
   );

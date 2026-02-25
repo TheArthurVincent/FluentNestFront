@@ -54,12 +54,7 @@ import {
   formatPhoneNumber,
 } from "../../../../Resources/Components/ItemsLibrary";
 
-export function FindStudent({
-  uploadStatus,
-  headers,
-  id,
-  isResponsible,
-}) {
+export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
@@ -119,7 +114,7 @@ export function FindStudent({
       setNewCpf(
         response.data.formattedStudentData.doc
           ? formatCpf(response.data.formattedStudentData.doc)
-          : ""
+          : "",
       );
       setNewLastName(response.data.formattedStudentData.lastname);
       setNewUsername(response.data.formattedStudentData.username);
@@ -128,7 +123,7 @@ export function FindStudent({
       setNewDateOfBirth(
         response.data.formattedStudentData.dateOfBirth
           ? response.data.formattedStudentData.dateOfBirth.split("T")[0]
-          : ""
+          : "",
       );
       setFeeUpToDate(response.data.formattedStudentData.feeUpToDate);
       serReplenish(response.data.formattedStudentData.replenish);
@@ -143,10 +138,10 @@ export function FindStudent({
       setFee(response.data.formattedStudentData.fee);
       setNewAddress(response.data.formattedStudentData.address);
       setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone || 0
+        response.data.formattedStudentData.homeworkAssignmentsDone || 0,
       );
       setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews || 0
+        response.data.formattedStudentData.flashcards25Reviews || 0,
       );
     } catch (error) {
       notifyAlert(error);
@@ -162,10 +157,10 @@ export function FindStudent({
       setTotalScore(response.data.formattedStudentData.totalScore || 0);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore || 0);
       setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone || 0
+        response.data.formattedStudentData.homeworkAssignmentsDone || 0,
       );
       setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews || 0
+        response.data.formattedStudentData.flashcards25Reviews || 0,
       );
     } catch (error) {
       notifyAlert(error);
@@ -178,7 +173,7 @@ export function FindStudent({
     if (newCpf && !validateCpf(newCpf)) {
       notifyAlert(
         "CPF inválido. Verifique o formato e tente novamente.",
-        "red"
+        "red",
       );
       return;
     }
@@ -204,7 +199,7 @@ export function FindStudent({
       const response = await axios.put(
         `${backDomain}/api/v1/students/${id}`,
         editedStudent,
-        { headers }
+        { headers },
       );
       notifyAlert("Usuário editado com sucesso!", "green");
       setSelectedStudent(null);
@@ -224,7 +219,7 @@ export function FindStudent({
       const response = await axios.put(
         `${backDomain}/api/v1/studentpermissions/${id}`,
         editedStudent,
-        { headers }
+        { headers },
       );
 
       // Atualizar selectedStudent com as novas permissões
@@ -260,7 +255,7 @@ export function FindStudent({
     try {
       const response = await axios.delete(
         `${backDomain}/api/v1/students/${id}`,
-        { headers }
+        { headers },
       );
       notifyAlert("Aluno excluído");
       fetchStudents();
@@ -290,7 +285,7 @@ export function FindStudent({
         `${backDomain}/api/v1/event-one-student/${id}`,
         {
           headers,
-        }
+        },
       );
 
       setEventsList(response.data.events);
@@ -313,7 +308,7 @@ export function FindStudent({
         `${backDomain}/api/v1/event-one-student-group/${id}`,
         {
           headers,
-        }
+        },
       );
 
       setEventsList(response.data.events);
@@ -357,7 +352,7 @@ export function FindStudent({
       const response = await axios.put(
         `${backDomain}/api/v1/tutoree/${id}`,
         {},
-        { headers }
+        { headers },
       );
 
       setTutoree(response.data.tutoree);
@@ -377,7 +372,7 @@ export function FindStudent({
         {},
         {
           headers,
-        }
+        },
       );
 
       setFeeUpToDate(response.data.feeUpToDate);
@@ -400,7 +395,7 @@ export function FindStudent({
         {},
         {
           headers,
-        }
+        },
       );
 
       setReplenish(response.data.replenishTarget);
@@ -419,7 +414,7 @@ export function FindStudent({
         {},
         {
           headers,
-        }
+        },
       );
 
       setOnHold(response.data.onHold);
@@ -463,7 +458,7 @@ export function FindStudent({
     } else {
       return limitedNumbers.replace(
         /(\d{3})(\d{3})(\d{3})(\d+)/,
-        "$1.$2.$3-$4"
+        "$1.$2.$3-$4",
       );
     }
   };
@@ -511,7 +506,7 @@ export function FindStudent({
       await axios.put(
         `${backDomain}/api/v1/score/${id}`,
         { score, description, type },
-        { headers }
+        { headers },
       );
       notifyAlert("Pontuação atualizada com sucesso!", "green");
       await updateScoreNow(id); // ESSENCIAL!
@@ -531,7 +526,7 @@ export function FindStudent({
       const response = await axios.put(
         `${backDomain}/api/v1/studentpassword/${id}`,
         { newPassword },
-        { headers }
+        { headers },
       );
       notifyAlert("Senha editada com sucesso!", "green");
       fetchStudents();
@@ -626,7 +621,7 @@ export function FindStudent({
                   setNewDateOfBirth(
                     selectedStudent.dateOfBirth
                       ? selectedStudent.dateOfBirth.split("T")[0]
-                      : ""
+                      : "",
                   );
                   setGoogleDriveLink(selectedStudent.googleDriveLink);
                   setPermissions(selectedStudent.permissions);
@@ -638,10 +633,10 @@ export function FindStudent({
                   setTotalScore(selectedStudent.totalScore || 0);
                   setMonthlyScore(selectedStudent.monthlyScore || 0);
                   setHomeworkAssignmentsDone(
-                    selectedStudent.homeworkAssignmentsDone || 0
+                    selectedStudent.homeworkAssignmentsDone || 0,
                   );
                   setFlashcards25Reviews(
-                    selectedStudent.flashcards25Reviews || 0
+                    selectedStudent.flashcards25Reviews || 0,
                   );
                   handleSeeModal();
                 }}
@@ -777,8 +772,8 @@ export function FindStudent({
                   {selectedStudent.dateOfBirth
                     ? formatDateBr(
                         new Date(selectedStudent.dateOfBirth).setDate(
-                          new Date(selectedStudent.dateOfBirth).getDate() + 1
-                        )
+                          new Date(selectedStudent.dateOfBirth).getDate() + 1,
+                        ),
                       )
                     : "N/A"}
                 </Typography>
@@ -1028,14 +1023,14 @@ export function FindStudent({
                         selectedStudent.permissions === "superadmin"
                           ? "#e3f2fd"
                           : selectedStudent.permissions === "teacher"
-                          ? "#f3e5f5"
-                          : "#e8f5e8",
+                            ? "#f3e5f5"
+                            : "#e8f5e8",
                       color:
                         selectedStudent.permissions === "superadmin"
                           ? "#1976d2"
                           : selectedStudent.permissions === "teacher"
-                          ? "#7b1fa2"
-                          : "#388e3c",
+                            ? "#7b1fa2"
+                            : "#388e3c",
                     }}
                   >
                     {selectedStudent.permissions === "superadmin" && (
@@ -1059,8 +1054,8 @@ export function FindStudent({
                     {selectedStudent.permissions === "superadmin"
                       ? "Admin"
                       : selectedStudent.permissions === "teacher"
-                      ? "Professor"
-                      : "Aluno"}
+                        ? "Professor"
+                        : "Aluno"}
                   </div>
                 </div>
               </Grid>
@@ -1360,13 +1355,13 @@ export function FindStudent({
                                 backgroundColor: report.paidFor
                                   ? "#d4f6d4"
                                   : report.paidSoFar > 0
-                                  ? "#fff3cd"
-                                  : "#ffe6e6",
+                                    ? "#fff3cd"
+                                    : "#ffe6e6",
                                 color: report.paidFor
                                   ? "#2d7d32"
                                   : report.paidSoFar > 0
-                                  ? "#856404"
-                                  : "#d32f2f",
+                                    ? "#856404"
+                                    : "#d32f2f",
                               }}
                             >
                               {report.paidFor ? (
@@ -1466,7 +1461,8 @@ export function FindStudent({
                               >
                                 Pendente: R${" "}
                                 {formatNumber(
-                                  (report.amount || 0) - (report.paidSoFar || 0)
+                                  (report.amount || 0) -
+                                    (report.paidSoFar || 0),
                                 )}
                               </Typography>
                             )}
@@ -1482,7 +1478,7 @@ export function FindStudent({
                             >
                               Vencimento:{" "}
                               {new Date(report.dueDate).toLocaleDateString(
-                                "pt-BR"
+                                "pt-BR",
                               )}
                             </Typography>
                           )}
@@ -1558,8 +1554,8 @@ export function FindStudent({
                         {formatNumber(
                           selectedStudent.financialReports.reduce(
                             (total, report) => total + (report.amount || 0),
-                            0
-                          )
+                            0,
+                          ),
                         )}
                       </Typography>
                     </div>
@@ -1583,7 +1579,7 @@ export function FindStudent({
                       >
                         {
                           selectedStudent.financialReports.filter(
-                            (report) => report.paidFor
+                            (report) => report.paidFor,
                           ).length
                         }
                       </Typography>
@@ -1608,7 +1604,7 @@ export function FindStudent({
                       >
                         {
                           selectedStudent.financialReports.filter(
-                            (report) => !report.paidFor && report.paidSoFar > 0
+                            (report) => !report.paidFor && report.paidSoFar > 0,
                           ).length
                         }
                       </Typography>
@@ -1635,7 +1631,7 @@ export function FindStudent({
                           selectedStudent.financialReports.filter(
                             (report) =>
                               !report.paidFor &&
-                              (!report.paidSoFar || report.paidSoFar === 0)
+                              (!report.paidSoFar || report.paidSoFar === 0),
                           ).length
                         }
                       </Typography>
@@ -1662,8 +1658,8 @@ export function FindStudent({
                         {formatNumber(
                           selectedStudent.financialReports.reduce(
                             (total, report) => total + (report.paidSoFar || 0),
-                            0
-                          )
+                            0,
+                          ),
                         )}
                       </Typography>
                     </div>
@@ -1717,16 +1713,16 @@ export function FindStudent({
                               color: report.paidFor
                                 ? "#2d7d32"
                                 : report.paidSoFar > 0
-                                ? "#856404"
-                                : "#d32f2f",
+                                  ? "#856404"
+                                  : "#d32f2f",
                               fontWeight: "600",
                             }}
                           >
                             {report.paidFor
                               ? "pago"
                               : report.paidSoFar > 0
-                              ? "parcial"
-                              : "pendente"}
+                                ? "parcial"
+                                : "pendente"}
                           </span>
                           {index <
                             selectedStudent.financialReports.length - 1 && (
@@ -1818,10 +1814,10 @@ export function FindStudent({
                                 event.status === "realizada"
                                   ? "#28a745"
                                   : event.status === "desmarcado"
-                                  ? "#dc3545"
-                                  : event.status === "reagendado"
-                                  ? "#ffc107"
-                                  : "#6c757d"
+                                    ? "#dc3545"
+                                    : event.status === "reagendado"
+                                      ? "#ffc107"
+                                      : "#6c757d"
                               }`,
                             }}
                           >
@@ -1849,18 +1845,18 @@ export function FindStudent({
                                       event.status === "realizada"
                                         ? "#d4edda"
                                         : event.status === "desmarcado"
-                                        ? "#f8d7da"
-                                        : event.status === "reagendado"
-                                        ? "#fff3cd"
-                                        : "#e9ecef",
+                                          ? "#f8d7da"
+                                          : event.status === "reagendado"
+                                            ? "#fff3cd"
+                                            : "#e9ecef",
                                     color:
                                       event.status === "realizada"
                                         ? "#155724"
                                         : event.status === "desmarcado"
-                                        ? "#721c24"
-                                        : event.status === "reagendado"
-                                        ? "#856404"
-                                        : "#495057",
+                                          ? "#721c24"
+                                          : event.status === "reagendado"
+                                            ? "#856404"
+                                            : "#495057",
                                     padding: "4px 10px",
                                     borderRadius: "4px",
                                     fontSize: "8px",
@@ -1938,8 +1934,8 @@ export function FindStudent({
                                   {event.date
                                     ? new Date(
                                         new Date(event.date).setDate(
-                                          new Date(event.date).getDate() + 1
-                                        )
+                                          new Date(event.date).getDate() + 1,
+                                        ),
                                       ).toLocaleDateString("pt-BR")
                                     : "N/A"}{" "}
                                   às {event.time || "N/A"}
@@ -2154,10 +2150,10 @@ export function FindStudent({
                                 event.status === "realizada"
                                   ? "#28a745"
                                   : event.status === "desmarcado"
-                                  ? "#dc3545"
-                                  : event.status === "reagendado"
-                                  ? "#ffc107"
-                                  : "#6c757d"
+                                    ? "#dc3545"
+                                    : event.status === "reagendado"
+                                      ? "#ffc107"
+                                      : "#6c757d"
                               }`,
                             }}
                           >
@@ -2185,18 +2181,18 @@ export function FindStudent({
                                       event.status === "realizada"
                                         ? "#d4edda"
                                         : event.status === "desmarcado"
-                                        ? "#f8d7da"
-                                        : event.status === "reagendado"
-                                        ? "#fff3cd"
-                                        : "#e9ecef",
+                                          ? "#f8d7da"
+                                          : event.status === "reagendado"
+                                            ? "#fff3cd"
+                                            : "#e9ecef",
                                     color:
                                       event.status === "realizada"
                                         ? "#155724"
                                         : event.status === "desmarcado"
-                                        ? "#721c24"
-                                        : event.status === "reagendado"
-                                        ? "#856404"
-                                        : "#495057",
+                                          ? "#721c24"
+                                          : event.status === "reagendado"
+                                            ? "#856404"
+                                            : "#495057",
                                     padding: "4px 10px",
                                     borderRadius: "4px",
                                     fontSize: "8px",
@@ -2274,8 +2270,8 @@ export function FindStudent({
                                   {event.date
                                     ? new Date(
                                         new Date(event.date).setDate(
-                                          new Date(event.date).getDate() + 1
-                                        )
+                                          new Date(event.date).getDate() + 1,
+                                        ),
                                       ).toLocaleDateString("pt-BR")
                                     : "N/A"}{" "}
                                   às {event.time || "N/A"}
@@ -2683,7 +2679,7 @@ export function FindStudent({
                   .filter((student) =>
                     student.fullname
                       .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
+                      .includes(searchTerm.toLowerCase()),
                   )
                   .map((student, index) => (
                     <TableRow
@@ -2751,14 +2747,14 @@ export function FindStudent({
                               student.permissions === "superadmin"
                                 ? "#e3f2fd"
                                 : student.permissions === "teacher"
-                                ? "#f3e5f5"
-                                : "#e8f5e8",
+                                  ? "#f3e5f5"
+                                  : "#e8f5e8",
                             color:
                               student.permissions === "superadmin"
                                 ? "#1976d2"
                                 : student.permissions === "teacher"
-                                ? "#7b1fa2"
-                                : "#388e3c",
+                                  ? "#7b1fa2"
+                                  : "#388e3c",
                           }}
                         >
                           {student.permissions}
@@ -3562,7 +3558,7 @@ export function FindStudent({
                         ID,
                         item.score,
                         item.description,
-                        item.category
+                        item.category,
                       )
                     }
                   >

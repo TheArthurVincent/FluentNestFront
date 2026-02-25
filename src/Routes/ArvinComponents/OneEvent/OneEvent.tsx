@@ -17,7 +17,6 @@ type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
 };
-type TabType = "dados" | "homework" | "conteudo";
 
 const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -25,7 +24,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
   const [seeReplenish, setSeeReplenish] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedFutureEventId, setSelectedFutureEventId] =
     useState<string>("");
   const [rescheduling, setRescheduling] = useState(false);

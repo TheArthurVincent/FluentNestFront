@@ -16,6 +16,7 @@ import { cardBase } from "../types/studentPage.styles";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
+  idFromOtherPlace?: string;
 };
 
 interface EventFromApi {
@@ -133,7 +134,7 @@ function ModalInBody({
         alignItems: "center",
         justifyContent: "center",
         padding: 16,
-        zIndex: 9999,
+        zIndex: 99999,
       }}
     >
       <div
@@ -197,8 +198,10 @@ function ModalInBody({
 export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   headers,
   isDesktop,
+  idFromOtherPlace,
 }) => {
   const { studentId } = useParams<{ studentId: string }>();
+  const theOfficialId = idFromOtherPlace || studentId;
 
   const [eventsList, setEventsList] = useState<EventFromApi[]>([]);
   const [homeworkByEvent, setHomeworkByEvent] = useState<
@@ -218,7 +221,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
-    if (!studentId) return;
+    if (!theOfficialId) return;
 
     setLoadingEventsList(true);
     setEventsList([]);
@@ -226,7 +229,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
     try {
       const response = await axios.get<EventsResponse>(
-        `${backDomain}/api/v1/event-one-student-pag/${studentId}`,
+        `${backDomain}/api/v1/event-one-student-pag/${theOfficialId}`,
         { headers: headers as any },
       );
 
@@ -245,10 +248,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   };
 
   useEffect(() => {
-    if (!studentId) return;
+    if (!theOfficialId) return;
     handleSeeClassesHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentId]);
+  }, [theOfficialId]);
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
@@ -443,7 +446,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         }}
       >
         <a
-          href={`/students/${studentId}`}
+          href={`/students/${theOfficialId}`}
           target="_blank"
           rel="noreferrer"
           style={{

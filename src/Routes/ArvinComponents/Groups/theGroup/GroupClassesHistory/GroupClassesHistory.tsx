@@ -19,6 +19,7 @@ import {
 
 type GroupClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
+  idFromOtherPlace?: string; // para usar o componente em outra rota que não tenha groupId nos params
 };
 
 interface EventFromApi {
@@ -124,7 +125,7 @@ function ModalInBody({
         alignItems: "center",
         justifyContent: "center",
         padding: 16,
-        zIndex: 9999,
+        zIndex: 99999,
         fontFamily: "Plus Jakarta Sans",
       }}
     >
@@ -181,15 +182,17 @@ function ModalInBody({
         <div style={{ padding: 16 }}>{children}</div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 
 export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   headers,
   isDesktop,
+  idFromOtherPlace,
 }) => {
   const { groupId } = useParams<{ groupId: string }>();
+  const theOfficialId = idFromOtherPlace || groupId;
 
   const [eventsList, setEventsList] = useState<EventFromApi[]>([]);
   const [loadingEventsList, setLoadingEventsList] = useState<boolean>(false);
@@ -208,15 +211,15 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
-    if (!groupId) return;
+    if (!theOfficialId) return;
 
     setLoadingEventsList(true);
     setEventsList([]);
 
     try {
       const response = await axios.get<GroupEventsResponse>(
-        `${backDomain}/api/v1/grouphistory/${groupId}`,
-        { headers: headers as any }
+        `${backDomain}/api/v1/grouphistory/${theOfficialId}`,
+        { headers: headers as any },
       );
 
       setGroupName(response.data.groupName || "");
@@ -232,10 +235,10 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   };
 
   useEffect(() => {
-    if (!groupId) return;
+    if (!theOfficialId) return;
     handleSeeClassesHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupId]);
+  }, [theOfficialId]);
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
@@ -372,7 +375,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
         }}
       >
         <a
-          href={`/groups/${groupId}`}
+          href={`/groups/${theOfficialId}`}
           style={{
             marginTop: 14,
             display: "block",
@@ -595,7 +598,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                             }}
                           >
                             {categoryList.find(
-                              (cat) => cat.value === event.category
+                              (cat) => cat.value === event.category,
                             )?.text || event.category}
                           </div>
                         )}
