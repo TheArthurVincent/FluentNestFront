@@ -672,7 +672,7 @@ export default function Homework({
                       {/* Link para o evento */}
                       {eventId && (
                         <a
-                          href={`/my-calendar/event/${eventId}?tab=homework`}
+                          href={`/my-calendar/event/${eventId}`}
                           style={{
                             marginTop: 14,
                             display: "block",
