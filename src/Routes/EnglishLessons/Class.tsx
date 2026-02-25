@@ -3000,7 +3000,7 @@ export default function EnglishClassCourse2({
                     >
                       {theclass.title}
                     </HOne>
-                    
+
                     {nextClass && (
                       <span
                         style={{
@@ -3037,25 +3037,26 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-                 <>
-                    {canEditCourse &&
-                      !seeBoard &&
-                      thePermissions !== "student" && (
-                        <EditLesson
-                          setChange={setChange}
-                          change={change}
-                          studentId={myId}
-                          buttonText={
-                            "Adicionar ou Remover Elementos Dinâmicos"
-                          }
-                          setSeeEdit={setSeeEdit}
-                          headers={actualHeaders}
-                          classId={classId}
-                          language={classLanguage}
-                          fetchEventData={fetchEventData}
-                        />
-                      )}
-                  </>
+          {
+            <>
+              {theclass?.elements?.length > 0 &&
+                canEditCourse &&
+                !seeBoard &&
+                thePermissions !== "student" && (
+                  <EditLesson
+                    setChange={setChange}
+                    change={change}
+                    studentId={myId}
+                    buttonText={"Adicionar ou Remover Elementos Dinâmicos"}
+                    setSeeEdit={setSeeEdit}
+                    headers={actualHeaders}
+                    classId={classId}
+                    language={classLanguage}
+                    fetchEventData={fetchEventData}
+                  />
+                )}
+            </>
+          }
           {!seeEdit && (
             <>
               <>
@@ -4111,19 +4112,26 @@ export default function EnglishClassCourse2({
                     {canEditCourse &&
                       !seeBoard &&
                       thePermissions !== "student" && (
-                        <EditLesson
-                          setChange={setChange}
-                          change={change}
-                          studentId={myId}
-                          buttonText={
-                            "Adicionar ou Remover Elementos Dinâmicos"
-                          }
-                          setSeeEdit={setSeeEdit}
-                          headers={actualHeaders}
-                          classId={classId}
-                          language={classLanguage}
-                          fetchEventData={fetchEventData}
-                        />
+                        <div
+                          style={{
+                            margin: "auto",
+                          }}
+                        >
+                          {" "}
+                          <EditLesson
+                            setChange={setChange}
+                            change={change}
+                            studentId={myId}
+                            buttonText={
+                              "Adicionar ou Remover Elementos Dinâmicos"
+                            }
+                            setSeeEdit={setSeeEdit}
+                            headers={actualHeaders}
+                            classId={classId}
+                            language={classLanguage}
+                            fetchEventData={fetchEventData}
+                          />
+                        </div>
                       )}
                   </>
 
