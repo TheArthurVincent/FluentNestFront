@@ -243,17 +243,6 @@ export const menuItems: MenuItem[] = [
     justBottom: false,
   },
   {
-    label: "Escuta & Pronúncia",
-    Icon: EarIcon,
-    orderSideBar: 9,
-    father: "Estudos",
-    path: "/listening",
-    orderMobile: 5,
-    isMobile: false,
-    showInBottomBar: true,
-    justBottom: false,
-  },
-  {
     label: "Mineração de Sentenças",
     Icon: ShovelIcon,
     father: "Estudos",

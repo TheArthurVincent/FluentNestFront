@@ -45,16 +45,6 @@ export const contentFaq = [
             por pelo menos 10 minutos por dia.
           </li>
           <li>
-            Faça{" "}
-            <a
-              href="/listening"
-              target="_blank"
-            >
-              exercícios de listening
-            </a>{" "}
-            regularmente.
-          </li>
-          <li>
             Se exponha ao idioma com:
             <ul>
               <li>Músicas</li>
@@ -182,27 +172,6 @@ export const contentFaq = [
           target="_blank"
         >
           Flashcards
-        </a>
-      </div>
-    ),
-  },
-  {
-    instruction: "Como usar os áudios de listening da plataforma?",
-    tags: ["listening", "áudio", "compreensão", "ouvir"],
-    explanation: (
-      <div>
-        Você pode ouvir passivamente ou ativamente. Sugerimos:
-        <ul>
-          <li>Ouvir o áudio uma vez sem legenda.</li>
-          <li>
-            Ouvir novamente, pausando e repetindo frases em voz alta
-            (shadowing).
-          </li>
-          <li>Fazer anotações de palavras novas.</li>
-        </ul>
-        Acesse os exercícios aqui:{" "}
-        <a href="/listening" target="_blank">
-          Listening
         </a>
       </div>
     ),

@@ -104,22 +104,22 @@ export function HomePage({ headers }: HeadersProps) {
 
       var response = await axios.get(
         `${backDomain}/api/v1/studentfeeuptodate/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response2 = await axios.get(
         `${backDomain}/api/v1/uploadneeded/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response3 = await axios.get(
         `${backDomain}/api/v1/logmeoutornot/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       const response4 = await axios.get(
         `${backDomain}/api/v1/limitdate/${id}`,
-        { headers: authHeaders }
+        { headers: authHeaders },
       );
 
       if (response.data.feeUpToDate === false) {
@@ -144,7 +144,7 @@ export function HomePage({ headers }: HeadersProps) {
         (error.response.status === 401 || error.response.status === 403)
       ) {
         console.log(
-          "Erro de autorização em seeFee, token possivelmente inválido"
+          "Erro de autorização em seeFee, token possivelmente inválido",
         );
         onLoggOutToken();
       }
@@ -294,20 +294,6 @@ export function HomePage({ headers }: HeadersProps) {
           headers={headers}
           isDesktop={false}
         />
-      ),
-    },
-    {
-      levelcard: true,
-      title: "Listening",
-      component: isArthurVincent ? (
-        <Listening
-          isDesktop={false}
-          change={change}
-          onChange={setChange}
-          headers={headers}
-        />
-      ) : (
-        <Redirect to="/" />
       ),
     },
     {
