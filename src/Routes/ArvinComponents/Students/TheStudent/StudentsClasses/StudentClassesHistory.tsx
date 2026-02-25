@@ -190,7 +190,7 @@ function ModalInBody({
         <div style={{ padding: 16 }}>{children}</div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 
@@ -227,7 +227,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     try {
       const response = await axios.get<EventsResponse>(
         `${backDomain}/api/v1/event-one-student-pag/${studentId}`,
-        { headers: headers as any }
+        { headers: headers as any },
       );
 
       setStudentName(response.data.studentName || "");
@@ -381,15 +381,15 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       s == "desmarcado"
         ? "rgba(255, 221, 221, 0.41)"
         : s == "marcado"
-        ? "#cbd6f388"
-        : `${partnerColor()}20`;
+          ? "#cbd6f388"
+          : `${partnerColor()}20`;
 
     const statusColor =
       s == "desmarcado"
         ? "rgba(220, 38, 38, 0.8)"
         : s == "marcado"
-        ? "#1e40af"
-        : partnerColor();
+          ? "#1e40af"
+          : partnerColor();
 
     return (
       <span
@@ -616,8 +616,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     event.status == "desmarcado"
                       ? `Aula desmarcada de ${event.student}`
                       : event.lessonTitle
-                      ? event.lessonTitle
-                      : " Aula Individual"
+                        ? event.lessonTitle
+                        : " Aula Individual"
                   }`}
                 >
                   <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -632,8 +632,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         {event.status == "desmarcado"
                           ? `Aula desmarcada de ${event.student}`
                           : event.lessonTitle
-                          ? event.lessonTitle
-                          : `Aula individual de ${event.student}`}
+                            ? event.lessonTitle
+                            : `Aula individual de ${event.student}`}
                       </span>
                     </div>
 
@@ -666,7 +666,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                             }}
                           >
                             {categoryList.find(
-                              (cat) => cat.value === event.category
+                              (cat) => cat.value === event.category,
                             )?.text || event.category}
                           </div>
                         )}
@@ -811,7 +811,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     }}
                   >
                     {categoryList.find(
-                      (cat) => cat.value === selectedEvent.category
+                      (cat) => cat.value === selectedEvent.category,
                     )?.text || selectedEvent.category}
                   </span>
                 )}
