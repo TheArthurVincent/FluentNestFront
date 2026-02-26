@@ -1330,7 +1330,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                           display: "grid",
                           gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                           gap: "16px",
-                 
                         }}
                       >
                         {/* ENTRADAS */}
@@ -1363,282 +1362,311 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             >
                               Entradas
                             </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "8px",
-                                         maxHeight: "400px",
-                          overflowY: "auto",
-                              }}
-                            >
-                              {/* Entradas contabilizadas */}
-                              {financialReports
-                                .filter(
-                                  (report) =>
-                                    report.accountFor &&
-                                    report.typeOfItem !== "debt",
-                                )
-                                .sort((a, b) =>
-                                  a.description.localeCompare(b.description),
-                                )
-                                .map((report, index) => (
-                                  <div
-                                    key={report.studentId || index}
-                                    onClick={() =>
-                                      handleFinancialReportModal(report)
-                                    }
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-evenly",
-                                      alignItems: "left",
-                                      padding: "12px",
-                                      gap: "12px",
-                                      borderLeft: "3px solid green",
-                                      transition: "all 0.2s ease",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        "#e7f4ebff";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fff";
-                                    }}
-                                  >
+                            <>
+                              <style>
+                                {`
+      .financial-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+      }
+
+      .financial-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .financial-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .financial-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+      }
+
+      .financial-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    `}
+                              </style>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "8px",
+                                  maxHeight: "400px",
+                                  overflowY: "auto",
+                                }}
+                              >
+                                {/* Entradas contabilizadas */}
+                                {financialReports
+                                  .filter(
+                                    (report) =>
+                                      report.accountFor &&
+                                      report.typeOfItem !== "debt",
+                                  )
+                                  .sort((a, b) =>
+                                    a.description.localeCompare(b.description),
+                                  )
+                                  .map((report, index) => (
                                     <div
+                                      key={report.studentId || index}
+                                      onClick={() =>
+                                        handleFinancialReportModal(report)
+                                      }
                                       style={{
-                                        textAlign: "center",
-                                        borderRadius: "4px",
-                                        color: report.paidFor
-                                          ? "#2e7d32"
-                                          : report.paidSoFar &&
-                                              report.paidSoFar > 0
-                                            ? "#f59e0b"
-                                            : "#c62828",
+                                        display: "flex",
+                                        justifyContent: "space-evenly",
+                                        alignItems: "left",
+                                        padding: "12px",
+                                        gap: "12px",
+                                        borderLeft: "3px solid green",
+                                        transition: "all 0.2s ease",
+                                        cursor: "pointer",
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#e7f4ebff";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#fff";
                                       }}
                                     >
-                                      {report.paidFor &&
-                                      report.paidSoFar ==
-                                        Math.abs(report.amount) -
-                                          (report.discount || 0) ? (
-                                        <i
-                                          className="fa fa-check-circle-o"
-                                          style={{ color: "#2e7d32" }}
-                                        />
-                                      ) : report.paidSoFar &&
-                                        report.paidSoFar > 0 &&
-                                        report.paidSoFar <
+                                      <div
+                                        style={{
+                                          textAlign: "center",
+                                          borderRadius: "4px",
+                                          color: report.paidFor
+                                            ? "#2e7d32"
+                                            : report.paidSoFar &&
+                                                report.paidSoFar > 0
+                                              ? "#f59e0b"
+                                              : "#c62828",
+                                        }}
+                                      >
+                                        {report.paidFor &&
+                                        report.paidSoFar ==
                                           Math.abs(report.amount) -
                                             (report.discount || 0) ? (
-                                        <i
-                                          className="fa fa-adjust"
-                                          style={{ color: "#f59e0b" }}
-                                        />
-                                      ) : report.paidSoFar &&
-                                        report.paidSoFar >
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0) ? (
-                                        <div
-                                          style={{
-                                            display: "grid",
-                                          }}
-                                        >
-                                          {" "}
                                           <i
-                                            className="fa fa-money"
-                                            style={{ color: "#24e21aff" }}
+                                            className="fa fa-check-circle-o"
+                                            style={{ color: "#2e7d32" }}
                                           />
-                                          <span
+                                        ) : report.paidSoFar &&
+                                          report.paidSoFar > 0 &&
+                                          report.paidSoFar <
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0) ? (
+                                          <i
+                                            className="fa fa-adjust"
+                                            style={{ color: "#f59e0b" }}
+                                          />
+                                        ) : report.paidSoFar &&
+                                          report.paidSoFar >
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0) ? (
+                                          <div
                                             style={{
-                                              fontWeight: 800,
-                                              fontSize: "10px",
-                                              color: "#24e21aff",
+                                              display: "grid",
                                             }}
                                           >
-                                            Superado!
-                                          </span>
+                                            {" "}
+                                            <i
+                                              className="fa fa-money"
+                                              style={{ color: "#24e21aff" }}
+                                            />
+                                            <span
+                                              style={{
+                                                fontWeight: 800,
+                                                fontSize: "10px",
+                                                color: "#24e21aff",
+                                              }}
+                                            >
+                                              Superado!
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <i
+                                            className="fa fa-circle-o"
+                                            style={{ color: "#c62828" }}
+                                          />
+                                        )}
+                                      </div>
+
+                                      <div style={{ flex: 1 }}>
+                                        <div
+                                          style={{
+                                            fontSize: "12px",
+                                            fontWeight: "600",
+                                            color: "#374151",
+                                            marginBottom: "2px",
+                                          }}
+                                        >
+                                          {truncateString(
+                                            report.description,
+                                            isMobile ? 25 : 50,
+                                          )}
                                         </div>
-                                      ) : (
-                                        <i
-                                          className="fa fa-circle-o"
-                                          style={{ color: "#c62828" }}
-                                        />
-                                      )}
-                                    </div>
+                                        <div
+                                          style={{
+                                            fontSize: "11px",
+                                            color: "#6b7280",
+                                          }}
+                                        >
+                                          {report.discount > 0 &&
+                                            `Original: R$ ${formatNumber(
+                                              report.amount,
+                                            )} • Desconto: R$ ${formatNumber(
+                                              report.discount,
+                                            )}`}
+                                        </div>
+                                      </div>
 
-                                    <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "12px",
-                                          fontWeight: "600",
-                                          color: "#374151",
-                                          marginBottom: "2px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "12px",
                                         }}
                                       >
-                                        {truncateString(
-                                          report.description,
-                                          isMobile ? 25 : 50,
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "11px",
-                                          color: "#6b7280",
-                                        }}
-                                      >
-                                        {report.discount > 0 &&
-                                          `Original: R$ ${formatNumber(
-                                            report.amount,
-                                          )} • Desconto: R$ ${formatNumber(
-                                            report.discount,
-                                          )}`}
+                                        <div
+                                          style={{
+                                            fontSize: "13px",
+                                            fontWeight: "600",
+                                            color: "#0f8311ff",
+                                          }}
+                                        >
+                                          R${" "}
+                                          {formatNumber(report.paidSoFar || 0)}{" "}
+                                          / R${" "}
+                                          {formatNumber(
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0),
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
+                                  ))}
 
+                                {/* Entradas não contabilizadas */}
+                                {financialReports
+                                  .filter(
+                                    (report) =>
+                                      !report.accountFor &&
+                                      report.typeOfItem !== "debt",
+                                  )
+                                  .sort((a, b) =>
+                                    a.description.localeCompare(b.description),
+                                  )
+                                  .map((report, index) => (
                                     <div
+                                      key={`unaccounted-${
+                                        report.studentId || index
+                                      }`}
+                                      onClick={() =>
+                                        handleFinancialReportModal(report)
+                                      }
                                       style={{
                                         display: "flex",
-                                        alignItems: "center",
+                                        justifyContent: "space-evenly",
+                                        alignItems: "left",
+                                        padding: "12px",
                                         gap: "12px",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          fontSize: "13px",
-                                          fontWeight: "600",
-                                          color: "#0f8311ff",
-                                        }}
-                                      >
-                                        R$ {formatNumber(report.paidSoFar || 0)}{" "}
-                                        / R${" "}
-                                        {formatNumber(
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0),
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-
-                              {/* Entradas não contabilizadas */}
-                              {financialReports
-                                .filter(
-                                  (report) =>
-                                    !report.accountFor &&
-                                    report.typeOfItem !== "debt",
-                                )
-                                .sort((a, b) =>
-                                  a.description.localeCompare(b.description),
-                                )
-                                .map((report, index) => (
-                                  <div
-                                    key={`unaccounted-${
-                                      report.studentId || index
-                                    }`}
-                                    onClick={() =>
-                                      handleFinancialReportModal(report)
-                                    }
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-evenly",
-                                      alignItems: "left",
-                                      padding: "12px",
-                                      gap: "12px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #e5e7eb",
-                                      borderRadius: "4px",
-                                      opacity: 0.7,
-                                      cursor: "pointer",
-                                      transition: "all 0.2s ease",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.opacity = "1";
-                                      e.currentTarget.style.backgroundColor =
-                                        "#f0f9f0";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.opacity = "0.7";
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fff";
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        textAlign: "center",
+                                        backgroundColor: "#fff",
+                                        border: "1px solid #e5e7eb",
                                         borderRadius: "4px",
-                                        color: "#9ca3af",
+                                        opacity: 0.7,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease",
                                       }}
-                                    >
-                                      <i
-                                        className="fa fa-eye-slash"
-                                        style={{ color: "#9ca3af" }}
-                                      />
-                                    </div>
-
-                                    <div style={{ flex: 1 }}>
-                                      <div
-                                        style={{
-                                          fontSize: "12px",
-                                          fontWeight: "400",
-                                          color: "#6b7280",
-                                          marginBottom: "2px",
-                                        }}
-                                      >
-                                        {truncateString(
-                                          report.description,
-                                          isMobile ? 25 : 50,
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "11px",
-                                          color: "#9ca3af",
-                                        }}
-                                      >
-                                        Não contabilizado
-                                      </div>
-                                    </div>
-
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "12px",
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.opacity = "1";
+                                        e.currentTarget.style.backgroundColor =
+                                          "#f0f9f0";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.opacity = "0.7";
+                                        e.currentTarget.style.backgroundColor =
+                                          "#fff";
                                       }}
                                     >
                                       <div
                                         style={{
-                                          fontSize: "13px",
-                                          fontWeight: "500",
-                                          color: "#9ca3af",
-                                        }}
-                                      >
-                                        R${" "}
-                                        {formatNumber(
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0),
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "10px",
-                                          fontWeight: "500",
                                           textAlign: "center",
-                                          padding: "3px 8px",
                                           borderRadius: "4px",
-                                          backgroundColor: "#f3f4f6",
-                                          color: "#6b7280",
-                                          minWidth: "60px",
+                                          color: "#9ca3af",
                                         }}
                                       >
-                                        Ignorado
+                                        <i
+                                          className="fa fa-eye-slash"
+                                          style={{ color: "#9ca3af" }}
+                                        />
+                                      </div>
+
+                                      <div style={{ flex: 1 }}>
+                                        <div
+                                          style={{
+                                            fontSize: "12px",
+                                            fontWeight: "400",
+                                            color: "#6b7280",
+                                            marginBottom: "2px",
+                                          }}
+                                        >
+                                          {truncateString(
+                                            report.description,
+                                            isMobile ? 25 : 50,
+                                          )}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "11px",
+                                            color: "#9ca3af",
+                                          }}
+                                        >
+                                          Não contabilizado
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "12px",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            fontSize: "13px",
+                                            fontWeight: "500",
+                                            color: "#9ca3af",
+                                          }}
+                                        >
+                                          R${" "}
+                                          {formatNumber(
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0),
+                                          )}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "10px",
+                                            fontWeight: "500",
+                                            textAlign: "center",
+                                            padding: "3px 8px",
+                                            borderRadius: "4px",
+                                            backgroundColor: "#f3f4f6",
+                                            color: "#6b7280",
+                                            minWidth: "60px",
+                                          }}
+                                        >
+                                          Ignorado
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
-                            </div>
+                                  ))}
+                              </div>
+                            </>
                           </div>
                         )}
 
@@ -1672,279 +1700,307 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             >
                               Saídas
                             </div>
+                            <>
+                              <style>
+                                {`
+      .financial-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+      }
 
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "8px",
-                                         maxHeight: "400px",
-                          overflowY: "auto",
-                              }}
-                            >
-                              {/* Saídas contabilizadas */}
-                              {financialReports
-                                .filter(
-                                  (report) =>
-                                    report.accountFor &&
-                                    report.typeOfItem === "debt",
-                                )
-                                .sort((a, b) =>
-                                  a.description.localeCompare(b.description),
-                                )
-                                .map((report, index) => (
-                                  <div
-                                    key={report.studentId || index}
-                                    onClick={() =>
-                                      handleFinancialReportModal(report)
-                                    }
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-evenly",
-                                      alignItems: "left",
-                                      padding: "12px",
-                                      gap: "12px",
-                                      borderLeft: "3px solid #c62828",
-                                      transition: "all 0.2s ease",
-                                      cursor: "pointer",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fef2f2ff";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fff";
-                                    }}
-                                  >
+      .financial-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .financial-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .financial-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+        transition: background 0.2s ease;
+      }
+
+      .financial-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+    `}
+                              </style>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "8px",
+                                  maxHeight: "400px",
+                                  overflowY: "auto",
+                                }}
+                              >
+                                {/* Saídas contabilizadas */}
+                                {financialReports
+                                  .filter(
+                                    (report) =>
+                                      report.accountFor &&
+                                      report.typeOfItem === "debt",
+                                  )
+                                  .sort((a, b) =>
+                                    a.description.localeCompare(b.description),
+                                  )
+                                  .map((report, index) => (
                                     <div
+                                      key={report.studentId || index}
+                                      onClick={() =>
+                                        handleFinancialReportModal(report)
+                                      }
                                       style={{
-                                        textAlign: "center",
-                                        borderRadius: "4px",
-                                        color: report.paidFor
-                                          ? "#2e7d32"
-                                          : report.paidSoFar &&
-                                              report.paidSoFar > 0
-                                            ? "#f59e0b"
-                                            : "#c62828",
+                                        display: "flex",
+                                        justifyContent: "space-evenly",
+                                        alignItems: "left",
+                                        padding: "12px",
+                                        gap: "12px",
+                                        borderLeft: "3px solid #c62828",
+                                        transition: "all 0.2s ease",
+                                        cursor: "pointer",
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#fef2f2ff";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.backgroundColor =
+                                          "#fff";
                                       }}
                                     >
-                                      {report.paidFor &&
-                                      report.paidSoFar ==
-                                        Math.abs(report.amount) -
-                                          (report.discount || 0) ? (
-                                        <i
-                                          className="fa fa-check-circle-o"
-                                          style={{ color: "#2e7d32" }}
-                                        />
-                                      ) : report.paidSoFar &&
-                                        report.paidSoFar > 0 &&
-                                        report.paidSoFar <
+                                      <div
+                                        style={{
+                                          textAlign: "center",
+                                          borderRadius: "4px",
+                                          color: report.paidFor
+                                            ? "#2e7d32"
+                                            : report.paidSoFar &&
+                                                report.paidSoFar > 0
+                                              ? "#f59e0b"
+                                              : "#c62828",
+                                        }}
+                                      >
+                                        {report.paidFor &&
+                                        report.paidSoFar ==
                                           Math.abs(report.amount) -
                                             (report.discount || 0) ? (
-                                        <i
-                                          className="fa fa-adjust"
-                                          style={{ color: "#f59e0b" }}
-                                        />
-                                      ) : report.paidSoFar &&
-                                        report.paidSoFar >
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0) ? (
-                                        <div
-                                          style={{
-                                            display: "grid",
-                                          }}
-                                        >
-                                          {" "}
                                           <i
-                                            className="fa fa-money"
-                                            style={{ color: "#dc2626" }}
+                                            className="fa fa-check-circle-o"
+                                            style={{ color: "#2e7d32" }}
                                           />
-                                          <span
+                                        ) : report.paidSoFar &&
+                                          report.paidSoFar > 0 &&
+                                          report.paidSoFar <
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0) ? (
+                                          <i
+                                            className="fa fa-adjust"
+                                            style={{ color: "#f59e0b" }}
+                                          />
+                                        ) : report.paidSoFar &&
+                                          report.paidSoFar >
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0) ? (
+                                          <div
                                             style={{
-                                              fontWeight: 800,
-                                              fontSize: "10px",
-                                              color: "#dc2626",
+                                              display: "grid",
                                             }}
                                           >
-                                            Superado
-                                          </span>
+                                            {" "}
+                                            <i
+                                              className="fa fa-money"
+                                              style={{ color: "#dc2626" }}
+                                            />
+                                            <span
+                                              style={{
+                                                fontWeight: 800,
+                                                fontSize: "10px",
+                                                color: "#dc2626",
+                                              }}
+                                            >
+                                              Superado
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <i
+                                            className="fa fa-circle-o"
+                                            style={{ color: "#c62828" }}
+                                          />
+                                        )}
+                                      </div>
+
+                                      <div style={{ flex: 1 }}>
+                                        <div
+                                          style={{
+                                            fontSize: "12px",
+                                            fontWeight: "600",
+                                            color: "#374151",
+                                            marginBottom: "2px",
+                                          }}
+                                        >
+                                          {truncateString(
+                                            report.description,
+                                            isMobile ? 25 : 50,
+                                          )}
                                         </div>
-                                      ) : (
-                                        <i
-                                          className="fa fa-circle-o"
-                                          style={{ color: "#c62828" }}
-                                        />
-                                      )}
-                                    </div>
+                                        <div
+                                          style={{
+                                            fontSize: "11px",
+                                            color: "#6b7280",
+                                          }}
+                                        >
+                                          {report.discount > 0 &&
+                                            `Original: R$ ${formatNumber(
+                                              report.amount,
+                                            )} • Desconto: R$ ${formatNumber(
+                                              report.discount,
+                                            )}`}
+                                        </div>
+                                      </div>
 
-                                    <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "12px",
-                                          fontWeight: "600",
-                                          color: "#374151",
-                                          marginBottom: "2px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "12px",
                                         }}
                                       >
-                                        {truncateString(
-                                          report.description,
-                                          isMobile ? 25 : 50,
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "11px",
-                                          color: "#6b7280",
-                                        }}
-                                      >
-                                        {report.discount > 0 &&
-                                          `Original: R$ ${formatNumber(
-                                            report.amount,
-                                          )} • Desconto: R$ ${formatNumber(
-                                            report.discount,
-                                          )}`}
+                                        <div
+                                          style={{
+                                            fontSize: "13px",
+                                            fontWeight: "600",
+                                            color: "#dc2626",
+                                          }}
+                                        >
+                                          R${" "}
+                                          {formatNumber(report.paidSoFar || 0)}{" "}
+                                          / R${" "}
+                                          {formatNumber(
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0),
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
+                                  ))}
 
+                                {/* Saídas não contabilizadas */}
+                                {financialReports
+                                  .filter(
+                                    (report) =>
+                                      !report.accountFor &&
+                                      report.typeOfItem === "debt",
+                                  )
+                                  .sort((a, b) =>
+                                    a.description.localeCompare(b.description),
+                                  )
+                                  .map((report, index) => (
                                     <div
+                                      key={`unaccounted-debt-${
+                                        report.studentId || index
+                                      }`}
+                                      onClick={() =>
+                                        handleFinancialReportModal(report)
+                                      }
                                       style={{
                                         display: "flex",
-                                        alignItems: "center",
+                                        justifyContent: "space-evenly",
+                                        alignItems: "left",
+                                        padding: "12px",
                                         gap: "12px",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          fontSize: "13px",
-                                          fontWeight: "600",
-                                          color: "#dc2626",
-                                        }}
-                                      >
-                                        R$ {formatNumber(report.paidSoFar || 0)}{" "}
-                                        / R${" "}
-                                        {formatNumber(
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0),
-                                        )}
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-
-                              {/* Saídas não contabilizadas */}
-                              {financialReports
-                                .filter(
-                                  (report) =>
-                                    !report.accountFor &&
-                                    report.typeOfItem === "debt",
-                                )
-                                .sort((a, b) =>
-                                  a.description.localeCompare(b.description),
-                                )
-                                .map((report, index) => (
-                                  <div
-                                    key={`unaccounted-debt-${
-                                      report.studentId || index
-                                    }`}
-                                    onClick={() =>
-                                      handleFinancialReportModal(report)
-                                    }
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-evenly",
-                                      alignItems: "left",
-                                      padding: "12px",
-                                      gap: "12px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #e5e7eb",
-                                      borderRadius: "4px",
-                                      opacity: 0.7,
-                                      cursor: "pointer",
-                                      transition: "all 0.2s ease",
-                                    }}
-                                    onMouseEnter={(e) => {
-                                      e.currentTarget.style.opacity = "1";
-                                    }}
-                                    onMouseLeave={(e) => {
-                                      e.currentTarget.style.opacity = "0.7";
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        textAlign: "center",
+                                        backgroundColor: "#fff",
+                                        border: "1px solid #e5e7eb",
                                         borderRadius: "4px",
-                                        color: "#9ca3af",
+                                        opacity: 0.7,
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease",
                                       }}
-                                    >
-                                      <i
-                                        className="fa fa-eye-slash"
-                                        style={{ color: "#9ca3af" }}
-                                      />
-                                    </div>
-
-                                    <div style={{ flex: 1 }}>
-                                      <div
-                                        style={{
-                                          fontSize: "12px",
-                                          fontWeight: "400",
-                                          color: "#6b7280",
-                                          marginBottom: "2px",
-                                        }}
-                                      >
-                                        {truncateString(
-                                          report.description,
-                                          isMobile ? 25 : 50,
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "11px",
-                                          color: "#9ca3af",
-                                        }}
-                                      >
-                                        Não contabilizado
-                                      </div>
-                                    </div>
-
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "12px",
+                                      onMouseEnter={(e) => {
+                                        e.currentTarget.style.opacity = "1";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.currentTarget.style.opacity = "0.7";
                                       }}
                                     >
                                       <div
                                         style={{
-                                          fontSize: "13px",
-                                          fontWeight: "500",
-                                          color: "#9ca3af",
-                                        }}
-                                      >
-                                        R${" "}
-                                        {formatNumber(
-                                          Math.abs(report.amount) -
-                                            (report.discount || 0),
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          fontSize: "10px",
-                                          fontWeight: "500",
                                           textAlign: "center",
-                                          padding: "3px 8px",
                                           borderRadius: "4px",
-                                          backgroundColor: "#f3f4f6",
-                                          color: "#6b7280",
-                                          minWidth: "60px",
+                                          color: "#9ca3af",
                                         }}
                                       >
-                                        Ignorado
+                                        <i
+                                          className="fa fa-eye-slash"
+                                          style={{ color: "#9ca3af" }}
+                                        />
+                                      </div>
+
+                                      <div style={{ flex: 1 }}>
+                                        <div
+                                          style={{
+                                            fontSize: "12px",
+                                            fontWeight: "400",
+                                            color: "#6b7280",
+                                            marginBottom: "2px",
+                                          }}
+                                        >
+                                          {truncateString(
+                                            report.description,
+                                            isMobile ? 25 : 50,
+                                          )}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "11px",
+                                            color: "#9ca3af",
+                                          }}
+                                        >
+                                          Não contabilizado
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "12px",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            fontSize: "13px",
+                                            fontWeight: "500",
+                                            color: "#9ca3af",
+                                          }}
+                                        >
+                                          R${" "}
+                                          {formatNumber(
+                                            Math.abs(report.amount) -
+                                              (report.discount || 0),
+                                          )}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "10px",
+                                            fontWeight: "500",
+                                            textAlign: "center",
+                                            padding: "3px 8px",
+                                            borderRadius: "4px",
+                                            backgroundColor: "#f3f4f6",
+                                            color: "#6b7280",
+                                            minWidth: "60px",
+                                          }}
+                                        >
+                                          Ignorado
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                ))}
-                            </div>
+                                  ))}
+                              </div>
+                            </>
                           </div>
                         )}
                       </div>
