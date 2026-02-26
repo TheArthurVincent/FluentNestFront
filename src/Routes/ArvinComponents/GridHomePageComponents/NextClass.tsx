@@ -31,9 +31,8 @@ export const NextClass: FC<NextClassProps> = ({
         `${backDomain}/api/v1/next-event/${studentId}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
-      console.log("Response Next Event:", response.data);
       if (response.data.nextEvent) {
         setNXTCLASS(response.data.nextEvent);
       }
