@@ -55,6 +55,8 @@ import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria
 import { isArthurVincent } from "../../../../App";
 import jsPDF from "jspdf";
 import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/SearchMaterials";
+import EntriesAndExits from "./Components/EntriesAndExits";
+import MonthPickerModalButton from "./Components/ChangeMonth";
 
 export function FinancialResources({ headers, id, plan, isDesktop }) {
   // ===== CONTEXT =====
@@ -1268,51 +1270,14 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
           }
         `}
           </style>
-          <select
-            value={selectedMonth}
-            onChange={(e) => {
-              setShowGenerateButton(false);
-              setSelectedMonth(e.target.value);
-              seeReports(e.target.value);
-            }}
-            style={{
-              padding: "12px 16px",
-              border: "1px solid #d1d5db",
-              borderRadius: "4px",
-              fontSize: "14px",
-              color: "#374151",
-              backgroundColor: "#fff",
-              outline: "none",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-              minWidth: "200px",
-              margin: "0 auto 24px auto",
-              display: "block",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.borderColor = "#3b82f6";
-              e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.borderColor = "#d1d5db";
-              e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "#3b82f6";
-              e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "#d1d5db";
-              e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-            }}
-          >
-            {generateMonthOptions().map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          <MonthPickerModalButton
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            setShowGenerateButton={setShowGenerateButton}
+            seeReports={seeReports}
+            generateMonthOptions={generateMonthOptions}
+            buttonLabel="Mês do relatório"
+          />
           <div
             style={{
               display: "grid",
@@ -2238,869 +2203,210 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               )}
             </section>
           </div>
-          <section
-            style={{
-              maxWidth: "400px",
-              margin: "16px auto",
+
+          <EntriesAndExits headers={headers} id={id} />
+
+          {/* Modal para Novo Custo Fixo */}
+          <Dialog
+            open={newCostModalOpen}
+            onClose={handleNewCostModal}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "4px",
+                padding: "8px",
+              },
             }}
           >
-            {!loading && (
-              <section
-                style={{
-                  maxWidth: "400px",
-                  margin: "16px auto",
-                }}
-              >
-                <div
-                  onClick={toggleRevenue}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "16px",
-                    paddingBottom: "12px",
-                    borderBottom: "1px solid #f3f4f6",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    padding: "8px 0",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f9fafb";
-                    e.currentTarget.style.marginLeft = "1px";
-                    e.currentTarget.style.marginRight = "1px";
-                    e.currentTarget.style.paddingLeft = "1px";
-                    e.currentTarget.style.paddingRight = "1px";
-                    e.currentTarget.style.paddingTop = "1px";
-                    e.currentTarget.style.borderRadius = "1px";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.marginLeft = "0";
-                    e.currentTarget.style.marginRight = "0";
-                    e.currentTarget.style.paddingLeft = "0";
-                    e.currentTarget.style.paddingRight = "0";
-                    e.currentTarget.style.paddingTop = "0";
-                    e.currentTarget.style.borderRadius = "0";
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        color: "#374151",
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        margin: "0",
-                      }}
-                    >
-                      Entradas Fixas
-                    </div>
-                    {getActiveStudentsWithFees().length > 0 && (
-                      <div
-                        style={{
-                          fontSize: "10px",
-                          color: "#9ca3af",
-                          backgroundColor: "#f9fafb",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        {getActiveStudentsWithFees().length}
-                      </div>
-                    )}
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                  >
-                    {getActiveStudentsWithFees().length > 0 && (
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "600",
-                          color: "#6b7280",
-                        }}
-                      >
-                        R$ {formatNumber(calculateMonthlyRevenue())}
-                      </div>
-                    )}
-
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        color: "#9ca3af",
-                        transform: revenueExpanded
-                          ? "rotate(180deg)"
-                          : "rotate(0deg)",
-                        transition: "transform 0.2s ease",
-                      }}
-                    >
-                      ▼
-                    </div>
-                  </div>
-                </div>
-
-                {revenueExpanded && (
-                  <div
-                    style={{
-                      animation: "fadeIn 0.2s ease-in-out",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                        padding: "12px 16px",
-                        margin: "auto",
-                        backgroundColor: "#f9f9f9",
-                        border: "1px solid #ddd",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns:
-                            "repeat(auto-fit, minmax(120px, 1fr))",
-                          gap: "8px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            padding: "8px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                            textAlign: "center",
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontSize: "18px",
-                              fontWeight: "500",
-                              color: partnerColor(),
-                            }}
-                          >
-                            R$ {formatNumber(calculateMonthlyRevenue())}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "10px",
-                              color: "#666",
-                            }}
-                          >
-                            Receita Total
-                          </div>
-                        </div>
-
-                        <div
-                          style={{
-                            padding: "8px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #ccc",
-                            borderRadius: "4px",
-                            textAlign: "center",
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontSize: "18px",
-                              fontWeight: "500",
-                              color: "#333",
-                            }}
-                          >
-                            {getActiveStudentsWithFees().length}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "10px",
-                              color: "#666",
-                            }}
-                          >
-                            Alunos Ativos
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Lista técnica de estudantes */}
-                      <div style={{ marginTop: "12px" }}>
-                        <div
-                          style={{
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            color: "#4b5563",
-                            marginBottom: "6px",
-                            padding: "6px 0",
-                            borderBottom: "1px solid #ddd",
-                          }}
-                        >
-                          Mensalidades ({getStudentsWithFees().length} total •{" "}
-                          {getActiveStudentsWithFees().length} ativos)
-                        </div>
-
-                        <div
-                          style={{
-                            maxHeight: "300px",
-                            overflowY: "auto",
-                            border: "1px solid #ccc",
-                            backgroundColor: "#fff",
-                          }}
-                        >
-                          {getStudentsWithFees()
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                            .map((student, index) => (
-                              <div
-                                key={student.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  seeEdition(student.id);
-                                }}
-                                style={{
-                                  display: "flex",
-                                  gap: "8px",
-                                  justifyContent: "space-between",
-                                  padding: "8px",
-                                  borderBottom: "1px solid #eee",
-                                  alignItems: "center",
-                                  cursor: "pointer",
-                                  backgroundColor: student.onHold
-                                    ? "#f8f8f8"
-                                    : "#fff",
-                                  transition: "background-color 0.2s",
-                                }}
-                                onMouseEnter={(e) => {
-                                  if (!student.onHold) {
-                                    e.currentTarget.style.backgroundColor =
-                                      "#f5f5f5";
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.backgroundColor =
-                                    student.onHold ? "#f8f8f8" : "#fff";
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                    flex: 1,
-                                  }}
-                                >
-                                  <img
-                                    style={{
-                                      width: "24px",
-                                      height: "24px",
-                                      borderRadius: "50%",
-                                      objectFit: "cover",
-                                      opacity: student.onHold ? 0.5 : 1,
-                                      display: isMobile ? "none" : "block",
-                                    }}
-                                    src={
-                                      student.picture ||
-                                      "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-                                    }
-                                    alt=""
-                                  />
-                                  <div
-                                    style={{
-                                      fontWeight: "500",
-                                      fontSize: "12px",
-                                      opacity: student.onHold ? 0.6 : 1,
-                                    }}
-                                  >
-                                    {student.name}{" "}
-                                    {truncateString(student.lastname, 6)}
-                                  </div>
-                                </div>
-
-                                <div
-                                  style={{
-                                    position: "relative",
-                                    display: "inline-block",
-                                  }}
-                                  title={
-                                    student.onHold ? "Matrícula trancada" : ""
-                                  }
-                                >
-                                  <div
-                                    style={{
-                                      fontSize: "13px",
-                                      fontWeight: "500",
-                                      color: student.onHold
-                                        ? "#999"
-                                        : partnerColor(),
-                                      textDecoration: student.onHold
-                                        ? "line-through"
-                                        : "none",
-                                    }}
-                                  >
-                                    R$ {formatNumber(student.fee)}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {!revenueExpanded &&
-                  getActiveStudentsWithFees().length === 0 && (
-                    <div
-                      style={{
-                        textAlign: "center",
-                        padding: "16px",
-                        color: "#9ca3af",
-                        fontSize: "11px",
-                      }}
-                    >
-                      Clique para ver
-                    </div>
-                  )}
-              </section>
-            )}
-
-            <div
-              onClick={toggleFixedCosts}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-
-                alignItems: "center",
-                marginBottom: "16px",
-                paddingBottom: "12px",
-                borderBottom: "1px solid #f3f4f6",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                padding: "8px 0",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f9fafb";
-                e.currentTarget.style.marginLeft = "1px";
-                e.currentTarget.style.marginRight = "1px";
-                e.currentTarget.style.paddingLeft = "1px";
-                e.currentTarget.style.paddingRight = "1px";
-                e.currentTarget.style.paddingTop = "1px";
-                e.currentTarget.style.borderRadius = "1px";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.marginLeft = "0";
-                e.currentTarget.style.marginRight = "0";
-                e.currentTarget.style.paddingLeft = "0";
-                e.currentTarget.style.paddingRight = "0";
-                e.currentTarget.style.paddingTop = "0";
-                e.currentTarget.style.borderRadius = "0";
-              }}
-            >
+            <DialogTitle>
               <div
                 style={{
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
-                  gap: "8px",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <h2
+                  style={{
+                    color: "#1f2937",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    margin: "0",
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Novo Custo Mensal
+                </h2>
+                <button
+                  onClick={handleNewCostModal}
+                  style={{
+                    minWidth: "auto",
+                    padding: "8px",
+                  }}
+                >
+                  X
+                </button>
+              </div>
+            </DialogTitle>
+
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              <div className="linguee-form-group">
+                <label className="linguee-label">
+                  Mês:{" "}
+                  {new Date().toLocaleDateString("pt-BR", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </label>
+              </div>
+
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  className="linguee-input linguee-input-text"
+                  value={newCostDescription}
+                  onChange={(e) => setNewCostDescription(e.target.value)}
+                  placeholder="Ex: Aluguel, Energia, Internet..."
+                />
+                {checkDuplicateCost() && (
+                  <div className="linguee-error-text">
+                    Já existe um custo com esta descrição
+                  </div>
+                )}
+              </div>
+
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Valor (R$)
+                </label>
+                <input
+                  type="number"
+                  className="linguee-input linguee-input-number"
+                  value={newCostAmount ? Math.abs(newCostAmount) : ""}
+                  onChange={(e) => setNewCostAmount(e.target.value)}
+                  placeholder="0,00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </DialogContent>
+            {financialReports.length > 0 && (
+              <DialogContent>
+                {/* um check que dê um toggle num estado Incluir esse mês entre true ou false */}
+                <div
+                  onClick={() => setIncludeThisMonth(!includeThisMonth)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                  className="linguee-form-group"
+                >
+                  <input
+                    type="checkbox"
+                    className="linguee-input linguee-input-checkbox"
+                    checked={includeThisMonth}
+                    onChange={() => setIncludeThisMonth(!includeThisMonth)}
+                  />
+                  <label>
+                    Incluir este mês?{" "}
+                    {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
+                  </label>
+                </div>
+              </DialogContent>
+            )}
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button className="linguee-btn" onClick={handleNewCostModal}>
+                Cancelar
+              </button>
+              <button
+                className={`linguee-btn ${
+                  !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
+                }`}
+                onClick={() => handleSaveCost("debt")}
+                disabled={isSaveButtonDisabled()}
+                style={{
+                  backgroundColor: isSaveButtonDisabled()
+                    ? "#9ca3af"
+                    : undefined,
+                  cursor: isSaveButtonDisabled() ? "not-allowed" : "pointer",
+                }}
+              >
+                {checkDuplicateCost() ? "Nome já existe" : "Adicionar Custo"}
+              </button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Modal para Detalhes do Custo */}
+          <Dialog
+            open={costDetailModalOpen}
+            onClose={() => handleCostDetailModal()}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "4px",
+                padding: "8px",
+              },
+            }}
+          >
+            <DialogTitle>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
                 }}
               >
                 <div
                   style={{
-                    color: "#374151",
-                    fontSize: "14px",
-                    fontWeight: "600",
+                    color: "#1f2937",
+                    fontSize: "16px",
+                    fontWeight: "500",
                     margin: "0",
                   }}
                 >
-                  Custos Fixos
+                  Detalhes do Custo
                 </div>
-
-                {fixedCosts.length > 0 && (
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#9ca3af",
-                      backgroundColor: "#f9fafb",
-                      padding: "2px 6px",
-                      borderRadius: "4px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {fixedCosts.length}
-                  </div>
-                )}
-              </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                {fixedCosts.length > 0 && (
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      color: "#6b7280",
-                    }}
-                  >
-                    R${" "}
-                    {formatNumber(
-                      fixedCosts.reduce(
-                        (total, cost) => total + (parseFloat(cost.amount) || 0),
-                        0,
-                      ),
-                    )}
-                  </div>
-                )}
-
-                <div
-                  style={{
-                    fontSize: "14px",
-                    color: "#9ca3af",
-                    transform: fixedCostsExpanded
-                      ? "rotate(180deg)"
-                      : "rotate(0deg)",
-                    transition: "transform 0.2s ease",
-                  }}
-                >
-                  ▼
-                </div>
-              </div>
-            </div>
-
-            {fixedCostsExpanded && (
-              <div
-                style={{
-                  animation: "fadeIn 0.2s ease-in-out",
-                }}
-              >
-                <div
-                  style={{
-                    marginBottom: "12px",
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <button
-                    title="Novo Custo Fixo"
-                    className="linguee-btn linguee-btn-ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNewCostModal();
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-
-                {fixedCosts.length > 0 ? (
-                  <div>
-                    {fixedCosts
-                      .sort((a, b) =>
-                        a.description.localeCompare(b.description),
-                      )
-                      .map((cost, index) => (
-                        <div
-                          key={cost.id || index}
-                          onClick={(e) => {
-                            // e.stopPropagation();
-                            handleCostDetailModal(cost);
-                          }}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "8px 0",
-                            borderBottom:
-                              index < fixedCosts.length - 1
-                                ? "1px solid #f3f4f6"
-                                : "none",
-                            transition: "all 0.15s ease",
-                            cursor: "pointer",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f9fafb";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontSize: "13px",
-                              fontWeight: "400",
-                              color: "#4b5563",
-                              lineHeight: "1.4",
-                            }}
-                          >
-                            {cost.description}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "13px",
-                              fontWeight: "500",
-                              color: "#ef4444",
-                            }}
-                          >
-                            R$ {formatNumber(cost.amount)}
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      textAlign: "center",
-                      padding: "24px 16px",
-                      color: "#6b7280",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "12px",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      Nenhum custo fixo
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {!fixedCostsExpanded && fixedCosts.length === 0 && (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "16px",
-                  color: "#9ca3af",
-                  fontSize: "11px",
-                }}
-              >
-                Clique para ver
-              </div>
-            )}
-
-            {/* Modal para Novo Custo Fixo */}
-            <Dialog
-              open={newCostModalOpen}
-              onClose={handleNewCostModal}
-              fullWidth
-              maxWidth="sm"
-              PaperProps={{
-                style: {
-                  borderRadius: "4px",
-                  padding: "8px",
-                },
-              }}
-            >
-              <DialogTitle>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "16px",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  <h2
-                    style={{
-                      color: "#1f2937",
-                      fontSize: "18px",
-                      fontWeight: "500",
-                      margin: "0",
-                      letterSpacing: "-0.025em",
-                    }}
-                  >
-                    Novo Custo Mensal
-                  </h2>
-                  <button
-                    onClick={handleNewCostModal}
-                    style={{
-                      minWidth: "auto",
-                      padding: "8px",
-                    }}
-                  >
-                    X
-                  </button>
-                </div>
-              </DialogTitle>
-
-              <DialogContent style={{ padding: "24px 24px 16px" }}>
-                <div className="linguee-form-group">
-                  <label className="linguee-label">
-                    Mês:{" "}
-                    {new Date().toLocaleDateString("pt-BR", {
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </label>
-                </div>
-
-                <div className="linguee-form-group">
-                  <label className="linguee-label linguee-label-required">
-                    Descrição
-                  </label>
-                  <input
-                    type="text"
-                    className="linguee-input linguee-input-text"
-                    value={newCostDescription}
-                    onChange={(e) => setNewCostDescription(e.target.value)}
-                    placeholder="Ex: Aluguel, Energia, Internet..."
-                  />
-                  {checkDuplicateCost() && (
-                    <div className="linguee-error-text">
-                      Já existe um custo com esta descrição
-                    </div>
-                  )}
-                </div>
-
-                <div className="linguee-form-group">
-                  <label className="linguee-label linguee-label-required">
-                    Valor (R$)
-                  </label>
-                  <input
-                    type="number"
-                    className="linguee-input linguee-input-number"
-                    value={newCostAmount ? Math.abs(newCostAmount) : ""}
-                    onChange={(e) => setNewCostAmount(e.target.value)}
-                    placeholder="0,00"
-                    min="0"
-                    step="0.01"
-                  />
-                </div>
-              </DialogContent>
-              {financialReports.length > 0 && (
-                <DialogContent>
-                  {/* um check que dê um toggle num estado Incluir esse mês entre true ou false */}
-                  <div
-                    onClick={() => setIncludeThisMonth(!includeThisMonth)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                    }}
-                    className="linguee-form-group"
-                  >
-                    <input
-                      type="checkbox"
-                      className="linguee-input linguee-input-checkbox"
-                      checked={includeThisMonth}
-                      onChange={() => setIncludeThisMonth(!includeThisMonth)}
-                    />
-                    <label>
-                      Incluir este mês?{" "}
-                      {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
-                    </label>
-                  </div>
-                </DialogContent>
-              )}
-              <DialogActions
-                style={{
-                  padding: "16px 24px 24px",
-                  gap: "12px",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <button className="linguee-btn" onClick={handleNewCostModal}>
-                  Cancelar
-                </button>
                 <button
-                  className={`linguee-btn ${
-                    !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
-                  }`}
-                  onClick={() => handleSaveCost("debt")}
-                  disabled={isSaveButtonDisabled()}
+                  onClick={() => handleCostDetailModal()}
                   style={{
-                    backgroundColor: isSaveButtonDisabled()
-                      ? "#9ca3af"
-                      : undefined,
-                    cursor: isSaveButtonDisabled() ? "not-allowed" : "pointer",
+                    minWidth: "auto",
+                    padding: "8px",
+                    color: "#6b7280",
                   }}
                 >
-                  {checkDuplicateCost() ? "Nome já existe" : "Adicionar Custo"}
+                  X
                 </button>
-              </DialogActions>
-            </Dialog>
+              </div>
+            </DialogTitle>
 
-            {/* Modal para Detalhes do Custo */}
-            <Dialog
-              open={costDetailModalOpen}
-              onClose={() => handleCostDetailModal()}
-              fullWidth
-              maxWidth="sm"
-              PaperProps={{
-                style: {
-                  borderRadius: "4px",
-                  padding: "8px",
-                },
-              }}
-            >
-              <DialogTitle>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "16px",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  <div
-                    style={{
-                      color: "#1f2937",
-                      fontSize: "16px",
-                      fontWeight: "500",
-                      margin: "0",
-                    }}
-                  >
-                    Detalhes do Custo
-                  </div>
-                  <button
-                    onClick={() => handleCostDetailModal()}
-                    style={{
-                      minWidth: "auto",
-                      padding: "8px",
-                      color: "#6b7280",
-                    }}
-                  >
-                    X
-                  </button>
-                </div>
-              </DialogTitle>
-
-              <DialogContent style={{ padding: "24px 24px 16px" }}>
-                {selectedCost && !showDeleteConfirmation && !isEditingCost && (
-                  <div>
-                    <div style={{ marginBottom: "20px" }}>
-                      <div
-                        style={{
-                          color: "#6b7280",
-                          fontSize: "12px",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Descrição
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "16px",
-                          color: "#374151",
-                          fontWeight: "500",
-                        }}
-                      >
-                        {selectedCost.description}
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: "20px" }}>
-                      <div
-                        style={{
-                          color: "#6b7280",
-                          fontSize: "12px",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Valor
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "20px",
-                          color: "#ef4444",
-                          fontWeight: "600",
-                        }}
-                      >
-                        R$ {formatNumber(selectedCost.amount)}
-                      </div>
-                    </div>
-
-                    <div style={{ marginBottom: "20px" }}>
-                      <div
-                        style={{
-                          color: "#6b7280",
-                          fontSize: "12px",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Mês
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          color: "#374151",
-                        }}
-                      >
-                        {selectedCost.month || currentMonthYear}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {selectedCost && isEditingCost && !showDeleteConfirmation && (
-                  <div>
-                    <div className="linguee-form-group">
-                      <label className="linguee-label">Descrição</label>
-                      <input
-                        type="text"
-                        className="linguee-input linguee-input-text"
-                        value={editCostDescription}
-                        onChange={(e) => setEditCostDescription(e.target.value)}
-                        placeholder="Descrição do custo"
-                      />
-                    </div>
-                    <div className="linguee-form-group">
-                      <label className="linguee-label">Valor (R$)</label>
-                      <input
-                        type="number"
-                        className="linguee-input linguee-input-number"
-                        value={
-                          editCostAmount && !isNaN(Number(editCostAmount))
-                            ? Math.abs(Number(editCostAmount))
-                            : ""
-                        }
-                        onChange={(e) => setEditCostAmount(e.target.value)}
-                        placeholder="0,00"
-                        min="0"
-                        step="0.01"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {showDeleteConfirmation && selectedCost && (
-                  <div style={{ textAlign: "center", padding: "20px 0" }}>
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              {selectedCost && !showDeleteConfirmation && !isEditingCost && (
+                <div>
+                  <div style={{ marginBottom: "20px" }}>
                     <div
                       style={{
-                        fontSize: "18px",
-                        color: "#ef4444",
-                        fontWeight: "500",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      ⚠️ Tem certeza que deseja excluir?
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "14px",
                         color: "#6b7280",
-                        marginBottom: "8px",
+                        fontSize: "12px",
+                        marginBottom: "4px",
                       }}
                     >
-                      Esta ação não pode ser desfeita.
+                      Descrição
                     </div>
                     <div
                       style={{
@@ -3109,51 +2415,133 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         fontWeight: "500",
                       }}
                     >
-                      <strong>{selectedCost.description}</strong> - R${" "}
-                      {formatNumber(selectedCost.amount)}
+                      {selectedCost.description}
                     </div>
                   </div>
-                )}
-              </DialogContent>
 
-              <DialogActions
-                style={{
-                  padding: "16px 24px 24px",
-                  gap: "12px",
-                  justifyContent: "flex-end",
-                }}
-              >
-                {!showDeleteConfirmation && !isEditingCost && (
-                  <>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <button
-                        onClick={() => {
-                          setIsEditingCost(true);
-                        }}
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          textTransform: "none",
-                          padding: "6px 12px",
-                        }}
-                      >
-                        ✏️ Editar
-                      </button>
-                      <button
-                        onClick={() => setShowDeleteConfirmation(true)}
-                        color="grey"
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          textTransform: "none",
-                          padding: "6px 12px",
-                        }}
-                      >
-                        🗑️ Excluir
-                      </button>
+                  <div style={{ marginBottom: "20px" }}>
+                    <div
+                      style={{
+                        color: "#6b7280",
+                        fontSize: "12px",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Valor
                     </div>
+                    <div
+                      style={{
+                        fontSize: "20px",
+                        color: "#ef4444",
+                        fontWeight: "600",
+                      }}
+                    >
+                      R$ {formatNumber(selectedCost.amount)}
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "20px" }}>
+                    <div
+                      style={{
+                        color: "#6b7280",
+                        fontSize: "12px",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      Mês
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        color: "#374151",
+                      }}
+                    >
+                      {selectedCost.month || currentMonthYear}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {selectedCost && isEditingCost && !showDeleteConfirmation && (
+                <div>
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Descrição</label>
+                    <input
+                      type="text"
+                      className="linguee-input linguee-input-text"
+                      value={editCostDescription}
+                      onChange={(e) => setEditCostDescription(e.target.value)}
+                      placeholder="Descrição do custo"
+                    />
+                  </div>
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Valor (R$)</label>
+                    <input
+                      type="number"
+                      className="linguee-input linguee-input-number"
+                      value={
+                        editCostAmount && !isNaN(Number(editCostAmount))
+                          ? Math.abs(Number(editCostAmount))
+                          : ""
+                      }
+                      onChange={(e) => setEditCostAmount(e.target.value)}
+                      placeholder="0,00"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {showDeleteConfirmation && selectedCost && (
+                <div style={{ textAlign: "center", padding: "20px 0" }}>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      color: "#ef4444",
+                      fontWeight: "500",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    ⚠️ Tem certeza que deseja excluir?
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      color: "#6b7280",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Esta ação não pode ser desfeita.
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      color: "#374151",
+                      fontWeight: "500",
+                    }}
+                  >
+                    <strong>{selectedCost.description}</strong> - R${" "}
+                    {formatNumber(selectedCost.amount)}
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              {!showDeleteConfirmation && !isEditingCost && (
+                <>
+                  <div style={{ display: "flex", gap: "8px" }}>
                     <button
-                      onClick={() => handleCostDetailModal()}
+                      onClick={() => {
+                        setIsEditingCost(true);
+                      }}
                       style={{
                         fontSize: "12px",
                         fontWeight: "500",
@@ -3161,387 +2549,204 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         padding: "6px 12px",
                       }}
                     >
-                      Fechar
+                      ✏️ Editar
                     </button>
-                  </>
-                )}
-
-                {isEditingCost && !showDeleteConfirmation && (
-                  <div style={{ display: "flex", gap: "12px" }}>
                     <button
-                      onClick={() => {
-                        setIsEditingCost(false);
-                        if (selectedCost) {
-                          setEditCostDescription(selectedCost.description);
-                          setEditCostAmount(selectedCost.amount);
-                        }
-                      }}
+                      onClick={() => setShowDeleteConfirmation(true)}
+                      color="grey"
                       style={{
                         fontSize: "12px",
                         fontWeight: "500",
                         textTransform: "none",
-                        padding: "6px 16px",
+                        padding: "6px 12px",
                       }}
                     >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={() =>
-                        selectedCost &&
-                        handleEditCost(
-                          selectedCost.description,
-                          selectedCost.amount,
-                          editCostDescription,
-                          editCostAmount,
-                        )
-                      }
-                      variant="contained"
-                      disabled={!editCostDescription.trim() || !editCostAmount}
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        textTransform: "none",
-                        padding: "6px 16px",
-                        backgroundColor:
-                          !editCostDescription.trim() || !editCostAmount
-                            ? "#9ca3af"
-                            : primaryColor(),
-                      }}
-                    >
-                      Salvar
+                      🗑️ Excluir
                     </button>
                   </div>
-                )}
-
-                {showDeleteConfirmation && (
-                  <div style={{ display: "flex", gap: "12px" }}>
-                    <button
-                      onClick={() => setShowDeleteConfirmation(false)}
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        textTransform: "none",
-                        padding: "6px 16px",
-                      }}
-                    >
-                      Não
-                    </button>
-                    <button
-                      onClick={() =>
-                        selectedCost &&
-                        handleDeleteCost(
-                          selectedCost.description,
-                          selectedCost.amount,
-                        )
-                      }
-                      color="red"
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        textTransform: "none",
-                        padding: "6px 16px",
-                      }}
-                    >
-                      Sim, excluir
-                    </button>
-                  </div>
-                )}
-              </DialogActions>
-            </Dialog>
-
-            <Dialog
-              open={financialReportModalOpen}
-              onClose={() => handleFinancialReportModal()}
-              fullWidth
-              maxWidth="sm"
-              PaperProps={{
-                style: {
-                  borderRadius: "4px",
-                  padding: "8px",
-                },
-              }}
-            >
-              <DialogTitle>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "16px",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  <h2
-                    style={{
-                      color: "#1f2937",
-                      fontSize: "18px",
-                      fontWeight: "500",
-                      margin: "0",
-                      letterSpacing: "-0.025em",
-                    }}
-                  >
-                    Editar Relatório Financeiro
-                  </h2>
                   <button
-                    onClick={() => handleFinancialReportModal()}
+                    onClick={() => handleCostDetailModal()}
                     style={{
-                      minWidth: "auto",
-                      padding: "8px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "none",
+                      padding: "6px 12px",
                     }}
                   >
-                    x
+                    Fechar
+                  </button>
+                </>
+              )}
+
+              {isEditingCost && !showDeleteConfirmation && (
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button
+                    onClick={() => {
+                      setIsEditingCost(false);
+                      if (selectedCost) {
+                        setEditCostDescription(selectedCost.description);
+                        setEditCostAmount(selectedCost.amount);
+                      }
+                    }}
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "none",
+                      padding: "6px 16px",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={() =>
+                      selectedCost &&
+                      handleEditCost(
+                        selectedCost.description,
+                        selectedCost.amount,
+                        editCostDescription,
+                        editCostAmount,
+                      )
+                    }
+                    variant="contained"
+                    disabled={!editCostDescription.trim() || !editCostAmount}
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "none",
+                      padding: "6px 16px",
+                      backgroundColor:
+                        !editCostDescription.trim() || !editCostAmount
+                          ? "#9ca3af"
+                          : primaryColor(),
+                    }}
+                  >
+                    Salvar
                   </button>
                 </div>
-              </DialogTitle>
+              )}
 
-              <DialogContent style={{ padding: "24px 24px 16px" }}>
-                {selectedFinancialReport && (
-                  <div>
+              {showDeleteConfirmation && (
+                <div style={{ display: "flex", gap: "12px" }}>
+                  <button
+                    onClick={() => setShowDeleteConfirmation(false)}
+                    style={{
+                      color: "#6b7280",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "none",
+                      padding: "6px 16px",
+                    }}
+                  >
+                    Não
+                  </button>
+                  <button
+                    onClick={() =>
+                      selectedCost &&
+                      handleDeleteCost(
+                        selectedCost.description,
+                        selectedCost.amount,
+                      )
+                    }
+                    color="red"
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      textTransform: "none",
+                      padding: "6px 16px",
+                    }}
+                  >
+                    Sim, excluir
+                  </button>
+                </div>
+              )}
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={financialReportModalOpen}
+            onClose={() => handleFinancialReportModal()}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "4px",
+                padding: "8px",
+              },
+            }}
+          >
+            <DialogTitle>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <h2
+                  style={{
+                    color: "#1f2937",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    margin: "0",
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Editar Relatório Financeiro
+                </h2>
+                <button
+                  onClick={() => handleFinancialReportModal()}
+                  style={{
+                    minWidth: "auto",
+                    padding: "8px",
+                  }}
+                >
+                  x
+                </button>
+              </div>
+            </DialogTitle>
+
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              {selectedFinancialReport && (
+                <div>
+                  <div className="linguee-form-group">
+                    <label className="linguee-label linguee-label-required">
+                      Descrição
+                    </label>
+                    <input
+                      type="text"
+                      className="linguee-input linguee-input-text"
+                      value={editReportDescription}
+                      onChange={(e) => setEditReportDescription(e.target.value)}
+                      placeholder="Descrição do item financeiro"
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "16px",
+                    }}
+                  >
                     <div className="linguee-form-group">
                       <label className="linguee-label linguee-label-required">
-                        Descrição
+                        Valor (R$)
                       </label>
-                      <input
-                        type="text"
-                        className="linguee-input linguee-input-text"
-                        value={editReportDescription}
-                        onChange={(e) =>
-                          setEditReportDescription(e.target.value)
-                        }
-                        placeholder="Descrição do item financeiro"
-                      />
-                    </div>
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: "1fr 1fr",
-                        gap: "16px",
-                      }}
-                    >
-                      <div className="linguee-form-group">
-                        <label className="linguee-label linguee-label-required">
-                          Valor (R$)
-                        </label>
-                        <input
-                          type="number"
-                          className="linguee-input linguee-input-number"
-                          value={
-                            editReportAmount ? Math.abs(editReportAmount) : ""
-                          }
-                          onChange={(e) => {
-                            setEditReportAmount(e.target.value);
-                            if (editReportPaidFor) {
-                              const finalAmount =
-                                Math.abs(e.target.value) -
-                                (parseFloat(editReportDiscount) || 0);
-                              setEditReportPaidSoFar(finalAmount);
-                            }
-                          }}
-                          placeholder="0,00"
-                          min="0"
-                          step="0.01"
-                        />
-                      </div>
-
-                      {editReportTypeOfItem !== "debt" && (
-                        <div className="linguee-form-group">
-                          <label className="linguee-label">Desconto</label>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "10px",
-                              marginBottom: "8px",
-                            }}
-                          >
-                            <label
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <input
-                                type="radio"
-                                value="absolute"
-                                checked={editReportDiscountType === "absolute"}
-                                onChange={() => {
-                                  setEditReportDiscountType("absolute");
-                                  // Manter o valor atual do desconto
-                                }}
-                              />
-                              <span
-                                style={{ marginLeft: "5px", fontSize: "14px" }}
-                              >
-                                R$
-                              </span>
-                            </label>
-                            <label
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <input
-                                type="radio"
-                                value="percentage"
-                                checked={
-                                  editReportDiscountType === "percentage"
-                                }
-                                onChange={() => {
-                                  setEditReportDiscountType("percentage");
-                                  // Calcular a porcentagem equivalente ao valor absoluto atual
-                                  const currentDiscount =
-                                    parseFloat(editReportDiscount) || 0;
-                                  const amount =
-                                    parseFloat(editReportAmount) || 0;
-                                  if (amount > 0) {
-                                    const percentage =
-                                      (currentDiscount / amount) * 100;
-                                    setEditReportDiscountPercentage(
-                                      percentage.toFixed(2),
-                                    );
-                                  }
-                                }}
-                              />
-                              <span
-                                style={{ marginLeft: "5px", fontSize: "14px" }}
-                              >
-                                %
-                              </span>
-                            </label>
-                          </div>
-                          <input
-                            type="number"
-                            className="linguee-input linguee-input-number"
-                            value={
-                              editReportDiscountType === "absolute"
-                                ? editReportDiscount
-                                : editReportDiscountPercentage
-                            }
-                            onChange={(e) => {
-                              if (editReportDiscountType === "absolute") {
-                                setEditReportDiscount(e.target.value);
-                              } else {
-                                setEditReportDiscountPercentage(e.target.value);
-                                // Calcular desconto absoluto baseado na porcentagem
-                                const percentage =
-                                  parseFloat(e.target.value) || 0;
-                                const amount =
-                                  parseFloat(editReportAmount) || 0;
-                                const absoluteDiscount =
-                                  (amount * percentage) / 100;
-                                setEditReportDiscount(
-                                  absoluteDiscount.toString(),
-                                );
-                              }
-
-                              // Atualizar paidSoFar se paidFor estiver marcado
-                              if (editReportPaidFor) {
-                                const finalAmount =
-                                  Math.abs(editReportAmount) -
-                                  (parseFloat(editReportDiscount) || 0);
-                                setEditReportPaidSoFar(finalAmount);
-                              }
-                            }}
-                            placeholder={
-                              editReportDiscountType === "absolute"
-                                ? "0,00"
-                                : "0,00"
-                            }
-                            min="0"
-                            step={
-                              editReportDiscountType === "absolute"
-                                ? "0.01"
-                                : "0.01"
-                            }
-                            max={
-                              editReportDiscountType === "percentage"
-                                ? "100"
-                                : undefined
-                            }
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* DIV DO CÁLCULO DO VALOR FINAL */}
-                    {editReportAmount && (
-                      <div
-                        style={{
-                          backgroundColor: "#f8f9fa",
-                          border: "1px solid #e9ecef",
-                          borderRadius: "4px",
-                          padding: "16px",
-                          margin: "16px 0",
-                          fontSize: "16px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontWeight: "bold",
-                            marginBottom: "8px",
-                            color: "#495057",
-                          }}
-                        >
-                          💰 Cálculo do Valor Final:
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "4px",
-                          }}
-                        >
-                          <div style={{ color: "#28a745" }}>
-                            Valor Total: R$ {formatNumber(editReportAmount)}
-                          </div>
-                          <div style={{ color: "#dc3545" }}>
-                            Desconto: R$ {formatNumber(editReportDiscount)}
-                            {editReportDiscountType === "percentage" &&
-                              editReportDiscountPercentage &&
-                              ` (${editReportDiscountPercentage}%)`}
-                          </div>
-                          <hr
-                            style={{ margin: "8px 0", borderColor: "#dee2e6" }}
-                          />
-                          <div
-                            style={{
-                              fontWeight: "bold",
-                              fontSize: "18px",
-                              color: "#007bff",
-                            }}
-                          >
-                            Valor Líquido: R${" "}
-                            {(
-                              Math.abs(parseFloat(editReportAmount) || 0) -
-                              (parseFloat(editReportDiscount) || 0)
-                            )
-                              .toFixed(2)
-                              .replace(".", ",")}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="linguee-form-group">
-                      <label className="linguee-label">Pago até aqui</label>
                       <input
                         type="number"
                         className="linguee-input linguee-input-number"
-                        value={editReportPaidSoFar}
+                        value={
+                          editReportAmount ? Math.abs(editReportAmount) : ""
+                        }
                         onChange={(e) => {
-                          setEditReportPaidSoFar(e.target.value);
-                          const finalAmount =
-                            Math.abs(editReportAmount) -
-                            (parseFloat(editReportDiscount) || 0);
-                          if (e.target.value >= finalAmount) {
-                            setEditReportPaidFor(true);
-                          } else if (e.target.value < finalAmount) {
-                            setEditReportPaidFor(false);
+                          setEditReportAmount(e.target.value);
+                          if (editReportPaidFor) {
+                            const finalAmount =
+                              Math.abs(e.target.value) -
+                              (parseFloat(editReportDiscount) || 0);
+                            setEditReportPaidSoFar(finalAmount);
                           }
                         }}
                         placeholder="0,00"
@@ -3549,571 +2754,761 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         step="0.01"
                       />
                     </div>
+
                     {editReportTypeOfItem !== "debt" && (
                       <div className="linguee-form-group">
-                        <label className="linguee-label">Tipo de Item</label>
-                        <select
-                          className="linguee-select"
-                          value={editReportTypeOfItem}
-                          onChange={(e) =>
-                            setEditReportTypeOfItem(e.target.value)
-                          }
+                        <label className="linguee-label">Desconto</label>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            marginBottom: "8px",
+                          }}
                         >
-                          <option value="fee">Mensalidade</option>
-                          <option value="others">Outro</option>
-                        </select>
-                      </div>
-                    )}
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: editReportAccountFor
-                          ? "1fr 1fr"
-                          : "1fr",
-                        gap: "16px",
-                      }}
-                    >
-                      <div className="linguee-form-group">
-                        <label className="linguee-checkbox-item">
-                          <div className="linguee-toggle">
+                          <label
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
+                          >
                             <input
-                              type="checkbox"
-                              checked={editReportAccountFor}
-                              onChange={(e) => {
-                                setEditReportAccountFor(e.target.checked);
-                                // Se desmarcar "Contabilizar", desmarcar "Quitado"
-                                if (!e.target.checked) {
-                                  setEditReportPaidFor(false);
+                              type="radio"
+                              value="absolute"
+                              checked={editReportDiscountType === "absolute"}
+                              onChange={() => {
+                                setEditReportDiscountType("absolute");
+                                // Manter o valor atual do desconto
+                              }}
+                            />
+                            <span
+                              style={{ marginLeft: "5px", fontSize: "14px" }}
+                            >
+                              R$
+                            </span>
+                          </label>
+                          <label
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <input
+                              type="radio"
+                              value="percentage"
+                              checked={editReportDiscountType === "percentage"}
+                              onChange={() => {
+                                setEditReportDiscountType("percentage");
+                                // Calcular a porcentagem equivalente ao valor absoluto atual
+                                const currentDiscount =
+                                  parseFloat(editReportDiscount) || 0;
+                                const amount =
+                                  parseFloat(editReportAmount) || 0;
+                                if (amount > 0) {
+                                  const percentage =
+                                    (currentDiscount / amount) * 100;
+                                  setEditReportDiscountPercentage(
+                                    percentage.toFixed(2),
+                                  );
                                 }
                               }}
                             />
-                            <div className="linguee-toggle-slider"></div>
-                          </div>
-                          <span className="linguee-checkbox-label">
-                            Contabilizar
-                          </span>
-                        </label>
-                      </div>
-
-                      {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
-                      {editReportAccountFor && (
-                        <div className="linguee-form-group">
-                          {reportEditId !== "" && (
-                            <label className="linguee-checkbox-item">
-                              <div className="linguee-toggle">
-                                <input
-                                  type="checkbox"
-                                  checked={editReportPaidFor}
-                                  onChange={(e) => {
-                                    setEditReportPaidFor(e.target.checked);
-                                    if (e.target.checked) {
-                                      const finalAmount =
-                                        Math.abs(editReportAmount) -
-                                        (parseFloat(editReportDiscount) || 0);
-                                      setEditReportPaidSoFar(finalAmount);
-                                    }
-                                  }}
-                                />
-                                <div className="linguee-toggle-slider"></div>
-                              </div>
-                              <span className="linguee-checkbox-label">
-                                Quitado
-                              </span>
-                            </label>
-                          )}
+                            <span
+                              style={{ marginLeft: "5px", fontSize: "14px" }}
+                            >
+                              %
+                            </span>
+                          </label>
                         </div>
-                      )}
-                    </div>
-                    {/* Trash button */}
-                    {reportEditId !== "" && (
-                      <div>
-                        {!seeButtonDeleteItem && (
-                          <button
-                            style={{
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              color: "#d9534f",
-                              fontSize: "18px",
-                              padding: "4px",
-                              transition: "background 0.2s",
-                            }}
-                            title="Excluir entrada do mês"
-                            onClick={() => {
-                              setSeeButtonDeleteItem(true);
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.currentTarget.style.background = "#fbe9e7")
+                        <input
+                          type="number"
+                          className="linguee-input linguee-input-number"
+                          value={
+                            editReportDiscountType === "absolute"
+                              ? editReportDiscount
+                              : editReportDiscountPercentage
+                          }
+                          onChange={(e) => {
+                            if (editReportDiscountType === "absolute") {
+                              setEditReportDiscount(e.target.value);
+                            } else {
+                              setEditReportDiscountPercentage(e.target.value);
+                              // Calcular desconto absoluto baseado na porcentagem
+                              const percentage =
+                                parseFloat(e.target.value) || 0;
+                              const amount = parseFloat(editReportAmount) || 0;
+                              const absoluteDiscount =
+                                (amount * percentage) / 100;
+                              setEditReportDiscount(
+                                absoluteDiscount.toString(),
+                              );
                             }
-                            onMouseLeave={(e) =>
-                              (e.currentTarget.style.background = "none")
+
+                            // Atualizar paidSoFar se paidFor estiver marcado
+                            if (editReportPaidFor) {
+                              const finalAmount =
+                                Math.abs(editReportAmount) -
+                                (parseFloat(editReportDiscount) || 0);
+                              setEditReportPaidSoFar(finalAmount);
                             }
-                          >
-                            🗑️ Excluir este ítem
-                          </button>
-                        )}
-                        {seeButtonDeleteItem && (
-                          <div
-                            style={{
-                              display: "grid",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              backgroundColor: "#ffdbdbff",
-                              padding: "1rem",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            <p>Tem certeza que deseja excluir este item?</p>
-                            <div style={{ display: "flex" }}>
-                              <button
-                                style={{
-                                  background: "none",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  color: "blue",
-                                  fontSize: "18px",
-                                  padding: "4px",
-                                  transition: "background 0.2s",
-                                }}
-                                title="Excluir entrada do mês"
-                                onClick={() => {
-                                  setSeeButtonDeleteItem(false);
-                                }}
-                                onMouseEnter={(e) =>
-                                  (e.currentTarget.style.background = "#fbe9e7")
-                                }
-                                onMouseLeave={(e) =>
-                                  (e.currentTarget.style.background = "none")
-                                }
-                              >
-                                Não!{" "}
-                              </button>
-                              <button
-                                style={{
-                                  background: "none",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  color: "#d9534f",
-                                  fontSize: "18px",
-                                  padding: "4px",
-                                  transition: "background 0.2s",
-                                }}
-                                title="Excluir entrada do mês"
-                                onClick={() => {
-                                  handleDeleteMonthlyEntry(reportEditId);
-                                }}
-                                onMouseEnter={(e) =>
-                                  (e.currentTarget.style.background = "#fbe9e7")
-                                }
-                                onMouseLeave={(e) =>
-                                  (e.currentTarget.style.background = "none")
-                                }
-                              >
-                                Sim! Excluir este item{" "}
-                              </button>
-                            </div>
-                          </div>
-                        )}
+                          }}
+                          placeholder={
+                            editReportDiscountType === "absolute"
+                              ? "0,00"
+                              : "0,00"
+                          }
+                          min="0"
+                          step={
+                            editReportDiscountType === "absolute"
+                              ? "0.01"
+                              : "0.01"
+                          }
+                          max={
+                            editReportDiscountType === "percentage"
+                              ? "100"
+                              : undefined
+                          }
+                        />
                       </div>
                     )}
                   </div>
-                )}
-              </DialogContent>
 
-              <DialogActions
-                style={{
-                  padding: "16px 24px 24px",
-                  gap: "12px",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <button
-                  className="linguee-btn"
-                  onClick={() => handleFinancialReportModal()}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className={`linguee-btn ${
-                    !editReportDescription.trim() || !editReportAmount
-                      ? ""
-                      : "linguee-btn-primary"
-                  }`}
-                  onClick={handleSaveFinancialReport}
-                  disabled={!editReportDescription.trim() || !editReportAmount}
-                  style={{
-                    backgroundColor:
-                      !editReportDescription.trim() || !editReportAmount
-                        ? "#9ca3af"
-                        : undefined,
-                    cursor:
-                      !editReportDescription.trim() || !editReportAmount
-                        ? "not-allowed"
-                        : "pointer",
-                  }}
-                >
-                  Salvar
-                </button>
-              </DialogActions>
-            </Dialog>
+                  {/* DIV DO CÁLCULO DO VALOR FINAL */}
+                  {editReportAmount && (
+                    <div
+                      style={{
+                        backgroundColor: "#f8f9fa",
+                        border: "1px solid #e9ecef",
+                        borderRadius: "4px",
+                        padding: "16px",
+                        margin: "16px 0",
+                        fontSize: "16px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: "bold",
+                          marginBottom: "8px",
+                          color: "#495057",
+                        }}
+                      >
+                        💰 Cálculo do Valor Final:
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px",
+                        }}
+                      >
+                        <div style={{ color: "#28a745" }}>
+                          Valor Total: R$ {formatNumber(editReportAmount)}
+                        </div>
+                        <div style={{ color: "#dc3545" }}>
+                          Desconto: R$ {formatNumber(editReportDiscount)}
+                          {editReportDiscountType === "percentage" &&
+                            editReportDiscountPercentage &&
+                            ` (${editReportDiscountPercentage}%)`}
+                        </div>
+                        <hr
+                          style={{ margin: "8px 0", borderColor: "#dee2e6" }}
+                        />
+                        <div
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: "18px",
+                            color: "#007bff",
+                          }}
+                        >
+                          Valor Líquido: R${" "}
+                          {(
+                            Math.abs(parseFloat(editReportAmount) || 0) -
+                            (parseFloat(editReportDiscount) || 0)
+                          )
+                            .toFixed(2)
+                            .replace(".", ",")}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-            {/* MODAL NOVO ITEM FINANCEIRO */}
-            <Dialog
-              open={newItemModalOpen}
-              onClose={handleNewItemModal}
-              fullWidth
-              maxWidth="sm"
-              PaperProps={{
-                style: {
-                  borderRadius: "4px",
-                  padding: "8px",
-                },
-              }}
-            >
-              <DialogTitle>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    paddingBottom: "16px",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  <h2
-                    style={{
-                      color: "#1f2937",
-                      fontSize: "18px",
-                      fontWeight: "500",
-                      margin: "0",
-                      letterSpacing: "-0.025em",
-                    }}
-                  >
-                    Novo Item Financeiro: {transformMonth(selectedMonth)}
-                  </h2>
-                  <button
-                    onClick={handleNewItemModal}
-                    style={{
-                      minWidth: "auto",
-                      padding: "8px",
-                    }}
-                  >
-                    x{" "}
-                  </button>
-                </div>
-              </DialogTitle>
-
-              <DialogContent style={{ padding: "24px 24px 16px" }}>
-                <div className="linguee-form-group">
-                  <label className="linguee-label linguee-label-required">
-                    Descrição
-                  </label>
-                  <input
-                    type="text"
-                    className="linguee-input linguee-input-text"
-                    value={newItemDescription}
-                    onChange={(e) => setNewItemDescription(e.target.value)}
-                    placeholder="Ex: Venda de curso, Aluguel..."
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "16px",
-                  }}
-                >
                   <div className="linguee-form-group">
-                    <label className="linguee-label linguee-label-required">
-                      Valor (R$)
-                    </label>
+                    <label className="linguee-label">Pago até aqui</label>
                     <input
                       type="number"
                       className="linguee-input linguee-input-number"
-                      value={newItemAmount ? Math.abs(newItemAmount) : ""}
-                      onChange={(e) => setNewItemAmount(e.target.value)}
+                      value={editReportPaidSoFar}
+                      onChange={(e) => {
+                        setEditReportPaidSoFar(e.target.value);
+                        const finalAmount =
+                          Math.abs(editReportAmount) -
+                          (parseFloat(editReportDiscount) || 0);
+                        if (e.target.value >= finalAmount) {
+                          setEditReportPaidFor(true);
+                        } else if (e.target.value < finalAmount) {
+                          setEditReportPaidFor(false);
+                        }
+                      }}
                       placeholder="0,00"
                       min="0"
                       step="0.01"
                     />
                   </div>
-
-                  {newItemTypeOfItem !== "debt" && (
+                  {editReportTypeOfItem !== "debt" && (
                     <div className="linguee-form-group">
-                      <label className="linguee-label">Desconto</label>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          marginBottom: "8px",
-                        }}
+                      <label className="linguee-label">Tipo de Item</label>
+                      <select
+                        className="linguee-select"
+                        value={editReportTypeOfItem}
+                        onChange={(e) =>
+                          setEditReportTypeOfItem(e.target.value)
+                        }
                       >
-                        <label
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            value="absolute"
-                            checked={newItemDiscountType === "absolute"}
-                            onChange={() => {
-                              setNewItemDiscountType("absolute");
-                              // Manter o valor atual do desconto
-                            }}
-                          />
-                          <span style={{ marginLeft: "5px", fontSize: "14px" }}>
-                            R$
-                          </span>
-                        </label>
-                        <label
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <input
-                            type="radio"
-                            value="percentage"
-                            checked={newItemDiscountType === "percentage"}
-                            onChange={() => {
-                              setNewItemDiscountType("percentage");
-                              // Calcular a porcentagem equivalente ao valor absoluto atual
-                              const currentDiscount =
-                                parseFloat(newItemDiscount) || 0;
-                              const amount = parseFloat(newItemAmount) || 0;
-                              if (amount > 0) {
-                                const percentage =
-                                  (currentDiscount / amount) * 100;
-                                setNewItemDiscountPercentage(
-                                  percentage.toFixed(2),
-                                );
-                              }
-                            }}
-                          />
-                          <span style={{ marginLeft: "5px", fontSize: "14px" }}>
-                            %
-                          </span>
-                        </label>
-                      </div>
-                      <input
-                        type="number"
-                        className="linguee-input linguee-input-number"
-                        value={
-                          newItemDiscountType === "absolute"
-                            ? newItemDiscount
-                            : newItemDiscountPercentage
-                        }
-                        onChange={(e) => {
-                          if (newItemDiscountType === "absolute") {
-                            setNewItemDiscount(e.target.value);
-                          } else {
-                            setNewItemDiscountPercentage(e.target.value);
-                            // Calcular desconto absoluto baseado na porcentagem
-                            const percentage = parseFloat(e.target.value) || 0;
-                            const amount = parseFloat(newItemAmount) || 0;
-                            const absoluteDiscount =
-                              (amount * percentage) / 100;
-                            setNewItemDiscount(absoluteDiscount.toString());
-                          }
-                        }}
-                        placeholder={
-                          newItemDiscountType === "absolute" ? "0,00" : "0,00"
-                        }
-                        min="0"
-                        step={
-                          newItemDiscountType === "absolute" ? "0.01" : "0.01"
-                        }
-                        max={
-                          newItemDiscountType === "percentage"
-                            ? "100"
-                            : undefined
-                        }
-                      />
+                        <option value="fee">Mensalidade</option>
+                        <option value="others">Outro</option>
+                      </select>
                     </div>
                   )}
-                </div>
 
-                {/* DIV DO CÁLCULO DO VALOR FINAL - NOVO ITEM */}
-                {newItemAmount && (
                   <div
                     style={{
-                      backgroundColor: "#f8f9fa",
-                      border: "1px solid #e9ecef",
-                      borderRadius: "4px",
-                      padding: "16px",
-                      margin: "16px 0",
-                      fontSize: "16px",
+                      display: "grid",
+                      gridTemplateColumns: editReportAccountFor
+                        ? "1fr 1fr"
+                        : "1fr",
+                      gap: "16px",
                     }}
                   >
-                    <div
-                      style={{
-                        fontWeight: "bold",
-                        marginBottom: "8px",
-                        color: "#495057",
-                      }}
-                    >
-                      💰 Cálculo do Valor Final:
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "4px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          color:
-                            newItemTypeOfItem === "debt"
-                              ? "#dc3545"
-                              : "#28a745",
-                        }}
-                      >
-                        Valor Total: R$ {formatNumber(newItemAmount)}
-                      </div>
-                      {newItemTypeOfItem !== "debt" && (
-                        <div style={{ color: "#dc3545" }}>
-                          Desconto: R$ {formatNumber(newItemDiscount)}
-                          {newItemDiscountType === "percentage" &&
-                            newItemDiscountPercentage &&
-                            ` (${newItemDiscountPercentage}%)`}
-                        </div>
-                      )}
-                      <hr style={{ margin: "8px 0", borderColor: "#dee2e6" }} />
-                      <div
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: "18px",
-                          color:
-                            newItemTypeOfItem === "debt"
-                              ? "#dc3545"
-                              : "#007bff",
-                        }}
-                      >
-                        Valor{" "}
-                        {newItemTypeOfItem === "debt" ? "de Saída" : "Líquido"}:
-                        R${" "}
-                        {newItemTypeOfItem === "debt"
-                          ? Math.abs(parseFloat(newItemAmount) || 0)
-                              .toFixed(2)
-                              .replace(".", ",")
-                          : (
-                              Math.abs(parseFloat(newItemAmount) || 0) -
-                              (parseFloat(newItemDiscount) || 0)
-                            )
-                              .toFixed(2)
-                              .replace(".", ",")}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="linguee-form-group">
-                  <label className="linguee-label">Tipo de Item</label>
-                  <select
-                    className="linguee-select"
-                    value={newItemTypeOfItem}
-                    onChange={(e) => setNewItemTypeOfItem(e.target.value)}
-                  >
-                    <option value="others">Entrada</option>
-                    <option value="debt">Saída</option>
-                  </select>
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: newItemAccountFor ? "1fr 1fr" : "1fr",
-                    gap: "16px",
-                  }}
-                >
-                  <div className="linguee-form-group">
-                    <label className="linguee-checkbox-item">
-                      <div className="linguee-toggle">
-                        <input
-                          type="checkbox"
-                          checked={newItemAccountFor}
-                          onChange={(e) => {
-                            setNewItemAccountFor(e.target.checked);
-                            // Se desmarcar "Contabilizar", desmarcar "Quitado"
-                            if (!e.target.checked) {
-                              setNewItemPaidFor(false);
-                            }
-                          }}
-                        />
-                        <div className="linguee-toggle-slider"></div>
-                      </div>
-                      <span className="linguee-checkbox-label">
-                        Contabilizar
-                      </span>
-                    </label>
-                  </div>
-
-                  {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
-                  {newItemAccountFor && (
                     <div className="linguee-form-group">
                       <label className="linguee-checkbox-item">
                         <div className="linguee-toggle">
                           <input
                             type="checkbox"
-                            checked={newItemPaidFor}
-                            onChange={(e) =>
-                              setNewItemPaidFor(e.target.checked)
-                            }
+                            checked={editReportAccountFor}
+                            onChange={(e) => {
+                              setEditReportAccountFor(e.target.checked);
+                              // Se desmarcar "Contabilizar", desmarcar "Quitado"
+                              if (!e.target.checked) {
+                                setEditReportPaidFor(false);
+                              }
+                            }}
                           />
                           <div className="linguee-toggle-slider"></div>
                         </div>
-                        <span className="linguee-checkbox-label">Quitado</span>
+                        <span className="linguee-checkbox-label">
+                          Contabilizar
+                        </span>
                       </label>
+                    </div>
+
+                    {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
+                    {editReportAccountFor && (
+                      <div className="linguee-form-group">
+                        {reportEditId !== "" && (
+                          <label className="linguee-checkbox-item">
+                            <div className="linguee-toggle">
+                              <input
+                                type="checkbox"
+                                checked={editReportPaidFor}
+                                onChange={(e) => {
+                                  setEditReportPaidFor(e.target.checked);
+                                  if (e.target.checked) {
+                                    const finalAmount =
+                                      Math.abs(editReportAmount) -
+                                      (parseFloat(editReportDiscount) || 0);
+                                    setEditReportPaidSoFar(finalAmount);
+                                  }
+                                }}
+                              />
+                              <div className="linguee-toggle-slider"></div>
+                            </div>
+                            <span className="linguee-checkbox-label">
+                              Quitado
+                            </span>
+                          </label>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {/* Trash button */}
+                  {reportEditId !== "" && (
+                    <div>
+                      {!seeButtonDeleteItem && (
+                        <button
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "#d9534f",
+                            fontSize: "18px",
+                            padding: "4px",
+                            transition: "background 0.2s",
+                          }}
+                          title="Excluir entrada do mês"
+                          onClick={() => {
+                            setSeeButtonDeleteItem(true);
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "#fbe9e7")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "none")
+                          }
+                        >
+                          🗑️ Excluir este ítem
+                        </button>
+                      )}
+                      {seeButtonDeleteItem && (
+                        <div
+                          style={{
+                            display: "grid",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#ffdbdbff",
+                            padding: "1rem",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <p>Tem certeza que deseja excluir este item?</p>
+                          <div style={{ display: "flex" }}>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "blue",
+                                fontSize: "18px",
+                                padding: "4px",
+                                transition: "background 0.2s",
+                              }}
+                              title="Excluir entrada do mês"
+                              onClick={() => {
+                                setSeeButtonDeleteItem(false);
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.background = "#fbe9e7")
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.background = "none")
+                              }
+                            >
+                              Não!{" "}
+                            </button>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "#d9534f",
+                                fontSize: "18px",
+                                padding: "4px",
+                                transition: "background 0.2s",
+                              }}
+                              title="Excluir entrada do mês"
+                              onClick={() => {
+                                handleDeleteMonthlyEntry(reportEditId);
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.background = "#fbe9e7")
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.background = "none")
+                              }
+                            >
+                              Sim! Excluir este item{" "}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              </DialogContent>
+              )}
+            </DialogContent>
 
-              <DialogActions
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                className="linguee-btn"
+                onClick={() => handleFinancialReportModal()}
+              >
+                Cancelar
+              </button>
+              <button
+                className={`linguee-btn ${
+                  !editReportDescription.trim() || !editReportAmount
+                    ? ""
+                    : "linguee-btn-primary"
+                }`}
+                onClick={handleSaveFinancialReport}
+                disabled={!editReportDescription.trim() || !editReportAmount}
                 style={{
-                  padding: "16px 24px 24px",
-                  gap: "12px",
-                  justifyContent: "flex-end",
+                  backgroundColor:
+                    !editReportDescription.trim() || !editReportAmount
+                      ? "#9ca3af"
+                      : undefined,
+                  cursor:
+                    !editReportDescription.trim() || !editReportAmount
+                      ? "not-allowed"
+                      : "pointer",
                 }}
               >
-                <button
-                  className="linguee-btn linguee-btn-ghost"
-                  onClick={handleNewItemModal}
-                >
-                  Cancelar
-                </button>
-                <button
-                  className="linguee-btn linguee-btn-primary"
-                  onClick={newStandaloneItem}
-                  disabled={!newItemDescription.trim() || !newItemAmount}
+                Salvar
+              </button>
+            </DialogActions>
+          </Dialog>
+
+          {/* MODAL NOVO ITEM FINANCEIRO */}
+          <Dialog
+            open={newItemModalOpen}
+            onClose={handleNewItemModal}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "4px",
+                padding: "8px",
+              },
+            }}
+          >
+            <DialogTitle>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <h2
                   style={{
-                    backgroundColor:
-                      !newItemDescription.trim() || !newItemAmount
-                        ? "#9ca3af"
-                        : newItemTypeOfItem === "debt"
-                          ? "#dc2626"
-                          : "#16a34a",
-                    cursor:
-                      !newItemDescription.trim() || !newItemAmount
-                        ? "not-allowed"
-                        : "pointer",
+                    color: "#1f2937",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    margin: "0",
+                    letterSpacing: "-0.025em",
                   }}
                 >
-                  {newItemTypeOfItem === "debt"
-                    ? "💸 Criar Saída"
-                    : "💰 Criar Entrada"}
+                  Novo Item Financeiro: {transformMonth(selectedMonth)}
+                </h2>
+                <button
+                  onClick={handleNewItemModal}
+                  style={{
+                    minWidth: "auto",
+                    padding: "8px",
+                  }}
+                >
+                  x{" "}
                 </button>
-              </DialogActions>
-            </Dialog>
-          </section>
+              </div>
+            </DialogTitle>
+
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  className="linguee-input linguee-input-text"
+                  value={newItemDescription}
+                  onChange={(e) => setNewItemDescription(e.target.value)}
+                  placeholder="Ex: Venda de curso, Aluguel..."
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "16px",
+                }}
+              >
+                <div className="linguee-form-group">
+                  <label className="linguee-label linguee-label-required">
+                    Valor (R$)
+                  </label>
+                  <input
+                    type="number"
+                    className="linguee-input linguee-input-number"
+                    value={newItemAmount ? Math.abs(newItemAmount) : ""}
+                    onChange={(e) => setNewItemAmount(e.target.value)}
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                {newItemTypeOfItem !== "debt" && (
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Desconto</label>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      <label
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          value="absolute"
+                          checked={newItemDiscountType === "absolute"}
+                          onChange={() => {
+                            setNewItemDiscountType("absolute");
+                            // Manter o valor atual do desconto
+                          }}
+                        />
+                        <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                          R$
+                        </span>
+                      </label>
+                      <label
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          value="percentage"
+                          checked={newItemDiscountType === "percentage"}
+                          onChange={() => {
+                            setNewItemDiscountType("percentage");
+                            // Calcular a porcentagem equivalente ao valor absoluto atual
+                            const currentDiscount =
+                              parseFloat(newItemDiscount) || 0;
+                            const amount = parseFloat(newItemAmount) || 0;
+                            if (amount > 0) {
+                              const percentage =
+                                (currentDiscount / amount) * 100;
+                              setNewItemDiscountPercentage(
+                                percentage.toFixed(2),
+                              );
+                            }
+                          }}
+                        />
+                        <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                          %
+                        </span>
+                      </label>
+                    </div>
+                    <input
+                      type="number"
+                      className="linguee-input linguee-input-number"
+                      value={
+                        newItemDiscountType === "absolute"
+                          ? newItemDiscount
+                          : newItemDiscountPercentage
+                      }
+                      onChange={(e) => {
+                        if (newItemDiscountType === "absolute") {
+                          setNewItemDiscount(e.target.value);
+                        } else {
+                          setNewItemDiscountPercentage(e.target.value);
+                          // Calcular desconto absoluto baseado na porcentagem
+                          const percentage = parseFloat(e.target.value) || 0;
+                          const amount = parseFloat(newItemAmount) || 0;
+                          const absoluteDiscount = (amount * percentage) / 100;
+                          setNewItemDiscount(absoluteDiscount.toString());
+                        }
+                      }}
+                      placeholder={
+                        newItemDiscountType === "absolute" ? "0,00" : "0,00"
+                      }
+                      min="0"
+                      step={
+                        newItemDiscountType === "absolute" ? "0.01" : "0.01"
+                      }
+                      max={
+                        newItemDiscountType === "percentage" ? "100" : undefined
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* DIV DO CÁLCULO DO VALOR FINAL - NOVO ITEM */}
+              {newItemAmount && (
+                <div
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    border: "1px solid #e9ecef",
+                    borderRadius: "4px",
+                    padding: "16px",
+                    margin: "16px 0",
+                    fontSize: "16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      marginBottom: "8px",
+                      color: "#495057",
+                    }}
+                  >
+                    💰 Cálculo do Valor Final:
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        color:
+                          newItemTypeOfItem === "debt" ? "#dc3545" : "#28a745",
+                      }}
+                    >
+                      Valor Total: R$ {formatNumber(newItemAmount)}
+                    </div>
+                    {newItemTypeOfItem !== "debt" && (
+                      <div style={{ color: "#dc3545" }}>
+                        Desconto: R$ {formatNumber(newItemDiscount)}
+                        {newItemDiscountType === "percentage" &&
+                          newItemDiscountPercentage &&
+                          ` (${newItemDiscountPercentage}%)`}
+                      </div>
+                    )}
+                    <hr style={{ margin: "8px 0", borderColor: "#dee2e6" }} />
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "18px",
+                        color:
+                          newItemTypeOfItem === "debt" ? "#dc3545" : "#007bff",
+                      }}
+                    >
+                      Valor{" "}
+                      {newItemTypeOfItem === "debt" ? "de Saída" : "Líquido"}:
+                      R${" "}
+                      {newItemTypeOfItem === "debt"
+                        ? Math.abs(parseFloat(newItemAmount) || 0)
+                            .toFixed(2)
+                            .replace(".", ",")
+                        : (
+                            Math.abs(parseFloat(newItemAmount) || 0) -
+                            (parseFloat(newItemDiscount) || 0)
+                          )
+                            .toFixed(2)
+                            .replace(".", ",")}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="linguee-form-group">
+                <label className="linguee-label">Tipo de Item</label>
+                <select
+                  className="linguee-select"
+                  value={newItemTypeOfItem}
+                  onChange={(e) => setNewItemTypeOfItem(e.target.value)}
+                >
+                  <option value="others">Entrada</option>
+                  <option value="debt">Saída</option>
+                </select>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: newItemAccountFor ? "1fr 1fr" : "1fr",
+                  gap: "16px",
+                }}
+              >
+                <div className="linguee-form-group">
+                  <label className="linguee-checkbox-item">
+                    <div className="linguee-toggle">
+                      <input
+                        type="checkbox"
+                        checked={newItemAccountFor}
+                        onChange={(e) => {
+                          setNewItemAccountFor(e.target.checked);
+                          // Se desmarcar "Contabilizar", desmarcar "Quitado"
+                          if (!e.target.checked) {
+                            setNewItemPaidFor(false);
+                          }
+                        }}
+                      />
+                      <div className="linguee-toggle-slider"></div>
+                    </div>
+                    <span className="linguee-checkbox-label">Contabilizar</span>
+                  </label>
+                </div>
+
+                {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
+                {newItemAccountFor && (
+                  <div className="linguee-form-group">
+                    <label className="linguee-checkbox-item">
+                      <div className="linguee-toggle">
+                        <input
+                          type="checkbox"
+                          checked={newItemPaidFor}
+                          onChange={(e) => setNewItemPaidFor(e.target.checked)}
+                        />
+                        <div className="linguee-toggle-slider"></div>
+                      </div>
+                      <span className="linguee-checkbox-label">Quitado</span>
+                    </label>
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                className="linguee-btn linguee-btn-ghost"
+                onClick={handleNewItemModal}
+              >
+                Cancelar
+              </button>
+              <button
+                className="linguee-btn linguee-btn-primary"
+                onClick={newStandaloneItem}
+                disabled={!newItemDescription.trim() || !newItemAmount}
+                style={{
+                  backgroundColor:
+                    !newItemDescription.trim() || !newItemAmount
+                      ? "#9ca3af"
+                      : newItemTypeOfItem === "debt"
+                        ? "#dc2626"
+                        : "#16a34a",
+                  cursor:
+                    !newItemDescription.trim() || !newItemAmount
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                {newItemTypeOfItem === "debt"
+                  ? "💸 Criar Saída"
+                  : "💰 Criar Entrada"}
+              </button>
+            </DialogActions>
+          </Dialog>
         </div>
       </>
     </div>
