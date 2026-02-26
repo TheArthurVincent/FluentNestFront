@@ -365,7 +365,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
               disabled={!canSave}
             >
-              {saving ? "Salvando..." : "Salvar Resposta"}
+              {saving ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </div>
