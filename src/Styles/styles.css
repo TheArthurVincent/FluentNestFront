@@ -116,7 +116,7 @@ textarea {
 button {
   font-size: 14px;
   border: 1px solid #ddd;
-  border-radius: 8px !important;
+  border-radius: 8px;
   padding: 8px 16px;
   background-color: #fff;
   color: #111;

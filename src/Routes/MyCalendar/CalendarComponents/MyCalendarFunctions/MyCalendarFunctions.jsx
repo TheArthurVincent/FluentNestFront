@@ -221,7 +221,7 @@ export const categoryList = [
     forStudent: false,
   },
   {
-    text: "Aula De Um Grupo (Para um grupo específico)",
+    text: "Aula De Uma Turma (Para uma turma específica)",
     value: "Established Group Class",
     forStudent: false,
   },

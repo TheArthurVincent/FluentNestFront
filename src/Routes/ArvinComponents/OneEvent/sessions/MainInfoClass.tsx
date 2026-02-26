@@ -1102,7 +1102,11 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             >
               {!isDesktop && event.student && (
                 <div style={{ display: "grid" }}>
-                  <span style={{ fontSize: 11, color: "#606060" }}>Aluno</span>
+                  <span style={{ fontSize: 11, color: "#606060" }}>
+                    {event.category == "Established Group Class"
+                      ? "Turma"
+                      : "Aluno"}
+                  </span>
                   <span
                     style={{ fontWeight: 600, color: "#030303", fontSize: 13 }}
                   >
@@ -1121,18 +1125,25 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   {event.date} ({event.time})
                 </span>
               </div>
-              <div style={{ display: "grid", gap: 4 }}>
-                <span style={{ fontSize: 11, color: "#606060" }}>
-                  Descrição
-                </span>
-                <span
-                  style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
-                >
-                  {theDescription && theDescription.trim()
-                    ? theDescription
-                    : "Nenhuma descrição cadastrada para esta aula."}
-                </span>
-              </div>
+              {theDescription ||
+                (allowedToEdit && (
+                  <div style={{ display: "grid", gap: 4 }}>
+                    <span style={{ fontSize: 11, color: "#606060" }}>
+                      Descrição
+                    </span>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: "#030303",
+                        fontSize: 13,
+                      }}
+                    >
+                      {theDescription && theDescription.trim()
+                        ? theDescription
+                        : "Nenhuma descrição cadastrada para esta aula."}
+                    </span>
+                  </div>
+                ))}
               {allowedToEdit && (
                 <div style={{ display: "grid", gap: 4 }}>
                   <span style={{ fontSize: 11, color: "#606060" }}>

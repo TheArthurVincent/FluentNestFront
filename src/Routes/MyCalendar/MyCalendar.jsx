@@ -209,7 +209,7 @@ function EventPreviewModal({ event, onClose }) {
               justifyContent: "center",
             }}
           >
-            Abrir Evento
+            Abrir Aula
           </a>
         </div>
       </div>

@@ -753,7 +753,6 @@ export default function EditLesson({
       boxSizing: "border-box",
       backgroundColor: "#ffffff",
       transition: "transform 0.05s ease, box-shadow 0.15s ease",
-      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
@@ -765,7 +764,6 @@ export default function EditLesson({
       color: "white",
       fontWeight: 700,
       border: "none",
-      boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
     }),
     [ghostButton],
   );
@@ -777,7 +775,6 @@ export default function EditLesson({
       border: "1px solid #eef2f7",
       borderRadius: 14,
       padding: isMobile ? 12 : 14,
-      boxShadow: "0 10px 25px rgba(2,6,23,0.05)",
     }),
     [isMobile],
   );
@@ -803,7 +800,6 @@ export default function EditLesson({
       overflow: "auto",
       background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
       borderRadius: 16,
-      boxShadow: "0 30px 90px rgba(2, 6, 23, 0.35)",
       border: "1px solid rgba(226, 232, 240, 0.9)",
     }),
     [],
@@ -834,7 +830,6 @@ export default function EditLesson({
       padding: "8px 12px",
       cursor: "pointer",
       fontSize: 12,
-      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
@@ -886,7 +881,6 @@ export default function EditLesson({
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
             opacity: loading ? 0.8 : 1,
           }}
         >
@@ -1126,7 +1120,6 @@ export default function EditLesson({
                               objectFit: "cover",
                               borderRadius: 14,
                               border: "1px solid #e2e8f0",
-                              boxShadow: "0 20px 40px rgba(2,6,23,0.10)",
                             }}
                             onError={(e) =>
                               (e.currentTarget.style.display = "none")

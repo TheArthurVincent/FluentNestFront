@@ -45,6 +45,7 @@ import ExerciseRunner from "./Exercises/Exercises";
 import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 import { SelectExercise } from "./Exercises/Exercises/SelectExercise";
+import { HelpInfo } from "../../Application/Info/Info";
 
 interface EnglishClassCourse2ModelProps {
   headers: any;
@@ -98,6 +99,7 @@ export default function EnglishClassCourse2({
     margin: isDesktop ? "0 4px" : "4px 0",
     width: isDesktop ? "auto" : "100%",
   };
+  const [OPENINFO, setOPENINFO] = useState<boolean>(false);
   const [studentID, setStudentID] = useState<string>(mainStudentID || "");
   const [myId, setId] = useState<string>(mainStudentID || "");
   const [thePermissions, setPermissions] = useState<string>("");
@@ -3038,7 +3040,13 @@ export default function EnglishClassCourse2({
             </>
           )}
           {
-            <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               {theclass?.elements?.length > 0 &&
                 canEditCourse &&
                 !seeBoard &&
@@ -3047,7 +3055,7 @@ export default function EnglishClassCourse2({
                     setChange={setChange}
                     change={change}
                     studentId={myId}
-                    buttonText={"Adicionar ou Remover Elementos Dinâmicos"}
+                    buttonText={"Elementos Dinâmicos"}
                     setSeeEdit={setSeeEdit}
                     headers={actualHeaders}
                     classId={classId}
@@ -3055,7 +3063,18 @@ export default function EnglishClassCourse2({
                     fetchEventData={fetchEventData}
                   />
                 )}
-            </>
+              {/* <HelpInfo
+                title="Como manipular  com os Elementos Dinâmicos"
+                text=""
+                youtubeUrl="https://www.youtube.com/watch?v=dAQf3zwXVdw&pp=ugUEEgJlbg%3D%3D"
+                glow={true}
+                thePermissions="teacher"
+                anchor="inline"
+                initialPosition={{ x: 80, y: 120 }}
+                zIndex={2147484563647} // mais alto que quase tudo
+                buttonSize={22}
+              /> */}
+            </div>
           }
           {!seeEdit && (
             <>
@@ -4122,9 +4141,7 @@ export default function EnglishClassCourse2({
                             setChange={setChange}
                             change={change}
                             studentId={myId}
-                            buttonText={
-                              "Adicionar ou Remover Elementos Dinâmicos"
-                            }
+                            buttonText={"Elementos Dinâmicos"}
                             setSeeEdit={setSeeEdit}
                             headers={actualHeaders}
                             classId={classId}
