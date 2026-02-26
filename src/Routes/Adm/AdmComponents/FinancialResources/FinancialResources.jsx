@@ -1115,8 +1115,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
           }
         `}
           </style>{" "}
-         
-         
           {financialReports.length > 0 && (
             <div
               style={{
@@ -1127,11 +1125,13 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 marginBottom: "16px",
               }}
             >
-                 <h2
-            style={{
-              textAlign:"center"
-            }}
-            >{transformMonth(selectedMonth)}</h2>
+              <h2
+                style={{
+                  textAlign: "center",
+                }}
+              >
+                {transformMonth(selectedMonth)}
+              </h2>
               <FinancialPdfButton
                 selectedMonth={selectedMonth}
                 studentName={studentName}
