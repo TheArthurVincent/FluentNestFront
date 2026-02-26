@@ -1330,6 +1330,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                           display: "grid",
                           gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
                           gap: "16px",
+                 
                         }}
                       >
                         {/* ENTRADAS */}
@@ -1367,6 +1368,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "8px",
+                                         maxHeight: "400px",
+                          overflowY: "auto",
                               }}
                             >
                               {/* Entradas contabilizadas */}
@@ -1675,6 +1678,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "8px",
+                                         maxHeight: "400px",
+                          overflowY: "auto",
                               }}
                             >
                               {/* Saídas contabilizadas */}
