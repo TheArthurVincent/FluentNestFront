@@ -95,14 +95,7 @@ const SentenceMining = ({
       const { id, permissions } = JSON.parse(user);
       setThePermissions(permissions);
       setId(id);
-
-      if (permissions === "superadmin" || permissions === "teacher") {
-        // Professor/admin precisa escolher explicitamente um aluno
-        setSelectedStudentId("");
-      } else {
-        // Aluno comum: já usa o próprio id
-        setSelectedStudentId(id);
-      }
+      setSelectedStudentId(id);
     }
   }, []);
 
@@ -181,10 +174,15 @@ const SentenceMining = ({
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardsvocabulary/${selectedStudentId}`,
+        `${backDomain}/api/v1/flashcardsvocabulary`,
         {
           headers: actualHeaders,
-          params: { selectedLanguage, word, difficulty, myId },
+          params: {
+            selectedLanguage,
+            word,
+            difficulty,
+            myId,
+          },
         },
       );
 
@@ -209,7 +207,7 @@ const SentenceMining = ({
           added: false,
         })),
       );
-
+      console.log(response.data.name);
       onChange(!change);
     } catch (error: any) {
       console.error(error);
