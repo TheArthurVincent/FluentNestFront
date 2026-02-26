@@ -1125,28 +1125,21 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 marginBottom: "16px",
               }}
             >
-              <h2
-                style={{
-                  textAlign: "center",
-                }}
-              >
-                {transformMonth(selectedMonth)}
-              </h2>
-              <FinancialPdfButton
-                selectedMonth={selectedMonth}
-                studentName={studentName}
-                al
-                financialReports={financialReports}
-                formatNumber={formatNumber}
-              />
               <MonthPickerModalButton
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
                 setShowGenerateButton={setShowGenerateButton}
                 seeReports={seeReports}
                 generateMonthOptions={generateMonthOptions}
-                buttonLabel="Mês"
+                buttonLabel={transformMonth(selectedMonth)}
               />
+              <FinancialPdfButton
+                selectedMonth={selectedMonth}
+                studentName={studentName}
+                financialReports={financialReports}
+                formatNumber={formatNumber}
+              />
+
               <button
                 title={`Novo ítem para o mês de ${transformMonth(
                   selectedMonth,

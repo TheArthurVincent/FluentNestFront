@@ -7,7 +7,7 @@ export default function MonthPickerModalButton({
   setShowGenerateButton,
   seeReports,
   generateMonthOptions,
-  buttonLabel = "Selecionar mês",
+  buttonLabel,
 }) {
   const [open, setOpen] = useState(false);
   const [draftMonth, setDraftMonth] = useState(selectedMonth || "");
@@ -259,10 +259,7 @@ export default function MonthPickerModalButton({
           display: "block",
         }}
       >
-        {buttonLabel}:{" "}
-        <strong>
-          {monthOptions.find((m) => m.value === selectedMonth)?.label || "—"}
-        </strong>
+        {buttonLabel}
       </button>
 
       {open && createPortal(modal, document.body)}
