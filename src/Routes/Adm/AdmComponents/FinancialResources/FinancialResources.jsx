@@ -1096,9 +1096,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             fontWeight: 600,
             fontStyle: "SemiBold",
             margin: !isDesktop ? "12px" : "16px auto",
-            fontSize: "14px",
+            fontSize: "12px",
             // backgroundColor: "#ffffff",
-            padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
+            padding: isDesktop ? "0px 10px " : "12px 14px 16px",
           }}
         >
           <style>
@@ -1114,7 +1114,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             }
           }
         `}
-          </style>
+          </style>{" "}
+         
+         
           {financialReports.length > 0 && (
             <div
               style={{
@@ -1125,6 +1127,11 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 marginBottom: "16px",
               }}
             >
+                 <h2
+            style={{
+              textAlign:"center"
+            }}
+            >{transformMonth(selectedMonth)}</h2>
               <FinancialPdfButton
                 selectedMonth={selectedMonth}
                 studentName={studentName}
@@ -1219,7 +1226,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "14px",
+                                    fontSize: "12px",
                                     fontWeight: "600",
                                     color: "#0c5460",
                                     marginBottom: "8px",
@@ -1262,16 +1269,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         margin: "1px auto",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <HTwo>{transformMonth(selectedMonth)}</HTwo>
-                      </div>
-
                       {/* RESUMO FINANCEIRO */}
                       <div
                         style={{
@@ -1283,6 +1280,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                   `,
                           gap: "12px",
                           marginBottom: "20px",
+                          fontFamily: "Plus Jakarta Sans",
                         }}
                       >
                         {calculateFinancialData().map((item, index) => (
@@ -1294,7 +1292,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               border: "1px solid #e5e7eb",
                               borderRadius: "4px",
                               padding: "12px",
-                              textAlign: "center",
+                              textAlign: "left",
                               transition: "all 0.2s ease",
                             }}
                           >
@@ -1312,8 +1310,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             </div>
                             <div
                               style={{
-                                fontWeight: "600",
+                                fontWeight: "800",
                                 color: item.color,
+                                fontSize: "18px",
                                 marginBottom: "4px",
                               }}
                             >
@@ -1399,23 +1398,17 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       alignItems: "left",
                                       padding: "12px",
                                       gap: "12px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #eee",
-                                      borderRadius: "4px",
+                                      borderLeft: "3px solid green",
                                       transition: "all 0.2s ease",
                                       cursor: "pointer",
                                     }}
                                     onMouseEnter={(e) => {
                                       e.currentTarget.style.backgroundColor =
                                         "#e7f4ebff";
-                                      e.currentTarget.style.borderColor =
-                                        "#daf9e4ff";
                                     }}
                                     onMouseLeave={(e) => {
                                       e.currentTarget.style.backgroundColor =
                                         "#fff";
-                                      e.currentTarget.style.borderColor =
-                                        "#eee";
                                     }}
                                   >
                                     <div
@@ -1482,8 +1475,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                     <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "14px",
-                                          fontWeight: "500",
+                                          fontSize: "12px",
+                                          fontWeight: "600",
                                           color: "#374151",
                                           marginBottom: "2px",
                                         }}
@@ -1591,7 +1584,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                     <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "14px",
+                                          fontSize: "12px",
                                           fontWeight: "400",
                                           color: "#6b7280",
                                           marginBottom: "2px",
@@ -1713,23 +1706,17 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       alignItems: "left",
                                       padding: "12px",
                                       gap: "12px",
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #eee",
-                                      borderRadius: "4px",
+                                      borderLeft: "3px solid #c62828",
                                       transition: "all 0.2s ease",
                                       cursor: "pointer",
                                     }}
                                     onMouseEnter={(e) => {
                                       e.currentTarget.style.backgroundColor =
                                         "#fef2f2ff";
-                                      e.currentTarget.style.borderColor =
-                                        "#fecacaff";
                                     }}
                                     onMouseLeave={(e) => {
                                       e.currentTarget.style.backgroundColor =
                                         "#fff";
-                                      e.currentTarget.style.borderColor =
-                                        "#eee";
                                     }}
                                   >
                                     <div
@@ -1796,8 +1783,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                     <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "14px",
-                                          fontWeight: "500",
+                                          fontSize: "12px",
+                                          fontWeight: "600",
                                           color: "#374151",
                                           marginBottom: "2px",
                                         }}
@@ -1880,13 +1867,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                     }}
                                     onMouseEnter={(e) => {
                                       e.currentTarget.style.opacity = "1";
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fef8f8";
                                     }}
                                     onMouseLeave={(e) => {
                                       e.currentTarget.style.opacity = "0.7";
-                                      e.currentTarget.style.backgroundColor =
-                                        "#fff";
                                     }}
                                   >
                                     <div
@@ -1905,7 +1888,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                     <div style={{ flex: 1 }}>
                                       <div
                                         style={{
-                                          fontSize: "14px",
+                                          fontSize: "12px",
                                           fontWeight: "400",
                                           color: "#6b7280",
                                           marginBottom: "2px",
@@ -1975,9 +1958,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               )}
             </section>
           </div>
-
           <EntriesAndExits headers={headers} id={id} />
-
           {/* Modal para Novo Custo Fixo */}
           <Dialog
             open={newCostModalOpen}
@@ -2120,7 +2101,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               </button>
             </DialogActions>
           </Dialog>
-
           {/* Modal para Detalhes do Custo */}
           <Dialog
             open={costDetailModalOpen}
@@ -2224,7 +2204,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                     </div>
                     <div
                       style={{
-                        fontSize: "14px",
+                        fontSize: "12px",
                         color: "#374151",
                       }}
                     >
@@ -2279,7 +2259,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                   </div>
                   <div
                     style={{
-                      fontSize: "14px",
+                      fontSize: "12px",
                       color: "#6b7280",
                       marginBottom: "8px",
                     }}
@@ -2433,7 +2413,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               )}
             </DialogActions>
           </Dialog>
-
           <Dialog
             open={financialReportModalOpen}
             onClose={() => handleFinancialReportModal()}
@@ -2555,7 +2534,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               }}
                             />
                             <span
-                              style={{ marginLeft: "5px", fontSize: "14px" }}
+                              style={{ marginLeft: "5px", fontSize: "12px" }}
                             >
                               R$
                             </span>
@@ -2588,7 +2567,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               }}
                             />
                             <span
-                              style={{ marginLeft: "5px", fontSize: "14px" }}
+                              style={{ marginLeft: "5px", fontSize: "12px" }}
                             >
                               %
                             </span>
@@ -2936,7 +2915,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               </button>
             </DialogActions>
           </Dialog>
-
           {/* MODAL NOVO ITEM FINANCEIRO */}
           <Dialog
             open={newItemModalOpen}
@@ -3046,7 +3024,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             // Manter o valor atual do desconto
                           }}
                         />
-                        <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                        <span style={{ marginLeft: "5px", fontSize: "12px" }}>
                           R$
                         </span>
                       </label>
@@ -3076,7 +3054,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             }
                           }}
                         />
-                        <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                        <span style={{ marginLeft: "5px", fontSize: "12px" }}>
                           %
                         </span>
                       </label>

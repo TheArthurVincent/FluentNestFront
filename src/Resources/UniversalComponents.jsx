@@ -23,7 +23,7 @@ export var whichMascot;
 export function updateScore(
   totalScore,
   flashcards25Reviews,
-  homeworkAssignmentsDone
+  homeworkAssignmentsDone,
 ) {
   var level = 1;
   var color = "#000";
@@ -133,7 +133,9 @@ export const DivMarginBorder = styled.div.attrs({
   margin: 0.5rem;
   height: fit-content;
   background-color: rgb(243, 243, 243);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 `;
 export const DivFlex = styled.div`
   display: block;
@@ -379,7 +381,9 @@ export const ContainerClass = styled.div`
   overflow: hidden;
   border-radius: 4px;
   background-color: #000;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
 
   iframe {
     position: absolute;
@@ -397,7 +401,9 @@ export const IFrameVideoClass = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
 `;
 
 export const IFrameVideoClass2 = styled.iframe`
@@ -405,7 +411,9 @@ export const IFrameVideoClass2 = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
 `;
 
 // Componente avançado para iframes responsivos com diferentes aspect ratios
@@ -483,12 +491,17 @@ export const EnhancedIframeContainer = styled.div`
   height: 0;
   overflow: hidden;
   border-radius: 4px;
-  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+  background:
+    linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
     linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
   background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  background-position:
+    0 0,
+    0 10px,
+    10px -10px,
+    -10px 0px;
   animation: ${fadeIn} 0.3s ease-in-out;
 
   iframe {
@@ -631,25 +644,25 @@ export const pathGenerator = (text) => {
 };
 export function transformMonth(dateString) {
   const months = {
-    "01": "Jan",
-    "02": "Fev",
-    "03": "Mar",
-    "04": "Abr",
-    "05": "Mai",
-    "06": "Jun",
-    "07": "Jul",
-    "08": "Ago",
-    "09": "Set",
-    10: "Out",
-    11: "Nov",
-    12: "Dez",
+    "01": "Janeiro",
+    "02": "Fevereiro",
+    "03": "Março",
+    "04": "Abril",
+    "05": "Maio",
+    "06": "Junho",
+    "07": "Julho",
+    "08": "Agosto",
+    "09": "Setembro",
+    10: "Outubro",
+    11: "Novembro",
+    12: "Dezembro",
   };
 
   // Divide a string "MM-YYYY" em mês e ano
   const [month, year] = dateString.split("-");
 
   // Retorna no formato "Mês/YYYY"
-  return `${months[month]}/${year}`;
+  return `${months[month]} - ${year}`;
 }
 
 // formula de truncar string até um numero de letras
@@ -811,7 +824,7 @@ export function getVideoEmbedUrl(videoUrl) {
   }
   if (videoUrl.includes("youtube.com")) {
     const youtubeIdMatch = videoUrl.match(
-      /(?:\?v=|\/embed\/|\/watch\?v=|\/\d\/|\.be\/)([\w\d_-]+)/i
+      /(?:\?v=|\/embed\/|\/watch\?v=|\/\d\/|\.be\/)([\w\d_-]+)/i,
     );
 
     if (youtubeIdMatch && youtubeIdMatch[1]) {
@@ -1752,7 +1765,7 @@ export const updateInfo = async (id, headers) => {
         `${backDomain}/api/v1/studentflashcardstoday/${id}`,
         {
           headers,
-        }
+        },
       );
       const userInfo = response.data.flashcardsToday;
       localStorage.setItem("flashcardsToday", userInfo);
@@ -1859,7 +1872,7 @@ export function isValidCPF(cpf) {
 
 export function verifyTeacherPermissionsForCourses(isOriginal, createdBy) {
   const { permissions, id } = JSON.parse(
-    localStorage.getItem("loggedIn") || "[]"
+    localStorage.getItem("loggedIn") || "[]",
   );
   console.log({ permissions, createdBy, teacherId, isOriginal });
   if (permissions !== "superadmin" && permissions !== "teacher") {
