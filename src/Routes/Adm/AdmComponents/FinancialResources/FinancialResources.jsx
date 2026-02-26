@@ -30,7 +30,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { createPortal } from "react-dom";
 
 import {
   Tab,
@@ -53,10 +52,10 @@ import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 import { isArthurVincent } from "../../../../App";
-import jsPDF from "jspdf";
 import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/SearchMaterials";
 import EntriesAndExits from "./Components/EntriesAndExits";
 import MonthPickerModalButton from "./Components/ChangeMonth";
+import FinancialPdfButton from "./Components/FinancialPdfButton";
 
 export function FinancialResources({ headers, id, plan, isDesktop }) {
   // ===== CONTEXT =====
@@ -175,17 +174,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  // ===== CONSTANTS =====
-  const cellTable = {
-    whiteSpace: "nowrap",
-  };
-  const stickyHeaderStyle = {
-    position: "sticky",
-    top: 0,
-    backgroundColor: "#f6f6f6",
-    zIndex: 1,
-    whiteSpace: "nowrap",
-  };
 
   const parseUrlMonthToMMYYYY = (urlMonth) => {
     // Espera "YYYY-MM"
@@ -1067,200 +1055,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
     ];
   };
 
-  // Estados para o relatório PDF
-  const [showPDFModal, setShowPDFModal] = useState(false);
-  const [pdfType, setPDFType] = useState("both"); // entradas, saidas, both
-
-  // Função para gerar o PDF
-  const generatePDFReport = () => {
-    const pdf = new jsPDF();
-    let yPosition = 20;
-    const margin = 20;
-    const maxWidth = pdf.internal.pageSize.width - 2 * margin;
-    const pageHeight = pdf.internal.pageSize.height;
-    let totalEntradas = 0;
-    let totalSaidas = 0;
-
-    // Filtrar os dados conforme seleção
-    let entradas = financialReports.filter(
-      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem !== "debt",
-    );
-    let saidas = financialReports.filter(
-      (item) => Number(item.paidSoFar) > 0 && item.typeOfItem == "debt",
-    );
-    let filteredReports;
-    if (pdfType === "entradas") filteredReports = entradas;
-    else if (pdfType === "saidas") filteredReports = saidas;
-    else filteredReports = [...entradas, ...saidas];
-
-    // Título
-    pdf.setFontSize(18);
-    pdf.text("Relatório Financeiro - " + selectedMonth, margin, yPosition);
-    yPosition += 12;
-    pdf.setFontSize(12);
-    pdf.text(
-      `Tipo: ${
-        pdfType === "entradas"
-          ? "Entradas"
-          : pdfType === "saidas"
-            ? "Saídas"
-            : "Entradas e Saídas"
-      } | Simples`,
-      margin,
-      yPosition,
-    );
-    yPosition += 10;
-    pdf.setLineWidth(0.5);
-    pdf.line(margin, yPosition, maxWidth + margin, yPosition);
-    yPosition += 8;
-
-    // Inicializa pageNum antes de cada relatório
-    let pageNum;
-    // Cabeçalho
-    pdf.setFontSize(11);
-    pdf.text("Descrição", margin, yPosition);
-    pdf.text("Valor", margin + 100, yPosition);
-    yPosition += 8;
-    pdf.setLineWidth(0.2);
-    pdf.line(margin, yPosition, maxWidth + margin, yPosition);
-    yPosition += 6;
-
-    if (pdfType === "entradas") {
-      pageNum = 1;
-      entradas.forEach((item, idx) => {
-        pdf.setFontSize(10);
-        pdf.text(String(item.description || "-"), margin, yPosition);
-        pdf.text(String(item.paidSoFar || "-"), margin + 100, yPosition);
-        yPosition += 8;
-        totalEntradas += Number(item.paidSoFar) || 0;
-        if (yPosition > pageHeight - 20) {
-          addFooter(pdf, pageNum, pageNum, studentName);
-          pdf.addPage();
-          pageNum++;
-          yPosition = margin;
-        }
-      });
-      yPosition += 8;
-      pdf.setFontSize(13);
-      pdf.text(
-        "Total Entradas: R$ " + totalEntradas.toFixed(2),
-        margin,
-        yPosition,
-      );
-      addFooter(pdf, pageNum, pageNum, studentName);
-    } else if (pdfType === "saidas") {
-      pageNum = 1;
-      saidas.forEach((item, idx) => {
-        pdf.setFontSize(10);
-        pdf.text(String(item.description || "-"), margin, yPosition);
-        pdf.text(String(item.paidSoFar || "-"), margin + 100, yPosition);
-        yPosition += 8;
-        totalSaidas += Number(item.paidSoFar) || 0;
-        if (yPosition > pageHeight - 20) {
-          addFooter(pdf, pageNum, pageNum, studentName);
-          pdf.addPage();
-          pageNum++;
-          yPosition = margin;
-        }
-      });
-      yPosition += 8;
-      pdf.setFontSize(13);
-      pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
-      addFooter(pdf, pageNum, pageNum, studentName);
-    } else {
-      // Ambos: entradas em uma página, saídas em outra, balanço no final
-      pageNum = 1;
-      entradas.forEach((item, idx) => {
-        pdf.setFontSize(10);
-        pdf.text(String(item.description || "-"), margin, yPosition);
-        pdf.text(String(item.paidSoFar || "-"), margin + 100, yPosition);
-        yPosition += 8;
-        totalEntradas += Number(item.paidSoFar) || 0;
-        if (yPosition > pageHeight - 20) {
-          addFooter(pdf, pageNum, pageNum + 2, studentName);
-          pdf.addPage();
-          pageNum++;
-          yPosition = margin;
-        }
-      });
-      yPosition += 8;
-      pdf.setFontSize(13);
-      pdf.text(
-        "Total Entradas: R$ " + totalEntradas.toFixed(2),
-        margin,
-        yPosition,
-      );
-      addFooter(pdf, pageNum, pageNum + 2, studentName);
-      // Nova página para saídas
-      pdf.addPage();
-      pageNum++;
-      yPosition = margin;
-      pdf.setFontSize(18);
-      pdf.text("Saídas", margin, yPosition);
-      yPosition += 12;
-      pdf.setFontSize(11);
-      pdf.text("Descrição", margin, yPosition);
-      pdf.text("Valor", margin + 100, yPosition);
-      yPosition += 8;
-      pdf.setLineWidth(0.2);
-      pdf.line(margin, yPosition, maxWidth + margin, yPosition);
-      yPosition += 6;
-      saidas.forEach((item, idx) => {
-        pdf.setFontSize(10);
-        pdf.text(String(item.description || "-"), margin, yPosition);
-        pdf.text(String(item.paidSoFar || "-"), margin + 100, yPosition);
-        yPosition += 8;
-        totalSaidas += Number(item.paidSoFar) || 0;
-        if (yPosition > pageHeight - 20) {
-          addFooter(pdf, pageNum, pageNum + 1, studentName);
-          pdf.addPage();
-          pageNum++;
-          yPosition = margin;
-        }
-      });
-      yPosition += 8;
-      pdf.setFontSize(13);
-      pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
-      addFooter(pdf, pageNum, pageNum + 1, studentName);
-      // Nova página para balanço
-      pdf.addPage();
-      pageNum++;
-      yPosition = margin;
-      pdf.setFontSize(18);
-      pdf.text("Balanço Final", margin, yPosition);
-      yPosition += 12;
-      pdf.setFontSize(14);
-      pdf.text(
-        "Total Entradas: R$ " + totalEntradas.toFixed(2),
-        margin,
-        yPosition,
-      );
-      yPosition += 10;
-      pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
-      yPosition += 10;
-      pdf.text(
-        "Balanço: R$ " + (totalEntradas - totalSaidas).toFixed(2),
-        margin,
-        yPosition,
-      );
-      addFooter(pdf, pageNum, pageNum, studentName);
-    }
-    pdf.save(`Relatorio_Financeiro_${selectedMonth}.pdf`);
-    setShowPDFModal(false);
-  };
-
-  // Função auxiliar para numerar páginas e mostrar nome do usuário
-  function addFooter(pdf, pageNum, totalPages, studentName) {
-    const pageWidth = pdf.internal.pageSize.width;
-    const pageHeight = pdf.internal.pageSize.height;
-    pdf.setFontSize(9);
-    pdf.text(
-      `${studentName}  -  Página ${pageNum} de ${totalPages}`,
-      pageWidth / 2,
-      pageHeight - 10,
-      { align: "center" },
-    );
-  }
   useEffect(() => {
     setMonthInUrl(selectedMonth);
   }, [selectedMonth]);
@@ -1303,11 +1097,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             fontStyle: "SemiBold",
             margin: !isDesktop ? "12px" : "16px auto",
             fontSize: "14px",
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            border: "1px solid #e8eaed",
+            // backgroundColor: "#ffffff",
             padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
-            maxWidth: 960,
           }}
         >
           <style>
@@ -1324,14 +1115,46 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
           }
         `}
           </style>
-          <MonthPickerModalButton
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            setShowGenerateButton={setShowGenerateButton}
-            seeReports={seeReports}
-            generateMonthOptions={generateMonthOptions}
-            buttonLabel="Mês do relatório"
-          />
+          {financialReports.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "left",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "16px",
+              }}
+            >
+              <FinancialPdfButton
+                selectedMonth={selectedMonth}
+                studentName={studentName}
+                al
+                financialReports={financialReports}
+                formatNumber={formatNumber}
+              />
+              <MonthPickerModalButton
+                selectedMonth={selectedMonth}
+                setSelectedMonth={setSelectedMonth}
+                setShowGenerateButton={setShowGenerateButton}
+                seeReports={seeReports}
+                generateMonthOptions={generateMonthOptions}
+                buttonLabel="Mês"
+              />
+              <button
+                title={`Novo ítem para o mês de ${transformMonth(
+                  selectedMonth,
+                )}`}
+                style={{
+                  marginLeft: "8px",
+                  color: "white",
+                  backgroundColor: partnerColor(),
+                }}
+                onClick={handleNewItemModal}
+              >
+                + Novo Ítem
+              </button>
+            </div>
+          )}
           <div
             style={{
               display: "grid",
@@ -1432,126 +1255,21 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                           </>
                         )}
                       </>
-
-                      {/* } */}
                     </div>
                   ) : (
                     <div
                       style={{
-                        maxWidth: "800px",
-                        margin: "16px auto",
+                        margin: "1px auto",
                       }}
                     >
-                      {/* TÍTULO DO RELATÓRIO */}
-                      <button
-                        className="linguee-btn linguee-btn-outline"
-                        onClick={() => setShowPDFModal(true)}
-                      >
-                        Gerar Relatório PDF
-                      </button>
-                      {showPDFModal &&
-                        createPortal(
-                          <div
-                            style={{
-                              position: "fixed",
-                              inset: 0,
-                              background: "rgba(0,0,0,0.3)",
-                              zIndex: 999999,
-                              display: "flex",
-                              alignItems: "flex-start",
-                              justifyContent: "center",
-                              paddingTop: "80px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                background: "#fff",
-                                padding: "24px",
-                                borderRadius: "6px",
-                                maxWidth: "350px",
-                                width: "100%",
-                                boxShadow: "0 6px 20px rgba(0,0,0,.15)",
-                              }}
-                            >
-                              <h3 style={{ marginBottom: "16px" }}>
-                                Opções do Relatório
-                              </h3>
-
-                              <label
-                                style={{
-                                  display: "block",
-                                  marginBottom: "8px",
-                                }}
-                              >
-                                Tipo:
-                                <select
-                                  value={pdfType}
-                                  onChange={(e) => setPDFType(e.target.value)}
-                                  style={{ marginLeft: "8px" }}
-                                >
-                                  <option value="both">
-                                    Entradas e Saídas
-                                  </option>
-                                  <option value="entradas">Só Entradas</option>
-                                  <option value="saidas">Só Saídas</option>
-                                </select>
-                              </label>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "12px",
-                                  marginTop: "18px",
-                                  justifyContent: "flex-end",
-                                }}
-                              >
-                                <button
-                                  onClick={() => setShowPDFModal(false)}
-                                  style={{
-                                    background: "#eee",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    padding: "8px 16px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  Cancelar
-                                </button>
-
-                                <button
-                                  onClick={generatePDFReport}
-                                  className="linguee-btn linguee-btn-outline"
-                                >
-                                  Gerar PDF
-                                </button>
-                              </div>
-                            </div>
-                          </div>,
-                          document.body,
-                        )}
-
                       <div
                         style={{
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
-                          marginBottom: "24px",
-                          marginTop: "32px",
                         }}
                       >
                         <HTwo>{transformMonth(selectedMonth)}</HTwo>
-                        <button
-                          title={`Novo ítem para o mês de ${transformMonth(
-                            selectedMonth,
-                          )}`}
-                          className="linguee-btn linguee-btn-primary"
-                          style={{
-                            marginLeft: "8px",
-                          }}
-                          onClick={handleNewItemModal}
-                        >
-                          +
-                        </button>
                       </div>
 
                       {/* RESUMO FINANCEIRO */}

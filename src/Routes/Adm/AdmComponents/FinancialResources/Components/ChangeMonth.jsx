@@ -121,7 +121,6 @@ export default function MonthPickerModalButton({
           maxWidth: "520px",
           backgroundColor: "#fff",
           borderRadius: "8px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
           border: "1px solid #e5e7eb",
           overflow: "hidden",
         }}
@@ -183,17 +182,6 @@ export default function MonthPickerModalButton({
               outline: "none",
               cursor: "pointer",
               transition: "all 0.2s ease",
-              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.08)",
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = "#3b82f6";
-              e.currentTarget.style.boxShadow =
-                "0 0 0 3px rgba(59, 130, 246, 0.1)";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "#d1d5db";
-              e.currentTarget.style.boxShadow =
-                "0 1px 3px 0 rgba(0, 0, 0, 0.08)";
             }}
           >
             {monthOptions.map((option) => (
@@ -236,8 +224,6 @@ export default function MonthPickerModalButton({
             style={{
               padding: "10px 14px",
               borderRadius: "8px",
-              border: "1px solid #3b82f6",
-              background: !draftMonth ? "#93c5fd" : "#3b82f6",
               cursor: !draftMonth ? "not-allowed" : "pointer",
               color: "#fff",
               fontWeight: 700,
@@ -251,40 +237,26 @@ export default function MonthPickerModalButton({
   );
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        border: "none",
+      }}
+    >
       <button
         type="button"
         onClick={openModal}
         style={{
-          padding: "12px 16px",
-          border: "1px solid #d1d5db",
-          borderRadius: "6px",
           fontSize: "14px",
           color: "#374151",
+          border: "1px solid #d1d5db",
           backgroundColor: "#fff",
           outline: "none",
           cursor: "pointer",
           transition: "all 0.2s ease",
-          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-          minWidth: "200px",
-          margin: "0 auto 24px auto",
           display: "block",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = "#3b82f6";
-          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = "#d1d5db";
-          e.currentTarget.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderColor = "#3b82f6";
-          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderColor = "#d1d5db";
-          e.currentTarget.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
         }}
       >
         {buttonLabel}:{" "}
@@ -294,6 +266,6 @@ export default function MonthPickerModalButton({
       </button>
 
       {open && createPortal(modal, document.body)}
-    </>
+    </div>
   );
 }
