@@ -79,11 +79,11 @@ const SentenceMining = ({
   const actualHeaders = headers || {};
 
   const youglishBaseUrl = `https://youglish.com/pronounce/${theAdaptedWord}/${
-    language === "pt"
+    selectedLanguage === "Português"
       ? "portuguese"
-      : language === "en"
+      : selectedLanguage === "Inglês"
         ? "english"
-        : language === "fr"
+        : selectedLanguage === "Francês"
           ? "french"
           : "spanish"
   }`;
@@ -563,7 +563,7 @@ const SentenceMining = ({
                           rel="noopener noreferrer"
                           style={{
                             fontSize: "13px",
-                            marginTop: "15px",
+                            margin: "15px 0",
                             color: "#999",
                             textDecoration: "none",
                           }}
