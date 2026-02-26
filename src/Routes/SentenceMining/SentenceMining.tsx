@@ -64,7 +64,7 @@ const SentenceMining = ({
 
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
-    "Selecione um idioma"
+    "Selecione um idioma",
   );
 
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
@@ -82,10 +82,10 @@ const SentenceMining = ({
     language === "pt"
       ? "portuguese"
       : language === "en"
-      ? "english"
-      : language === "fr"
-      ? "french"
-      : "spanish"
+        ? "english"
+        : language === "fr"
+          ? "french"
+          : "spanish"
   }`;
 
   // Carrega usuário logado e define comportamento diferente para aluno x professor/admin
@@ -115,7 +115,7 @@ const SentenceMining = ({
           `${backDomain}/api/v1/students/${myId}`,
           {
             headers: actualHeaders,
-          }
+          },
         );
         const allUsers = response.data.listOfStudents || response.data;
         setStudents(allUsers);
@@ -149,7 +149,7 @@ const SentenceMining = ({
     if (!word.trim()) {
       notifyAlert(
         "Digite uma palavra ou expressão para minerar.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -161,7 +161,7 @@ const SentenceMining = ({
     ) {
       notifyAlert(
         "Selecione um aluno antes de minerar sentenças.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -170,7 +170,7 @@ const SentenceMining = ({
     if (!selectedStudentId) {
       notifyAlert(
         "Erro ao identificar o aluno. Faça login novamente.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -185,7 +185,7 @@ const SentenceMining = ({
         {
           headers: actualHeaders,
           params: { selectedLanguage, word, difficulty, myId },
-        }
+        },
       );
 
       setAdaptedWord(response.data.adaptedWord);
@@ -207,7 +207,7 @@ const SentenceMining = ({
           sentence: ex.sentence,
           translation: ex.translation,
           added: false,
-        }))
+        })),
       );
 
       onChange(!change);
@@ -215,7 +215,7 @@ const SentenceMining = ({
       console.error(error);
       notifyAlert(
         error?.response?.data?.message || "Error fetching flashcards.",
-        partnerColor()
+        partnerColor(),
       );
     } finally {
       setLoading(false);
@@ -238,7 +238,7 @@ const SentenceMining = ({
       await axios.put(
         `${backDomain}/api/v1/wordoftheday`,
         { newWord },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       alert("Palavra do dia alterada adicionada");
@@ -252,12 +252,12 @@ const SentenceMining = ({
   const addNewCards = async (
     index: number,
     frontText: string,
-    backText: string
+    backText: string,
   ) => {
     if (!selectedStudentId) {
       notifyAlert(
         "Selecione um aluno antes de adicionar o flashcard.",
-        partnerColor()
+        partnerColor(),
       );
       return;
     }
@@ -275,17 +275,17 @@ const SentenceMining = ({
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         { newCards },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       notifyAlert(
         "Card adicionado: " + response.data.addedNewFlashcards,
-        "green"
+        "green",
       );
       onChange(!change);
 
       // Marca o exemplo como "added"
       setExamples((prev) =>
-        prev.map((ex, i) => (i === index ? { ...ex, added: true } : ex))
+        prev.map((ex, i) => (i === index ? { ...ex, added: true } : ex)),
       );
     } catch (error: any) {
       console.log(error);
@@ -467,10 +467,10 @@ const SentenceMining = ({
                   selectedLanguage === "Francês"
                     ? "Choisissez un mot ou une expression en Portugais ou Français ..."
                     : selectedLanguage === "Inglês"
-                    ? `Choose a word or phrase in Portuguese or English...`
-                    : selectedLanguage === "Espanhol"
-                    ? "Elige una palabra o frase en Portugués o Español..."
-                    : "Escolha uma palavra ou expressão..."
+                      ? `Choose a word or phrase in Portuguese or English...`
+                      : selectedLanguage === "Espanhol"
+                        ? "Elige una palabra o frase en Portugués o Español..."
+                        : "Escolha uma palavra ou expressão..."
                 }
                 value={word}
                 disabled={dis}
@@ -529,7 +529,10 @@ const SentenceMining = ({
                     }}
                     disabled={word.trim() === "" || dis}
                   >
-                    ✨ Minerar sentenças (-5)
+                    {thePermissions === "superadmin" ||
+                    thePermissions === "teacher"
+                      ? "✨ Minerar (-5)"
+                      : "Minerar (-10 total points)"}
                   </button>
                 </>
               )}
@@ -605,7 +608,7 @@ const SentenceMining = ({
                                     addNewCards(
                                       index,
                                       example.sentence,
-                                      example.translation
+                                      example.translation,
                                     )
                                   }
                                 >
