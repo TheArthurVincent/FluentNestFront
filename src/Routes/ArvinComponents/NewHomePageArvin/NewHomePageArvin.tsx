@@ -10,7 +10,6 @@ import { HomeworkCard } from "../GridHomePageComponents/HomeworkCard";
 import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
 import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
 import { RankingCard } from "../GridHomePageComponents/RankingCard";
-import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
 import { Birthdays } from "../GridHomePageComponents/Birthdays";
@@ -44,8 +43,6 @@ export function MyHomePage({
   const [studentPicture, setStudentPicture] = useState("");
   const [id, setId] = useState<string>("");
   const [appLoaded, setAppLoaded] = useState<boolean>(false);
-  const [loadingReports, setLoadingReports] = useState<boolean>(true);
-  const [totalPaidSoFar, setTotalPaidSoFar] = useState<number>(0);
   const [showMoney, setShowMoney] = useState<boolean>(false);
 
   const seeScore = async (id: string) => {
@@ -159,32 +156,6 @@ export function MyHomePage({
     },
   ];
 
-  const seeReports = async () => {
-    setLoadingReports(true);
-    const currentDate = new Date();
-    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const currentYear = currentDate.getFullYear();
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/finance-entries/${id}`,
-        {
-          headers: headers ? { ...headers } : {},
-          params: { month: `${currentMonth}-${currentYear}` },
-        },
-      );
-      console.log("Financial reports response:", response.data);
-      setTotalPaidSoFar(response.data.totalPaidSoFar || 0);
-      setLoadingReports(false);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  useEffect(() => {
-    seeReports();
-  }, [id, change]);
-
   const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
     if (PERMISSIONS === "teacher" || PERMISSIONS === "superadmin") {
       return item.showToTeacher;
@@ -227,27 +198,6 @@ export function MyHomePage({
                 justifyContent: "space-between",
               }}
             >
-              {/* <span style={{ position: "relative", display: "inline-block" }}>
-                <i
-                  className="fa fa-search"
-                  style={{
-                    fontSize: "12px",
-                    position: "absolute",
-                    left: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#999",
-                    pointerEvents: "none",
-                  }}
-                />
-                <SearchMaterials
-                  headers={headers}
-                  change={change}
-                  setChange={setChange}
-                  isDesktop={isDesktop}
-                  actualHeaders={actualHeaders}
-                />
-              </span> */}
               {PERMISSIONS == "student" && (
                 <span
                   onClick={() => {
@@ -288,67 +238,13 @@ export function MyHomePage({
                   </span>
                 </span>
               )}
-              {/* {PERMISSIONS !== "student" && (
-                <span
-                  onClick={() => {
-                    seeScore(id);
-                  }}
-                  style={{
-                    display: !loadingReports ? "flex" : "none",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "80px",
-                    padding: "8px 12px",
-                    backgroundColor: `${partnerColor()}20`,
-                    border: `1px solid ${partnerColor()}50`,
-                  }}
-                >
-                  <i
-                    className="fa fa-money"
-                    style={{
-                      fontSize: "12px",
-                      left: "10px",
-                      marginTop: "2px",
-                      top: "50%",
-                      color: partnerColor(),
-                      pointerEvents: "none",
-                    }}
-                  />
-                  <span
-                    onClick={() => setShowMoney(!showMoney)}
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "14px",
-                      color: partnerColor(),
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
-                        color: partnerColor(),
-                        fontStyle: "SemiBold",
-                        fontSize: "14px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                      }}
-                    >
-                      {formatNumber(totalPaidSoFar)}
-                    </span>
-                  </span>
-                </span>
-              )}{" "} */}
               {PERMISSIONS !== "student" && (
                 <span
                   onClick={() => {
                     seeScore(id);
                   }}
                   style={{
-                    display: !loadingReports ? "flex" : "none",
+                    display: "flex",
                     alignItems: "center",
                     gap: "6px",
                     borderRadius: "80px",
@@ -369,25 +265,7 @@ export function MyHomePage({
                       letterSpacing: "0%",
                     }}
                   >
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
-                        color: partnerColor(),
-                        fontStyle: "SemiBold",
-                        fontSize: "14px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                      }}
-                    >
-                      {
-                        <Tokens
-                          id={id}
-                          headers={actualHeaders}
-                          change={change}
-                        />
-                      }
-                    </span>
+                    <Tokens id={id} headers={actualHeaders} change={change} />
                   </span>
                 </span>
               )}
