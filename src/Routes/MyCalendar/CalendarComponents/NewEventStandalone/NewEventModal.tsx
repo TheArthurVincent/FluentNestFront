@@ -238,7 +238,7 @@ function NewEventModal({
         <div
           style={{
             backgroundColor: alwaysWhite(),
-            borderRadius: "12px",
+            borderRadius: "8px",
             padding: "2rem",
             width: "90%",
             maxWidth: "500px",

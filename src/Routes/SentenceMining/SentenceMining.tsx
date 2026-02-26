@@ -332,7 +332,7 @@ const SentenceMining = ({
           margin: !isDesktop ? "12px" : "16px auto",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "12px",
+          borderRadius: "8px",
           border: "1px solid #e8eaed",
           padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
           maxWidth: 960,

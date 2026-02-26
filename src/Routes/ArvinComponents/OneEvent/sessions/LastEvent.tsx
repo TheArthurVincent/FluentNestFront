@@ -103,7 +103,7 @@ const LastClass: FC<LastClassProps> = ({
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 600,
           fontSize: "14px",
-          borderRadius: "12px",
+          borderRadius: "8px",
           margin: !isDesktop ? "12px" : "0px",
           display: "grid",
           gap: 12,

@@ -1010,7 +1010,7 @@ function ArvinLandingPageNew() {
                     <div
                       style={{
                         backgroundColor: "#F3F5F7",
-                        borderRadius: "12px",
+                        borderRadius: "8px",
                         marginBottom: "12px",
                         padding: "4px 12px",
                       }}

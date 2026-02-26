@@ -284,7 +284,7 @@ function LandingPageArvin() {
                     style={{
                       maxWidth: "20vw",
                       height: "auto", // 🔒 garante que não mude a proporção
-                      borderRadius: "12px",
+                      borderRadius: "8px",
                       marginTop: "3rem",
                       boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
                       transform: `rotate(${

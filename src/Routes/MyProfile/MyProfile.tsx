@@ -34,7 +34,7 @@ const styles = {
     gap: "16px",
     padding: "32px",
     backgroundColor: "#ffffff",
-    borderRadius: "12px",
+    borderRadius: "8px",
     border: "1px solid #e8eaed",
     maxWidth: "480px",
     textAlign: "center" as const,
@@ -46,14 +46,14 @@ const styles = {
     backgroundColor: partnerColor(),
     color: "#fff",
     border: "none",
-    borderRadius: "12px",
+    borderRadius: "8px",
     cursor: "pointer",
     transition: "all 0.2s ease",
     textDecoration: "none",
   },
   modernSection: {
     backgroundColor: "#ffffff",
-    borderRadius: "12px",
+    borderRadius: "8px",
     border: "1px solid #e8eaed",
     padding: "24px",
     marginBottom: "16px",
@@ -381,7 +381,7 @@ export function MyProfile({
               style={{
                 background: "#fff",
                 padding: "32px 24px",
-                borderRadius: "12px",
+                borderRadius: "8px",
                 width: "90%",
                 maxWidth: "400px",
               }}
@@ -473,7 +473,7 @@ export function MyProfile({
               style={{
                 background: "#fff",
                 padding: "32px 24px",
-                borderRadius: "12px",
+                borderRadius: "8px",
                 width: "90%",
                 maxWidth: "400px",
               }}
@@ -588,7 +588,7 @@ export function MyProfile({
               style={{
                 background: "#fff",
                 padding: "32px",
-                borderRadius: "12px",
+                borderRadius: "8px",
                 width: "90%",
                 maxWidth: "400px",
                 textAlign: "center",
@@ -798,7 +798,7 @@ export function MyProfile({
                           style={{
                             ...styles.profileValue,
                             padding: "4px 8px",
-                            borderRadius: "12px",
+                            borderRadius: "8px",
                             fontSize: "12px",
                             backgroundColor: user.tutoree
                               ? "#e8f5e8"
@@ -924,7 +924,7 @@ export function MyProfile({
                             style={{
                               ...styles.profileValue,
                               padding: "4px 8px",
-                              borderRadius: "12px",
+                              borderRadius: "8px",
                               fontSize: "12px",
                               backgroundColor: user.askedToCancel
                                 ? "#fff3cd"

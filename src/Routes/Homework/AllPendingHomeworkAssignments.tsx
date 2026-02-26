@@ -242,7 +242,7 @@ export default function AllPendingHomeworkAssignments({
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "12px",
+          borderRadius: "8px",
           width: "95%",
           border: "1px solid #e8eaed",
           padding: "10px",

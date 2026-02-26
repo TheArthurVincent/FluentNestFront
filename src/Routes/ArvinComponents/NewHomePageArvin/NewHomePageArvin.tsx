@@ -4,14 +4,12 @@ import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { Continue } from "../Continue/Continue";
-import { NextClass } from "../GridHomePageComponents/NextClass";
 import { FlashcardsReview } from "../GridHomePageComponents/FlashcardsReview";
 import { PracticalTipsTarget } from "../GridHomePageComponents/PracticalTipsTarget";
 import { HomeworkCard } from "../GridHomePageComponents/HomeworkCard";
 import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
 import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
 import { RankingCard } from "../GridHomePageComponents/RankingCard";
-import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
 import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
@@ -156,19 +154,6 @@ export function MyHomePage({
           studentId={id}
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-        />
-      ),
-    },
-
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: (
-        <RecommendedMaterials
-          studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
         />
       ),
     },

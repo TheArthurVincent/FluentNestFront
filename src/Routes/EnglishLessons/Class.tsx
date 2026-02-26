@@ -2907,7 +2907,7 @@ export default function EnglishClassCourse2({
         fontStyle: "SemiBold",
         fontSize: "14px",
         backgroundColor: "#ffffff",
-        borderRadius: "12px",
+        borderRadius: "8px",
       }}
     >
       {classTitle && !fetchEventData && <Helmets text={classTitle || ""} />}

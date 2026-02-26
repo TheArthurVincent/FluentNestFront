@@ -145,7 +145,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
             width: "100%",
             maxWidth: "560px",
             background: "#fff",
-            borderRadius: "12px",
+            borderRadius: "8px",
             boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
             overflow: "hidden",
           }}
@@ -343,7 +343,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   display: "grid",
                   gap: "8px",
                   border: "1px dashed #e2e8f0",
-                  borderRadius: "10px",
+                  borderRadius: "8px",
                   padding: "10px",
                 }}
               >

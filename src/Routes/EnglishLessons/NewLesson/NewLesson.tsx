@@ -71,7 +71,7 @@ export default function CreateClassButton({
           style={{
             backgroundColor: "white",
             padding: "20px",
-            borderRadius: "10px",
+            borderRadius: "8px",
             width: "90%",
             maxWidth: "400px",
             boxShadow: "0 4px 10px rgba(0,0,0,0.3)",

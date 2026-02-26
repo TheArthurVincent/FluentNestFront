@@ -987,7 +987,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
         <article
           style={{
             display: "grid",
-            gap: 20,
             gridTemplateColumns: isDesktop && event.video ? "1fr 1fr" : "1fr",
           }}
         >

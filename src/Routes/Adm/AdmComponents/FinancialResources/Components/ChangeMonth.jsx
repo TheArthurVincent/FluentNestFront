@@ -120,7 +120,7 @@ export default function MonthPickerModalButton({
           width: "100%",
           maxWidth: "520px",
           backgroundColor: "#fff",
-          borderRadius: "12px",
+          borderRadius: "8px",
           boxShadow: "0 20px 40px rgba(0,0,0,0.25)",
           border: "1px solid #e5e7eb",
           overflow: "hidden",
@@ -146,7 +146,7 @@ export default function MonthPickerModalButton({
             style={{
               border: "1px solid #e5e7eb",
               background: "#fff",
-              borderRadius: "10px",
+              borderRadius: "8px",
               padding: "6px 10px",
               cursor: "pointer",
               color: "#374151",
@@ -218,7 +218,7 @@ export default function MonthPickerModalButton({
             onClick={closeModal}
             style={{
               padding: "10px 14px",
-              borderRadius: "10px",
+              borderRadius: "8px",
               border: "1px solid #e5e7eb",
               background: "#fff",
               cursor: "pointer",
@@ -235,7 +235,7 @@ export default function MonthPickerModalButton({
             disabled={!draftMonth}
             style={{
               padding: "10px 14px",
-              borderRadius: "10px",
+              borderRadius: "8px",
               border: "1px solid #3b82f6",
               background: !draftMonth ? "#93c5fd" : "#3b82f6",
               cursor: !draftMonth ? "not-allowed" : "pointer",

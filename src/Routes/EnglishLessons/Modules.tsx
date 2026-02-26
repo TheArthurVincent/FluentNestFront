@@ -519,7 +519,7 @@ export default function Modules({
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: "14px",
-              borderRadius: "12px",
+              borderRadius: "8px",
               width: isDesktop ? "95%" : "",
             }}
           >

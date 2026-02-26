@@ -310,7 +310,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
-          borderRadius: "12px",
+          borderRadius: "8px",
           margin: !isDesktop ? "12px" : "0px",
           display: "grid",
           gridAutoColumns: "1fr",
