@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import AllStudents from "./AdmComponents/FindStudentAssets/NewStudent";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { alwaysWhite, partnerColor } from "../../Styles/Styles";
-import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import Helmets from "../../Resources/Helmets";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Contract from "./AdmComponents/Contract/Contract";

@@ -12,8 +12,7 @@ import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function ArthurSection({ headers }) {
-  // Troque aqui pela senha que você quiser
-  const ADMIN_ACTIONS_PASSWORD = "56+89-123456789123456789";
+  const ADMIN_ACTIONS_PASSWORD = import.meta.env.VITE_ADMIN_ACTIONS_PASSWORD;
 
   const [resetVisible, setResetVisible] = useState(false);
   const [hasReset, setHasReset] = useState(false);
