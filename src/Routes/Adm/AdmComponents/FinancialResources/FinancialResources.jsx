@@ -56,6 +56,7 @@ import { newArvinTitleStyle } from "../../../ArvinComponents/SearchMaterials/Sea
 import EntriesAndExits from "./Components/EntriesAndExits";
 import MonthPickerModalButton from "./Components/ChangeMonth";
 import FinancialPdfButton from "./Components/FinancialPdfButton";
+import { DonutChartSaidasByItem } from "./Components/CASHOUTFLOW";
 
 export function FinancialResources({ headers, id, plan, isDesktop }) {
   // ===== CONTEXT =====
@@ -1301,16 +1302,38 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             >
                               {item.title}
                             </div>
-                            <div
-                              style={{
-                                fontWeight: "800",
-                                color: item.color,
-                                fontSize: "18px",
-                                marginBottom: "4px",
-                              }}
-                            >
-                              R$ {formatNumber(item.value)}
-                            </div>
+                            {item.title !== "Saídas Esperadas" ? (
+                              <div
+                                style={{
+                                  fontWeight: "800",
+                                  color: item.color,
+                                  fontSize: "18px",
+                                  marginBottom: "4px",
+                                }}
+                              >
+                                R$ {formatNumber(item.value)}
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  margin: "16px auto",
+                                  gap: "16px",
+                                }}
+                              >
+                                <DonutChartSaidasByItem
+                                  financialReports={financialReports}
+                                  size={260} // maior
+                                  strokeWidth={28} // mais grosso (fica mais bonito em tamanhos grandes)
+                                  minSliceFraction={0.004} // opcional (pra não distorcer tanto fatias pequenas)
+                                  onSliceClick={(report) =>
+                                    handleFinancialReportModal(report)
+                                  }
+                                />
+                              </div>
+                            )}
                             {item.subtitle && (
                               <div
                                 style={{
@@ -1325,6 +1348,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                           </div>
                         ))}
                       </div>
+
                       <div
                         style={{
                           display: "grid",
@@ -1371,7 +1395,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       }
 
       .financial-scroll::-webkit-scrollbar {
-        width: 8px;
+        width: 4px;
       }
 
       .financial-scroll::-webkit-scrollbar-track {
@@ -1380,7 +1404,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
 
       .financial-scroll::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 10px;
+        border-radius: 6px;
         transition: background 0.2s ease;
       }
 
@@ -1394,6 +1418,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                   display: "flex",
                                   flexDirection: "column",
                                   gap: "8px",
+                                  paddingRight: "8px",
                                   maxHeight: "400px",
                                   overflowY: "auto",
                                 }}
@@ -1709,7 +1734,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       }
 
       .financial-scroll::-webkit-scrollbar {
-        width: 8px;
+        width: 4px;
       }
 
       .financial-scroll::-webkit-scrollbar-track {
@@ -1718,7 +1743,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
 
       .financial-scroll::-webkit-scrollbar-thumb {
         background: #cbd5e1;
-        border-radius: 10px;
+        border-radius: 6px;
         transition: background 0.2s ease;
       }
 
@@ -1732,6 +1757,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                   display: "flex",
                                   flexDirection: "column",
                                   gap: "8px",
+                                  paddingRight: "8px",
                                   maxHeight: "400px",
                                   overflowY: "auto",
                                 }}

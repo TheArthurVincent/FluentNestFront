@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
+import { partnerColor } from "../../../../../Styles/Styles";
 
 export default function MonthPickerModalButton({
   selectedMonth,
@@ -143,12 +144,11 @@ export default function MonthPickerModalButton({
             type="button"
             onClick={closeModal}
             style={{
-              border: "1px solid #e5e7eb",
+              border: "none",
               background: "#fff",
               borderRadius: "8px",
               padding: "6px 10px",
               cursor: "pointer",
-              color: "#374151",
             }}
           >
             ✕
@@ -226,6 +226,7 @@ export default function MonthPickerModalButton({
               borderRadius: "8px",
               cursor: !draftMonth ? "not-allowed" : "pointer",
               color: "#fff",
+              backgroundColor:  partnerColor(), 
               fontWeight: 700,
             }}
           >
