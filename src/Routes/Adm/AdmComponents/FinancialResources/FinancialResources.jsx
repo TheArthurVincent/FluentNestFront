@@ -1325,9 +1325,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               >
                                 <DonutChartSaidasByItem
                                   financialReports={financialReports}
-                                  size={260} // maior
-                                  strokeWidth={28} // mais grosso (fica mais bonito em tamanhos grandes)
-                                  minSliceFraction={0.004} // opcional (pra não distorcer tanto fatias pequenas)
+                                  size={isDesktop ? 260 : 65} // maior
+                                  strokeWidth={isDesktop ? 28 : 7} // mais grosso (fica mais bonito em tamanhos grandes)
+                                  minSliceFraction={isDesktop ? 0.004 : 0.001} // opcional (pra não distorcer tanto fatias pequenas)
                                   onSliceClick={(report) =>
                                     handleFinancialReportModal(report)
                                   }
