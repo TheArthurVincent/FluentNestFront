@@ -38,6 +38,7 @@ const modalStyle: React.CSSProperties = {
   width: "min(92vw, 520px)",
   background: "#fff",
   borderRadius: 8,
+  maxHeight: "100vh",
   boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
   overflow: "hidden",
   border: "1px solid #e2e8f0",
@@ -258,6 +259,8 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               borderBottom: "1px solid #e2e8f0",
               fontSize: 16,
               fontWeight: 600,
+              maxHeight: "60vh",
+              overflowY: "auto",
               color: "#0f172a",
             }}
           >

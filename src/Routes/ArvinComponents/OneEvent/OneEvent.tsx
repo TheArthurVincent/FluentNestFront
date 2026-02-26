@@ -17,7 +17,6 @@ type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
 };
-type TabType = "dados" | "homework" | "conteudo";
 
 const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -25,7 +24,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
   const [seeReplenish, setSeeReplenish] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedFutureEventId, setSelectedFutureEventId] =
     useState<string>("");
   const [rescheduling, setRescheduling] = useState(false);
@@ -50,38 +48,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     }
   };
 
-  // NOVO: controle de abas  const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<TabType>("dados");
-
-  useEffect(() => {
-    const tabFromUrl = searchParams.get("tab") as TabType | null;
-
-    if (
-      tabFromUrl === "dados" ||
-      tabFromUrl === "conteudo" ||
-      tabFromUrl === "homework"
-    ) {
-      setActiveTab(tabFromUrl);
-    } else {
-      // se não tiver `tab` na URL, garante o default
-      setActiveTab("dados");
-    }
-  }, [searchParams]);
-
-  const handleChangeTab = (tab: TabType) => {
-    setActiveTab(tab);
-    const newParams = new URLSearchParams(searchParams);
-
-    // se quiser SEMPRE explicitar a aba na URL:
-    newParams.set("tab", tab);
-
-    // se quiser que a aba padrão não use ?tab=...
-    // if (tab === "dados") newParams.delete("tab");
-    // else newParams.set("tab", tab);
-
-    setSearchParams(newParams);
-  };
-
   const fetchEventData = async () => {
     setPermissionsUser(
       JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions,
@@ -95,8 +61,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       setEventData(res.data.event);
       console.log(res.data.event);
       setReplicateLastEvent(
-        res.data.event.replicateLastEvent &&
-          res.data.event.category !== "Established Group Class",
+        res.data.event.replicateLastEvent 
+        // &&  res.data.event.category !== "Established Group Class",
       );
     } catch (err) {
       console.error("Error fetching event data", err);
@@ -647,205 +613,118 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
         {event && event.category !== "Marcar Reposição" && (
           <>
-            {/* ABAS */}
+            {(event.homeworkDetails || permissionsUser !== "student") && (
+              <>
+                <HomeworkClass
+                  homeworkID={event.homeworkID}
+                  homeworkData={event.homeworkDetails?.description || ""}
+                  homeworkAnswer={event.homeworkDetails?.answers || ""}
+                  headers={headers}
+                  evendId={event._id}
+                  event={event}
+                  isDesktop={isDesktop}
+                  fetchEventData={fetchEventData}
+                  allowedToEdit={permissionsUser !== "student"}
+                  allowedToAnswer={permissionsUser === "student"} // ou true
+                />
+              </>
+            )}
             <div
               style={{
-                display: "flex",
-                gap: 8,
-                borderBottom: "1px solid #e2e8f0",
-                marginBottom: 4,
+                display: "grid",
+                gap: 12,
+                gridTemplateColumns: "1fr",
               }}
             >
-              <button
-                onClick={() => handleChangeTab("dados")}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: 13,
-                  borderRadius: 0,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  border: "none",
-                  background: "transparent",
-                  color: activeTab === "dados" ? partnerColor() : "#64748B",
-                  outline: "none",
-                }}
-              >
-                Conteúdo da Aula
-              </button>
-              <button
-                onClick={() => handleChangeTab("homework")}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  borderRadius: 0,
-                  cursor: "pointer",
-                  border: "none",
-                  background: "transparent",
-                  color: activeTab === "homework" ? partnerColor() : "#64748B",
-                  outline: "none",
-                }}
-              >
-                Lição de Casa e Exercícios
-              </button>
+              <MainInfoClass
+                event={event}
+                headers={headers}
+                permissionsUser={permissionsUser}
+                isDesktop={isDesktop}
+                fetchEventData={fetchEventData}
+                evendId={event._id}
+                allowedToEdit={permissionsUser !== "student"}
+                theDescription={event.description}
+                theTeacherDescription={event.teacherDescription}
+                lesson={event.theLesson}
+                status={event.status}
+                title={event.student || "Aluno particular"}
+              />
             </div>
-
-            {/* ABA: DADOS DA AULA */}
-            {activeTab === "dados" && (
-              <>
-                <div
-                  style={{
-                    display: "grid",
-                    gap: 12,
-                    gridTemplateColumns: "1fr",
-                  }}
-                >
-                  <MainInfoClass
-                    event={event}
-                    headers={headers}
-                    permissionsUser={permissionsUser}
-                    isDesktop={isDesktop}
-                    fetchEventData={fetchEventData}
-                    evendId={event._id}
-                    allowedToEdit={permissionsUser !== "student"}
-                    theDescription={event.description}
-                    theTeacherDescription={event.teacherDescription}
-                    lesson={event.theLesson}
-                    status={event.status}
-                    title={event.student || "Aluno particular"}
-                  />
-                </div>
-                <LessonContent
+            <LessonContent
+              headers={headers}
+              fetchEventData={fetchEventData}
+              permissionsUser={permissionsUser}
+              seeExercise={false}
+              date={event.date}
+              theLessonRender={event.theLessonRender}
+              eventId={event._id}
+              studentID={event.studentID}
+              studentsIds={event.listOfStudents.map((a: any) => a._id)}
+            />
+            {(event.board || permissionsUser !== "student") && (
+              <div
+                style={{
+                  height: "fit-content",
+                  maxHeight: isDesktop ? "90vw" : "none",
+                  zIndex: 5, // garante sobreposição
+                }}
+              >
+                <Board
+                  allowedToEdit={permissionsUser !== "student"}
                   headers={headers}
-                  fetchEventData={fetchEventData}
-                  permissionsUser={permissionsUser}
-                  seeExercise={false}
-                  date={event.date}
-                  theLessonRender={event.theLessonRender}
-                  eventId={event._id}
-                  studentID={event.studentID}
-                  studentsIds={event.listOfStudents.map((a: any) => a._id)}
+                  theBoard={event.board}
+                  evendId={event._id}
                 />
-                {(event.board || permissionsUser !== "student") && (
-                  <div
-                    style={{
-                      height: "fit-content",
-                      maxHeight: isDesktop ? "90vw" : "none",
-                      zIndex: 5, // garante sobreposição
-                    }}
-                  >
-                    <Board
-                      allowedToEdit={permissionsUser !== "student"}
-                      headers={headers}
-                      theBoard={event.board}
-                      evendId={event._id}
-                    />
-                  </div>
-                )}
-                {lastLesson && permissionsUser !== "student" && (
-                  <LastClass
-                    replicateLastEvent={replicateLastEvent}
-                    headers={headers}
-                    evendId={event._id}
-                    allowedToEdit={permissionsUser !== "student"}
-                    isDesktop={isDesktop}
-                    lastLesson={lastLesson}
-                  />
-                )}
-              </>
+              </div>
             )}
-            {activeTab === "homework" && (
-              <>
-                <div
-                  style={{
-                    paddingLeft: isDesktop ? 12 : 0,
-                    overflowY: "visible",
-                    display: "grid",
-                    gap: 12,
-                  }}
-                >
-                  {(event.homeworkDetails || permissionsUser !== "student") && (
-                    <>
-                      <HomeworkClass
-                        homeworkID={event.homeworkID}
-                        homeworkData={event.homeworkDetails?.description || ""}
-                        homeworkAnswer={event.homeworkDetails?.answers || ""}
-                        headers={headers}
-                        evendId={event._id}
-                        event={event}
-                        isDesktop={isDesktop}
-                        fetchEventData={fetchEventData}
-                        allowedToEdit={permissionsUser !== "student"}
-                        allowedToAnswer={permissionsUser === "student"} // ou true
-                      />
 
-                      {/* <HomeworkAnswer
-                        headers={headers}
-                        fetchEventData={fetchEventData}
-                        allowedToEdit={true} // aluno
-                        homeworkID={event.homeworkID} // ID do homework
-                        homeworkDescription={
-                          event?.homeworkDetails?.description || ""
-                        }
-                        homeworkAnswer={event?.homeworkDetails?.answer || ""}
-                      /> */}
-                    </>
-                  )}
-                  {(event.theLessonRender || permissionsUser !== "student") && (
-                    <LessonContent
-                      headers={headers}
-                      permissionsUser={permissionsUser}
-                      fetchEventData={fetchEventData}
-                      date={event.date}
-                      seeExercise={true}
-                      theLessonRender={event.theLessonRender}
-                      eventId={event._id}
-                      studentID={event.studentID}
-                    />
-                  )}
-                </div>
-              </>
+            {lastLesson && permissionsUser !== "student" && (
+              <LastClass
+                replicateLastEvent={replicateLastEvent}
+                headers={headers}
+                evendId={event._id}
+                allowedToEdit={permissionsUser !== "student"}
+                isDesktop={isDesktop}
+                lastLesson={lastLesson}
+              />
+            )}
+            {event && permissionsUser !== "student" && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <button
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: partnerColor(),
+                    maxWidth: "fit-content",
+                    maxHeight: "fit-content",
+                    padding: "6px 12px",
+                  }}
+                  onClick={() =>
+                    window.location.assign(
+                      `/my-calendar/event/${lastLesson._id}`,
+                    )
+                  }
+                >
+                  <i className="fa fa-arrow-left" />
+                  Aula anterior
+                </button>
+                <DeleteClass
+                  headers={headers}
+                  evendId={event._id}
+                  allowedToEdit={permissionsUser !== "student"}
+                  isDesktop={isDesktop}
+                  lastLesson={lastLesson}
+                />
+              </div>
             )}
           </>
-        )}
-
-        {event && permissionsUser !== "student" && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-evenly",
-            }}
-          >
-            <button
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                color: partnerColor(),
-                maxWidth: "fit-content",
-                maxHeight: "fit-content",
-                padding: "6px 12px",
-              }}
-              onClick={() =>
-                window.location.assign(`/my-calendar/event/${lastLesson._id}`)
-              }
-            >
-              <i
-                style={{
-                  marginTop: 3,
-                }}
-                className="fa fa-arrow-left"
-              />
-              Aula anterior
-            </button>
-            <DeleteClass
-              headers={headers}
-              evendId={event._id}
-              allowedToEdit={permissionsUser !== "student"}
-              isDesktop={isDesktop}
-              lastLesson={lastLesson}
-            />
-          </div>
         )}
       </div>
     </div>

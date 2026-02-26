@@ -82,14 +82,6 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       link: "/flash-cards",
     },
     {
-      id: "listening",
-      title: UniversalTexts.listening,
-      description: UniversalTexts.pratique,
-      display: isArthurVincent ? "flex" : "none",
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/listeningssss?updatedAt=1756841095374",
-      link: "/listening",
-    },
-    {
       id: "my-homework-and-lessons",
       title: UniversalTexts.homeworkAndLessons,
       description: UniversalTexts.homeworkAndLessonsDescription,

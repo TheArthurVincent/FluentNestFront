@@ -16,6 +16,7 @@ import { cardBase } from "../types/studentPage.styles";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
+  idFromOtherPlace?: string;
 };
 
 interface EventFromApi {
@@ -133,7 +134,7 @@ function ModalInBody({
         alignItems: "center",
         justifyContent: "center",
         padding: 16,
-        zIndex: 9999,
+        zIndex: 99999,
       }}
     >
       <div
@@ -190,15 +191,17 @@ function ModalInBody({
         <div style={{ padding: 16 }}>{children}</div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
 
 export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   headers,
   isDesktop,
+  idFromOtherPlace,
 }) => {
   const { studentId } = useParams<{ studentId: string }>();
+  const theOfficialId = idFromOtherPlace || studentId;
 
   const [eventsList, setEventsList] = useState<EventFromApi[]>([]);
   const [homeworkByEvent, setHomeworkByEvent] = useState<
@@ -218,7 +221,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
-    if (!studentId) return;
+    if (!theOfficialId) return;
 
     setLoadingEventsList(true);
     setEventsList([]);
@@ -226,8 +229,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
     try {
       const response = await axios.get<EventsResponse>(
-        `${backDomain}/api/v1/event-one-student-pag/${studentId}`,
-        { headers: headers as any }
+        `${backDomain}/api/v1/event-one-student-pag/${theOfficialId}`,
+        { headers: headers as any },
       );
 
       setStudentName(response.data.studentName || "");
@@ -245,10 +248,10 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
   };
 
   useEffect(() => {
-    if (!studentId) return;
+    if (!theOfficialId) return;
     handleSeeClassesHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [studentId]);
+  }, [theOfficialId]);
 
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "-";
@@ -381,15 +384,15 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       s == "desmarcado"
         ? "rgba(255, 221, 221, 0.41)"
         : s == "marcado"
-        ? "#cbd6f388"
-        : `${partnerColor()}20`;
+          ? "#cbd6f388"
+          : `${partnerColor()}20`;
 
     const statusColor =
       s == "desmarcado"
         ? "rgba(220, 38, 38, 0.8)"
         : s == "marcado"
-        ? "#1e40af"
-        : partnerColor();
+          ? "#1e40af"
+          : partnerColor();
 
     return (
       <span
@@ -443,7 +446,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         }}
       >
         <a
-          href={`/students/${studentId}`}
+          href={`/students/${theOfficialId}`}
           target="_blank"
           rel="noreferrer"
           style={{
@@ -616,8 +619,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     event.status == "desmarcado"
                       ? `Aula desmarcada de ${event.student}`
                       : event.lessonTitle
-                      ? event.lessonTitle
-                      : " Aula Individual"
+                        ? event.lessonTitle
+                        : " Aula Individual"
                   }`}
                 >
                   <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -632,8 +635,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                         {event.status == "desmarcado"
                           ? `Aula desmarcada de ${event.student}`
                           : event.lessonTitle
-                          ? event.lessonTitle
-                          : `Aula individual de ${event.student}`}
+                            ? event.lessonTitle
+                            : `Aula individual de ${event.student}`}
                       </span>
                     </div>
 
@@ -666,7 +669,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                             }}
                           >
                             {categoryList.find(
-                              (cat) => cat.value === event.category
+                              (cat) => cat.value === event.category,
                             )?.text || event.category}
                           </div>
                         )}
@@ -811,7 +814,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                     }}
                   >
                     {categoryList.find(
-                      (cat) => cat.value === selectedEvent.category
+                      (cat) => cat.value === selectedEvent.category,
                     )?.text || selectedEvent.category}
                   </span>
                 )}

@@ -133,13 +133,6 @@ export const TopBar: FC = () => {
       isLearning: true,
     },
     {
-      title: UniversalTexts.listening,
-      endpoint: "/listening",
-      icon: "assistive-listening-systems",
-      display: isArvin ? "none" : "block",
-      isLearning: true,
-    },
-    {
       title: UniversalTexts.vocabulary,
       endpoint: "/sentence-mining",
       icon: "search",

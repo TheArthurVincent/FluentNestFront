@@ -445,19 +445,6 @@ export default function SentenceLessonModel({
 
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <button
-                    style={tabBtn(activeTab === "dictation")}
-                    onClick={() => setActiveTab("dictation")}
-                  >
-                    Dictation
-                  </button>
-                  <button
-                    style={tabBtn(activeTab === "listening")}
-                    onClick={() => setActiveTab("listening")}
-                  >
-                    Listening
-                  </button>
-
-                  <button
                     onClick={() => setShowExercisesModal(false)}
                     style={{
                       border: "none",
@@ -485,20 +472,6 @@ export default function SentenceLessonModel({
                   courseId={effectiveCourseId}
                   exerciseScore={(points, desc) => {
                     exerciseScore?.(points, desc || "Dictation", element?._id);
-                  }}
-                />
-              )}
-
-              {activeTab === "listening" && (
-                <LessonListeningExercise
-                  sentences={exercisePool}
-                  studentId={studentId}
-                  labels={defaultLabels}
-                  selectedVoice={selectedVoice}
-                  language={effectiveLanguage}
-                  courseId={effectiveCourseId}
-                  exerciseScore={(points, desc) => {
-                    exerciseScore?.(points, desc || "Listening", element?._id);
                   }}
                 />
               )}

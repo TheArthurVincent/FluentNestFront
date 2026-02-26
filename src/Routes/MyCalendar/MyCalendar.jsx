@@ -72,69 +72,166 @@ function EventPreviewModal({ event, onClose }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.55)",
+        background: "rgba(17, 24, 39, 0.65)",
+        backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        padding: "20px",
         zIndex: 999999,
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "500px",
-          maxWidth: "90vw",
-          background: "#fff",
-          borderRadius: "12px",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+          width: "520px",
+          maxWidth: "95vw",
+          background: "#ffffff",
+          borderRadius: "20px",
+          border: "1px solid #E5E7EB",
+          boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
+          overflow: "hidden",
+          fontFamily: "Plus Jakarta Sans",
+          animation: "fadeIn 0.2s ease-out",
         }}
       >
-        <div onClick={(e) => console.log(event)} style={{ padding: "20px" }}>
-          <h2>
+        {/* Header */}
+        <div
+          style={{
+            padding: "18px 22px",
+            borderBottom: "1px solid #EEF2F7",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "linear-gradient(180deg,#F9FAFB 0%,#FFFFFF 100%)",
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "16px",
+              fontWeight: 900,
+              color: "#111827",
+              letterSpacing: "-0.3px",
+            }}
+          >
             {event.groupName || event.student || event.description || "Event"}
           </h2>
 
-          <p>
-            <strong>Data:</strong> {event.date.toString().split("GMT")[0]}
-          </p>
-
-          <p>
-            <strong>Horário:</strong> {event.time}
-          </p>
-
-          <p
+          <button
+            onClick={onClose}
             style={{
-              color:
-                event.status === "realizada"
-                  ? "green"
-                  : event.status === "desmarcado"
-                    ? "red"
-                    : "blue",
+              border: "1px solid #E5E7EB",
+              background: "#fff",
+              borderRadius: "999px",
+              width: "32px",
+              height: "32px",
+              cursor: "pointer",
+              fontWeight: 900,
             }}
           >
-            <strong>Status:</strong> {event.status}
-          </p>
+            ×
+          </button>
+        </div>
 
-          <div style={{ marginTop: "20px" }}>
-            <button onClick={onClose}>Fechar</button>
+        {/* Body */}
+        <div style={{ padding: "22px", display: "grid", gap: "14px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "100px 1fr",
+              fontSize: "13px",
+              gap: "8px",
+            }}
+          >
+            <strong style={{ color: "#111827" }}>Data</strong>
+            <span style={{ color: "#4B5563" }}>
+              {formatDateBr(new Date(event.date))}
+            </span>
 
-            <a
-              href={`/my-calendar/event/${event._id}`}
-              target="_blank"
+            <strong style={{ color: "#111827" }}>Horário</strong>
+            <span style={{ color: "#4B5563" }}>{event.time}</span>
+
+            <strong style={{ color: "#111827" }}>Status</strong>
+            <span
               style={{
-                padding: "10px 15px",
-                background: partnerColor(),
-                color: "#fff",
-                marginLeft: "10px",
-                borderRadius: "5px",
-                textDecoration: "none",
-                display: "inline-block",
-                textAlign: "center",
+                fontWeight: 800,
+                color:
+                  event.status === "realizada"
+                    ? partnerColor()
+                    : event.status === "desmarcado"
+                      ? "rgba(220,38,38,0.9)"
+                      : "#2563EB",
               }}
             >
-              Ir para o evento
-            </a>
+              {event.status}
+            </span>
           </div>
+
+          {event.link && event.status == "marcado" && (
+            <a
+              href={event.link}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                fontSize: "13px",
+                fontWeight: 700,
+                color: partnerColor(),
+                textDecoration: "none",
+                border: `1px solid ${partnerColor()}40`,
+                padding: "10px 12px",
+                borderRadius: "10px",
+                textAlign: "center",
+                background: `${partnerColor()}10`,
+              }}
+            >
+              Abrir link da aula
+            </a>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            padding: "16px 22px",
+            borderTop: "1px solid #EEF2F7",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "10px",
+          }}
+        >
+          <button
+            onClick={onClose}
+            style={{
+              padding: "8px 14px",
+              borderRadius: "999px",
+              border: "1px solid #E5E7EB",
+              background: "#fff",
+              cursor: "pointer",
+              fontWeight: 800,
+            }}
+          >
+            Fechar
+          </button>
+
+          <a
+            href={`/my-calendar/event/${event._id}`}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              padding: "8px 16px",
+              borderRadius: "9px",
+              background: partnerColor(),
+              color: "#fff",
+              textDecoration: "none",
+              fontWeight: 900,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Abrir Evento
+          </a>
         </div>
       </div>
     </div>

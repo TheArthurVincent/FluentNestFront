@@ -222,7 +222,7 @@ export default function DialogueEditor({
 
     if (!dialogue.length) {
       console.warn(
-        "IA (dialogue) não reconheceu lista de falas. Retorne string[], { dialogue: string[] } ou um texto com quebras de linha."
+        "IA (dialogue) não reconheceu lista de falas. Retorne string[], { dialogue: string[] } ou um texto com quebras de linha.",
       );
       return;
     }

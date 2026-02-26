@@ -337,19 +337,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       levelcard: true,
-      title: "Listening",
-      showLeftBar: true,
-      component: (
-        <Listening
-          change={change}
-          onChange={setChange}
-          headers={headers}
-          isDesktop={isDesktop}
-        />
-      ),
-    },
-    {
-      levelcard: true,
       title: "Finance",
       showLeftBar: true,
       component: (
