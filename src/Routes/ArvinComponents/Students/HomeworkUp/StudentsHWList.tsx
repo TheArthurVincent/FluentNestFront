@@ -5,6 +5,8 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { Link } from "react-router-dom";
 import NewStudentModal from "../NewStudent/NewStudent";
+import { CircularProgress } from "@mui/material";
+import { partnerColor } from "../../../../Styles/Styles";
 
 type ListOfStudentsHWToClickProps = HeadersProps & {
   change?: boolean;
@@ -51,7 +53,7 @@ export function ListOfStudentsHWToClick({
         `${backDomain}/api/v1/students-ids/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
 
       setStudents(response.data.listOfStudents || response.data || []);
@@ -88,6 +90,23 @@ export function ListOfStudentsHWToClick({
 
   const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
 
+  if (loading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "200px",
+        }}
+      >
+        <CircularProgress
+          style={{
+            color: partnerColor(),
+          }}
+        />
+      </div>
+    );
   return (
     <div
       style={{

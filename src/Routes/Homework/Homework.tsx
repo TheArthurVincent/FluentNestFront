@@ -39,22 +39,14 @@ export default function Homework({
 }: HWProps) {
   const { studentId } = useParams<{ studentId: string }>();
 
-  const [isGroupClass, setIsGroupClass] = useState<boolean>(false);
-  const [both, setBoth] = useState<boolean>(true);
   const [tutoringList, setTutoringList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  // paginação (se for usar no futuro)
-  const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
 
   const [ID, setID] = useState<string>("");
   const [disabled, setDisabled] = useState<boolean>(false);
   const [myPermissions, setPermissions] = useState<string>("");
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [type, setType] = useState<number>(1);
   const [uploading, setUploading] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -65,30 +57,14 @@ export default function Homework({
     "file",
   );
   const [homeworkAnswer, setHomeworkAnswer] = useState<string>("");
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const [studentName, setStudentName] = useState<string>("");
-  const [tabValue, setTabValue] = useState(0);
 
   const { UniversalTexts } = useUserContext();
 
   const actualHeaders = headers || {};
   const pointsMadeHW = listOfCriteria[0].score[0].score;
   const pointsLateHW = listOfCriteria[0].score[1].score;
-
-  function normalizeCategory(v?: string) {
-    return (v || "").toLowerCase().trim();
-  }
-  function isGroupCat(cat?: string) {
-    const c = normalizeCategory(cat);
-    return [
-      "group class",
-      "groupclass",
-      "group-class",
-      "turma",
-      "grupo",
-    ].includes(c);
-  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -239,29 +215,6 @@ export default function Homework({
     }
   };
 
-  const openSubmissionModal = (
-    homeworkId: string,
-    homeworkDescription?: string,
-    preferredMode?: "file" | "editor",
-  ) => {
-    setSelectedHomeworkId(homeworkId);
-    setSelectedHomeworkContent(homeworkDescription || "");
-    setHomeworkAnswer(homeworkDescription || "");
-
-    if (preferredMode) {
-      setSubmissionMode(preferredMode);
-    }
-
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (homeworkId: string, homeworkDescription?: string) => {
-    setSelectedHomeworkId(homeworkId);
-    setSelectedHomeworkContent(homeworkDescription || "");
-    setHomeworkAnswer(homeworkDescription || "");
-    setIsEditModalOpen(true);
-  };
-
   const closeSubmissionModal = () => {
     setIsModalOpen(false);
     setIsEditModalOpen(false);
@@ -274,7 +227,6 @@ export default function Homework({
 
   const fetchHW = async (targetStudentId: string) => {
     setLoading(true);
-    setType(1);
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/homework/${targetStudentId}`,
@@ -285,8 +237,6 @@ export default function Homework({
       const tt = response.data.tutoringHomeworkList || [];
       setTutoringList(tt);
       setStudentName(response.data.studentName || "");
-      setBoth(true);
-      setIsGroupClass(false);
       setLoading(false);
     } catch (error) {
       console.log(error, "erro ao listar homework");
@@ -298,9 +248,6 @@ export default function Homework({
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const { id, permissions } = getLoggedUser;
     setID(id);
-    setBoth(true);
-    setIsGroupClass(false);
-
     updateInfo(id, actualHeaders);
     setPermissions(permissions);
   }, []);
