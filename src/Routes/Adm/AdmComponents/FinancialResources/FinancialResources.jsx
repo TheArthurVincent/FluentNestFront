@@ -187,6 +187,46 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
     whiteSpace: "nowrap",
   };
 
+  const parseUrlMonthToMMYYYY = (urlMonth) => {
+    // Espera "YYYY-MM"
+    if (!urlMonth || typeof urlMonth !== "string") return null;
+
+    const m = urlMonth.match(/^(\d{4})-(\d{2})$/);
+    if (!m) return null;
+
+    const year = m[1];
+    const month = m[2];
+
+    const monthNum = Number(month);
+    if (monthNum < 1 || monthNum > 12) return null;
+
+    return `${month}-${year}`; // "MM-YYYY"
+  };
+
+  const toUrlMonthYYYYMM = (mmYYYY) => {
+    // Espera "MM-YYYY"
+    if (!mmYYYY || typeof mmYYYY !== "string") return null;
+
+    const m = mmYYYY.match(/^(\d{2})-(\d{4})$/);
+    if (!m) return null;
+
+    const month = m[1];
+    const year = m[2];
+
+    const monthNum = Number(month);
+    if (monthNum < 1 || monthNum > 12) return null;
+
+    return `${year}-${month}`; // "YYYY-MM"
+  };
+
+  const setMonthInUrl = (mmYYYY) => {
+    const yyyyMM = toUrlMonthYYYYMM(mmYYYY);
+    if (!yyyyMM) return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set("month", yyyyMM);
+    window.history.replaceState({}, "", url.toString());
+  };
   // ===== HANDLER FUNCTIONS =====
   const handleChangeEdit = (event, newValue) => {
     setValue(newValue);
@@ -887,7 +927,14 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
 
   // ===== USEEFFECTS =====
   useEffect(() => {
-    seeReports(currentMonthYear);
+    const params = new URLSearchParams(window.location.search);
+    const monthFromUrl = params.get("month"); // "YYYY-MM"
+
+    const monthMMYYYY = parseUrlMonthToMMYYYY(monthFromUrl) || currentMonthYear;
+
+    setSelectedMonth(monthMMYYYY);
+    seeReports(monthMMYYYY);
+
     fetchStudents();
     getAllCosts();
     seeMyFirstMonth();
@@ -895,12 +942,17 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
 
   // Atualizar selectedMonth quando myFirstMonth for carregado (para garantir que seja o mês atual como padrão)
   useEffect(() => {
-    if (myFirstMonth) {
-      // Manter o mês atual como padrão, mas permitir que o select tenha todas as opções disponíveis
+    if (!myFirstMonth) return;
+
+    // se já existe month no URL, não sobrescreve
+    const params = new URLSearchParams(window.location.search);
+    const monthFromUrl = params.get("month");
+    const monthMMYYYY = parseUrlMonthToMMYYYY(monthFromUrl);
+
+    if (!monthMMYYYY) {
       setSelectedMonth(currentMonthYear);
     }
   }, [myFirstMonth]);
-
   // Dados do resumo financeiro
   const calculateFinancialData = () => {
     // Verificação de segurança para evitar erros quando financialReports é undefined
@@ -1209,7 +1261,9 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       { align: "center" },
     );
   }
-
+  useEffect(() => {
+    setMonthInUrl(selectedMonth);
+  }, [selectedMonth]);
   // ===== RENDER =====
   return (
     <div
