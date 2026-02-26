@@ -226,7 +226,7 @@ export default function MonthPickerModalButton({
               borderRadius: "8px",
               cursor: !draftMonth ? "not-allowed" : "pointer",
               color: "#fff",
-              backgroundColor:  partnerColor(), 
+              backgroundColor: partnerColor(),
               fontWeight: 700,
             }}
           >
