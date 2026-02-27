@@ -116,7 +116,51 @@ function ModalPortal({
   return ReactDOM.createPortal(children, document.body);
 }
 
+/** ===================== LIMITES ===================== */
 const MAX_BLOCKS = 10;
+
+/** ===================== TAGS (VOCABULARY → TAGS) ===================== */
+const normalizeTag = (t: string) =>
+  String(t || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/^["'`]+|["'`]+$/g, "");
+
+const extractVocabularyTags = (els: ElementItem[]) => {
+  const out: string[] = [];
+
+  for (const el of els || []) {
+    if (!el || el.type !== "vocabulary") continue;
+
+    const arr = Array.isArray((el as any).sentences)
+      ? (el as any).sentences
+      : [];
+    for (const item of arr) {
+      const en = normalizeTag(item?.english);
+      const pt = normalizeTag(item?.portuguese);
+
+      if (en) out.push(en);
+      if (pt) out.push(pt);
+    }
+  }
+
+  // remove vazios
+  return out.filter(Boolean);
+};
+
+const mergeUniqueTags = (current: string[], incoming: string[]) => {
+  const set = new Set(current);
+  const next = [...current];
+
+  for (const t of incoming) {
+    if (!set.has(t)) {
+      set.add(t);
+      next.push(t);
+    }
+  }
+
+  return next;
+};
 
 export default function EditLesson({
   classId,
@@ -165,6 +209,13 @@ export default function EditLesson({
       const { order: _ignored, _id: _ignoredId, ...rest } = el || {};
       return rest as ElementItem;
     });
+  };
+
+  const enforceMaxBlocks = (arr: ElementItem[]) => {
+    if (!Array.isArray(arr)) return [];
+    if (arr.length <= MAX_BLOCKS) return arr;
+    // se por qualquer motivo tiver mais, exclui os últimos
+    return arr.slice(0, MAX_BLOCKS);
   };
 
   const buildSnapshot = (data?: {
@@ -263,21 +314,16 @@ export default function EditLesson({
   }, [open, openAIGenerator, isDirty]);
 
   // -----------------------------
-  // LIMIT: 10 blocos
+  // LIMIT: 10 blocos (UI + proteção)
   // -----------------------------
   const blockCount = elements.length;
   const isAtBlockLimit = blockCount >= MAX_BLOCKS;
 
-  const enforceMaxBlocks = (arr: ElementItem[]) => {
-    if (!Array.isArray(arr)) return [];
-    if (arr.length <= MAX_BLOCKS) return arr;
-    // se por qualquer motivo tiver mais, exclui os últimos
-    return arr.slice(0, MAX_BLOCKS);
-  };
-
+  // Se por qualquer motivo vier > MAX, corta e avisa
   useEffect(() => {
     if (!open) return;
     if (!Array.isArray(elements)) return;
+
     if (elements.length > MAX_BLOCKS) {
       setElements((prev) => enforceMaxBlocks(prev));
       notifyAlert(
@@ -287,6 +333,39 @@ export default function EditLesson({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, elements.length]);
+
+  // -----------------------------
+  // TAGS: botão “Scan Vocabulary → Tags”
+  // -----------------------------
+  const handleScanVocabularyToTags = () => {
+    const generated = extractVocabularyTags(elements);
+
+    if (!generated.length) {
+      notifyAlert(
+        "Nenhuma tag encontrada em blocos de Vocabulary.",
+        partnerColor(),
+      );
+      return;
+    }
+
+    const uniqueGenerated = Array.from(new Set(generated));
+    const before = tags.length;
+
+    const merged = mergeUniqueTags(tags, uniqueGenerated);
+    setTags(merged);
+
+    const added = merged.length - before;
+
+    if (added <= 0) {
+      notifyAlert(
+        "Nenhuma tag nova para adicionar (todas já existiam).",
+        partnerColor(),
+      );
+      return;
+    }
+
+    notifyAlert(`Tags adicionadas: ${added}`, partnerColor());
+  };
 
   // -----------------------------
   // IA: título e descrição
@@ -399,7 +478,6 @@ export default function EditLesson({
         elements: limited,
       });
 
-      // aviso se veio maior do backend
       if (sanitized.length > MAX_BLOCKS) {
         notifyAlert(
           `Esta aula suporta no máximo ${MAX_BLOCKS} blocos. Os excedentes foram removidos ao carregar.`,
@@ -417,7 +495,6 @@ export default function EditLesson({
     }
   };
 
-  // Recarrega quando change sinaliza atualização (mantém modal aberto)
   useEffect(() => {
     if (!open) return;
     if (!classId) return;
@@ -458,7 +535,9 @@ export default function EditLesson({
       const res = await axios.put(
         `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        { headers },
+        {
+          headers,
+        },
       );
 
       const updated: ClassDetails =
@@ -734,15 +813,13 @@ export default function EditLesson({
       return;
     }
 
-    const { elements: imported } = info;
+    const imported = info?.elements || [];
 
     setElements((prev) => {
-      const cleanImported: ElementItem[] = (imported || []).map(
-        (plain: any) => {
-          const { _id, order, ...rest } = plain;
-          return rest as ElementItem;
-        },
-      );
+      const cleanImported: ElementItem[] = imported.map((plain: any) => {
+        const { _id, order, ...rest } = plain;
+        return rest as ElementItem;
+      });
 
       const merged = [...prev, ...cleanImported];
       const limited = enforceMaxBlocks(merged);
@@ -1028,9 +1105,6 @@ export default function EditLesson({
 
                 {/* METADADOS */}
                 <div style={{ ...subtleCard, marginBottom: 12 }}>
-                  {/* ... (sem mudanças no seu bloco de metadados) ... */}
-                  {/* ===== MANTIVE EXATAMENTE O QUE VOCÊ TINHA AQUI ===== */}
-                  {/* Para não poluir, deixei o resto igual ao seu original (abaixo segue tudo). */}
                   <div
                     style={{
                       display: "grid",
@@ -1099,11 +1173,32 @@ export default function EditLesson({
 
                   {!fetchEventData && (
                     <div style={{ marginBottom: 12 }}>
-                      <TagsEditor
-                        value={tags}
-                        onChange={setTags}
-                        helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
-                      />
+                      <div style={{ display: "grid", gap: 10 }}>
+                        <TagsEditor
+                          value={tags}
+                          onChange={setTags}
+                          helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+                        />
+
+                        <button
+                          type="button"
+                          onClick={handleScanVocabularyToTags}
+                          style={{
+                            borderRadius: 12,
+                            border: "1px solid #e2e8f0",
+                            background: "#fff",
+                            color: "#0f172a",
+                            padding: "10px 12px",
+                            cursor: "pointer",
+                            fontSize: 13,
+                            fontWeight: 900,
+                            width: "fit-content",
+                          }}
+                          title="Escaneia todos os blocos Vocabulary e cria tags com english + portuguese"
+                        >
+                          Gerar tags do Vocabulary
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -1294,7 +1389,7 @@ export default function EditLesson({
                     </button>
                   </div>
 
-                  {/* ✅ aviso de limite */}
+                  {/* aviso de limite */}
                   <div style={limitNoticeStyle}>
                     <span>
                       Esta aula comporta no máximo <strong>{MAX_BLOCKS}</strong>{" "}
@@ -1314,18 +1409,20 @@ export default function EditLesson({
                       flexWrap: "wrap",
                     }}
                   >
+                    <ImportElementsEditor
+                      lessonId={classId}
+                      studentId={studentId}
+                      setTheLanguage={setTheLanguage}
+                      theLanguage={theLanguage}
+                      headers={headers}
+                      onChange={handleImportChange}
+                      fetchEventData={fetchEventData}
+                      maxElementsToImport={Math.max(
+                        0,
+                        MAX_BLOCKS - elements.length,
+                      )}
+                    />
 
-<ImportElementsEditor
-  lessonId={classId}
-  studentId={studentId}
-  setTheLanguage={setTheLanguage}
-  theLanguage={theLanguage}
-  headers={headers}
-  onChange={handleImportChange}
-  fetchEventData={fetchEventData}
-  maxElementsToImport={Math.max(0, MAX_BLOCKS - elements.length)}
-/>
-                    {/* ✅ botão de IA some se já tiver o máximo */}
                     {!isAtBlockLimit && (
                       <button
                         onClick={() => setOpenAIGenerator(true)}
@@ -1336,7 +1433,6 @@ export default function EditLesson({
                       </button>
                     )}
 
-                    {/* ✅ modal só renderiza se não estiver no limite */}
                     {!isAtBlockLimit && (
                       <GenerateEVSModal
                         visible={openAIGenerator}

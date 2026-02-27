@@ -7,7 +7,11 @@ type Props = {
   placeholder?: string;
   helperText?: string;
   maxTags?: number;
-  normalize?: (t: string) => string; // opcional: ex.: (t) => t.toLowerCase()
+  normalize?: (t: string) => string;
+
+  // NOVO
+  onScanVocabularyTags?: () => void;
+  scanVocabularyLabel?: string;
 };
 
 export default function TagsEditor({
@@ -18,15 +22,22 @@ export default function TagsEditor({
   helperText = "Pressione Enter ou vírgula para adicionar. Clique no × para remover.",
   maxTags,
   normalize,
+
+  onScanVocabularyTags,
+  scanVocabularyLabel = "Gerar tags do Vocabulary",
 }: Props) {
   const [input, setInput] = useState("");
 
   const addTag = (raw: string) => {
     let t = raw.trim();
     if (!t) return;
+
     if (normalize) t = normalize(t);
+
+    if (!t) return;
     if (maxTags && value.length >= maxTags) return;
     if (value.includes(t)) return;
+
     onChange([...value, t]);
     setInput("");
   };
@@ -50,7 +61,14 @@ export default function TagsEditor({
     <div style={{ display: "grid", gap: 6 }}>
       <label style={{ fontSize: 12, color: "#334155" }}>{label}</label>
 
-      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -58,12 +76,14 @@ export default function TagsEditor({
           placeholder={placeholder}
           style={{
             flex: 1,
+            minWidth: 220,
             border: "1px solid #e2e8f0",
             borderRadius: 8,
             padding: "8px 10px",
             fontSize: 13,
           }}
         />
+
         <button
           type="button"
           onClick={() => addTag(input)}
@@ -75,10 +95,32 @@ export default function TagsEditor({
             padding: "8px 12px",
             cursor: "pointer",
             fontSize: 13,
+            fontWeight: 700,
           }}
         >
           Adicionar
         </button>
+
+        {onScanVocabularyTags && (
+          <button
+            type="button"
+            onClick={onScanVocabularyTags}
+            style={{
+              borderRadius: 8,
+              border: "1px solid #e2e8f0",
+              backgroundColor: "white",
+              color: "#0f172a",
+              padding: "8px 12px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 800,
+            }}
+            title="Cria tags automaticamente a partir dos blocos de Vocabulary"
+          >
+            {scanVocabularyLabel}
+          </button>
+        )}
+
         {value.length > 0 && (
           <button
             type="button"
@@ -91,7 +133,7 @@ export default function TagsEditor({
               padding: "8px 12px",
               cursor: "pointer",
               fontSize: 13,
-              fontWeight: 600,
+              fontWeight: 800,
             }}
             title="Remover todas as tags"
           >
@@ -126,8 +168,6 @@ export default function TagsEditor({
               title="Remover"
               style={{
                 all: "unset",
-                border: "none",
-                background: "transparent",
                 cursor: "pointer",
                 fontSize: 12,
                 color: "#64748b",
