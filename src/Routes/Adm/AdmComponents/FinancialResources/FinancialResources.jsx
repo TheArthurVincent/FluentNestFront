@@ -1308,36 +1308,52 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                 R$ {formatNumber(item.value)}
                               </div>
                             ) : (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  margin: "16px auto",
-                                  gap: "16px",
-                                }}
-                              >
+                              <>
                                 <div
                                   style={{
+                                    display: isDesktop ? "none" : "flex",
                                     fontWeight: "800",
                                     color: item.color,
+                                    justifyContent: "flex-start",
                                     fontSize: "18px",
                                     marginBottom: "4px",
                                   }}
                                 >
                                   R$ {formatNumber(item.value)}
                                 </div>
-                                <DonutChartSaidasByItem
-                                  financialReports={financialReports}
-                                  size={isDesktop ? 260 : 65} // maior
-                                  strokeWidth={isDesktop ? 28 : 7} // mais grosso (fica mais bonito em tamanhos grandes)
-                                  minSliceFraction={isDesktop ? 0.004 : 0.001} // opcional (pra não distorcer tanto fatias pequenas)
-                                  onSliceClick={(report) =>
-                                    handleFinancialReportModal(report)
-                                  }
-                                />
-                              </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: isDesktop
+                                      ? "center"
+                                      : "flex-start",
+                                    margin: "16px auto",
+                                    gap: "16px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: !isDesktop ? "none" : "flex",
+                                      justifyContent: "flex-start",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <DonutChartSaidasByItem
+                                      financialReports={financialReports}
+                                      size={isDesktop ? 260 : 65} // maior
+                                      strokeWidth={isDesktop ? 28 : 7} // mais grosso (fica mais bonito em tamanhos grandes)
+                                      minSliceFraction={
+                                        isDesktop ? 0.004 : 0.001
+                                      } // opcional (pra não distorcer tanto fatias pequenas)
+                                      onSliceClick={(report) =>
+                                        handleFinancialReportModal(report)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </>
                             )}
                             {item.subtitle && (
                               <div
