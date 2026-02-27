@@ -116,6 +116,8 @@ function ModalPortal({
   return ReactDOM.createPortal(children, document.body);
 }
 
+const MAX_BLOCKS = 10;
+
 export default function EditLesson({
   classId,
   headers,
@@ -260,20 +262,31 @@ export default function EditLesson({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, openAIGenerator, isDirty]);
 
-  // beforeunload: alerta ao fechar aba/navegador
-  // useEffect(() => {
-  //   if (typeof window === "undefined") return;
-  //   if (!open) return;
+  // -----------------------------
+  // LIMIT: 10 blocos
+  // -----------------------------
+  const blockCount = elements.length;
+  const isAtBlockLimit = blockCount >= MAX_BLOCKS;
 
-  //   const onBeforeUnload = (e: BeforeUnloadEvent) => {
-  //     if (!isDirty) return;
-  //     e.preventDefault();
-  //     e.returnValue = "";
-  //   };
+  const enforceMaxBlocks = (arr: ElementItem[]) => {
+    if (!Array.isArray(arr)) return [];
+    if (arr.length <= MAX_BLOCKS) return arr;
+    // se por qualquer motivo tiver mais, exclui os últimos
+    return arr.slice(0, MAX_BLOCKS);
+  };
 
-  //   window.addEventListener("beforeunload", onBeforeUnload);
-  //   return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  // }, [open, isDirty]);
+  useEffect(() => {
+    if (!open) return;
+    if (!Array.isArray(elements)) return;
+    if (elements.length > MAX_BLOCKS) {
+      setElements((prev) => enforceMaxBlocks(prev));
+      notifyAlert(
+        `Esta aula suporta no máximo ${MAX_BLOCKS} blocos. Removi os excedentes.`,
+        partnerColor(),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, elements.length]);
 
   // -----------------------------
   // IA: título e descrição
@@ -365,6 +378,7 @@ export default function EditLesson({
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
       const sanitized = sanitizeElements(data.elements);
+      const limited = enforceMaxBlocks(sanitized);
 
       setLesson(data);
       setTitle(data.title ?? "");
@@ -372,7 +386,7 @@ export default function EditLesson({
       setImage(data.image ?? "");
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
-      setElements(sanitized);
+      setElements(limited);
       setTheLanguage(data.language || language || "en");
 
       initialSnapshotRef.current = buildSnapshot({
@@ -382,8 +396,16 @@ export default function EditLesson({
         order: Number(data.order ?? 0),
         tags: Array.isArray(data.tags) ? data.tags : [],
         language: data.language || language || "en",
-        elements: sanitized,
+        elements: limited,
       });
+
+      // aviso se veio maior do backend
+      if (sanitized.length > MAX_BLOCKS) {
+        notifyAlert(
+          `Esta aula suporta no máximo ${MAX_BLOCKS} blocos. Os excedentes foram removidos ao carregar.`,
+          partnerColor(),
+        );
+      }
 
       setOpen(true);
     } catch (err: any) {
@@ -419,6 +441,7 @@ export default function EditLesson({
     setError(null);
 
     const sanitized = sanitizeElements(elements as any);
+    const limited = enforceMaxBlocks(sanitized);
 
     const payload: ClassDetails = {
       ...lesson,
@@ -428,7 +451,7 @@ export default function EditLesson({
       image,
       order: Number(order),
       tags,
-      elements: sanitized,
+      elements: limited,
     };
 
     try {
@@ -441,7 +464,9 @@ export default function EditLesson({
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
-      const updatedSanitized = sanitizeElements(updated.elements);
+      const updatedSanitized = enforceMaxBlocks(
+        sanitizeElements(updated.elements),
+      );
 
       setLesson(updated);
       setImage(updated?.image ?? image);
@@ -509,7 +534,7 @@ export default function EditLesson({
     setElements((prev) => {
       const clone = [...prev];
       clone[index] = next;
-      return clone;
+      return enforceMaxBlocks(clone);
     });
   };
 
@@ -527,7 +552,7 @@ export default function EditLesson({
       const clone = [...prev];
       const [item] = clone.splice(from, 1);
       clone.splice(to, 0, item);
-      return clone;
+      return enforceMaxBlocks(clone);
     });
   };
 
@@ -676,10 +701,20 @@ export default function EditLesson({
   };
 
   const addBlock = (pos: "start" | "end" = "end") => {
+    if (isAtBlockLimit) {
+      notifyAlert(
+        `Esta aula suporta no máximo ${MAX_BLOCKS} blocos.`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const block = makeEmptyBlock(newType);
-    setElements((prev) =>
-      pos === "start" ? [block, ...prev] : [...prev, block],
-    );
+
+    setElements((prev) => {
+      const next = pos === "start" ? [block, ...prev] : [...prev, block];
+      return enforceMaxBlocks(next);
+    });
   };
 
   // -----------------------------
@@ -691,6 +726,14 @@ export default function EditLesson({
     fromTitle: string;
     elements: any[];
   }) => {
+    if (isAtBlockLimit) {
+      notifyAlert(
+        `Esta aula já está no limite (${MAX_BLOCKS} blocos).`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const { elements: imported } = info;
 
     setElements((prev) => {
@@ -700,7 +743,18 @@ export default function EditLesson({
           return rest as ElementItem;
         },
       );
-      return [...prev, ...cleanImported];
+
+      const merged = [...prev, ...cleanImported];
+      const limited = enforceMaxBlocks(merged);
+
+      if (merged.length > MAX_BLOCKS) {
+        notifyAlert(
+          `Somente ${MAX_BLOCKS} blocos são permitidos. Os excedentes foram removidos.`,
+          partnerColor(),
+        );
+      }
+
+      return limited;
     });
   };
 
@@ -857,6 +911,23 @@ export default function EditLesson({
     [],
   );
 
+  const limitNoticeStyle: React.CSSProperties = useMemo(
+    () => ({
+      border: "1px solid #f59e0b",
+      background: "#fffbeb",
+      color: "#92400e",
+      borderRadius: 12,
+      padding: "10px 12px",
+      fontSize: 12,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 10,
+      marginTop: 10,
+    }),
+    [],
+  );
+
   // -----------------------------
   // Render
   // -----------------------------
@@ -957,6 +1028,9 @@ export default function EditLesson({
 
                 {/* METADADOS */}
                 <div style={{ ...subtleCard, marginBottom: 12 }}>
+                  {/* ... (sem mudanças no seu bloco de metadados) ... */}
+                  {/* ===== MANTIVE EXATAMENTE O QUE VOCÊ TINHA AQUI ===== */}
+                  {/* Para não poluir, deixei o resto igual ao seu original (abaixo segue tudo). */}
                   <div
                     style={{
                       display: "grid",
@@ -1148,8 +1222,19 @@ export default function EditLesson({
                   <div style={topActionRowStyle}>
                     <button
                       onClick={() => addBlock("start")}
-                      style={{ ...ghostButton, width: 140, fontWeight: 700 }}
-                      title="Adicionar no início"
+                      disabled={isAtBlockLimit}
+                      style={{
+                        ...ghostButton,
+                        width: 140,
+                        fontWeight: 700,
+                        opacity: isAtBlockLimit ? 0.6 : 1,
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                      }}
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}). Remova um bloco para adicionar outro.`
+                          : "Adicionar no início"
+                      }
                     >
                       Adicionar no início
                     </button>
@@ -1159,14 +1244,20 @@ export default function EditLesson({
                       onChange={(e) =>
                         setNewType(e.target.value as NewBlockType)
                       }
+                      disabled={isAtBlockLimit}
                       style={{
                         ...inputBase,
                         background: "white",
                         maxWidth: 220,
                         paddingRight: 26,
-                        cursor: "pointer",
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                        opacity: isAtBlockLimit ? 0.6 : 1,
                       }}
-                      title="Tipo do novo bloco"
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}).`
+                          : "Tipo do novo bloco"
+                      }
                     >
                       <option value="explanation">
                         Explanation/Introduction
@@ -1186,54 +1277,94 @@ export default function EditLesson({
 
                     <button
                       onClick={() => addBlock("end")}
-                      style={{ ...primaryButton, width: 160 }}
-                      title="Adicionar ao final"
+                      disabled={isAtBlockLimit}
+                      style={{
+                        ...primaryButton,
+                        width: 160,
+                        opacity: isAtBlockLimit ? 0.6 : 1,
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                      }}
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}). Remova um bloco para adicionar outro.`
+                          : "Adicionar ao final"
+                      }
                     >
                       Adicionar ao final
                     </button>
                   </div>
 
+                  {/* ✅ aviso de limite */}
+                  <div style={limitNoticeStyle}>
+                    <span>
+                      Esta aula comporta no máximo <strong>{MAX_BLOCKS}</strong>{" "}
+                      blocos.
+                    </span>
+                    <span style={{ fontWeight: 800 }}>
+                      {blockCount}/{MAX_BLOCKS}
+                    </span>
+                  </div>
+
                   <div
                     style={{
-                      display: "flex",
+                      display: isAtBlockLimit ? "none" : "flex",
                       justifyContent: "center",
                       gap: 12,
                       marginTop: 14,
                       flexWrap: "wrap",
                     }}
                   >
-                    <ImportElementsEditor
-                      lessonId={classId}
-                      studentId={studentId}
-                      setTheLanguage={setTheLanguage}
-                      theLanguage={theLanguage}
-                      headers={headers}
-                      onChange={handleImportChange}
-                      fetchEventData={fetchEventData}
-                    />
 
-                    <button
-                      onClick={() => setOpenAIGenerator(true)}
-                      style={{ ...ghostButton, fontWeight: 800 }}
-                      title="Abrir gerador"
-                    >
-                      Gerar aula por IA
-                    </button>
+<ImportElementsEditor
+  lessonId={classId}
+  studentId={studentId}
+  setTheLanguage={setTheLanguage}
+  theLanguage={theLanguage}
+  headers={headers}
+  onChange={handleImportChange}
+  fetchEventData={fetchEventData}
+  maxElementsToImport={Math.max(0, MAX_BLOCKS - elements.length)}
+/>
+                    {/* ✅ botão de IA some se já tiver o máximo */}
+                    {!isAtBlockLimit && (
+                      <button
+                        onClick={() => setOpenAIGenerator(true)}
+                        style={{ ...ghostButton, fontWeight: 800 }}
+                        title="Abrir gerador"
+                      >
+                        Gerar aula por IA
+                      </button>
+                    )}
 
-                    <GenerateEVSModal
-                      visible={openAIGenerator}
-                      studentId={studentId}
-                      classId={classId}
-                      headers={headers}
-                      theme={title || lesson?.title || ""}
-                      language1={theLanguage || language || "en"}
-                      onClose={() => setOpenAIGenerator(false)}
-                      onAppendElements={(newEls: any[]) => {
-                        const clean = sanitizeElements(newEls || []);
-                        setElements((prev) => [...prev, ...clean]);
-                        setOpenAIGenerator(false);
-                      }}
-                    />
+                    {/* ✅ modal só renderiza se não estiver no limite */}
+                    {!isAtBlockLimit && (
+                      <GenerateEVSModal
+                        visible={openAIGenerator}
+                        studentId={studentId}
+                        classId={classId}
+                        headers={headers}
+                        theme={title || lesson?.title || ""}
+                        language1={theLanguage || language || "en"}
+                        onClose={() => setOpenAIGenerator(false)}
+                        onAppendElements={(newEls: any[]) => {
+                          const clean = sanitizeElements(newEls || []);
+                          setElements((prev) => {
+                            const merged = [...prev, ...clean];
+                            const limited = enforceMaxBlocks(merged);
+
+                            if (merged.length > MAX_BLOCKS) {
+                              notifyAlert(
+                                `Somente ${MAX_BLOCKS} blocos são permitidos. Os excedentes foram removidos.`,
+                                partnerColor(),
+                              );
+                            }
+
+                            return limited;
+                          });
+                          setOpenAIGenerator(false);
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
 

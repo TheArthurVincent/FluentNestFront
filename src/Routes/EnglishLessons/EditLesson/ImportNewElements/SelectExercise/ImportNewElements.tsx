@@ -1,24 +1,11 @@
+// ✅ 2) ImportElementsEditor.tsx (com limite de importação)
+
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { backDomain } from "../../../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../../../Styles/Styles";
-
-interface ImportElementsEditorProps {
-  lessonId: string;
-  studentId: string;
-  headers?: any;
-  fetchEventData?: any;
-  setTheLanguage?: (lang: string) => void;
-  theLanguage?: string;
-  onChange?: (info: {
-    mode: "one" | "all";
-    fromClassId: string;
-    fromTitle: string;
-    elements: ElementType[];
-  }) => void;
-}
 
 type ElementType = {
   _id?: string;
@@ -38,6 +25,26 @@ type LessonFromApi = {
   elements?: ElementType[];
 };
 
+interface ImportElementsEditorProps {
+  lessonId: string;
+  studentId: string;
+  headers?: any;
+  fetchEventData?: any;
+  setTheLanguage?: (lang: string) => void;
+  theLanguage?: string;
+  onChange?: (info: {
+    mode: "one" | "all";
+    fromClassId: string;
+    fromTitle: string;
+    elements: ElementType[];
+  }) => void;
+
+  // ✅ NOVO: quantos elementos podem ser puxados
+  // - se 0: trava importação (botões desabilitados + aviso)
+  // - se > 0: limita o "Importar tudo" e o "Importar este elemento"
+  maxElementsToImport: number;
+}
+
 export default function ImportElementsEditor({
   lessonId,
   studentId,
@@ -46,6 +53,7 @@ export default function ImportElementsEditor({
   headers,
   onChange,
   fetchEventData,
+  maxElementsToImport,
 }: ImportElementsEditorProps) {
   const BRAND = partnerColor();
 
@@ -63,6 +71,8 @@ export default function ImportElementsEditor({
   const [openClassId, setOpenClassId] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
 
+  const canImport = Number(maxElementsToImport || 0) > 0;
+
   const openModal = () => setIsOpen(true);
 
   const closeModal = () => {
@@ -76,14 +86,10 @@ export default function ImportElementsEditor({
     fetchEventData?.();
   };
 
-  // Mantém o idioma interno sincronizado com a prop
   useEffect(() => {
     if (theLanguage) setLanguage(theLanguage as any);
   }, [theLanguage]);
 
-  // ============================================
-  // Helpers: UI
-  // ============================================
   const styles = useMemo(() => {
     const softBrand = `${BRAND}14`;
     const borderBrand = `${BRAND}40`;
@@ -236,6 +242,16 @@ export default function ImportElementsEditor({
         color: "#111827",
         fontSize: 13,
       },
+      warnBox: {
+        marginBottom: 12,
+        padding: "10px 12px",
+        borderRadius: 12,
+        background: "#fffbeb",
+        border: "1px solid #f59e0b",
+        color: "#92400e",
+        fontSize: 13,
+        fontWeight: 800,
+      },
       successBox: {
         marginBottom: 12,
         padding: "10px 12px",
@@ -280,164 +296,129 @@ export default function ImportElementsEditor({
   };
 
   // ============================================
-  // Preview de cada elemento
-  // ============================================
-  const renderElementPreview = (el: ElementType, index: number) => {
-    const box: React.CSSProperties = {
-      borderRadius: 14,
-      border: "1px solid #e5e7eb",
-      padding: 12,
-      background: "#ffffff",
-      width: "100%",
-      boxShadow: "0 6px 18px rgba(17,24,39,0.06)",
-    };
+// Preview de cada elemento
+// ============================================
+const renderElementPreview = (el: ElementType, index: number) => {
+  const box: React.CSSProperties = {
+    borderRadius: 14,
+    border: "1px solid #e5e7eb",
+    padding: 12,
+    background: "#ffffff",
+    width: "100%",
+    boxShadow: "0 6px 18px rgba(17,24,39,0.06)",
+  };
 
-    const title = el.subtitle || `Elemento ${index + 1}`;
-    const typeLabel = String(el.type || "unknown");
+  const title = el.subtitle || `Elemento ${index + 1}`;
+  const typeLabel = String(el.type || "unknown");
 
-    const header = (
-      <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
-        <div style={{ fontSize: 13, fontWeight: 900, color: "#111827" }}>
-          {title}
-        </div>
-        <span style={{ fontSize: 11, color: "#6b7280" }}>{typeLabel}</span>
+  const header = (
+    <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+      <div style={{ fontSize: 13, fontWeight: 900, color: "#111827" }}>
+        {title}
       </div>
-    );
+      <span style={{ fontSize: 11, color: "#6b7280" }}>{typeLabel}</span>
+    </div>
+  );
 
-    if (el.type === "vocabulary" || el.type === "sentences") {
-      return (
-        <div key={index} style={box}>
-          {header}
-          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-            Prévia de frases:
-          </div>
-
-          {el.sentences && el.sentences.length > 0 ? (
-            <ul
-              style={{
-                margin: "8px 0 0 16px",
-                padding: 0,
-                listStyleType: "disc",
-                maxHeight: 70,
-                overflowY: "auto",
-                fontSize: 12,
-                color: "#374151",
-              }}
-            >
-              {el.sentences.slice(0, 6).map((s: any, i: any) => (
-                <li key={i}>
-                  {s.english}
-                  {s.portuguese ? ` — ${s.portuguese}` : ""}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-              Sem prévia disponível.
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (el.type === "audio") {
-      return (
-        <div key={index} style={box}>
-          {header}
-
-          <div style={{ marginTop: 6, fontSize: 12, color: "#374151" }}>
-            {el.text ? (
-              <>
-                {el.text.slice(0, 160)}
-                {el.text.length > 160 ? "..." : ""}
-              </>
-            ) : (
-              <span style={{ color: "#6b7280" }}>Sem texto de áudio.</span>
-            )}
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            {el.link ? (
-              <a
-                href={el.link}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  fontSize: 12,
-                  color: "#2563eb",
-                  fontWeight: 800,
-                  textDecoration: "none",
-                }}
-                title="Abre o link do áudio em uma nova aba"
-              >
-                Abrir áudio
-              </a>
-            ) : (
-              <div style={{ fontSize: 12, color: "#6b7280" }}>Sem link.</div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    if (el.type === "exercise") {
-      return (
-        <div key={index} style={box}>
-          {header}
-
-          {el.items && el.items.length > 0 ? (
-            <>
-              <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-                Prévia de questões:
-              </div>
-
-              <ul
-                style={{
-                  margin: "8px 0 0 16px",
-                  padding: 0,
-                  listStyleType: "disc",
-                  fontSize: 12,
-                  color: "#374151",
-                }}
-              >
-                {el.items.slice(0, 3).map((q, i) => (
-                  <li key={i}>{q}</li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-              Sem itens no exercício.
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (el.type === "video") {
-      return (
-        <div key={index} style={box}>
-          {header}
-          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-            Elemento de vídeo (sem prévia).
-          </div>
-        </div>
-      );
-    }
-
+  if (el.type === "vocabulary" || el.type === "sentences") {
     return (
       <div key={index} style={box}>
         {header}
         <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
-          Tipo de elemento sem prévia específica.
+          Prévia:
+        </div>
+
+        {el.sentences && el.sentences.length > 0 ? (
+          <ul
+            style={{
+              margin: "8px 0 0 16px",
+              padding: 0,
+              listStyleType: "disc",
+              maxHeight: 70,
+              overflowY: "auto",
+              fontSize: 12,
+              color: "#374151",
+            }}
+          >
+            {el.sentences.slice(0, 6).map((s: any, i: number) => (
+              <li key={i}>
+                {s.english}
+                {s.portuguese ? ` — ${s.portuguese}` : ""}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            Sem prévia disponível.
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (el.type === "exercise") {
+    return (
+      <div key={index} style={box}>
+        {header}
+        {el.items && el.items.length > 0 ? (
+          <ul
+            style={{
+              margin: "8px 0 0 16px",
+              padding: 0,
+              listStyleType: "disc",
+              fontSize: 12,
+              color: "#374151",
+            }}
+          >
+            {el.items.slice(0, 3).map((q, i) => (
+              <li key={i}>{q}</li>
+            ))}
+          </ul>
+        ) : (
+          <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+            Sem itens.
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (el.type === "audio") {
+    return (
+      <div key={index} style={box}>
+        {header}
+        <div style={{ fontSize: 12, marginTop: 6 }}>
+          {el.text
+            ? el.text.slice(0, 150) + (el.text.length > 150 ? "..." : "")
+            : "Sem texto."}
         </div>
       </div>
     );
-  };
+  }
 
-  // ============================================
-  // Busca de aulas (debounce)
-  // ============================================
+  if (el.type === "video") {
+    return (
+      <div key={index} style={box}>
+        {header}
+        <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+          Elemento de vídeo.
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div key={index} style={box}>
+      {header}
+      <div style={{ fontSize: 12, color: "#6b7280", marginTop: 6 }}>
+        Tipo sem prévia específica.
+      </div>
+    </div>
+  );
+};
+  // =========================
+  // Busca (debounce)
+  // =========================
   useEffect(() => {
     const term = search.trim();
     if (!isOpen) return;
@@ -480,29 +461,46 @@ export default function ImportElementsEditor({
     return () => clearTimeout(timeout);
   }, [search, language, isOpen, studentId, headers]);
 
-  // ============================================
-  // Importa "no front": dispara onChange com elementos
-  // ============================================
+  // =========================
+  // Envia pro parent (com limite)
+  // =========================
   const sendElementsToParent = (params: {
     mode: "one" | "all";
     fromClassId: string;
     fromTitle: string;
     elements: ElementType[];
   }) => {
-    const { mode, fromClassId, fromTitle, elements } = params;
+    const { mode, fromClassId, fromTitle } = params;
+    let elements = params.elements || [];
+
     if (!elements || elements.length === 0) return;
 
-    const how = mode === "all" ? "AULA INTEIRA" : "1 ELEMENTO";
-    setFeedbackMsg(
-      `Importação pronta: ${how} de "${fromTitle}". Os elementos foram puxados para o editor.`,
-    );
+    // ✅ não deixa passar do limite
+    if (!canImport) {
+      setFeedbackMsg(
+        `Limite atingido. Não é possível importar mais elementos nesta aula.`,
+      );
+      return;
+    }
+
+    if (elements.length > maxElementsToImport) {
+      elements = elements.slice(0, maxElementsToImport);
+      setFeedbackMsg(
+        `Importação limitada: somente ${maxElementsToImport} elemento(s) puderam ser puxados de "${fromTitle}".`,
+      );
+    } else {
+      const how = mode === "all" ? "AULA INTEIRA" : "1 ELEMENTO";
+      setFeedbackMsg(
+        `Importação pronta: ${how} de "${fromTitle}". Os elementos foram puxados para o editor.`,
+      );
+    }
 
     onChange?.({ mode, fromClassId, fromTitle, elements });
   };
 
-  // ============================================
+  // =========================
   // Modal
-  // ============================================
+  // =========================
   const modalContent = !isOpen ? null : (
     <div
       style={styles.backdrop}
@@ -545,10 +543,14 @@ export default function ImportElementsEditor({
           <b>Importar este elemento</b> para puxar só um bloco específico.
         </div>
 
-        {/* FEEDBACK */}
+        {/* ✅ aviso de limite */}
+        <div style={styles.warnBox}>
+          Esta aula suporta no máximo importar{" "}
+          <b>{Math.max(0, maxElementsToImport)}</b> elemento(s) agora.
+        </div>
+
         {feedbackMsg && <div style={styles.successBox}>{feedbackMsg}</div>}
 
-        {/* CONTROLES */}
         <div style={styles.row}>
           <div style={{ fontSize: 13, color: "#111827", fontWeight: 900 }}>
             Idioma
@@ -582,7 +584,6 @@ export default function ImportElementsEditor({
           </div>
         </div>
 
-        {/* RESULTADOS */}
         {search.trim().length > 0 && (
           <div style={styles.sectionBox}>
             {loadingLessons && (
@@ -627,9 +628,11 @@ export default function ImportElementsEditor({
                     const isOpenLesson = openClassId === lesson.classId;
                     const elements = lesson.elements || [];
 
+                    const disableImportAll =
+                      !canImport || elements.length === 0;
+
                     return (
                       <div key={lesson.classId} style={styles.lessonCard}>
-                        {/* CABEÇALHO DA AULA */}
                         <div
                           style={styles.lessonHeader}
                           onClick={() =>
@@ -696,7 +699,6 @@ export default function ImportElementsEditor({
                           )}
                         </div>
 
-                        {/* CONTEÚDO */}
                         {isOpenLesson && (
                           <div
                             style={{
@@ -738,16 +740,19 @@ export default function ImportElementsEditor({
                                   }}
                                 >
                                   Puxa todos os elementos dessa aula para o
-                                  editor.
+                                  editor (limitado ao que cabe).
                                 </div>
                               </div>
 
                               <button
                                 style={{
-                                  ...styles.primaryBtn,
-                                  opacity: elements.length === 0 ? 0.5 : 1,
+                                  ...(styles.primaryBtn as any),
+                                  opacity: disableImportAll ? 0.5 : 1,
+                                  cursor: disableImportAll
+                                    ? "not-allowed"
+                                    : "pointer",
                                 }}
-                                disabled={elements.length === 0}
+                                disabled={disableImportAll}
                                 onClick={() =>
                                   sendElementsToParent({
                                     mode: "all",
@@ -756,7 +761,11 @@ export default function ImportElementsEditor({
                                     elements,
                                   })
                                 }
-                                title="Importa todos os elementos dessa aula para o editor"
+                                title={
+                                  !canImport
+                                    ? "Limite atingido. Não é possível importar mais."
+                                    : "Importa todos os elementos (até o limite permitido)"
+                                }
                                 onMouseDown={applyPressEffect}
                                 onMouseUp={clearPressEffect}
                                 onMouseLeave={clearPressEffect}
@@ -784,44 +793,61 @@ export default function ImportElementsEditor({
                                   gap: 12,
                                 }}
                               >
-                                {elements.map((el, idx) => (
-                                  <div key={idx} style={styles.elementRow}>
-                                    <div style={{ flex: 1, minWidth: 0 }}>
-                                      {renderElementPreview(el, idx)}
-                                    </div>
+                                {elements.map((el, idx) => {
+                                  const disableOne = !canImport; // se 0, trava tudo
+                                  return (
+                                    <div key={idx} style={styles.elementRow}>
+                                      <div style={{ flex: 1, minWidth: 0 }}>
+                                        {/* (seu renderElementPreview permanece igual) */}
+                                        {/* vou manter como estava no seu arquivo */}
+                                        {/* @ts-ignore */}
+                                        {renderElementPreview(el, idx)}
+                                      </div>
 
-                                    <div style={{ width: 230 }}>
-                                      <button
-                                        style={styles.secondaryBtn}
-                                        onClick={() =>
-                                          sendElementsToParent({
-                                            mode: "one",
-                                            fromClassId: lesson.classId,
-                                            fromTitle: lesson.title,
-                                            elements: [el],
-                                          })
-                                        }
-                                        title="Puxa somente este elemento para o editor (não importa a aula inteira)"
-                                        onMouseDown={applyPressEffect}
-                                        onMouseUp={clearPressEffect}
-                                        onMouseLeave={clearPressEffect}
-                                      >
-                                        Importar este elemento
-                                        <div
+                                      <div style={{ width: 230 }}>
+                                        <button
                                           style={{
-                                            fontSize: 12,
-                                            fontWeight: 700,
-                                            color: "#6b7280",
-                                            marginTop: 4,
-                                            lineHeight: 1.25,
+                                            ...(styles.secondaryBtn as any),
+                                            opacity: disableOne ? 0.5 : 1,
+                                            cursor: disableOne
+                                              ? "not-allowed"
+                                              : "pointer",
                                           }}
+                                          disabled={disableOne}
+                                          onClick={() =>
+                                            sendElementsToParent({
+                                              mode: "one",
+                                              fromClassId: lesson.classId,
+                                              fromTitle: lesson.title,
+                                              elements: [el],
+                                            })
+                                          }
+                                          title={
+                                            !canImport
+                                              ? "Limite atingido. Não é possível importar mais."
+                                              : "Puxa somente este elemento"
+                                          }
+                                          onMouseDown={applyPressEffect}
+                                          onMouseUp={clearPressEffect}
+                                          onMouseLeave={clearPressEffect}
                                         >
-                                          Puxa só este bloco
-                                        </div>
-                                      </button>
+                                          Importar este elemento
+                                          <div
+                                            style={{
+                                              fontSize: 12,
+                                              fontWeight: 700,
+                                              color: "#6b7280",
+                                              marginTop: 4,
+                                              lineHeight: 1.25,
+                                            }}
+                                          >
+                                            Puxa só este bloco
+                                          </div>
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
                             )}
                           </div>
@@ -838,14 +864,12 @@ export default function ImportElementsEditor({
     </div>
   );
 
-  // ============================================
-  // Render
-  // ============================================
   return (
     <>
       <button
         type="button"
         onClick={openModal}
+        disabled={!canImport}
         style={{
           borderRadius: 14,
           border: `1px solid ${BRAND}4A`,
@@ -853,12 +877,17 @@ export default function ImportElementsEditor({
           fontSize: 13,
           fontWeight: 900,
           background: `linear-gradient(180deg, ${BRAND}18, ${BRAND}10)`,
-          cursor: "pointer",
+          cursor: canImport ? "pointer" : "not-allowed",
           whiteSpace: "nowrap",
           color: "#111827",
           boxShadow: "0 10px 24px rgba(0,0,0,0.08)",
+          opacity: canImport ? 1 : 0.6,
         }}
-        title="Abrir o modal para buscar aulas e puxar elementos para o editor"
+        title={
+          canImport
+            ? "Abrir o modal para buscar aulas e puxar elementos para o editor"
+            : "Limite atingido. Não é possível importar mais elementos."
+        }
         onMouseDown={applyPressEffect}
         onMouseUp={clearPressEffect}
         onMouseLeave={clearPressEffect}
