@@ -87,8 +87,26 @@ export function DonutChartSaidasByItem({
     };
   }, [financialReports, valueMode]);
 
-  const radius = (size - strokeWidth) / 2;
+  // 1rem ~ 16px (se quiser mais folga, aumente)
+  const CENTER_PADDING_PX = 16;
+
+  // garante um "buraco" mínimo para o centro respirar
+  const minInnerDiameter = CENTER_PADDING_PX * 2 + 28; // 28 = espaço mínimo pro texto não ficar esmagado
+  const minInnerRadius = minInnerDiameter / 2;
+
+  // stroke máximo permitido para sobrar innerRadius >= minInnerRadius
+  const maxStrokeAllowed = Math.max(6, size / 2 - minInnerRadius);
+
+  // se strokeWidth vier grande demais p/ um size pequeno, reduz automaticamente
+  const effectiveStrokeWidth = Math.min(strokeWidth, maxStrokeAllowed);
+
+  // raio do arco (center line do stroke)
+  const radius = (size - effectiveStrokeWidth) / 2;
+
   const circumference = 2 * Math.PI * radius;
+
+  // raio interno real (buraco do donut)
+  const innerRadius = radius - effectiveStrokeWidth / 2;
 
   const arcs = useMemo(() => {
     if (!total || slices.length === 0) return [];
@@ -210,12 +228,14 @@ export function DonutChartSaidasByItem({
             r={radius}
             fill="none"
             stroke="#f3f4f6"
-            strokeWidth={strokeWidth}
+            strokeWidth={effectiveStrokeWidth}
           />
 
           {arcs.map((a) => {
             const isHovered = hoveredKey === a.key;
-            const width = isHovered ? strokeWidth + 3 : strokeWidth;
+            const width = isHovered
+              ? effectiveStrokeWidth + 3
+              : effectiveStrokeWidth;
             const opacity = isHovered ? 1 : 0.88;
 
             return (
@@ -253,24 +273,52 @@ export function DonutChartSaidasByItem({
             position: "absolute",
             inset: 0,
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: "none",
-            textAlign: "center",
-            lineHeight: 1.15,
           }}
         >
-          <div style={{ fontSize: 11, color: "#6b7280" }}>Saídas</div>
-          <div style={{ fontSize: 12, fontWeight: 800, color: "#111827" }}>
-            {formatBRL(total)}
-          </div>
-          <div style={{ fontSize: 10, color: "#9ca3af" }}>
-            {slices.length} itens
+          <div
+            style={{
+              // aqui é o "padding" real do centro
+              padding: "1rem",
+              // limita a área do texto ao buraco do donut
+              width: Math.max(0, innerRadius * 2),
+              maxWidth: Math.max(0, innerRadius * 2),
+              textAlign: "center",
+              lineHeight: 1.15,
+              display: "grid",
+              gap: 2,
+            }}
+          >
+            <div
+              style={{ fontSize: Math.max(9, size * 0.08), color: "#6b7280" }}
+            >
+              Saídas
+            </div>
+
+            <div
+              style={{
+                fontSize: Math.max(10, size * 0.09),
+                fontWeight: 800,
+                color: "#111827",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+              title={formatBRL(total)} // se cortar, o usuário vê no hover nativo
+            >
+              {formatBRL(total)}
+            </div>
+
+            <div
+              style={{ fontSize: Math.max(8, size * 0.075), color: "#9ca3af" }}
+            >
+              {slices.length} itens
+            </div>
           </div>
         </div>
       )}
-
       {/* tooltip */}
       {tooltip.visible && (
         <div

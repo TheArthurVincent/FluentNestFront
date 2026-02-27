@@ -1311,12 +1311,23 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               <div
                                 style={{
                                   display: "flex",
+                                  flexDirection: "column",
                                   alignItems: "center",
                                   justifyContent: "center",
                                   margin: "16px auto",
                                   gap: "16px",
                                 }}
                               >
+                                <div
+                                  style={{
+                                    fontWeight: "800",
+                                    color: item.color,
+                                    fontSize: "18px",
+                                    marginBottom: "4px",
+                                  }}
+                                >
+                                  R$ {formatNumber(item.value)}
+                                </div>
                                 <DonutChartSaidasByItem
                                   financialReports={financialReports}
                                   size={isDesktop ? 260 : 65} // maior
