@@ -481,12 +481,11 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
     try {
       const response = await axios.delete(
         `${backDomain}/api/v1/finance-item/${id}`,
-        {
-          headers,
-        },
+        { headers },
       );
       notifyAlert("Ítem excluído com sucesso!", "green");
-      await seeReports(currentMonthYear);
+      -(await seeReports(currentMonthYear));
+      +(await seeReports(selectedMonth));
       handleFinancialReportModal();
       setSeeButtonDeleteItem(false);
     } catch (error) {
@@ -592,27 +591,25 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
         discount: parseFloat(newItemDiscount) || 0,
         accountFor: newItemAccountFor,
         paidFor: newItemPaidFor,
-        studentId: null, // Item standalone não tem aluno específico
+        studentId: null,
       };
 
       const response = await axios.post(
         `${backDomain}/api/v1/finance-item/${id}`,
         newItem,
-        {
-          headers,
-        },
+        { headers },
       );
 
       notifyAlert("Item financeiro criado com sucesso!", "green");
-      handleNewItemModal(); // Fechar o modal
-      seeReports(currentMonthYear);
+      handleNewItemModal();
+      -seeReports(currentMonthYear);
+      +seeReports(selectedMonth);
       setShowGenerateButton(false);
     } catch (error) {
       notifyAlert(error.response.data.message, partnerColor());
       console.log("error", error);
     }
   };
-
   const handleSaveFinancialReport = async () => {
     if (!selectedFinancialReport) return;
     setShowGenerateButton(false);
@@ -632,16 +629,13 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
 
       const response = await axios.put(
         `${backDomain}/api/v1/finance-item/${id}`,
-        {
-          report: updatedReport,
-        },
-        {
-          headers,
-        },
+        { report: updatedReport },
+        { headers },
       );
 
-      seeReports(currentMonthYear);
-      handleFinancialReportModal(); // Close modal
+      -seeReports(currentMonthYear);
+      +seeReports(selectedMonth);
+      handleFinancialReportModal();
       notifyAlert(
         "Relatório financeiro atualizado com sucesso!",
         partnerColor(),

@@ -407,10 +407,11 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
               bgHover={bgHover}
               expanded={expanded}
               onToggle={() => {
-                setOpenGroups((prev) => ({
-                  ...prev,
-                  [node.label]: !(prev[node.label] ?? hasActiveChild),
-                }));
+                setOpenGroups((prev) => {
+                  const isOpenNow = prev[node.label] ?? hasActiveChild;
+                  if (isOpenNow) return { [node.label]: false };
+                  return { [node.label]: true };
+                });
               }}
             />
           </ul>
