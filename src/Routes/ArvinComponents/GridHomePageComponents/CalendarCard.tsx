@@ -407,7 +407,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                             flexDirection: "column",
                             gap: "4px",
                             padding: "10px 12px",
-                            borderRadius: "12px",
+                            borderRadius: "8px",
                             textDecoration: "none",
                             border: "1px solid #E5E7EB",
                             marginBottom: "8px",

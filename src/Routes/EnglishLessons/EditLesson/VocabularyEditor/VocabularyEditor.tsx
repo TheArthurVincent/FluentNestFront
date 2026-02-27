@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   backDomain,
@@ -10,14 +10,14 @@ import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 /* ===================== TYPES ===================== */
 export type Languages = {
-  language1: string; // idioma do campo "english"
-  language2: string; // idioma do campo "portuguese"
+  language1: string;
+  language2: string;
 };
 
 export type SentenceItem = {
   english: string;
   portuguese: string;
-  languages: Languages; // sempre presente
+  languages: Languages;
 };
 
 export type SentencesBlock = {
@@ -41,14 +41,12 @@ type Props = {
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 
-  // IA / controle
   studentId?: string;
   headers?: HeadersLike | null;
 
   setChange?: (v: any) => void;
   change?: any;
 
-  // legado opcional
   changeTokens?: any;
   setChangeTokens?: (v: any) => void;
 };
@@ -58,6 +56,8 @@ const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
 type FieldSide = "english" | "portuguese";
+
+const MAX_ITEMS = 20;
 
 /* ===================== COMPONENT ===================== */
 export default function VocabularyEditor({
@@ -81,11 +81,19 @@ export default function VocabularyEditor({
     (defaultBlockLang2 as LangCode) || "pt",
   );
 
-  // loading por item + lado (IA pode existir nas duas linhas)
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
-
-  // Modal IA (gerador isolado)
   const [aiOpen, setAiOpen] = useState(false);
+
+  /* ===================== LIMIT HELPERS ===================== */
+  const count = value.sentences?.length || 0;
+  const isAtLimit = count >= MAX_ITEMS;
+
+  const enforceMax = (sentences: SentenceItem[]) => {
+    if (!Array.isArray(sentences)) return [];
+    if (sentences.length <= MAX_ITEMS) return sentences;
+    // se por qualquer motivo passou, remove os últimos
+    return sentences.slice(0, MAX_ITEMS);
+  };
 
   /* ====== sincroniza idiomas padrão quando props mudam ====== */
   useEffect(() => {
@@ -104,11 +112,13 @@ export default function VocabularyEditor({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultBlockLang1, defaultBlockLang2]);
 
-  /* ====== backfill languages (quando faltar) + garantir type vocabulary ====== */
+  /* ====== backfill languages + garantir type vocabulary + ENFORCE MAX ====== */
   useEffect(() => {
     const needsBackfill = value.sentences.some((s: any) => !s?.languages);
-    if (needsBackfill || value.type !== "vocabulary") {
-      const fixed = value.sentences.map((s: any) => ({
+    const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
+
+    if (needsBackfill || value.type !== "vocabulary" || exceedsMax) {
+      const fixed = (value.sentences || []).map((s: any) => ({
         english: s?.english ?? "",
         portuguese: s?.portuguese ?? "",
         languages: s?.languages ?? {
@@ -116,25 +126,43 @@ export default function VocabularyEditor({
           language2: defaultLang2 || "pt",
         },
       }));
-      onChange({ ...value, type: "vocabulary", sentences: fixed });
+
+      onChange({
+        ...value,
+        type: "vocabulary",
+        sentences: enforceMax(fixed),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.sentences, defaultLang1, defaultLang2]);
 
   /* ===================== UPDATERS ===================== */
   const updateSubtitle = (subtitle: string) =>
-    onChange({ ...value, subtitle, type: "vocabulary" });
+    onChange({
+      ...value,
+      subtitle,
+      type: "vocabulary",
+      sentences: enforceMax(value.sentences),
+    });
 
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem,
   ) => {
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, type: "vocabulary", sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
   };
 
   const addSentence = () => {
+    if (isAtLimit) {
+      notifyAlert(
+        `Este bloco suporta no máximo ${MAX_ITEMS} itens.`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const next = [
       {
         english: "",
@@ -144,33 +172,33 @@ export default function VocabularyEditor({
           language2: defaultLang2 || "pt",
         },
       },
-      ...value.sentences,
+      ...(value.sentences || []),
     ];
-    onChange({ ...value, type: "vocabulary", sentences: next });
+
+    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
   };
 
   const removeSentence = (index: number) => {
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     next.splice(index, 1);
-    onChange({ ...value, type: "vocabulary", sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, type: "vocabulary", sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
   };
 
   const moveDown = (index: number) => {
-    if (index >= value.sentences.length - 1) return;
-    const next = value.sentences.slice();
+    if (index >= (value.sentences?.length || 0) - 1) return;
+    const next = (value.sentences || []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, type: "vocabulary", sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
   };
 
-  /* ===================== PER-CARD SWAP (NOVO) ===================== */
-  // Troca efetivamente os valores e também os idiomas do item.
+  /* ===================== PER-CARD SWAP ===================== */
   const swapCardSides = (idx: number) => {
     updateSentence(idx, (prev) => ({
       ...prev,
@@ -183,18 +211,10 @@ export default function VocabularyEditor({
     }));
   };
 
-  /* ===================== IA: GERA A PRÓPRIA LINHA (COMO VOCÊ PEDIU) ===================== */
+  /* ===================== IA: PER-LINE ===================== */
   const isLoading = (idx: number, side: FieldSide) =>
     loadingKey === `${idx}:${side}`;
 
-  /**
-   * ✅ Clicou no botão da linha => gera/reescreve a PRÓPRIA linha.
-   * - IA no Front (english) => escreve no english
-   * - IA no Back (portuguese) => escreve no portuguese
-   *
-   * Como referência/contexto, ela recebe também o texto do outro campo (se houver),
-   * mas o preenchimento é sempre na própria linha.
-   */
   const handleAI = async (idx: number, targetSide: FieldSide) => {
     const s = value.sentences[idx];
 
@@ -203,13 +223,11 @@ export default function VocabularyEditor({
       return;
     }
 
-    // texto que está na linha clicada (serve como base)
     const baseText =
       targetSide === "english"
         ? String(s?.english ?? "").trim()
         : String(s?.portuguese ?? "").trim();
 
-    // outro lado (contexto opcional)
     const contextText =
       targetSide === "english"
         ? String(s?.portuguese ?? "").trim()
@@ -230,26 +248,15 @@ export default function VocabularyEditor({
       s?.languages?.language2 || defaultLang2 || "pt",
     ).trim();
 
-    // alvo da geração
     const targetLang = targetSide === "english" ? lang1 : lang2;
 
-    /**
-     * Estratégia:
-     * - Se a linha tem texto, mandamos esse texto como "sentence" e pedimos um output no MESMO idioma.
-     * - Se a linha está vazia, mas o outro lado tem texto, usamos o outro lado como seed e pedimos output no idioma alvo.
-     *
-     * Como o endpoint atual é translateOrDefineSentence(sentence, language1, language2) -> backText,
-     * vamos "hackear" a direção:
-     * - Vamos sempre colocar language2 = targetLang (idioma de saída)
-     * - Vamos escolher language1 de acordo com a fonte real do seed
-     */
     const seedText = baseText || contextText;
 
     const seedLang = baseText
-      ? targetLang // se a própria linha tem texto, consideramos que ele já está no idioma alvo
+      ? targetLang
       : targetSide === "english"
-        ? lang2 // se english está vazio, estamos usando portuguese como seed
-        : lang1; // se portuguese está vazio, estamos usando english como seed
+        ? lang2
+        : lang1;
 
     const key = `${idx}:${targetSide}`;
 
@@ -291,7 +298,7 @@ export default function VocabularyEditor({
     }
   };
 
-  /* ===================== IA - RECEBER JSON ===================== */
+  /* ===================== IA - RECEIVE JSON ===================== */
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
@@ -312,6 +319,14 @@ export default function VocabularyEditor({
   }
 
   const handleReceiveJson = (raw: any) => {
+    if (isAtLimit) {
+      notifyAlert(
+        `Este bloco já está no limite (${MAX_ITEMS} itens).`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const json = parseMaybeJson(raw);
 
     let arr: any[] = [];
@@ -319,28 +334,30 @@ export default function VocabularyEditor({
       arr = json;
     } else if (json && typeof json === "object") {
       const candidate =
-        json.vocabulary ||
-        json.sentences ||
-        json.items ||
-        json.list ||
-        json.data ||
+        (json as any).vocabulary ||
+        (json as any).sentences ||
+        (json as any).items ||
+        (json as any).list ||
+        (json as any).data ||
         null;
 
       if (Array.isArray(candidate)) {
         arr = candidate;
       } else if (
-        typeof json.result === "string" ||
-        typeof json.json === "string"
+        typeof (json as any).result === "string" ||
+        typeof (json as any).json === "string"
       ) {
-        const inner = parseMaybeJson(json.result ?? json.json);
+        const inner = parseMaybeJson(
+          (json as any).result ?? (json as any).json,
+        );
         if (Array.isArray(inner)) arr = inner;
         else if (inner && typeof inner === "object") {
           const innerCandidate =
-            inner.vocabulary ||
-            inner.sentences ||
-            inner.items ||
-            inner.list ||
-            inner.data;
+            (inner as any).vocabulary ||
+            (inner as any).sentences ||
+            (inner as any).items ||
+            (inner as any).list ||
+            (inner as any).data;
           if (Array.isArray(innerCandidate)) arr = innerCandidate;
         }
       }
@@ -351,7 +368,7 @@ export default function VocabularyEditor({
 
     if (!Array.isArray(arr) || arr.length === 0) {
       notifyAlert(
-        "A IA gerou conteúdo, mas não reconheci a lista. Ajuste o prompt/retorno para ser um ARRAY de {english, portuguese}.",
+        "A IA gerou conteúdo, mas não reconheci a lista. Ajuste o retorno para ser um ARRAY de {english, portuguese}.",
         partnerColor(),
       );
       console.warn("Conteúdo recebido da IA (bruto):", raw);
@@ -394,10 +411,21 @@ export default function VocabularyEditor({
         (it: SentenceItem) => (it.english || it.portuguese).trim().length > 0,
       );
 
+    // merge priorizando os novos no topo e corta no máximo 20
+    const merged = [...mapped, ...(value.sentences || [])];
+
+    // se quiser deduplicar, descomente:
+    // const mergedDedup = merged.filter((it, i, arr) => {
+    //   const key = `${it.english.trim().toLowerCase()}|${it.portuguese.trim().toLowerCase()}`;
+    //   return i === arr.findIndex((x) => `${x.english.trim().toLowerCase()}|${x.portuguese.trim().toLowerCase()}` === key);
+    // });
+
+    const limited = enforceMax(merged);
+
     onChange({
       ...value,
       type: "vocabulary",
-      sentences: [...mapped, ...value.sentences],
+      sentences: limited,
     });
 
     setShowConfig(true);
@@ -424,6 +452,34 @@ export default function VocabularyEditor({
       </select>
     </div>
   );
+
+  /* ===================== UI: aviso de limite ===================== */
+  const LimitNotice = useMemo(() => {
+    if (!isAtLimit) return null;
+    return (
+      <div
+        style={{
+          border: "1px solid #f59e0b",
+          background: "#fffbeb",
+          color: "#92400e",
+          borderRadius: 8,
+          padding: "10px 12px",
+          fontSize: 12,
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 8,
+          alignItems: "center",
+        }}
+      >
+        <span>
+          Este bloco comporta no máximo <strong>{MAX_ITEMS}</strong> itens.
+        </span>
+        <span style={{ fontWeight: 700 }}>
+          {count}/{MAX_ITEMS}
+        </span>
+      </div>
+    );
+  }, [isAtLimit, count]);
 
   /* ===================== RENDER ===================== */
   return (
@@ -499,9 +555,12 @@ export default function VocabularyEditor({
             </button>
           </div>
 
-          <button style={primaryBtnStyle} onClick={() => setAiOpen(true)}>
-            ✨ IA
-          </button>
+          {/* ✅ Botão IA some se já tiver no máximo */}
+          {!isAtLimit && (
+            <button style={primaryBtnStyle} onClick={() => setAiOpen(true)}>
+              ✨ IA
+            </button>
+          )}
 
           {titleRightExtra}
 
@@ -516,6 +575,9 @@ export default function VocabularyEditor({
           )}
         </span>
       </div>
+
+      {/* ✅ aviso: só cabem 20 */}
+      {LimitNotice}
 
       {showConfig && (
         <>
@@ -554,7 +616,22 @@ export default function VocabularyEditor({
               <strong style={{ fontSize: 14, color: "#0f172a" }}>
                 List ({value.sentences.length})
               </strong>
-              <button onClick={addSentence} style={primaryBtnStyle}>
+
+              {/* ✅ não deixa acrescentar mais se bater no máximo */}
+              <button
+                onClick={addSentence}
+                style={{
+                  ...primaryBtnStyle,
+                  opacity: isAtLimit ? 0.6 : 1,
+                  cursor: isAtLimit ? "not-allowed" : "pointer",
+                }}
+                disabled={isAtLimit}
+                title={
+                  isAtLimit
+                    ? `Limite atingido (${MAX_ITEMS}). Remova itens para adicionar mais.`
+                    : "Adicionar vocabulário"
+                }
+              >
                 + Adicionar vocabulário
               </button>
             </div>
@@ -631,7 +708,7 @@ export default function VocabularyEditor({
                     </button>
                   </div>
 
-                  {/* FRONT (english) */}
+                  {/* FRONT */}
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
                       Front
@@ -658,7 +735,6 @@ export default function VocabularyEditor({
                         style={inputStyle}
                       />
 
-                      {/* ✅ IA na linha de cima: escreve NA PRÓPRIA linha (english) */}
                       <button
                         style={{
                           ...ghostBtnStyle,
@@ -677,7 +753,7 @@ export default function VocabularyEditor({
                     </div>
                   </div>
 
-                  {/* BACK (portuguese) */}
+                  {/* BACK */}
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
                       Back
@@ -704,7 +780,6 @@ export default function VocabularyEditor({
                         style={inputStyle}
                       />
 
-                      {/* ✅ IA na linha de baixo: escreve NA PRÓPRIA linha (portuguese) */}
                       <button
                         style={{
                           ...ghostBtnStyle,
@@ -780,18 +855,20 @@ export default function VocabularyEditor({
         </>
       )}
 
-      {/* Gerador isolado */}
-      <SimpleAIGenerator
-        visible={aiOpen}
-        language1={language}
-        type="vocabulary"
-        onClose={() => setAiOpen(false)}
-        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
-        headers={headers}
-        onReceiveJson={handleReceiveJson}
-        title="Gerar Vocabulary por IA"
-        numberOfSentences={20}
-      />
+      {/* ✅ Gerador isolado: só abre/usa se NÃO estiver no limite */}
+      {!isAtLimit && (
+        <SimpleAIGenerator
+          visible={aiOpen}
+          language1={language}
+          type="vocabulary"
+          onClose={() => setAiOpen(false)}
+          postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+          headers={headers}
+          onReceiveJson={handleReceiveJson}
+          title="Gerar Vocabulary por IA"
+          numberOfSentences={MAX_ITEMS}
+        />
+      )}
     </div>
   );
 }

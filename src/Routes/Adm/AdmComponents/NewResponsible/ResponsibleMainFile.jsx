@@ -42,7 +42,7 @@ export function ResponsibleMainFile({ headers, id, isDesktop }) {
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "12px",
+          borderRadius: "8px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
           padding: "10px",

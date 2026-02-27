@@ -12,7 +12,7 @@ import DeleteClass from "./sessions/DeleteEvent";
 import { partnerColor } from "../../../Styles/Styles";
 import HomeworkClass from "./sessions/HomeworkClass";
 import Helmets from "../../../Resources/Helmets";
-
+import { flushSync } from "react-dom";
 type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
@@ -27,6 +27,13 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const [selectedFutureEventId, setSelectedFutureEventId] =
     useState<string>("");
   const [rescheduling, setRescheduling] = useState(false);
+  const [statusOverride, setStatusOverride] = useState<string | null>(null);
+  const [statusLoading, setStatusLoading] = useState<
+    "marcado" | "realizada" | "desmarcado" | null
+  >(null);
+
+  // status que a UI usa (instantâneo)
+  const uiStatus = statusOverride ?? eventData?.status;
 
   const rescheduleEvent = async (
     id: string,
@@ -59,14 +66,49 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
       setEventData(res.data.event);
-      console.log(res.data.event);
-      setReplicateLastEvent(
-        res.data.event.replicateLastEvent 
-        // &&  res.data.event.category !== "Established Group Class",
-      );
+
+      // IMPORTANT: depois que o back trouxe o dado “oficial”, remove override
+      setStatusOverride(null);
+
+      setReplicateLastEvent(res.data.event.replicateLastEvent);
     } catch (err) {
       console.error("Error fetching event data", err);
     }
+  };
+
+  const updateEventStatusOptimistic = (
+    id: string,
+    newStatus: "marcado" | "realizada" | "desmarcado",
+  ) => {
+    if (!id) return;
+
+    const previousStatus = uiStatus;
+
+    // 1) força o React a pintar ANTES de qualquer coisa pesada
+    flushSync(() => {
+      setStatusOverride(newStatus);
+      setStatusLoading(newStatus);
+    });
+
+    // 2) dispara o request depois que a UI já mudou
+    setTimeout(async () => {
+      try {
+        await axios.put(
+          `${backDomain}/api/v1/eventstatus/${id}`,
+          { status: newStatus },
+          { headers: headers as any },
+        );
+
+        fetchEventData();
+      } catch (error) {
+        console.log(error, "Erro ao atualizar evento");
+        flushSync(() => {
+          setStatusOverride(previousStatus ?? null);
+        });
+      } finally {
+        setStatusLoading(null);
+      }
+    }, 0);
   };
 
   useEffect(() => {
@@ -202,17 +244,20 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             >
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateScheduled(event._id)}
+                onClick={() =>
+                  !statusLoading &&
+                  updateEventStatusOptimistic(event._id, "marcado")
+                }
               >
                 <i
                   className="fa fa-clock-o"
                   style={{
                     fontSize:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "#007bff"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -221,7 +266,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "#007bff"
                         : "#6c757d",
                     marginTop: "2px",
@@ -233,19 +278,20 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateRealizedClass(event._id)}
+                onClick={() =>
+                  !statusLoading &&
+                  updateEventStatusOptimistic(event._id, "realizada")
+                }
               >
                 <i
                   className="fa fa-check-circle"
                   style={{
                     fontSize:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "#28a745"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -254,8 +300,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "#28a745"
                         : "#6c757d",
                     marginTop: "2px",
@@ -267,19 +312,20 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateUnscheduled(event._id)}
+                onClick={() =>
+                  !statusLoading &&
+                  updateEventStatusOptimistic(event._id, "desmarcado")
+                }
               >
                 <i
                   className="fa fa-times-circle-o"
                   style={{
                     fontSize:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "#dc3545"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -288,8 +334,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "#dc3545"
                         : "#6c757d",
                     marginTop: "2px",
@@ -310,7 +355,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
-          borderRadius: "12px",
+          borderRadius: "8px",
           margin: !isDesktop ? "12px" : "0px",
           display: "grid",
           gridAutoColumns: "1fr",
@@ -341,11 +386,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   className="fa fa-clock-o"
                   style={{
                     fontSize:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "#007bff"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -354,7 +399,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Scheduled" || event.status === "marcado"
+                      uiStatus === "Scheduled" || uiStatus === "marcado"
                         ? "#007bff"
                         : "#6c757d",
                     marginTop: "2px",
@@ -371,13 +416,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   className="fa fa-check-circle"
                   style={{
                     fontSize:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "#28a745"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -386,8 +429,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Realized" ||
-                      event.status === "realizada"
+                      uiStatus === "Realized" || uiStatus === "realizada"
                         ? "#28a745"
                         : "#6c757d",
                     marginTop: "2px",
@@ -405,13 +447,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   className="fa fa-times-circle-o"
                   style={{
                     fontSize:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "24px"
                         : "18px",
                     color:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "#dc3545"
                         : "#6c757d",
                     transition: "all 0.2s",
@@ -420,8 +460,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     color:
-                      event.status === "Canceled" ||
-                      event.status === "desmarcado"
+                      uiStatus === "Canceled" || uiStatus === "desmarcado"
                         ? "#dc3545"
                         : "#6c757d",
                     marginTop: "2px",

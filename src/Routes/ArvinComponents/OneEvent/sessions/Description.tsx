@@ -213,7 +213,11 @@ const Description: FC<DescriptionProps> = ({
                 />
                 <button
                   onClick={handleClassSummary}
-                  disabled={saving || loadingDescription || !description.trim()}
+                  disabled={
+                    saving ||
+                    loadingDescription ||
+                    description.trim().split(/\s+/).filter(Boolean).length < 5
+                  }
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -223,11 +227,11 @@ const Description: FC<DescriptionProps> = ({
                     borderRadius: 6,
                     border: "1px solid #cbd5e1",
                     backgroundColor:
-                      saving || loadingDescription || !description.trim()
+                      saving || loadingDescription || description.trim().split(/\s+/).filter(Boolean).length < 5
                         ? "grey"
                         : "white",
                     cursor:
-                      saving || loadingDescription || !description.trim()
+                      saving || loadingDescription || description.trim().split(/\s+/).filter(Boolean).length < 5
                         ? "not-allowed"
                         : "pointer",
                   }}

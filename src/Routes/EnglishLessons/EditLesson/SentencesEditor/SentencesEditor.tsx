@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   backDomain,
@@ -41,7 +41,7 @@ type Props = {
   onMoveDown?: () => void;
   studentId: any;
   headers?: HeadersLike | null;
-  setChange?: any; // mantido por compatibilidade, mas não usado pra reload automático
+  setChange?: any;
   change?: any;
   language: string;
 };
@@ -51,6 +51,8 @@ const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
 type FieldSide = "english" | "portuguese";
+
+const MAX_ITEMS = 20;
 
 /* ===================== COMPONENT ===================== */
 const SentencesEditor: React.FC<Props> = ({
@@ -74,11 +76,19 @@ const SentencesEditor: React.FC<Props> = ({
   );
   const [showConfig, setShowConfig] = useState(true);
 
-  // ✅ loading por item + lado (IA nas duas linhas)
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
-
-  // Modal IA (gerador isolado)
   const [aiOpen, setAiOpen] = useState(false);
+
+  /* ===================== LIMIT HELPERS ===================== */
+  const count = value.sentences?.length || 0;
+  const isAtLimit = count >= MAX_ITEMS;
+
+  const enforceMax = (sentences: SentenceItem[]) => {
+    if (!Array.isArray(sentences)) return [];
+    if (sentences.length <= MAX_ITEMS) return sentences;
+    // se por qualquer motivo tiver mais, remove os últimos
+    return sentences.slice(0, MAX_ITEMS);
+  };
 
   /* ====== sincroniza idiomas padrão ====== */
   useEffect(() => {
@@ -97,11 +107,13 @@ const SentencesEditor: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultBlockLang1, defaultBlockLang2]);
 
-  /* ====== backfill languages ====== */
+  /* ====== backfill languages + ENFORCE MAX ====== */
   useEffect(() => {
     const needsBackfill = value.sentences.some((s: any) => !s?.languages);
-    if (needsBackfill) {
-      const fixed = value.sentences.map((s: any) => ({
+    const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
+
+    if (needsBackfill || exceedsMax) {
+      const fixed = (value.sentences || []).map((s: any) => ({
         english: s.english ?? "",
         portuguese: s.portuguese ?? "",
         languages: s.languages ?? {
@@ -109,25 +121,43 @@ const SentencesEditor: React.FC<Props> = ({
           language2: defaultLang2 || "pt",
         },
       }));
-      onChange({ ...value, type: "sentences", sentences: fixed });
+
+      onChange({
+        ...value,
+        type: "sentences",
+        sentences: enforceMax(fixed),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.sentences, defaultLang1, defaultLang2]);
 
   /* ===================== UPDATERS ===================== */
   const updateSubtitle = (subtitle: string) =>
-    onChange({ ...value, type: "sentences", subtitle });
+    onChange({
+      ...value,
+      type: "sentences",
+      subtitle,
+      sentences: enforceMax(value.sentences),
+    });
 
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem,
   ) => {
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, type: "sentences", sentences: next });
+    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
   };
 
   const addSentence = () => {
+    if (isAtLimit) {
+      notifyAlert(
+        `Este bloco suporta no máximo ${MAX_ITEMS} sentenças.`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const next = [
       {
         english: "",
@@ -137,34 +167,33 @@ const SentencesEditor: React.FC<Props> = ({
           language2: defaultLang2 || "pt",
         },
       },
-      ...value.sentences,
+      ...(value.sentences || []),
     ];
 
-    onChange({ ...value, type: "sentences", sentences: next });
+    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
   };
 
   const removeSentence = (index: number) => {
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     next.splice(index, 1);
-    onChange({ ...value, type: "sentences", sentences: next });
+    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
-    const next = value.sentences.slice();
+    const next = (value.sentences || []).slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, type: "sentences", sentences: next });
+    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
   };
 
   const moveDown = (index: number) => {
-    if (index >= value.sentences.length - 1) return;
-    const next = value.sentences.slice();
+    if (index >= (value.sentences?.length || 0) - 1) return;
+    const next = (value.sentences || []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, type: "sentences", sentences: next });
+    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
   };
 
-  /* ===================== PER-CARD SWAP (NOVO) ===================== */
-  // ✅ Botão em CADA card: troca os textos e também os idiomas do item.
+  /* ===================== PER-CARD SWAP ===================== */
   const swapCardSides = (idx: number) => {
     updateSentence(idx, (prev) => ({
       ...prev,
@@ -177,17 +206,10 @@ const SentencesEditor: React.FC<Props> = ({
     }));
   };
 
-  /* ===================== IA: GERA A PRÓPRIA LINHA (NOVO) ===================== */
+  /* ===================== IA: PER-LINE ===================== */
   const isLoading = (idx: number, side: FieldSide) =>
     loadingKey === `${idx}:${side}`;
 
-  /**
-   * ✅ Clicou no botão daquela linha => escreve NA PRÓPRIA linha.
-   * - IA no Front (english) => preenche english
-   * - IA no Back (portuguese) => preenche portuguese
-   *
-   * O outro campo pode ser usado apenas como seed quando a linha está vazia.
-   */
   const handleAI = async (idx: number, targetSide: FieldSide) => {
     const s = value.sentences[idx];
 
@@ -225,8 +247,6 @@ const SentencesEditor: React.FC<Props> = ({
 
     const seedText = baseText || otherText;
 
-    // Se a própria linha tiver texto, assume que já está no idioma alvo.
-    // Se estiver vazia, usa o outro lado como seed, então o seedLang é o idioma do outro lado.
     const seedLang = baseText
       ? targetLang
       : targetSide === "english"
@@ -294,6 +314,15 @@ const SentencesEditor: React.FC<Props> = ({
   }
 
   const handleReceiveJson = (raw: any) => {
+    // ✅ não processa lista da IA se já bateu no máximo
+    if (isAtLimit) {
+      notifyAlert(
+        `Este bloco já está no limite (${MAX_ITEMS} sentenças).`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const json = parseMaybeJson(raw);
 
     let arr: any[] = [];
@@ -301,28 +330,30 @@ const SentencesEditor: React.FC<Props> = ({
       arr = json;
     } else if (json && typeof json === "object") {
       const candidate =
-        json.sentences ||
-        json.items ||
-        json.list ||
-        json.data ||
-        json.vocabulary ||
+        (json as any).sentences ||
+        (json as any).items ||
+        (json as any).list ||
+        (json as any).data ||
+        (json as any).vocabulary ||
         null;
 
       if (Array.isArray(candidate)) {
         arr = candidate;
       } else if (
-        typeof json.result === "string" ||
-        typeof json.json === "string"
+        typeof (json as any).result === "string" ||
+        typeof (json as any).json === "string"
       ) {
-        const inner = parseMaybeJson(json.result ?? json.json);
+        const inner = parseMaybeJson(
+          (json as any).result ?? (json as any).json,
+        );
         if (Array.isArray(inner)) arr = inner;
         else if (inner && typeof inner === "object") {
           const innerCandidate =
-            inner.sentences ||
-            inner.items ||
-            inner.list ||
-            inner.data ||
-            inner.vocabulary;
+            (inner as any).sentences ||
+            (inner as any).items ||
+            (inner as any).list ||
+            (inner as any).data ||
+            (inner as any).vocabulary;
           if (Array.isArray(innerCandidate)) arr = innerCandidate;
         }
       }
@@ -377,10 +408,13 @@ const SentencesEditor: React.FC<Props> = ({
         (it: SentenceItem) => (it.english || it.portuguese).trim().length > 0,
       );
 
+    const merged = [...mapped, ...(value.sentences || [])];
+    const limited = enforceMax(merged);
+
     onChange({
       ...value,
       type: "sentences",
-      sentences: [...mapped, ...value.sentences],
+      sentences: limited,
     });
 
     setShowConfig(true);
@@ -407,6 +441,34 @@ const SentencesEditor: React.FC<Props> = ({
       </select>
     </div>
   );
+
+  /* ===================== UI: aviso de limite ===================== */
+  const LimitNotice = useMemo(() => {
+    if (!isAtLimit) return null;
+    return (
+      <div
+        style={{
+          border: "1px solid #f59e0b",
+          background: "#fffbeb",
+          color: "#92400e",
+          borderRadius: 8,
+          padding: "10px 12px",
+          fontSize: 12,
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 8,
+          alignItems: "center",
+        }}
+      >
+        <span>
+          Este bloco comporta no máximo <strong>{MAX_ITEMS}</strong> sentenças.
+        </span>
+        <span style={{ fontWeight: 700 }}>
+          {count}/{MAX_ITEMS}
+        </span>
+      </div>
+    );
+  }, [isAtLimit, count]);
 
   return (
     <div className="se-root">
@@ -607,12 +669,15 @@ const SentencesEditor: React.FC<Props> = ({
               </button>
             </div>
 
-            <button
-              className="se-btn se-btn--primary"
-              onClick={() => setAiOpen(true)}
-            >
-              ✨ IA
-            </button>
+            {/* ✅ Botão IA some se já tiver o máximo */}
+            {!isAtLimit && (
+              <button
+                className="se-btn se-btn--primary"
+                onClick={() => setAiOpen(true)}
+              >
+                ✨ IA
+              </button>
+            )}
 
             {onRemove && (
               <button
@@ -627,6 +692,9 @@ const SentencesEditor: React.FC<Props> = ({
           </div>
         </span>
       </div>
+
+      {/* ✅ aviso: só cabem 20 */}
+      {LimitNotice}
 
       {showConfig && (
         <div className="se-list">
@@ -646,7 +714,22 @@ const SentencesEditor: React.FC<Props> = ({
               <strong style={{ fontSize: 14, color: "#0f172a" }}>
                 List ({value.sentences.length})
               </strong>
-              <button onClick={addSentence} className="se-btn se-btn--primary">
+
+              {/* ✅ não deixa acrescentar mais se bater no máximo */}
+              <button
+                onClick={addSentence}
+                className="se-btn se-btn--primary"
+                disabled={isAtLimit}
+                style={{
+                  opacity: isAtLimit ? 0.6 : 1,
+                  cursor: isAtLimit ? "not-allowed" : "pointer",
+                }}
+                title={
+                  isAtLimit
+                    ? `Limite atingido (${MAX_ITEMS}). Remova itens para adicionar mais.`
+                    : "Adicionar sentença"
+                }
+              >
                 + Adicionar sentença
               </button>
             </div>
@@ -684,7 +767,6 @@ const SentencesEditor: React.FC<Props> = ({
                   </button>
                 )}
 
-                {/* ✅ NOVO: trocar Front/Back por card */}
                 <button
                   onClick={() => swapCardSides(idx)}
                   className="se-btn"
@@ -706,7 +788,7 @@ const SentencesEditor: React.FC<Props> = ({
 
               {/* FRONT / BACK */}
               <div className="se-row">
-                {/* FRONT + IA (gera a própria linha) */}
+                {/* FRONT + IA */}
                 <div className="se-field">
                   <label className="se-label">Front</label>
 
@@ -739,7 +821,7 @@ const SentencesEditor: React.FC<Props> = ({
                   </div>
                 </div>
 
-                {/* BACK + IA (gera a própria linha) */}
+                {/* BACK + IA */}
                 <div className="se-field">
                   <label className="se-label">Back</label>
 
@@ -816,18 +898,20 @@ const SentencesEditor: React.FC<Props> = ({
         </div>
       )}
 
-      {/* Gerador isolado */}
-      <SimpleAIGenerator
-        visible={aiOpen}
-        language1={language}
-        type="sentences"
-        onClose={() => setAiOpen(false)}
-        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
-        headers={headers}
-        onReceiveJson={handleReceiveJson}
-        title="Gerar Sentences por IA"
-        numberOfSentences={20}
-      />
+      {/* ✅ Gerador isolado: só renderiza se NÃO estiver no limite */}
+      {!isAtLimit && (
+        <SimpleAIGenerator
+          visible={aiOpen}
+          language1={language}
+          type="sentences"
+          onClose={() => setAiOpen(false)}
+          postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+          headers={headers}
+          onReceiveJson={handleReceiveJson}
+          title="Gerar Sentences por IA"
+          numberOfSentences={MAX_ITEMS}
+        />
+      )}
     </div>
   );
 };

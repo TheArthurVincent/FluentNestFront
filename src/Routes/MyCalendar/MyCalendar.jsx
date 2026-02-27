@@ -87,8 +87,8 @@ function EventPreviewModal({ event, onClose }) {
           width: "520px",
           maxWidth: "95vw",
           background: "#ffffff",
-          borderRadius: "20px",
-          border: "1px solid #E5E7EB",
+          borderRadius: "8px",
+          border: "none",
           boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
           overflow: "hidden",
           fontFamily: "Plus Jakarta Sans",
@@ -98,7 +98,7 @@ function EventPreviewModal({ event, onClose }) {
         {/* Header */}
         <div
           style={{
-            padding: "18px 22px",
+            padding: "12px",
             borderBottom: "1px solid #EEF2F7",
             display: "flex",
             justifyContent: "space-between",
@@ -110,7 +110,6 @@ function EventPreviewModal({ event, onClose }) {
             style={{
               margin: 0,
               fontSize: "16px",
-              fontWeight: 900,
               color: "#111827",
               letterSpacing: "-0.3px",
             }}
@@ -121,11 +120,9 @@ function EventPreviewModal({ event, onClose }) {
           <button
             onClick={onClose}
             style={{
-              border: "1px solid #E5E7EB",
+              border: "none",
               background: "#fff",
               borderRadius: "999px",
-              width: "32px",
-              height: "32px",
               cursor: "pointer",
               fontWeight: 900,
             }}
@@ -175,12 +172,11 @@ function EventPreviewModal({ event, onClose }) {
               rel="noreferrer"
               style={{
                 fontSize: "13px",
-                fontWeight: 700,
                 color: partnerColor(),
                 textDecoration: "none",
                 border: `1px solid ${partnerColor()}40`,
                 padding: "10px 12px",
-                borderRadius: "10px",
+                borderRadius: "8px",
                 textAlign: "center",
                 background: `${partnerColor()}10`,
               }}
@@ -189,7 +185,6 @@ function EventPreviewModal({ event, onClose }) {
             </a>
           )}
         </div>
-
         {/* Footer */}
         <div
           style={{
@@ -200,37 +195,21 @@ function EventPreviewModal({ event, onClose }) {
             gap: "10px",
           }}
         >
-          <button
-            onClick={onClose}
-            style={{
-              padding: "8px 14px",
-              borderRadius: "999px",
-              border: "1px solid #E5E7EB",
-              background: "#fff",
-              cursor: "pointer",
-              fontWeight: 800,
-            }}
-          >
-            Fechar
-          </button>
-
           <a
             href={`/my-calendar/event/${event._id}`}
-            target="_blank"
             rel="noreferrer"
             style={{
               padding: "8px 16px",
-              borderRadius: "9px",
+              borderRadius: "8px",
               background: partnerColor(),
               color: "#fff",
               textDecoration: "none",
-              fontWeight: 900,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            Abrir Evento
+            Abrir Aula
           </a>
         </div>
       </div>
@@ -1849,7 +1828,7 @@ function MyCalendar({
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "12px",
+          borderRadius: "8px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
         }}

@@ -15,7 +15,7 @@ export default function ExerciseLessonSlideModel({
       }}
     >
       <div>
-        {item.map((theitem: string, index: number) => {
+        {item && item?.map((theitem: string, index: number) => {
           return (
             <div key={index}>
               {theitem}

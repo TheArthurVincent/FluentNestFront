@@ -116,6 +116,52 @@ function ModalPortal({
   return ReactDOM.createPortal(children, document.body);
 }
 
+/** ===================== LIMITES ===================== */
+const MAX_BLOCKS = 10;
+
+/** ===================== TAGS (VOCABULARY → TAGS) ===================== */
+const normalizeTag = (t: string) =>
+  String(t || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .replace(/^["'`]+|["'`]+$/g, "");
+
+const extractVocabularyTags = (els: ElementItem[]) => {
+  const out: string[] = [];
+
+  for (const el of els || []) {
+    if (!el || el.type !== "vocabulary") continue;
+
+    const arr = Array.isArray((el as any).sentences)
+      ? (el as any).sentences
+      : [];
+    for (const item of arr) {
+      const en = normalizeTag(item?.english);
+      const pt = normalizeTag(item?.portuguese);
+
+      if (en) out.push(en);
+      if (pt) out.push(pt);
+    }
+  }
+
+  // remove vazios
+  return out.filter(Boolean);
+};
+
+const mergeUniqueTags = (current: string[], incoming: string[]) => {
+  const set = new Set(current);
+  const next = [...current];
+
+  for (const t of incoming) {
+    if (!set.has(t)) {
+      set.add(t);
+      next.push(t);
+    }
+  }
+
+  return next;
+};
+
 export default function EditLesson({
   classId,
   headers,
@@ -163,6 +209,13 @@ export default function EditLesson({
       const { order: _ignored, _id: _ignoredId, ...rest } = el || {};
       return rest as ElementItem;
     });
+  };
+
+  const enforceMaxBlocks = (arr: ElementItem[]) => {
+    if (!Array.isArray(arr)) return [];
+    if (arr.length <= MAX_BLOCKS) return arr;
+    // se por qualquer motivo tiver mais, exclui os últimos
+    return arr.slice(0, MAX_BLOCKS);
   };
 
   const buildSnapshot = (data?: {
@@ -260,20 +313,59 @@ export default function EditLesson({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, openAIGenerator, isDirty]);
 
-  // beforeunload: alerta ao fechar aba/navegador
-  // useEffect(() => {
-  //   if (typeof window === "undefined") return;
-  //   if (!open) return;
+  // -----------------------------
+  // LIMIT: 10 blocos (UI + proteção)
+  // -----------------------------
+  const blockCount = elements.length;
+  const isAtBlockLimit = blockCount >= MAX_BLOCKS;
 
-  //   const onBeforeUnload = (e: BeforeUnloadEvent) => {
-  //     if (!isDirty) return;
-  //     e.preventDefault();
-  //     e.returnValue = "";
-  //   };
+  // Se por qualquer motivo vier > MAX, corta e avisa
+  useEffect(() => {
+    if (!open) return;
+    if (!Array.isArray(elements)) return;
 
-  //   window.addEventListener("beforeunload", onBeforeUnload);
-  //   return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  // }, [open, isDirty]);
+    if (elements.length > MAX_BLOCKS) {
+      setElements((prev) => enforceMaxBlocks(prev));
+      notifyAlert(
+        `Esta aula suporta no máximo ${MAX_BLOCKS} blocos. Removi os excedentes.`,
+        partnerColor(),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, elements.length]);
+
+  // -----------------------------
+  // TAGS: botão “Scan Vocabulary → Tags”
+  // -----------------------------
+  const handleScanVocabularyToTags = () => {
+    const generated = extractVocabularyTags(elements);
+
+    if (!generated.length) {
+      notifyAlert(
+        "Nenhuma tag encontrada em blocos de Vocabulary.",
+        partnerColor(),
+      );
+      return;
+    }
+
+    const uniqueGenerated = Array.from(new Set(generated));
+    const before = tags.length;
+
+    const merged = mergeUniqueTags(tags, uniqueGenerated);
+    setTags(merged);
+
+    const added = merged.length - before;
+
+    if (added <= 0) {
+      notifyAlert(
+        "Nenhuma tag nova para adicionar (todas já existiam).",
+        partnerColor(),
+      );
+      return;
+    }
+
+    notifyAlert(`Tags adicionadas: ${added}`, partnerColor());
+  };
 
   // -----------------------------
   // IA: título e descrição
@@ -365,6 +457,7 @@ export default function EditLesson({
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
       const sanitized = sanitizeElements(data.elements);
+      const limited = enforceMaxBlocks(sanitized);
 
       setLesson(data);
       setTitle(data.title ?? "");
@@ -372,7 +465,7 @@ export default function EditLesson({
       setImage(data.image ?? "");
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
-      setElements(sanitized);
+      setElements(limited);
       setTheLanguage(data.language || language || "en");
 
       initialSnapshotRef.current = buildSnapshot({
@@ -382,8 +475,15 @@ export default function EditLesson({
         order: Number(data.order ?? 0),
         tags: Array.isArray(data.tags) ? data.tags : [],
         language: data.language || language || "en",
-        elements: sanitized,
+        elements: limited,
       });
+
+      if (sanitized.length > MAX_BLOCKS) {
+        notifyAlert(
+          `Esta aula suporta no máximo ${MAX_BLOCKS} blocos. Os excedentes foram removidos ao carregar.`,
+          partnerColor(),
+        );
+      }
 
       setOpen(true);
     } catch (err: any) {
@@ -395,7 +495,6 @@ export default function EditLesson({
     }
   };
 
-  // Recarrega quando change sinaliza atualização (mantém modal aberto)
   useEffect(() => {
     if (!open) return;
     if (!classId) return;
@@ -419,6 +518,7 @@ export default function EditLesson({
     setError(null);
 
     const sanitized = sanitizeElements(elements as any);
+    const limited = enforceMaxBlocks(sanitized);
 
     const payload: ClassDetails = {
       ...lesson,
@@ -428,20 +528,24 @@ export default function EditLesson({
       image,
       order: Number(order),
       tags,
-      elements: sanitized,
+      elements: limited,
     };
 
     try {
       const res = await axios.put(
         `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        { headers },
+        {
+          headers,
+        },
       );
 
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
-      const updatedSanitized = sanitizeElements(updated.elements);
+      const updatedSanitized = enforceMaxBlocks(
+        sanitizeElements(updated.elements),
+      );
 
       setLesson(updated);
       setImage(updated?.image ?? image);
@@ -509,7 +613,7 @@ export default function EditLesson({
     setElements((prev) => {
       const clone = [...prev];
       clone[index] = next;
-      return clone;
+      return enforceMaxBlocks(clone);
     });
   };
 
@@ -527,7 +631,7 @@ export default function EditLesson({
       const clone = [...prev];
       const [item] = clone.splice(from, 1);
       clone.splice(to, 0, item);
-      return clone;
+      return enforceMaxBlocks(clone);
     });
   };
 
@@ -676,10 +780,20 @@ export default function EditLesson({
   };
 
   const addBlock = (pos: "start" | "end" = "end") => {
+    if (isAtBlockLimit) {
+      notifyAlert(
+        `Esta aula suporta no máximo ${MAX_BLOCKS} blocos.`,
+        partnerColor(),
+      );
+      return;
+    }
+
     const block = makeEmptyBlock(newType);
-    setElements((prev) =>
-      pos === "start" ? [block, ...prev] : [...prev, block],
-    );
+
+    setElements((prev) => {
+      const next = pos === "start" ? [block, ...prev] : [...prev, block];
+      return enforceMaxBlocks(next);
+    });
   };
 
   // -----------------------------
@@ -691,16 +805,33 @@ export default function EditLesson({
     fromTitle: string;
     elements: any[];
   }) => {
-    const { elements: imported } = info;
+    if (isAtBlockLimit) {
+      notifyAlert(
+        `Esta aula já está no limite (${MAX_BLOCKS} blocos).`,
+        partnerColor(),
+      );
+      return;
+    }
+
+    const imported = info?.elements || [];
 
     setElements((prev) => {
-      const cleanImported: ElementItem[] = (imported || []).map(
-        (plain: any) => {
-          const { _id, order, ...rest } = plain;
-          return rest as ElementItem;
-        },
-      );
-      return [...prev, ...cleanImported];
+      const cleanImported: ElementItem[] = imported.map((plain: any) => {
+        const { _id, order, ...rest } = plain;
+        return rest as ElementItem;
+      });
+
+      const merged = [...prev, ...cleanImported];
+      const limited = enforceMaxBlocks(merged);
+
+      if (merged.length > MAX_BLOCKS) {
+        notifyAlert(
+          `Somente ${MAX_BLOCKS} blocos são permitidos. Os excedentes foram removidos.`,
+          partnerColor(),
+        );
+      }
+
+      return limited;
     });
   };
 
@@ -753,7 +884,6 @@ export default function EditLesson({
       boxSizing: "border-box",
       backgroundColor: "#ffffff",
       transition: "transform 0.05s ease, box-shadow 0.15s ease",
-      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
@@ -765,7 +895,6 @@ export default function EditLesson({
       color: "white",
       fontWeight: 700,
       border: "none",
-      boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
     }),
     [ghostButton],
   );
@@ -777,7 +906,6 @@ export default function EditLesson({
       border: "1px solid #eef2f7",
       borderRadius: 14,
       padding: isMobile ? 12 : 14,
-      boxShadow: "0 10px 25px rgba(2,6,23,0.05)",
     }),
     [isMobile],
   );
@@ -803,7 +931,6 @@ export default function EditLesson({
       overflow: "auto",
       background: "linear-gradient(180deg, #ffffff 0%, #fbfdff 100%)",
       borderRadius: 16,
-      boxShadow: "0 30px 90px rgba(2, 6, 23, 0.35)",
       border: "1px solid rgba(226, 232, 240, 0.9)",
     }),
     [],
@@ -834,7 +961,6 @@ export default function EditLesson({
       padding: "8px 12px",
       cursor: "pointer",
       fontSize: 12,
-      boxShadow: "0 1px 0 rgba(15, 23, 42, 0.04)",
     }),
     [],
   );
@@ -858,6 +984,23 @@ export default function EditLesson({
       marginBottom: 12,
       fontSize: 12,
       border: "1px solid rgba(153, 27, 27, 0.15)",
+    }),
+    [],
+  );
+
+  const limitNoticeStyle: React.CSSProperties = useMemo(
+    () => ({
+      border: "1px solid #f59e0b",
+      background: "#fffbeb",
+      color: "#92400e",
+      borderRadius: 12,
+      padding: "10px 12px",
+      fontSize: 12,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 10,
+      marginTop: 10,
     }),
     [],
   );
@@ -886,7 +1029,6 @@ export default function EditLesson({
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.10)",
             opacity: loading ? 0.8 : 1,
           }}
         >
@@ -1031,11 +1173,32 @@ export default function EditLesson({
 
                   {!fetchEventData && (
                     <div style={{ marginBottom: 12 }}>
-                      <TagsEditor
-                        value={tags}
-                        onChange={setTags}
-                        helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
-                      />
+                      <div style={{ display: "grid", gap: 10 }}>
+                        <TagsEditor
+                          value={tags}
+                          onChange={setTags}
+                          helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+                        />
+
+                        <button
+                          type="button"
+                          onClick={handleScanVocabularyToTags}
+                          style={{
+                            borderRadius: 12,
+                            border: "1px solid #e2e8f0",
+                            background: "#fff",
+                            color: "#0f172a",
+                            padding: "10px 12px",
+                            cursor: "pointer",
+                            fontSize: 13,
+                            fontWeight: 900,
+                            width: "fit-content",
+                          }}
+                          title="Escaneia todos os blocos Vocabulary e cria tags com english + portuguese"
+                        >
+                          Gerar tags do Vocabulary
+                        </button>
+                      </div>
                     </div>
                   )}
 
@@ -1126,7 +1289,6 @@ export default function EditLesson({
                               objectFit: "cover",
                               borderRadius: 14,
                               border: "1px solid #e2e8f0",
-                              boxShadow: "0 20px 40px rgba(2,6,23,0.10)",
                             }}
                             onError={(e) =>
                               (e.currentTarget.style.display = "none")
@@ -1155,8 +1317,19 @@ export default function EditLesson({
                   <div style={topActionRowStyle}>
                     <button
                       onClick={() => addBlock("start")}
-                      style={{ ...ghostButton, width: 140, fontWeight: 700 }}
-                      title="Adicionar no início"
+                      disabled={isAtBlockLimit}
+                      style={{
+                        ...ghostButton,
+                        width: 140,
+                        fontWeight: 700,
+                        opacity: isAtBlockLimit ? 0.6 : 1,
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                      }}
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}). Remova um bloco para adicionar outro.`
+                          : "Adicionar no início"
+                      }
                     >
                       Adicionar no início
                     </button>
@@ -1166,14 +1339,20 @@ export default function EditLesson({
                       onChange={(e) =>
                         setNewType(e.target.value as NewBlockType)
                       }
+                      disabled={isAtBlockLimit}
                       style={{
                         ...inputBase,
                         background: "white",
                         maxWidth: 220,
                         paddingRight: 26,
-                        cursor: "pointer",
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                        opacity: isAtBlockLimit ? 0.6 : 1,
                       }}
-                      title="Tipo do novo bloco"
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}).`
+                          : "Tipo do novo bloco"
+                      }
                     >
                       <option value="explanation">
                         Explanation/Introduction
@@ -1193,16 +1372,37 @@ export default function EditLesson({
 
                     <button
                       onClick={() => addBlock("end")}
-                      style={{ ...primaryButton, width: 160 }}
-                      title="Adicionar ao final"
+                      disabled={isAtBlockLimit}
+                      style={{
+                        ...primaryButton,
+                        width: 160,
+                        opacity: isAtBlockLimit ? 0.6 : 1,
+                        cursor: isAtBlockLimit ? "not-allowed" : "pointer",
+                      }}
+                      title={
+                        isAtBlockLimit
+                          ? `Limite atingido (${MAX_BLOCKS}). Remova um bloco para adicionar outro.`
+                          : "Adicionar ao final"
+                      }
                     >
                       Adicionar ao final
                     </button>
                   </div>
 
+                  {/* aviso de limite */}
+                  <div style={limitNoticeStyle}>
+                    <span>
+                      Esta aula comporta no máximo <strong>{MAX_BLOCKS}</strong>{" "}
+                      blocos.
+                    </span>
+                    <span style={{ fontWeight: 800 }}>
+                      {blockCount}/{MAX_BLOCKS}
+                    </span>
+                  </div>
+
                   <div
                     style={{
-                      display: "flex",
+                      display: isAtBlockLimit ? "none" : "flex",
                       justifyContent: "center",
                       gap: 12,
                       marginTop: 14,
@@ -1217,30 +1417,50 @@ export default function EditLesson({
                       headers={headers}
                       onChange={handleImportChange}
                       fetchEventData={fetchEventData}
+                      maxElementsToImport={Math.max(
+                        0,
+                        MAX_BLOCKS - elements.length,
+                      )}
                     />
 
-                    <button
-                      onClick={() => setOpenAIGenerator(true)}
-                      style={{ ...ghostButton, fontWeight: 800 }}
-                      title="Abrir gerador"
-                    >
-                      Gerar aula por IA
-                    </button>
+                    {!isAtBlockLimit && (
+                      <button
+                        onClick={() => setOpenAIGenerator(true)}
+                        style={{ ...ghostButton, fontWeight: 800 }}
+                        title="Abrir gerador"
+                      >
+                        Gerar aula por IA
+                      </button>
+                    )}
 
-                    <GenerateEVSModal
-                      visible={openAIGenerator}
-                      studentId={studentId}
-                      classId={classId}
-                      headers={headers}
-                      theme={title || lesson?.title || ""}
-                      language1={theLanguage || language || "en"}
-                      onClose={() => setOpenAIGenerator(false)}
-                      onAppendElements={(newEls: any[]) => {
-                        const clean = sanitizeElements(newEls || []);
-                        setElements((prev) => [...prev, ...clean]);
-                        setOpenAIGenerator(false);
-                      }}
-                    />
+                    {!isAtBlockLimit && (
+                      <GenerateEVSModal
+                        visible={openAIGenerator}
+                        studentId={studentId}
+                        classId={classId}
+                        headers={headers}
+                        theme={title || lesson?.title || ""}
+                        language1={theLanguage || language || "en"}
+                        onClose={() => setOpenAIGenerator(false)}
+                        onAppendElements={(newEls: any[]) => {
+                          const clean = sanitizeElements(newEls || []);
+                          setElements((prev) => {
+                            const merged = [...prev, ...clean];
+                            const limited = enforceMaxBlocks(merged);
+
+                            if (merged.length > MAX_BLOCKS) {
+                              notifyAlert(
+                                `Somente ${MAX_BLOCKS} blocos são permitidos. Os excedentes foram removidos.`,
+                                partnerColor(),
+                              );
+                            }
+
+                            return limited;
+                          });
+                          setOpenAIGenerator(false);
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
 

@@ -37,7 +37,6 @@ export const Continue: FC<ContinueProps> = ({
           headers: actualHeaders,
         },
       );
-      console.log("Response Next Event:", response);
       if (response.data.nextEvent) {
         setNXTCLASS(response.data.nextEvent);
       } else {

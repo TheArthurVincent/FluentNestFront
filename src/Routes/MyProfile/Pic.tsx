@@ -47,7 +47,7 @@ export function AvatarUpload({
     ...fontBase,
     cursor: "pointer",
     padding: "10px 14px",
-    borderRadius: "12px",
+    borderRadius: "8px",
     border: "1px solid #e5e7eb",
     background: "#fff",
     color: "#111827",

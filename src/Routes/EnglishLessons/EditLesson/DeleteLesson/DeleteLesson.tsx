@@ -94,7 +94,7 @@ const DeleteClassButton: React.FC<DeleteClassButtonProps> = ({
             style={{
               width: "min(92vw, 420px)",
               background: "#ffffff",
-              borderRadius: "10px",
+              borderRadius: "8px",
               boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
               padding: "16px",
             }}

@@ -4,18 +4,17 @@ import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { Continue } from "../Continue/Continue";
-import { NextClass } from "../GridHomePageComponents/NextClass";
 import { FlashcardsReview } from "../GridHomePageComponents/FlashcardsReview";
 import { PracticalTipsTarget } from "../GridHomePageComponents/PracticalTipsTarget";
 import { HomeworkCard } from "../GridHomePageComponents/HomeworkCard";
 import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
 import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
 import { RankingCard } from "../GridHomePageComponents/RankingCard";
-import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
-import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
 import { Birthdays } from "../GridHomePageComponents/Birthdays";
+import { User } from "../../MyProfile/types.MyProfile"; // AJUSTE SE PRECISAR
+import ModalShowAllCORINGA from "./ModalAll/NewHomePageArvin";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -46,41 +45,105 @@ export function MyHomePage({
   const [studentPicture, setStudentPicture] = useState("");
   const [id, setId] = useState<string>("");
   const [appLoaded, setAppLoaded] = useState<boolean>(false);
-  const [loadingReports, setLoadingReports] = useState<boolean>(true);
-  const [totalPaidSoFar, setTotalPaidSoFar] = useState<number>(0);
   const [showMoney, setShowMoney] = useState<boolean>(false);
 
-  const seeScore = async (id: string) => {
+  const [universalWarning, setUniversalWarning] = useState<boolean>(false);
+  const [showUniversalWarningModal, setShowUniversalWarningModal] =
+    useState<boolean>(false);
+
+  const [user, setUser] = useState<User>({} as User);
+
+  const isUniversalWarning = async (userId: string) => {
     try {
-      updateInfo(id, headers);
-      setAppLoaded(!appLoaded);
+      updateInfo(userId, headers);
+      setAppLoaded((prev) => !prev);
     } catch (e) {
       console.log(e);
     }
 
     try {
-      const response = await axios.get(`${backDomain}/api/v1/score/${id}`, {
+      const response = await axios.get(
+        `${backDomain}/api/v1/universal-warning/${userId}`,
+        {
+          headers: headers ? { ...headers } : {},
+        },
+      );
+
+      const warning = response.data.universalWarning;
+
+      console.log(warning);
+      setUniversalWarning(warning);
+      setShowUniversalWarningModal(warning);
+
+      setTimeout(() => {
+        setAppLoaded((prev) => !prev);
+      }, 800);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const seeScore = async (userId: string) => {
+    try {
+      updateInfo(userId, headers);
+      setAppLoaded((prev) => !prev);
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      const response = await axios.get(`${backDomain}/api/v1/score/${userId}`, {
         headers: headers ? { ...headers } : {},
       });
+
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
-      setAppLoaded(!appLoaded);
+
+      setAppLoaded((prev) => !prev);
       setTimeout(() => {
-        setAppLoaded(!appLoaded);
-      }, 500);
+        setAppLoaded((prev) => !prev);
+      }, 800);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const turnOffUniversalWarning = async () => {
+    if (!id) return;
+
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/universal-warning/${id}`,
+        {},
+        {
+          headers: headers ? { ...headers } : {},
+        },
+      );
+
+      setUniversalWarning(false);
+      setShowUniversalWarningModal(false);
+
+      updateInfo(id, headers);
+      setAppLoaded((prev) => !prev);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    const permissions = user.permissions;
-    const id = user.id;
-    setId(id);
+    const userLocal = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const permissions = userLocal.permissions;
+    const userId = userLocal.id;
+
+    setUser(userLocal);
+    setId(userId);
     setPERMISSIONS(permissions);
-    seeScore(id);
-    setAppLoaded(!appLoaded);
+
+    if (userId) {
+      seeScore(userId);
+      setAppLoaded((prev) => !prev);
+      isUniversalWarning(userId);
+    }
   }, [change]);
 
   const cards = [
@@ -147,7 +210,6 @@ export function MyHomePage({
         />
       ),
     },
-
     {
       showToStudent: false,
       showToTeacher: true,
@@ -159,52 +221,12 @@ export function MyHomePage({
         />
       ),
     },
-
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: (
-        <RecommendedMaterials
-          studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
-    },
   ];
-
-  const seeReports = async () => {
-    setLoadingReports(true);
-    const currentDate = new Date();
-    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0");
-    const currentYear = currentDate.getFullYear();
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/finance-entries/${id}`,
-        {
-          headers: headers ? { ...headers } : {},
-          params: { month: `${currentMonth}-${currentYear}` },
-        },
-      );
-      console.log("Financial reports response:", response.data);
-      setTotalPaidSoFar(response.data.totalPaidSoFar || 0);
-      setLoadingReports(false);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  useEffect(() => {
-    seeReports();
-  }, [id, change]);
 
   const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
     if (PERMISSIONS === "teacher" || PERMISSIONS === "superadmin") {
       return item.showToTeacher;
     }
-
     return item.showToStudent;
   };
 
@@ -242,27 +264,6 @@ export function MyHomePage({
                 justifyContent: "space-between",
               }}
             >
-              {/* <span style={{ position: "relative", display: "inline-block" }}>
-                <i
-                  className="fa fa-search"
-                  style={{
-                    fontSize: "12px",
-                    position: "absolute",
-                    left: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#999",
-                    pointerEvents: "none",
-                  }}
-                />
-                <SearchMaterials
-                  headers={headers}
-                  change={change}
-                  setChange={setChange}
-                  isDesktop={isDesktop}
-                  actualHeaders={actualHeaders}
-                />
-              </span> */}
               {PERMISSIONS == "student" && (
                 <span
                   onClick={() => {
@@ -303,67 +304,14 @@ export function MyHomePage({
                   </span>
                 </span>
               )}
-              {/* {PERMISSIONS !== "student" && (
-                <span
-                  onClick={() => {
-                    seeScore(id);
-                  }}
-                  style={{
-                    display: !loadingReports ? "flex" : "none",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "80px",
-                    padding: "8px 12px",
-                    backgroundColor: `${partnerColor()}20`,
-                    border: `1px solid ${partnerColor()}50`,
-                  }}
-                >
-                  <i
-                    className="fa fa-money"
-                    style={{
-                      fontSize: "12px",
-                      left: "10px",
-                      marginTop: "2px",
-                      top: "50%",
-                      color: partnerColor(),
-                      pointerEvents: "none",
-                    }}
-                  />
-                  <span
-                    onClick={() => setShowMoney(!showMoney)}
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "14px",
-                      color: partnerColor(),
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
-                        color: partnerColor(),
-                        fontStyle: "SemiBold",
-                        fontSize: "14px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                      }}
-                    >
-                      {formatNumber(totalPaidSoFar)}
-                    </span>
-                  </span>
-                </span>
-              )}{" "} */}
+
               {PERMISSIONS !== "student" && (
                 <span
                   onClick={() => {
                     seeScore(id);
                   }}
                   style={{
-                    display: !loadingReports ? "flex" : "none",
+                    display: "flex",
                     alignItems: "center",
                     gap: "6px",
                     borderRadius: "80px",
@@ -384,28 +332,11 @@ export function MyHomePage({
                       letterSpacing: "0%",
                     }}
                   >
-                    <span
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 600,
-                        color: partnerColor(),
-                        fontStyle: "SemiBold",
-                        fontSize: "14px",
-                        lineHeight: "100%",
-                        letterSpacing: "0%",
-                      }}
-                    >
-                      {
-                        <Tokens
-                          id={id}
-                          headers={actualHeaders}
-                          change={change}
-                        />
-                      }
-                    </span>
+                    <Tokens id={id} headers={actualHeaders} change={change} />
                   </span>
                 </span>
               )}
+
               <img
                 onClick={() => {
                   window.location.assign("/my-profile");
@@ -421,12 +352,23 @@ export function MyHomePage({
                   "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
                 }
                 alt={studentPicture}
-              />{" "}
+              />
             </span>
           </section>
         </div>
       )}
+      <ModalShowAllCORINGA
+        universalWarning={universalWarning}
+        onClose={() => window.location.reload()}
+        user={user}
+        headers={actualHeaders}
+        isDesktop={isDesktop}
+        onSaved={async () => {
+          await turnOffUniversalWarning();
+        }}
+      />
       <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
+
       <div
         style={{
           columnCount: isDesktop ? 2 : 1,
@@ -455,6 +397,7 @@ export function MyHomePage({
           );
         })}
       </div>
+
       <Helmets text={`Início`} />
     </div>
   );
