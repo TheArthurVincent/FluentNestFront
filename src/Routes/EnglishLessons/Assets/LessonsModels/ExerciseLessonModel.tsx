@@ -24,7 +24,7 @@ export default function ExerciseLessonModel({
           gridTemplateColumns: "1fr",
         }}
       >
-        {item.map((theitem: string, index: number) => {
+        {item && item?.map((theitem: string, index: number) => {
           return (
             <div
               key={index}

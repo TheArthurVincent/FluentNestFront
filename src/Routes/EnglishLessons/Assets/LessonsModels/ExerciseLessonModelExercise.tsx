@@ -46,7 +46,7 @@ export default function ExerciseLessonModelLesson({
       }}
     >
       <ol>
-        {item.map((theitem: string, index: number) => (
+        {item && item?.map((theitem: string, index: number) => (
           <li style={{ fontSize: "1.5rem" }} key={index}>
             {theitem}
           </li>
