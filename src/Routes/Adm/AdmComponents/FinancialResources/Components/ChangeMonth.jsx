@@ -230,7 +230,7 @@ export default function MonthPickerModalButton({
               fontWeight: 700,
             }}
           >
-            Salvar
+            Buscar
           </button>
         </div>
       </div>

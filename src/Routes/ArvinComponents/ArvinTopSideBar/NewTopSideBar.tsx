@@ -4,6 +4,13 @@ import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
 
+type SectionId = string;
+
+type Section = {
+  id: SectionId;
+  title: string;
+  items: Array<{ label: string; href: string }>;
+};
 interface ArvinTopBarProps {
   appLoaded?: boolean;
   admin?: boolean;
