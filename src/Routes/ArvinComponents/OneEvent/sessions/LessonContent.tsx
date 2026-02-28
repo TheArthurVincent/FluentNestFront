@@ -34,7 +34,6 @@ const LessonContent: FC<LessonContentProps> = ({
       );
 
       var clss = response.data.classDetails.elements.length;
-      console.log(clss, "CLSSS");
       setHasElements(clss > 0);
     } catch (error) {
       console.error(error, "Erro ao obter aulas");

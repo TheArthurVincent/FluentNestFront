@@ -25,7 +25,6 @@ const WordOfTheDayList = () => {
     try {
       const response = await axios.get(`${backDomain}/api/v1/wordoftheday`);
       setWords(response.data.words || []);
-      console.log(response.data.words || []);
     } catch (error: any) {
       console.log(error?.response?.data?.error || "Error.");
     } finally {

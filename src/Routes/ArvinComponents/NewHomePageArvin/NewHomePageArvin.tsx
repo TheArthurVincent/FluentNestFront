@@ -70,8 +70,6 @@ export function MyHomePage({
       );
 
       const warning = response.data.universalWarning;
-
-      console.log(warning);
       setUniversalWarning(warning);
       setShowUniversalWarningModal(warning);
 

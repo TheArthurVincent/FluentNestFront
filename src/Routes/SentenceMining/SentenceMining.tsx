@@ -207,7 +207,6 @@ const SentenceMining = ({
           added: false,
         })),
       );
-      console.log(response.data.name);
       onChange(!change);
     } catch (error: any) {
       console.error(error);

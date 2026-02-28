@@ -300,7 +300,6 @@ function EditModal({
             setTheLessonLast(recentEvents[0].lesson || null);
           }
         } catch (alternativeError) {
-          console.log(alternativeError, "Erro no endpoint alternativo também");
           // Se ambos falharem, apenas ignorar silenciosamente
           setLastFew([]);
           setTheLessonLast(null);

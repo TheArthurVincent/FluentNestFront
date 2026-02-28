@@ -235,10 +235,8 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
 
       setStudentName(response.data.studentName || "");
       setEventsList(response.data.events || []);
-      console.log(response.data.events || []);
       setHomeworkByEvent(response.data.homeworkByEvent || {});
       setCurrentPage(0);
-
       setTimeout(() => setLoadingEventsList(false), 100);
     } catch (error) {
       notifyAlert("Erro ao buscar histórico de aulas Individuais");

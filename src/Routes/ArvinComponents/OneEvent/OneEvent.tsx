@@ -46,7 +46,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         { forced },
         { headers: headers as any },
       );
-      console.log("Evento reagendado com sucesso", response.data.event._id);
       window.location.assign(`/my-calendar/event/${response.data.event._id}`);
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
@@ -137,7 +136,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         },
       );
       setFutureEventsData(res.data.eventsList);
-      console.log(res.data.eventsList);
     } catch (err) {
       console.error("Error fetching event data", err);
     }

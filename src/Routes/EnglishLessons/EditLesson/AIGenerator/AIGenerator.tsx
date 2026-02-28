@@ -125,7 +125,6 @@ export default function SimpleAIGenerator({
 
       onReceiveJson(raw);
       onClose();
-      console.log("IA gerou o seguinte JSON:", raw);
     } catch (err: any) {
       console.error(err);
       const msg =

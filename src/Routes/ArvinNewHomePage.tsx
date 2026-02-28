@@ -98,9 +98,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     setAppLoaded(!appLoaded);
 
     if (!verifyToken()) {
-      console.log(
-        "Token inválido no ArvinNewHomePage, redirecionando para login",
-      );
       onLoggOutToken();
       return;
     }
@@ -124,14 +121,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   var seeFee = async () => {
     try {
       if (!verifyToken()) {
-        console.log("Token JWT expirado ou inválido em seeFee");
         onLoggOutToken();
         return;
       }
 
       var userHere = localStorage.getItem("loggedIn");
       if (!userHere) {
-        console.log("Usuário não encontrado no localStorage");
         onLoggOut();
         return;
       }
@@ -139,7 +134,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       //@ts-ignore
       var { id } = JSON.parse(userHere);
       if (!id) {
-        console.log("ID do usuário não encontrado");
         onLoggOut();
         return;
       }
@@ -189,9 +183,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         error.response &&
         (error.response.status === 401 || error.response.status === 403)
       ) {
-        console.log(
-          "Erro de autorização em seeFee, token possivelmente inválido",
-        );
         onLoggOutToken();
       }
     }
