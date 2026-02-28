@@ -5,9 +5,7 @@ import {
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
-import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
-import { Tooltip } from "@mui/material";
-import { notifyAlert, readText } from "../Functions/FunctionLessons";
+import { notifyAlert } from "../Functions/FunctionLessons";
 
 interface AudioSoundTrackProps {
   headers: MyHeadersType | null;
@@ -55,7 +53,7 @@ export default function AudioSoundTrack({
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${studentId}`,
         { newCards },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       const showThis =
@@ -68,7 +66,7 @@ export default function AudioSoundTrack({
 
       notifyAlert(showThis, "green");
     } catch (error) {
-      alert("Erro ao enviar cards");
+      notifyAlert("Erro ao enviar cards", "red");
       onLoggOut();
     }
   };

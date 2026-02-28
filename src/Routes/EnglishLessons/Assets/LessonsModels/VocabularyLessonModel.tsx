@@ -223,7 +223,7 @@ export default function VocabularyLessonModel({
               transition: "all .2s",
             }}
           >
-            {loading ? "Adding..." : "Add all"}
+            {loading ? "Adicionando..." : "+ Todos"}
           </button>
         )}
 

@@ -1171,36 +1171,34 @@ export default function EditLesson({
                     </div>
                   </div>
 
-                  {!fetchEventData && (
-                    <div style={{ marginBottom: 12 }}>
-                      <div style={{ display: "grid", gap: 10 }}>
-                        <TagsEditor
-                          value={tags}
-                          onChange={setTags}
-                          helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
-                        />
+                  <div style={{ marginBottom: 12 }}>
+                    <div style={{ display: "grid", gap: 10 }}>
+                      <TagsEditor
+                        value={tags}
+                        onChange={setTags}
+                        helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+                      />
 
-                        <button
-                          type="button"
-                          onClick={handleScanVocabularyToTags}
-                          style={{
-                            borderRadius: 12,
-                            border: "1px solid #e2e8f0",
-                            background: "#fff",
-                            color: "#0f172a",
-                            padding: "10px 12px",
-                            cursor: "pointer",
-                            fontSize: 13,
-                            fontWeight: 900,
-                            width: "fit-content",
-                          }}
-                          title="Escaneia todos os blocos Vocabulary e cria tags com english + portuguese"
-                        >
-                          Gerar tags do Vocabulary
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={handleScanVocabularyToTags}
+                        style={{
+                          borderRadius: 12,
+                          border: "1px solid #e2e8f0",
+                          background: "#fff",
+                          color: "#0f172a",
+                          padding: "10px 12px",
+                          cursor: "pointer",
+                          fontSize: 13,
+                          fontWeight: 900,
+                          width: "fit-content",
+                        }}
+                        title="Escaneia todos os blocos Vocabulary e cria tags com english + portuguese"
+                      >
+                        Gerar tags do Vocabulary
+                      </button>
                     </div>
-                  )}
+                  </div>
 
                   <div style={{ marginBottom: 12 }}>
                     <div style={labelStyle}>Description</div>
