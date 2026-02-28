@@ -52,7 +52,7 @@ type LangCode = (typeof LANG_OPTIONS)[number];
 
 type FieldSide = "english" | "portuguese";
 
-const MAX_ITEMS = 20;
+const MAX_ITEMS = 25;
 
 /* ===================== COMPONENT ===================== */
 const SentencesEditor: React.FC<Props> = ({
