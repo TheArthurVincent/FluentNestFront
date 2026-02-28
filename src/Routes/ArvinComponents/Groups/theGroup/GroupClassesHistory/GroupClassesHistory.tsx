@@ -19,7 +19,7 @@ import {
 
 type GroupClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
-  idFromOtherPlace?: string; // para usar o componente em outra rota que não tenha groupId nos params
+  idFromOtherPlace?: string;
 };
 
 interface EventFromApi {
@@ -201,14 +201,61 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [groupName, setGroupName] = useState<string>("");
 
-  // 🔍 busca por descrição
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  // ✅ filtro por status (padrão: realizada)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
-
-  // ✅ modal
   const [selectedEvent, setSelectedEvent] = useState<EventFromApi | null>(null);
+
+  /* ---------------------------
+    Presença no modal: lista (nome + ✅/❌)
+    NÃO depende do aluno logado.
+  --------------------------- */
+  type AttendanceItem = {
+    studentID: string;
+    firstName?: string;
+    lastName?: string;
+    attended: boolean;
+  };
+
+  const [attendanceLoadingModal, setAttendanceLoadingModal] = useState(false);
+  const [attendanceListModal, setAttendanceListModal] = useState<
+    AttendanceItem[]
+  >([]);
+
+  const fetchAttendanceForEvent = async (eventId: string) => {
+    if (!eventId) return;
+
+    try {
+      setAttendanceLoadingModal(true);
+      setAttendanceListModal([]);
+
+      const response = await axios.get(
+        `${backDomain}/api/v1/attendance-list/${eventId}`,
+        { headers: headers as any },
+      );
+
+      // ✅ robusto: aceita formatos diferentes
+      const raw = response.data;
+      const list: AttendanceItem[] =
+        (Array.isArray(raw?.attendanceList) && raw.attendanceList) ||
+        (Array.isArray(raw?.data?.attendanceList) && raw.data.attendanceList) ||
+        (Array.isArray(raw) && raw) ||
+        [];
+
+      setAttendanceListModal(list);
+    } catch (error) {
+      console.error("fetchAttendanceForEvent error:", error);
+      setAttendanceListModal([]);
+    } finally {
+      setAttendanceLoadingModal(false);
+    }
+  };
+
+  // sempre que abrir/trocar evento do modal, busca presença
+  useEffect(() => {
+    if (!selectedEvent?._id) return;
+    fetchAttendanceForEvent(selectedEvent._id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedEvent?._id]);
 
   const handleSeeClassesHistory = async (): Promise<void> => {
     if (!theOfficialId) return;
@@ -259,7 +306,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
       .toLowerCase();
   };
 
-  // contador por status (baseado na lista completa)
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {
       realizada: 0,
@@ -273,14 +319,12 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
     return counts;
   }, [eventsList]);
 
-  // ✅ filtro: status + descrição
   const filteredEvents = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
     const sf = statusFilter;
 
     return eventsList.filter((e) => {
       const eStatus = normalizeStatus(e.status);
-
       const statusOk = sf === "all" ? true : eStatus === normalizeStatus(sf);
 
       const searchOk = !term
@@ -291,7 +335,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
     });
   }, [eventsList, searchTerm, statusFilter]);
 
-  // quando mudar busca OU filtro de status, volta pra página 0
   useEffect(() => {
     setCurrentPage(0);
   }, [searchTerm, statusFilter]);
@@ -393,7 +436,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
 
         <br />
 
-        {/* Controles: busca + status + pageSize */}
         <div
           style={{
             display: "flex",
@@ -437,13 +479,9 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               gap: 10,
             }}
           >
-            {/* ✅ filtro status */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
-                style={{
-                  fontFamily: "Plus Jakarta Sans",
-                  color: "#4B5563",
-                }}
+                style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}
               >
                 Status:
               </span>
@@ -471,13 +509,9 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               </select>
             </div>
 
-            {/* pageSize */}
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
-                style={{
-                  fontFamily: "Plus Jakarta Sans",
-                  color: "#4B5563",
-                }}
+                style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}
               >
                 Mostrar:
               </span>
@@ -527,7 +561,6 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           </p>
         )}
 
-        {/* ✅ Clique abre modal (no body) com vídeo + descrição + botão */}
         {!loadingEventsList &&
           paginatedEvents.map((event) => {
             return (
@@ -709,7 +742,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
         )}
       </div>
 
-      {/* ✅ MODAL no BODY */}
+      {/* MODAL no BODY */}
       <ModalInBody
         open={Boolean(selectedEvent)}
         title={selectedEvent?.lessonTitle || "Detalhes da aula"}
@@ -736,6 +769,81 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
 
               <div>{renderStatusPill(selectedEvent)}</div>
             </div>
+
+            {/* PRESENÇA (LISTA: Nome + ✅/❌) */}
+            {selectedEvent.status == "realizada" && (
+              <div
+                style={{
+                  border: "1px solid #E5E7EB",
+                  borderRadius: 12,
+                  padding: 12,
+                  background: "#FFFFFF",
+                }}
+              >
+                <div
+                  style={{ fontSize: 12, fontWeight: 900, color: "#111827" }}
+                >
+                  Presença
+                </div>
+
+                {attendanceLoadingModal ? (
+                  <div style={{ marginTop: 6, fontSize: 12, color: "#4B5563" }}>
+                    Carregando...
+                  </div>
+                ) : attendanceListModal.length === 0 ? (
+                  <div style={{ marginTop: 6, fontSize: 12, color: "#4B5563" }}>
+                    Nenhuma presença cadastrada para esta aula.
+                  </div>
+                ) : (
+                  <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+                    {attendanceListModal.map((it) => {
+                      const fullName =
+                        `${it.firstName || ""} ${it.lastName || ""}`
+                          .trim()
+                          .replace(/\s+/g, " ");
+
+                      return (
+                        <div
+                          key={it.studentID}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 10,
+                            padding: "8px 10px",
+                            borderRadius: 10,
+                            border: "1px solid #E5E7EB",
+                            background: "#F9FAFB",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 12,
+                              color: "#111827",
+                              fontWeight: 800,
+                            }}
+                          >
+                            {fullName || "Aluno sem nome"}
+                          </span>
+
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 900,
+                              color: it.attended ? partnerColor() : "#DC2626",
+                              whiteSpace: "nowrap",
+                            }}
+                            title={it.attended ? "Presente" : "Ausente"}
+                          >
+                            {it.attended ? "✅ Presente" : "❌ Ausente"}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
 
             {selectedEvent.video && (
               <div

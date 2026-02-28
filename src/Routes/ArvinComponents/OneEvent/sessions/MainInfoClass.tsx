@@ -105,6 +105,530 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   status,
   title,
 }) => {
+  type AttendanceItem = {
+    studentID: string;
+    firstName: string;
+    lastName: string;
+    picture: string | null;
+    attended: boolean;
+    description: string; // visível para aluno
+    teacherDescription: string; // interno
+  };
+
+  const presetOptions = [30, 45, 60, 90];
+
+  const logged = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("loggedIn") || "null");
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const myId = String(logged?.id || "");
+  const isStudent =
+    permissionsUser === "student" || logged?.permissions === "student";
+  const canEditAttendance = Boolean(allowedToEdit) && !isStudent;
+
+  // Para aluno: o padrão é event.studentID ser o ID dele.
+  // Se por algum motivo estiver vazio, cai no myId.
+  const myStudentId = useMemo(() => {
+    if (event?.studentID) return String(event.studentID);
+    return myId;
+  }, [event?.studentID, myId]);
+
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [attendanceSaving, setAttendanceSaving] = useState(false);
+  const [attendanceSearch, setAttendanceSearch] = useState("");
+  const [attendanceList, setAttendanceList] = useState<AttendanceItem[]>([]);
+  const [attendanceOriginal, setAttendanceOriginal] = useState<
+    AttendanceItem[]
+  >([]);
+  const [isAttendanceListOpen, setIsAttendanceListOpen] = useState(false);
+
+  async function fetchAttendanceList() {
+    try {
+      setAttendanceLoading(true);
+
+      const response = await axios.get(
+        `${backDomain}/api/v1/attendance-list/${evendId}`,
+        { headers: headers as any },
+      );
+
+      const list = (response.data?.attendanceList || []) as AttendanceItem[];
+      setAttendanceList(list);
+      setAttendanceOriginal(list);
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao carregar lista de presença.", partnerColor());
+    } finally {
+      setAttendanceLoading(false);
+    }
+  }
+
+  const myAttendanceItem = useMemo(() => {
+    const list = attendanceList || [];
+    return (
+      list.find((x) => String(x.studentID) === String(myStudentId)) || null
+    );
+  }, [attendanceList, myStudentId]);
+
+  // Modal: teacher/admin vê tudo; aluno (se um dia abrir) vê só o próprio
+  const attendanceListForView = useMemo(() => {
+    if (canEditAttendance) return attendanceList;
+    return myAttendanceItem ? [myAttendanceItem] : [];
+  }, [attendanceList, canEditAttendance, myAttendanceItem]);
+
+  const saveAttendanceList = async () => {
+    try {
+      setAttendanceSaving(true);
+
+      const payload = {
+        attendanceList: attendanceList.map((it) => ({
+          studentID: it.studentID,
+          attended: Boolean(it.attended),
+          description: it.description || "",
+          teacherDescription: it.teacherDescription || "",
+        })),
+      };
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/attendance-list/${evendId}`,
+        payload,
+        { headers: headers as any },
+      );
+
+      const updated = (response.data?.attendanceList || []) as AttendanceItem[];
+      setAttendanceList(updated);
+      setAttendanceOriginal(updated);
+
+      notifyAlert("Lista de presença salva.", partnerColor());
+      setIsAttendanceListOpen(false);
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao salvar lista de presença.", partnerColor());
+    } finally {
+      setAttendanceSaving(false);
+    }
+  };
+
+  // Sempre busca para mostrar a linha no card (presença/comentários)
+  useEffect(() => {
+    if (!evendId) return;
+    fetchAttendanceList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evendId]);
+
+  useEffect(() => {
+    if (isAttendanceListOpen) {
+      setAttendanceSearch("");
+      fetchAttendanceList();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAttendanceListOpen]);
+
+  const markAllAttendance = (value: boolean) => {
+    if (!canEditAttendance) return;
+    setAttendanceList((prev) => prev.map((it) => ({ ...it, attended: value })));
+  };
+
+  const resetAttendanceChanges = () => {
+    if (!canEditAttendance) return;
+    setAttendanceList(attendanceOriginal);
+  };
+
+  const toggleAttendance = (studentID: string) => {
+    if (!canEditAttendance) return;
+    setAttendanceList((prev) =>
+      prev.map((it) =>
+        it.studentID === studentID ? { ...it, attended: !it.attended } : it,
+      ),
+    );
+  };
+
+  const filteredAttendance = useMemo(() => {
+    const base = attendanceListForView;
+    const q = attendanceSearch.trim().toLowerCase();
+    if (!q) return base;
+
+    return base.filter((it) => {
+      const full = `${it.firstName} ${it.lastName}`.trim().toLowerCase();
+      return full.includes(q) || String(it.studentID).toLowerCase().includes(q);
+    });
+  }, [attendanceListForView, attendanceSearch]);
+
+  const renderAttendanceListModal = () => {
+    if (!isAttendanceListOpen) return null;
+    if (typeof document === "undefined") return null;
+
+    const close = () => {
+      if (!attendanceSaving) setIsAttendanceListOpen(false);
+    };
+
+    return createPortal(
+      <div style={overlayStyle} onClick={close}>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            ...modalStyle,
+            width: "min(96vw, 720px)",
+            maxHeight: "86vh",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div
+            style={{
+              padding: "14px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <div style={{ display: "grid" }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>
+                Lista de Presença
+              </div>
+              <div style={{ fontSize: 12, color: "#64748b" }}>
+                {canEditAttendance
+                  ? "Marque quem compareceu e salve."
+                  : "Você vê apenas sua presença e comentário."}
+              </div>
+            </div>
+
+            <button
+              onClick={close}
+              style={ghostBtnStyle}
+              disabled={attendanceSaving}
+            >
+              Fechar
+            </button>
+          </div>
+
+          <div style={{ padding: 12, display: "grid", gap: 10 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 8,
+                gridTemplateColumns: "1fr auto auto auto",
+                alignItems: "center",
+              }}
+            >
+              <input
+                value={attendanceSearch}
+                onChange={(e) => setAttendanceSearch(e.target.value)}
+                placeholder="Buscar aluno..."
+                style={inputStyle}
+                disabled={
+                  attendanceLoading || attendanceSaving || !canEditAttendance
+                }
+              />
+
+              <button
+                type="button"
+                onClick={() => markAllAttendance(true)}
+                style={ghostBtnStyle}
+                disabled={
+                  attendanceLoading ||
+                  attendanceSaving ||
+                  !canEditAttendance ||
+                  attendanceList.length === 0
+                }
+              >
+                Marcar todos
+              </button>
+
+              <button
+                type="button"
+                onClick={() => markAllAttendance(false)}
+                style={ghostBtnStyle}
+                disabled={
+                  attendanceLoading ||
+                  attendanceSaving ||
+                  !canEditAttendance ||
+                  attendanceList.length === 0
+                }
+              >
+                Desmarcar todos
+              </button>
+
+              <button
+                type="button"
+                onClick={resetAttendanceChanges}
+                style={ghostBtnStyle}
+                disabled={
+                  attendanceLoading || attendanceSaving || !canEditAttendance
+                }
+                title="Voltar para o estado carregado do servidor"
+              >
+                Reset
+              </button>
+            </div>
+
+            {attendanceLoading ? (
+              <div
+                style={{
+                  border: "1px dashed #e2e8f0",
+                  borderRadius: 10,
+                  padding: 14,
+                  color: "#64748b",
+                  fontSize: 13,
+                }}
+              >
+                Carregando lista...
+              </div>
+            ) : filteredAttendance.length === 0 ? (
+              <div
+                style={{
+                  border: "1px dashed #e2e8f0",
+                  borderRadius: 10,
+                  padding: 14,
+                  color: "#64748b",
+                  fontSize: 13,
+                }}
+              >
+                Nenhum aluno encontrado.
+              </div>
+            ) : (
+              <div
+                style={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 140px",
+                    padding: "10px 12px",
+                    background: "#f8fafc",
+                    borderBottom: "1px solid #e2e8f0",
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: "#0f172a",
+                  }}
+                >
+                  <div>Aluno</div>
+                  <div style={{ textAlign: "right" }}>Compareceu</div>
+                </div>
+
+                <div style={{ maxHeight: 300, overflowY: "auto" }}>
+                  {filteredAttendance.map((it) => {
+                    const fullName = `${it.firstName} ${it.lastName}`.trim();
+
+                    return (
+                      <div
+                        key={it.studentID}
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "1fr 140px",
+                          alignItems: "start",
+                          padding: "10px 12px",
+                          borderBottom: "1px solid #f1f5f9",
+                          gap: 10,
+                        }}
+                      >
+                        <div style={{ display: "grid", gap: 10 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                            }}
+                          >
+                            {isDesktop && (
+                              <div
+                                style={{
+                                  width: 34,
+                                  height: 34,
+                                  borderRadius: 999,
+                                  overflow: "hidden",
+                                  border: "1px solid #e2e8f0",
+                                  background: "#fff",
+                                  flex: "0 0 34px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#64748b",
+                                  fontSize: 12,
+                                  fontWeight: 800,
+                                }}
+                              >
+                                {it.picture ? (
+                                  <img
+                                    src={it.picture}
+                                    alt={fullName || "Aluno"}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                ) : (
+                                  (it.firstName?.[0] || "?").toUpperCase()
+                                )}
+                              </div>
+                            )}
+
+                            <div style={{ display: "grid", lineHeight: 1.15 }}>
+                              <div
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 800,
+                                  color: "#0f172a",
+                                }}
+                              >
+                                {fullName || "Aluno sem nome"}
+                              </div>
+                              <div style={{ fontSize: 11, color: "#64748b" }}>
+                                ID: {it.studentID}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div style={{ display: "grid", gap: 10 }}>
+                            <div style={{ display: "grid", gap: 6 }}>
+                              <div
+                                style={{
+                                  fontSize: 11,
+                                  color: "#64748b",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                Descrição para o aluno
+                              </div>
+                              <input
+                                value={it.description || ""}
+                                onChange={(e) => {
+                                  if (!canEditAttendance) return;
+                                  const v = e.target.value;
+                                  setAttendanceList((prev) =>
+                                    prev.map((x) =>
+                                      x.studentID === it.studentID
+                                        ? { ...x, description: v }
+                                        : x,
+                                    ),
+                                  );
+                                }}
+                                style={inputStyle}
+                                placeholder="Escreva uma observação para o aluno..."
+                                disabled={
+                                  attendanceSaving || !canEditAttendance
+                                }
+                              />
+                            </div>
+
+                            {canEditAttendance && (
+                              <div style={{ display: "grid", gap: 6 }}>
+                                <div
+                                  style={{
+                                    fontSize: 11,
+                                    color: "#64748b",
+                                    fontWeight: 700,
+                                  }}
+                                >
+                                  Descrição do professor (interno)
+                                </div>
+                                <input
+                                  value={it.teacherDescription || ""}
+                                  onChange={(e) => {
+                                    const v = e.target.value;
+                                    setAttendanceList((prev) =>
+                                      prev.map((x) =>
+                                        x.studentID === it.studentID
+                                          ? { ...x, teacherDescription: v }
+                                          : x,
+                                      ),
+                                    );
+                                  }}
+                                  style={inputStyle}
+                                  placeholder="Nota interna (não aparece para o aluno)..."
+                                  disabled={attendanceSaving}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            paddingTop: 6,
+                          }}
+                        >
+                          <label
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 10,
+                              cursor:
+                                attendanceSaving || !canEditAttendance
+                                  ? "not-allowed"
+                                  : "pointer",
+                              userSelect: "none",
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={Boolean(it.attended)}
+                              disabled={attendanceSaving || !canEditAttendance}
+                              onChange={() => toggleAttendance(it.studentID)}
+                              style={{
+                                width: 18,
+                                height: 18,
+                                accentColor: partnerColor(),
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+              padding: 12,
+              borderTop: "1px solid #e2e8f0",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              style={ghostBtnStyle}
+              onClick={close}
+              disabled={attendanceSaving}
+            >
+              Cancelar
+            </button>
+
+            {canEditAttendance && (
+              <button
+                onClick={saveAttendanceList}
+                style={{
+                  ...primaryBtnStyle,
+                  opacity: attendanceSaving ? 0.7 : 1,
+                }}
+                disabled={attendanceSaving || attendanceLoading}
+              >
+                {attendanceSaving ? "Salvando..." : "Salvar"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>,
+      document.body,
+    );
+  };
+
   const [isPreviousClassesOpen, setIsPreviousClassesOpen] = useState(false);
   const [isMainInfoModalOpen, setIsMainInfoModalOpen] = useState(false);
   const [savingMainInfo, setSavingMainInfo] = useState(false);
@@ -117,8 +641,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   );
   const [category, setCategory] = useState<string>(event?.category || "");
   const [duration, setDuration] = useState<number | "">(event?.duration ?? "");
-
-  const presetOptions = [30, 45, 60, 90];
   const [preset, setPreset] = useState<string>("");
 
   const [isRescheduleOpen, setIsRescheduleOpen] = useState(false);
@@ -153,6 +675,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     setDate(event?.date || "");
     setTime(event?.time || "");
     setLink(event?.link || "");
+
     const d = event?.duration ?? "";
     setDuration(d);
 
@@ -178,11 +701,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   useEffect(() => {
     setTheLesson(lesson || null);
   }, [lesson]);
-
-  const hasDescription = useMemo(
-    () => !!theDescription && theDescription.trim().length > 0,
-    [theDescription],
-  );
 
   const updateMainInfo = async (id: string) => {
     try {
@@ -292,14 +810,14 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const handleClassSummary = async () => {
     setLoadingDescriptionAI(true);
 
-    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
-    const thePermissions = logged?.permissions;
-    const myId = logged?.id;
+    const loggedNow = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = loggedNow?.permissions;
+    const myIdNow = loggedNow?.id;
 
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
       try {
         const response = await axios.put(
-          `${backDomain}/api/v1/ai-description/${myId}`,
+          `${backDomain}/api/v1/ai-description/${myIdNow}`,
           {
             status,
             description: description
@@ -396,7 +914,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           onClick={(e) => e.stopPropagation()}
           style={{
             ...modalStyle,
-            width: "min(96vw, 980px)", // maior pra caber o histórico
+            width: "min(96vw, 980px)",
             maxHeight: "86vh",
             display: "flex",
             flexDirection: "column",
@@ -441,6 +959,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       document.body,
     );
   };
+
   const renderMainInfoModal = () => {
     if (!isMainInfoModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -499,10 +1018,11 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 style={inputStyle}
               />
             </div>
+
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Link Externo (Para o aluno acessar, caso use outro local de
-                armazenamento de materiais, por exemplo)
+                armazenamento de materiais)
               </label>
               <input
                 type="text"
@@ -512,6 +1032,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 style={inputStyle}
               />
             </div>
+
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Categoria
@@ -640,6 +1161,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           >
             Reagendar aula
           </div>
+
           {!allowedToReschedule ? (
             <div style={{ padding: 12 }}>
               Você excedeu o limite de reagendamentos.
@@ -915,13 +1437,14 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   }}
                   title="Resumo com IA"
                 >
-                  ✨ (-10)
+                  IA (-10)
                 </button>
               </div>
 
               <div style={{ marginTop: 8 }}>
                 Descrição do professor (invisível para aluno):
               </div>
+
               <textarea
                 disabled={savingDescription}
                 value={teacherDescription}
@@ -984,6 +1507,15 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           position: "relative",
         }}
       >
+        <div
+          style={{
+            ...cardTitle,
+            justifyContent: "space-between",
+          }}
+        >
+          <span>Informações Gerais</span>
+        </div>
+
         <article
           style={{
             display: "grid",
@@ -1009,6 +1541,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               />
             )}
           </div>
+
           {event.rescheduledDescription && event.rescheduled && (
             <div
               style={{
@@ -1024,6 +1557,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               </span>
             </div>
           )}
+
           <div>
             <div
               style={{
@@ -1036,7 +1570,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 maxWidth: "fit-content",
               }}
             >
-              {/* Link da Sala */}
               {event.link && (
                 <a
                   href={event.link}
@@ -1046,7 +1579,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     display: "flex",
                     maxWidth: "fit-content",
                     fontWeight: 700,
-
                     backgroundColor: `${partnerColor()}22`,
                     color: partnerColor(),
                     padding: "4px 8px",
@@ -1063,7 +1595,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 </a>
               )}
 
-              {/* Link Externo */}
               {event.importantLink && (
                 <a
                   href={event.importantLink}
@@ -1073,7 +1604,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     display: "flex",
                     maxWidth: "fit-content",
                     fontWeight: 700,
-
                     backgroundColor: `${partnerColor()}22`,
                     color: partnerColor(),
                     padding: "4px 8px",
@@ -1090,7 +1620,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 </a>
               )}
             </div>
-            {/* Bloco compacto: Data/Hora, Duração */}
+
             <div
               style={{
                 marginTop: 6,
@@ -1125,29 +1655,26 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   {event.date} ({event.time})
                 </span>
               </div>
-              {theDescription ||
-                (allowedToEdit && (
-                  <div style={{ display: "grid", gap: 4 }}>
-                    <span style={{ fontSize: 11, color: "#606060" }}>
-                      Descrição
-                    </span>
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        color: "#030303",
-                        fontSize: 13,
-                      }}
-                    >
-                      {theDescription && theDescription.trim()
-                        ? theDescription
-                        : "Nenhuma descrição cadastrada para esta aula."}
-                    </span>
-                  </div>
-                ))}
+
+              {(theDescription || allowedToEdit) && (
+                <div style={{ display: "grid", gap: 4 }}>
+                  <span style={{ fontSize: 11, color: "#606060" }}>
+                    {`Descrição ${allowedToEdit ? "(visível para aluno)" : ""}`}
+                  </span>
+                  <span
+                    style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
+                  >
+                    {theDescription && theDescription.trim()
+                      ? theDescription
+                      : "Nenhuma descrição cadastrada para esta aula."}
+                  </span>
+                </div>
+              )}
+
               {allowedToEdit && (
                 <div style={{ display: "grid", gap: 4 }}>
                   <span style={{ fontSize: 11, color: "#606060" }}>
-                    Descrição do prof
+                    Descrição do professor (invisível para aluno)
                   </span>
                   <span
                     style={{ fontWeight: 700, color: "#030303", fontSize: 13 }}
@@ -1158,14 +1685,69 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   </span>
                 </div>
               )}
+
+              {/* LINHA NOVA: PRESENÇA E COMENTÁRIOS (NO CARD) */}
+              {event.status == "realizada" && (
+                <div style={{ display: "grid", gap: 4 }}>
+                  <span style={{ fontSize: 11, color: "#606060" }}>
+                    Presença e comentários
+                  </span>
+
+                  {attendanceLoading ? (
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: "#030303",
+                        fontSize: 13,
+                      }}
+                    >
+                      Carregando...
+                    </span>
+                  ) : canEditAttendance ? (
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        color: "#030303",
+                        fontSize: 13,
+                      }}
+                    >
+                      {`Presentes: ${attendanceList.filter((x) => x.attended).length} / ${attendanceList.length}`}
+                    </span>
+                  ) : (
+                    <div style={{ display: "grid", gap: 6 }}>
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: "#030303",
+                          fontSize: 13,
+                        }}
+                      >
+                        {myAttendanceItem
+                          ? myAttendanceItem.attended
+                            ? "Você esteve presente nesta aula."
+                            : "Você não esteve presente nesta aula."
+                          : "Presença não encontrada."}
+                      </span>
+
+                      <span
+                        style={{
+                          fontWeight: 700,
+                          color: "#030303",
+                          fontSize: 12,
+                        }}
+                      >
+                        {myAttendanceItem?.description?.trim()
+                          ? myAttendanceItem.description
+                          : "Nenhum comentário para você nesta aula."}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            {/* Botões (mantendo todas as ações/modais) */}
+
             <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 8,
-              }}
+              style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}
             >
               {event.status === "marcado" &&
                 event.category !== "Established Group Class" && (
@@ -1221,6 +1803,22 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   </button>
 
                   <button
+                    onClick={() => setIsAttendanceListOpen(true)}
+                    style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Lista de Presença
+                  </button>
+
+                  <button
                     onClick={() => {
                       setDescription(theDescription || "");
                       setTeacherDescription(theTeacherDescription || "");
@@ -1245,7 +1843,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           </div>
         </article>
       </div>
+
       {renderMainInfoModal()}
+      {renderAttendanceListModal()}
       {renderRescheduleModal()}
       {renderPreviousClassesModal()}
       {renderDescriptionModal()}
