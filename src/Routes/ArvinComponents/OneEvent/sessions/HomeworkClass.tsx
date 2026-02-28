@@ -15,10 +15,9 @@ type HomeworkClassProps = {
   fetchEventData: () => void;
   isDesktop?: boolean;
   event?: any;
-
+  homeworkStudentName?: string;
   allowedToEdit?: boolean;
   allowedToAnswer?: boolean;
-
   homeworkID?: string;
   homeworkData: string;
   homeworkAnswer?: string;
@@ -38,9 +37,9 @@ const modalStyle: React.CSSProperties = {
   width: "min(92vw, 520px)",
   background: "#fff",
   borderRadius: 8,
-  maxHeight: "100vh",
+  height: "85vh",
+  overflowY: "hidden",
   boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-  overflow: "hidden",
   border: "1px solid #e2e8f0",
 };
 
@@ -121,15 +120,33 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   homeworkData,
   homeworkAnswer,
   allowedToEdit,
+  homeworkStudentName,
   allowedToAnswer,
   homeworkID,
   event,
 }) => {
+  useEffect(() => {
+    console.log(
+      "homeworkData: ",
+      homeworkData,
+      "homeworkAnswer: ",
+      homeworkAnswer,
+      "allowedToEdit: ",
+      allowedToEdit,
+      "allowedToAnswer: ",
+      allowedToAnswer,
+      "homeworkID: ",
+      homeworkID,
+      "event: ",
+      event,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState<ModalMode>("description");
   const [saving, setSaving] = useState(false);
-
-  const [notifyTeacher, setNotifyTeacher] = useState<boolean>(true);
+  const [notifyTeacher, setNotifyTeacher] = useState<boolean>(false);
 
   const hasHomework = !!homeworkID;
   const hasAnswer = !!(homeworkAnswer || "").trim();
@@ -162,7 +179,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     if (!homeworkID) return;
 
     setAnswerText(htmlToTextarea(homeworkAnswer || ""));
-    setNotifyTeacher(true);
+    setNotifyTeacher(false);
     setMode("answer");
     setIsModalOpen(true);
   };
@@ -252,7 +269,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     return createPortal(
       <div style={overlayStyle} onClick={closeModal}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
           <div
             style={{
               padding: 16,
@@ -266,84 +282,59 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           >
             {title}
           </div>
-
-          {/* Body */}
-          <div style={{ padding: 16 }}>
-            {/* Sempre mostra o enunciado (descrição) no modo answer */}
-            {mode === "answer" && (
-              <>
-                <div
-                  style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
-                >
-                  Enunciado
-                </div>
-
-                <div
-                  style={{
-                    borderLeft: `4px solid ${partnerColor()}`,
-                    paddingLeft: 10,
-                    color: "#334155",
-                    marginBottom: 14,
-                  }}
-                >
+          <div
+            style={{
+              maxHeight: "60vh",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ padding: 16 }}>
+              {mode === "answer" && (
+                <>
                   <div
-                    dangerouslySetInnerHTML={{ __html: homeworkData || "" }}
-                  />
-                </div>
-              </>
-            )}
+                    style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
+                  >
+                    Enunciado
+                  </div>
 
-            <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
-              {mode === "description" ? "Descrição" : "Sua resposta"}
-            </div>
+                  <div
+                    style={{
+                      borderLeft: `4px solid ${partnerColor()}`,
+                      paddingLeft: 10,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "#334155",
+                      marginBottom: 14,
+                    }}
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{ __html: homeworkData || "" }}
+                    />
+                  </div>
+                </>
+              )}
 
-            <textarea
-              style={textareaStyle}
-              value={mode === "description" ? descriptionText : answerText}
-              onChange={(e) => {
-                if (mode === "description") setDescriptionText(e.target.value);
-                else setAnswerText(e.target.value);
-              }}
-              placeholder={
-                mode === "answer"
-                  ? "Digite sua resposta..."
-                  : "Digite a descrição..."
-              }
-            />
-          </div>
-          {/* Switch de notificação (só no modo answer) */}
-          {mode === "answer" && (
-            <div style={switchRowStyle}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <div
-                  style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}
-                >
-                  Notificar professor
-                </div>
+              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
+                {mode === "description" ? "Descrição" : "Sua resposta"}
               </div>
 
-              <button
-                type="button"
-                aria-pressed={notifyTeacher}
-                onClick={() => setNotifyTeacher((v) => !v)}
-                style={{
-                  ...switchTrackBase,
-                  backgroundColor: notifyTeacher ? partnerColor() : "#e5e7eb",
+              <textarea
+                style={textareaStyle}
+                value={mode === "description" ? descriptionText : answerText}
+                onChange={(e) => {
+                  if (mode === "description")
+                    setDescriptionText(e.target.value);
+                  else setAnswerText(e.target.value);
                 }}
-              >
-                <span
-                  style={{
-                    ...switchThumbBase,
-                    left: 2,
-                    transform: notifyTeacher
-                      ? "translateX(20px)"
-                      : "translateX(0px)",
-                  }}
-                />
-              </button>
+                placeholder={
+                  mode === "answer"
+                    ? "Digite sua resposta..."
+                    : "Digite a descrição..."
+                }
+              />
             </div>
-          )}
-          {/* Footer */}
+          </div>
+
           <div
             style={{
               padding: 12,
@@ -353,20 +344,70 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               gap: 8,
             }}
           >
-            <button
-              style={ghostBtnStyle}
-              onClick={closeModal}
-              disabled={saving}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 12,
+              }}
             >
-              Cancelar
-            </button>
-            <button
-              onClick={save}
-              style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={!canSave}
-            >
-              {saving ? "Salvando..." : "Salvar"}
-            </button>
+              {mode === "answer" && (
+                <div style={switchRowStyle}>
+                  <div
+                    style={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#0f172a",
+                      }}
+                    >
+                      Notificar professor
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-pressed={notifyTeacher}
+                    onClick={() => setNotifyTeacher((v) => !v)}
+                    style={{
+                      ...switchTrackBase,
+                      backgroundColor: notifyTeacher
+                        ? partnerColor()
+                        : "#e5e7eb",
+                    }}
+                  >
+                    <span
+                      style={{
+                        ...switchThumbBase,
+                        left: 2,
+                        transform: notifyTeacher
+                          ? "translateX(20px)"
+                          : "translateX(0px)",
+                      }}
+                    />
+                  </button>
+                </div>
+              )}
+              <div>
+                <button
+                  style={ghostBtnStyle}
+                  onClick={closeModal}
+                  disabled={saving}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={save}
+                  style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
+                  disabled={!canSave}
+                >
+                  {saving ? "Salvando..." : "Salvar"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>,
@@ -384,9 +425,10 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           gap: 12,
         }}
       >
-        {/* Header do Card */}
         <div style={{ ...cardTitle, justifyContent: "space-between" }}>
-          <span>Lição de Casa</span>
+          <span>
+            Lição de Casa {homeworkStudentName && `- ${homeworkStudentName}`}
+          </span>
 
           <div style={{ display: "flex", gap: 8 }}>
             {allowedToEdit && (
@@ -412,7 +454,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 onClick={openModalAnswer}
                 style={{
                   padding: "6px 12px",
-                  backgroundColor: "#0f172a",
+                  backgroundColor: partnerColor(),
                   color: "#fff",
                   border: "none",
                   borderRadius: 6,
@@ -429,7 +471,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           </div>
         </div>
 
-        {/* Preview DESCRIÇÃO */}
         {hasHomework ? (
           <div
             style={{
@@ -446,7 +487,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           </span>
         )}
 
-        {/* Preview ANSWER (se existir) */}
         {hasHomework && hasAnswer && (
           <div
             style={{

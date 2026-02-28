@@ -145,8 +145,10 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     AttendanceItem[]
   >([]);
   const [isAttendanceListOpen, setIsAttendanceListOpen] = useState(false);
-
+  const isEstablishedGroupClass = event?.category === "Established Group Class";
   async function fetchAttendanceList() {
+    if (!isEstablishedGroupClass) return;
+
     try {
       setAttendanceLoading(true);
 
@@ -165,7 +167,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
       setAttendanceLoading(false);
     }
   }
-
   const myAttendanceItem = useMemo(() => {
     const list = attendanceList || [];
     return (
@@ -1687,34 +1688,14 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               )}
 
               {/* LINHA NOVA: PRESENÇA E COMENTÁRIOS (NO CARD) */}
-              {event.status == "realizada" && (
-                <div style={{ display: "grid", gap: 4 }}>
-                  <span style={{ fontSize: 11, color: "#606060" }}>
-                    Presença e comentários
-                  </span>
+              {event.status == "realizada" &&
+                event.category == "Established Group Class" && (
+                  <div style={{ display: "grid", gap: 4 }}>
+                    <span style={{ fontSize: 11, color: "#606060" }}>
+                      Presença e comentários
+                    </span>
 
-                  {attendanceLoading ? (
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        color: "#030303",
-                        fontSize: 13,
-                      }}
-                    >
-                      Carregando...
-                    </span>
-                  ) : canEditAttendance ? (
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        color: "#030303",
-                        fontSize: 13,
-                      }}
-                    >
-                      {`Presentes: ${attendanceList.filter((x) => x.attended).length} / ${attendanceList.length}`}
-                    </span>
-                  ) : (
-                    <div style={{ display: "grid", gap: 6 }}>
+                    {attendanceLoading ? (
                       <span
                         style={{
                           fontWeight: 700,
@@ -1722,28 +1703,49 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                           fontSize: 13,
                         }}
                       >
-                        {myAttendanceItem
-                          ? myAttendanceItem.attended
-                            ? "Você esteve presente nesta aula."
-                            : "Você não esteve presente nesta aula."
-                          : "Presença não encontrada."}
+                        Carregando...
                       </span>
-
+                    ) : canEditAttendance ? (
                       <span
                         style={{
                           fontWeight: 700,
                           color: "#030303",
-                          fontSize: 12,
+                          fontSize: 13,
                         }}
                       >
-                        {myAttendanceItem?.description?.trim()
-                          ? myAttendanceItem.description
-                          : "Nenhum comentário para você nesta aula."}
+                        {`Presentes: ${attendanceList.filter((x) => x.attended).length} / ${attendanceList.length}`}
                       </span>
-                    </div>
-                  )}
-                </div>
-              )}
+                    ) : (
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: "#030303",
+                            fontSize: 13,
+                          }}
+                        >
+                          {myAttendanceItem
+                            ? myAttendanceItem.attended
+                              ? "Você esteve presente nesta aula."
+                              : "Você não esteve presente nesta aula."
+                            : "Presença não encontrada."}
+                        </span>
+
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: "#030303",
+                            fontSize: 12,
+                          }}
+                        >
+                          {myAttendanceItem?.description?.trim()
+                            ? myAttendanceItem.description
+                            : "Nenhum comentário para você nesta aula."}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
 
             <div
@@ -1801,23 +1803,25 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   >
                     Aulas anteriores
                   </button>
-
-                  <button
-                    onClick={() => setIsAttendanceListOpen(true)}
-                    style={{
-                      padding: "8px 12px",
-                      backgroundColor: partnerColor(),
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: 13,
-                      fontWeight: 700,
-                    }}
-                  >
-                    Lista de Presença
-                  </button>
-
+                  {event.status == "realizada" &&
+                    event.category == "Established Group Class" &&
+                    canEditAttendance && (
+                      <button
+                        onClick={() => setIsAttendanceListOpen(true)}
+                        style={{
+                          padding: "8px 12px",
+                          backgroundColor: partnerColor(),
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                          fontSize: 13,
+                          fontWeight: 700,
+                        }}
+                      >
+                        Lista de Presença
+                      </button>
+                    )}
                   <button
                     onClick={() => {
                       setDescription(theDescription || "");
