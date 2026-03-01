@@ -1506,6 +1506,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           flexDirection: "column",
           gap: 10,
           position: "relative",
+          width: "100%",
+          minWidth: 0,
+          boxSizing: "border-box",
         }}
       >
         <div
@@ -1521,6 +1524,10 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           style={{
             display: "grid",
             gridTemplateColumns: isDesktop && event.video ? "1fr 1fr" : "1fr",
+            gap: 10,
+            width: "100%",
+            minWidth: 0,
+            boxSizing: "border-box",
           }}
         >
           <div
@@ -1530,6 +1537,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               alignItems: "center",
               justifyContent: "center",
               fontSize: 14,
+              minWidth: 0,
             }}
           >
             {(event.video || permissionsUser !== "student") && (
@@ -1551,6 +1559,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 color: "#fff",
                 textAlign: "center",
                 padding: 8,
+                borderRadius: 6,
+                minWidth: 0,
               }}
             >
               <span style={{ fontWeight: 600, fontSize: 13 }}>
@@ -1559,7 +1569,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </div>
           )}
 
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div
               style={{
                 display: "flex",
@@ -1568,7 +1578,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 gap: 12,
                 flexWrap: "wrap",
                 padding: "4px 8px",
-                maxWidth: "fit-content",
+                maxWidth: isDesktop ? "fit-content" : "100%",
+                width: isDesktop ? "fit-content" : "100%",
+                boxSizing: "border-box",
               }}
             >
               {event.link && (
@@ -1578,7 +1590,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   rel="noreferrer"
                   style={{
                     display: "flex",
-                    maxWidth: "fit-content",
+                    maxWidth: isDesktop ? "fit-content" : "100%",
+                    width: isDesktop ? "fit-content" : "100%",
+                    justifyContent: "center",
                     fontWeight: 700,
                     backgroundColor: `${partnerColor()}22`,
                     color: partnerColor(),
@@ -1589,6 +1603,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     alignItems: "center",
                     gap: 6,
                     marginTop: 2,
+                    boxSizing: "border-box",
                   }}
                 >
                   <i className="fa fa-external-link" />
@@ -1603,7 +1618,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   rel="noreferrer"
                   style={{
                     display: "flex",
-                    maxWidth: "fit-content",
+                    maxWidth: isDesktop ? "fit-content" : "100%",
+                    width: isDesktop ? "fit-content" : "100%",
+                    justifyContent: "center",
                     fontWeight: 700,
                     backgroundColor: `${partnerColor()}22`,
                     color: partnerColor(),
@@ -1614,6 +1631,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     alignItems: "center",
                     gap: 6,
                     marginTop: 2,
+                    boxSizing: "border-box",
                   }}
                 >
                   <i className="fa fa-external-link" />
@@ -1629,6 +1647,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 paddingLeft: 12,
                 display: "grid",
                 gap: 8,
+                minWidth: 0,
               }}
             >
               {!isDesktop && event.student && (
@@ -1687,7 +1706,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 </div>
               )}
 
-              {/* LINHA NOVA: PRESENÇA E COMENTÁRIOS (NO CARD) */}
               {event.status == "realizada" &&
                 event.category == "Established Group Class" && (
                   <div style={{ display: "grid", gap: 4 }}>
@@ -1748,8 +1766,23 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 )}
             </div>
 
+            {/* ✅ BOTÕES RESPONSIVOS */}
             <div
-              style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}
+              style={{
+                marginTop: 10,
+                display: "grid",
+                gap: 8,
+                width: "100%",
+                minWidth: 0,
+
+                // Desktop: exatamente 4 colunas
+                gridTemplateColumns: isDesktop
+                  ? "repeat(4, minmax(0, 1fr))"
+                  : "repeat(auto-fit, minmax(140px, 1fr))",
+
+                justifyContent: "flex-end",
+                alignItems: "stretch",
+              }}
             >
               {event.status === "marcado" &&
                 event.category !== "Established Group Class" && (
@@ -1764,6 +1797,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 700,
+                      width: isDesktop ? "auto" : "100%",
+                      minWidth: 0,
                     }}
                   >
                     Reagendar
@@ -1783,6 +1818,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 700,
+                      width: isDesktop ? "auto" : "100%",
+                      minWidth: 0,
                     }}
                   >
                     Editar
@@ -1799,10 +1836,13 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 700,
+                      width: isDesktop ? "auto" : "100%",
+                      minWidth: 0,
                     }}
                   >
                     Aulas anteriores
                   </button>
+
                   {event.status == "realizada" &&
                     event.category == "Established Group Class" &&
                     canEditAttendance && (
@@ -1817,11 +1857,14 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                           cursor: "pointer",
                           fontSize: 13,
                           fontWeight: 700,
+                          width: isDesktop ? "auto" : "100%",
+                          minWidth: 0,
                         }}
                       >
                         Lista de Presença
                       </button>
                     )}
+
                   <button
                     onClick={() => {
                       setDescription(theDescription || "");
@@ -1837,6 +1880,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 700,
+                      width: isDesktop ? "auto" : "100%",
+                      minWidth: 0,
                     }}
                   >
                     Descrição

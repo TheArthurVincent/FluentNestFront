@@ -9,7 +9,7 @@ export type ImageLanguages = {
 
 export type ImageEntry = {
   img: string; // URL final (ImageKit)
-  text?: string; // SEMPRE = english (preenchido automaticamente)
+  text?: string; // ✅ sempre espelha "english"
   english?: string; // label 1
   portuguese?: string; // label 2
   languages?: ImageLanguages; // opcional; default en/pt
@@ -18,6 +18,7 @@ export type ImageEntry = {
 export interface ImagesBlock {
   type: "images";
   subtitle?: string;
+  comments?: string; // ✅ novo (não é description)
   order?: number;
   grid?: number;
   images: ImageEntry[];
@@ -32,7 +33,8 @@ type Props = {
   headers?: any; // para o upload
 };
 
-const LANG_OPTIONS = ["en", "pt", "es", "fr"];
+/* ===================== CONSTANTS ===================== */
+const LANG_DEFAULT: ImageLanguages = { language1: "en", language2: "pt" };
 
 const rowStyles: React.CSSProperties = {
   display: "grid",
@@ -48,6 +50,15 @@ const rowStyles: React.CSSProperties = {
   padding: "8px 0",
 };
 
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  padding: 8,
+  fontSize: 13,
+  boxSizing: "border-box",
+};
+
 const ghostBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #e2e8f0",
@@ -57,6 +68,7 @@ const ghostBtnStyle: React.CSSProperties = {
   cursor: "pointer",
   fontSize: 13,
 };
+
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
@@ -85,22 +97,31 @@ export default function ImagesEditor({
   const [showConfig, setShowConfig] = useState(true);
   const images = useMemo(() => value.images ?? [], [value.images]);
 
+  const updateBlock = (patch: Partial<ImagesBlock>) =>
+    onChange({
+      ...value,
+      ...patch,
+      type: "images",
+      comments: patch.comments ?? value.comments ?? "",
+      images: patch.images ?? value.images ?? [],
+    });
+
   const ensureLanguages = (item: ImageEntry): ImageEntry => {
-    if (!item.languages) {
-      return { ...item, languages: { language1: "en", language2: "pt" } };
-    }
+    if (!item.languages) return { ...item, languages: LANG_DEFAULT };
     return item;
   };
 
   const commitImageAt = (index: number, next: ImageEntry) => {
-    // garante text = english
     const normalized: ImageEntry = {
-      ...next,
-      text: next.english ?? "",
+      ...ensureLanguages(next),
+      // ✅ garante text sempre = english
+      text: (next.english ?? "").toString(),
     };
+
     const nextImages = images.slice();
     nextImages[index] = normalized;
-    onChange({ ...value, images: nextImages });
+
+    updateBlock({ images: nextImages });
   };
 
   const updateImageAt = (index: number, patch: Partial<ImageEntry>) => {
@@ -111,7 +132,7 @@ export default function ImagesEditor({
   const removeImageAt = (index: number) => {
     const nextImages = images.slice();
     nextImages.splice(index, 1);
-    onChange({ ...value, images: nextImages });
+    updateBlock({ images: nextImages });
   };
 
   const addImage = () => {
@@ -121,9 +142,9 @@ export default function ImagesEditor({
       english: "",
       portuguese: "",
       text: "",
-      languages: { language1: "en", language2: "pt" },
+      languages: LANG_DEFAULT,
     });
-    onChange({ ...value, images: nextImages });
+    updateBlock({ images: nextImages });
   };
 
   const moveImage = (from: number, to: number) => {
@@ -131,11 +152,8 @@ export default function ImagesEditor({
     const nextImages = images.slice();
     const [item] = nextImages.splice(from, 1);
     nextImages.splice(to, 0, item);
-    onChange({ ...value, images: nextImages });
+    updateBlock({ images: nextImages });
   };
-
-  const moveImageUp = (i: number) => moveImage(i, i - 1);
-  const moveImageDown = (i: number) => moveImage(i, i + 1);
 
   const onPickImage = async (file: File | null, idx: number) => {
     if (!file) return;
@@ -154,6 +172,8 @@ export default function ImagesEditor({
         borderRadius: 6,
         padding: "5px 12px",
         background: "linear-gradient(to right, #36dbd355, #ffffff)",
+        display: "grid",
+        gap: 12,
       }}
     >
       {/* Header do bloco */}
@@ -162,6 +182,8 @@ export default function ImagesEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -181,8 +203,9 @@ export default function ImagesEditor({
           />
           {value.subtitle
             ? truncateString(value.subtitle, 25)
-            : "Adicione  um título"}
+            : "Adicione um título"}
         </strong>
+
         <span style={headerBtnWrap}>
           <div>
             {onMoveUp && (
@@ -200,8 +223,13 @@ export default function ImagesEditor({
               </button>
             )}
           </div>
+
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtnStyle}>
+            <button
+              onClick={onRemove}
+              style={dangerBtnStyle}
+              title="Remover bloco"
+            >
               <i className="fa fa-trash" />
             </button>
           )}
@@ -210,55 +238,35 @@ export default function ImagesEditor({
 
       {showConfig && (
         <div style={{ display: "grid", gap: 12 }}>
-          {/* Config do bloco */}
-          <div
-            style={{
-              display: "grid",
-              gap: 8,
-              gridTemplateColumns: "1fr",
-            }}
-          >
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
-              <input
-                value={value.subtitle ?? ""}
-                onChange={(e) =>
-                  onChange({ ...value, subtitle: e.target.value })
-                }
-                placeholder="Ex.: Colors"
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
-              />
-            </div>
+          {/* Subtitle */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
+            <input
+              value={value.subtitle ?? ""}
+              onChange={(e) => updateBlock({ subtitle: e.target.value })}
+              placeholder="Ex.: Colors"
+              style={inputStyle}
+            />
           </div>
 
-          {/* Cabeçalho da tabela */}
-          {/* <div
-            style={{
-              ...rowStyles,
-              fontWeight: 700,
-              color: "#334155",
-              borderBottom: "1px solid #e2e8f0",
-              paddingBottom: 4,
-              marginTop: 6,
-            }}
-          >
-            <span>Pré-visualização</span>
-            <span>English (L1)</span>
-            <span>Portuguese (L2)</span>
-            <span style={{ textAlign: "right" }}>Ações</span>
-          </div> */}
+          {/* Comments */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => updateBlock({ comments: e.target.value })}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+            />
+          </div>
 
           {/* Linhas */}
           <div style={{ display: "grid", gap: 10 }}>
             {images.map((it, idx) => {
               const withLang = ensureLanguages(it);
+
               return (
-                <div key={idx} style={{ ...rowStyles }}>
+                <div key={idx} style={rowStyles}>
                   {/* Preview + upload */}
                   <div
                     style={{ display: "grid", gap: 6, justifyItems: "center" }}
@@ -291,6 +299,7 @@ export default function ImagesEditor({
                         </span>
                       )}
                     </div>
+
                     <label
                       style={{
                         ...ghostBtnStyle,
@@ -303,98 +312,50 @@ export default function ImagesEditor({
                         type="file"
                         accept="image/*"
                         style={{ display: "none" }}
-                        onChange={async (e) =>
+                        onChange={(e) =>
                           onPickImage(e.target.files?.[0] || null, idx)
                         }
                       />
                     </label>
                   </div>
 
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: 12,
-                    }}
-                  >
-                    {/* ENGLISH + seletor L1 */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gap: 6,
-                        gridTemplateColumns: "1fr",
-                      }}
-                    >
-                      {/* <select
-                        value={withLang.languages!.language1}
-                        onChange={(e) =>
-                          updateImageAt(idx, {
-                            languages: {
-                              ...withLang.languages!,
-                              language1: e.target.value,
-                            },
-                          })
-                        }
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          background: "white",
-                        }}
-                      >
-                        {LANG_OPTIONS.map((code) => (
-                          <option key={code} value={code}>
-                            {code}
-                          </option>
-                        ))}
-                      </select> */}
+                  {/* Textos */}
+                  <div style={{ display: "grid", gap: 12, width: "100%" }}>
+                    {/* English (espelha em text) */}
+                    <div style={{ display: "grid", gap: 6 }}>
                       <input
                         value={withLang.english ?? ""}
                         onChange={(e) =>
                           updateImageAt(idx, {
                             english: e.target.value,
-                            text: e.target.value,
+                            text: e.target.value, // ✅ espelha
                           })
                         }
-                        placeholder={"Image description"}
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                        }}
+                        placeholder="Image description"
+                        style={inputStyle}
                       />
                     </div>
 
-                    {/* PORTUGUESE + seletor L2 */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gap: 6,
-                        gridTemplateColumns: "1fr",
-                      }}
-                    >
+                    {/* Portuguese */}
+                    <div style={{ display: "grid", gap: 6 }}>
                       <input
                         value={withLang.portuguese ?? ""}
                         onChange={(e) =>
                           updateImageAt(idx, { portuguese: e.target.value })
                         }
-                        placeholder={"Meaning/Description"}
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          padding: 8,
-                          fontSize: 13,
-                        }}
+                        placeholder="Meaning/Description"
+                        style={inputStyle}
                       />
                     </div>
                   </div>
+
+                  {/* Ações da linha */}
                   <div
-                    style={{
-                      display: "flex",
-                      gap: 4,
-                      alignItems: "flex-end",
-                    }}
+                    style={{ display: "flex", gap: 4, alignItems: "flex-end" }}
                   >
                     {idx !== 0 && (
                       <button
-                        onClick={() => moveImageUp(idx)}
+                        onClick={() => moveImage(idx, idx - 1)}
                         style={ghostBtnStyle}
                         title="↑"
                       >
@@ -403,7 +364,7 @@ export default function ImagesEditor({
                     )}
                     {idx !== images.length - 1 && (
                       <button
-                        onClick={() => moveImageDown(idx)}
+                        onClick={() => moveImage(idx, idx + 1)}
                         style={ghostBtnStyle}
                         title="↓"
                       >

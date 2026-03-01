@@ -3063,17 +3063,17 @@ export default function EnglishClassCourse2({
                     fetchEventData={fetchEventData}
                   />
                 )}
-              {/* <HelpInfo
+{thePermissions !=="student" && 
+              <HelpInfo
                 title="Como manipular  com os Elementos Dinâmicos"
                 text=""
-                youtubeUrl="https://www.youtube.com/watch?v=dAQf3zwXVdw&pp=ugUEEgJlbg%3D%3D"
+                youtubeUrl="https://youtu.be/KyUQRZbsz5M"
                 glow={true}
                 thePermissions="teacher"
                 anchor="inline"
                 initialPosition={{ x: 80, y: 120 }}
                 zIndex={2147484563647} // mais alto que quase tudo
-                buttonSize={22}
-              /> */}
+              />}
             </div>
           }
           {!seeEdit && (
@@ -3165,7 +3165,7 @@ export default function EnglishClassCourse2({
                         )}
                       </span>
                     </div>
-                    {theclass?.elements?.length > 0 && !fetchEventData && (
+                    {/* {theclass?.elements?.length > 0 && !fetchEventData && (
                       <div
                         style={{
                           display: "flex",
@@ -3302,7 +3302,7 @@ export default function EnglishClassCourse2({
                           </div>
                         )}
                       </div>
-                    )}
+                    )} */}
                   </span>
 
                   {!seeBoard && !exercise && theclass?.elements?.length > 0 && (

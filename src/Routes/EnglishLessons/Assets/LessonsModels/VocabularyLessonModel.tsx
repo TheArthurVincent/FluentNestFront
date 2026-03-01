@@ -227,7 +227,6 @@ export default function VocabularyLessonModel({
           </button>
         )}
 
-        {/* Match Mode AGORA SÓ ABRE MODAL */}
         <button
           onClick={() => setShowMatchModal(true)}
           style={{
@@ -242,11 +241,10 @@ export default function VocabularyLessonModel({
             transition: "all .2s",
           }}
         >
-          Match Mode
+          Exercícios
         </button>
       </div>
 
-      {/* LISTA NORMAL (sem match interno) */}
       <div
         style={{
           display: "grid",

@@ -50,6 +50,7 @@ import GroupClassesHistory from "./ArvinComponents/Groups/theGroup/GroupClassesH
 import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
 import FinancialResources from "./Adm/AdmComponents/FinancialResources/FinancialResources";
 import ResponsibleMainFile from "./Adm/AdmComponents/NewResponsible/ResponsibleMainFile";
+import CourseStructure from "./ArvinComponents/ArvinExplanation/CourseStructure";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -296,6 +297,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           headers={headers}
         />
       ),
+    },
+    {
+      title: "Arvin Course",
+      showLeftBar: true,
+      levelcard: true,
+      component: <CourseStructure isDesktop={isDesktop} />,
     },
     {
       title: "Ranking",

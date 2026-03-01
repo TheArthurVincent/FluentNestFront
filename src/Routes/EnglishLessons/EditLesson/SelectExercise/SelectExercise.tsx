@@ -1,6 +1,5 @@
 // SelectExerciseEditor.tsx
 import React, { useMemo, useState } from "react";
-import axios from "axios";
 import {
   backDomain,
   truncateString,
@@ -25,6 +24,7 @@ export type SelectExerciseQuestion = {
 export type SelectExerciseBlock = {
   type: "selectexercise";
   subtitle?: string;
+  comments?: string; // ✅ novo
   order?: number;
   options: SelectExerciseQuestion[];
 };
@@ -38,10 +38,18 @@ type Props = {
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 
-  // ✅ iguais ao SentencesEditor (pra IA funcionar igual)
   studentId: any;
   headers?: HeadersLike | null;
-  language: string; // idioma base que você já passa para a IA no sentences
+  language: string;
+};
+
+const inputStyle: React.CSSProperties = {
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  padding: 8,
+  fontSize: 13,
+  width: "100%",
+  boxSizing: "border-box",
 };
 
 const ghostBtn: React.CSSProperties = {
@@ -82,16 +90,20 @@ export default function SelectExerciseEditor({
   language,
 }: Props) {
   const [showConfig, setShowConfig] = useState(true);
-
-  // ✅ Modal IA
   const [aiOpen, setAiOpen] = useState(false);
 
   const update = (patch: Partial<SelectExerciseBlock>) =>
-    onChange({ ...value, ...patch, type: "selectexercise" });
+    onChange({
+      ...value,
+      ...patch,
+      type: "selectexercise",
+      comments: patch.comments ?? value.comments ?? "", // ✅ garante string
+      options: patch.options ?? value.options ?? [],
+    });
 
   const questions = useMemo(() => value.options ?? [], [value.options]);
 
-  // ----- Helpers de bloco -----
+  /* -------------------- bloco: perguntas -------------------- */
   const addQuestion = () => {
     const next: SelectExerciseQuestion = {
       audio: "",
@@ -120,16 +132,13 @@ export default function SelectExerciseEditor({
     update({ options: next });
   };
 
-  const moveQuestionUp = (i: number) => moveQuestion(i, i - 1);
-  const moveQuestionDown = (i: number) => moveQuestion(i, i + 1);
-
   const setQuestionAt = (idx: number, q: SelectExerciseQuestion) => {
     const next = [...questions];
     next[idx] = q;
     update({ options: next });
   };
 
-  // ----- Helpers de alternativas -----
+  /* -------------------- alternativas -------------------- */
   const addChoice = (qIndex: number) => {
     const q = { ...questions[qIndex] };
     q.options = [...q.options, { option: "", status: "wrong", reason: "" }];
@@ -139,58 +148,63 @@ export default function SelectExerciseEditor({
   const removeChoice = (qIndex: number, cIndex: number) => {
     const q = { ...questions[qIndex] };
     const nextOpts = [...q.options];
-    nextOpts.splice(cIndex, 1);
+    const removedWasRight = nextOpts[cIndex]?.status === "right";
 
-    const hadRight = q.options[cIndex]?.status === "right";
+    nextOpts.splice(cIndex, 1);
     q.options = nextOpts;
 
-    if (hadRight) {
-      const first = nextOpts.find((o) => o.status === "right");
-      if (!first) {
-        if (nextOpts.length > 0) {
-          nextOpts[0].status = "right";
-          q.answer = nextOpts[0].option;
-        } else {
-          q.answer = "";
-        }
-      } else {
-        q.answer = first.option;
-      }
+    if (removedWasRight) {
+      const firstRight = nextOpts.find((o) => o.status === "right");
+      if (!firstRight && nextOpts.length > 0) nextOpts[0].status = "right";
+      q.answer = (
+        nextOpts.find((o) => o.status === "right")?.option ?? ""
+      ).trim();
     }
+
     setQuestionAt(qIndex, q);
   };
 
   const moveChoice = (qIndex: number, from: number, to: number) => {
     const q = { ...questions[qIndex] };
     if (to < 0 || to >= q.options.length) return;
+
     const nextOpts = [...q.options];
     const [it] = nextOpts.splice(from, 1);
     nextOpts.splice(to, 0, it);
     q.options = nextOpts;
+
     setQuestionAt(qIndex, q);
   };
-
-  const moveChoiceUp = (qIndex: number, i: number) =>
-    moveChoice(qIndex, i, i - 1);
-  const moveChoiceDown = (qIndex: number, i: number) =>
-    moveChoice(qIndex, i, i + 1);
 
   const setChoiceAt = (
     qIndex: number,
     cIndex: number,
-    patch: Partial<SelectExerciseChoice>
+    patch: Partial<SelectExerciseChoice>,
   ) => {
     const q = { ...questions[qIndex] };
-    const choice = { ...q.options[cIndex], ...patch };
     const nextOpts = [...q.options];
-    nextOpts[cIndex] = choice;
+    const prev = nextOpts[cIndex];
+
+    const nextChoice: SelectExerciseChoice = {
+      option: String(patch.option ?? prev.option ?? ""),
+      status: (patch.status ?? prev.status ?? "wrong") as "right" | "wrong",
+      reason: String(patch.reason ?? prev.reason ?? ""),
+    };
+
+    nextOpts[cIndex] = nextChoice;
+
+    // garante 1 correta: se marcou essa como right, derruba as outras
+    if (patch.status === "right") {
+      for (let i = 0; i < nextOpts.length; i++) {
+        if (i !== cIndex) nextOpts[i] = { ...nextOpts[i], status: "wrong" };
+      }
+    }
+
     q.options = nextOpts;
 
-    if (choice.status === "right") {
-      q.answer = choice.option;
-    } else if (patch.option && q.options[cIndex].status === "right") {
-      q.answer = patch.option;
-    }
+    // sincroniza answer
+    const right = q.options.find((c) => c.status === "right");
+    q.answer = (right?.option ?? "").trim();
 
     setQuestionAt(qIndex, q);
   };
@@ -201,13 +215,11 @@ export default function SelectExerciseEditor({
       ...c,
       status: i === cIndex ? "right" : "wrong",
     }));
-    q.answer = q.options[cIndex].option;
+    q.answer = (q.options[cIndex]?.option ?? "").trim();
     setQuestionAt(qIndex, q);
   };
 
-  /* ===================== IA: helpers ===================== */
-
-  // remove ```json ... ``` e tenta JSON.parse
+  /* -------------------- IA helpers -------------------- */
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
@@ -237,7 +249,6 @@ export default function SelectExerciseEditor({
   };
 
   const normalizeQuestion = (rawQ: any): SelectExerciseQuestion | null => {
-    // enunciado pode vir como audio / question / prompt / statement / title...
     const audio =
       rawQ?.audio ??
       rawQ?.question ??
@@ -246,13 +257,11 @@ export default function SelectExerciseEditor({
       rawQ?.enunciado ??
       "";
 
-    // opções podem vir como options/choices/alternatives/items
     const rawOptions =
       rawQ?.options ?? rawQ?.choices ?? rawQ?.alternatives ?? rawQ?.items ?? [];
 
-    if (!audio && (!Array.isArray(rawOptions) || rawOptions.length === 0)) {
+    if (!audio && (!Array.isArray(rawOptions) || rawOptions.length === 0))
       return null;
-    }
 
     let options: SelectExerciseChoice[] = (
       Array.isArray(rawOptions) ? rawOptions : []
@@ -260,7 +269,6 @@ export default function SelectExerciseEditor({
       .map((o: any) => {
         const option = o?.option ?? o?.text ?? o?.value ?? o?.label ?? "";
 
-        // status pode vir como "right/wrong", boolean, "correct/incorrect"
         let status: "right" | "wrong" = "wrong";
         const s = o?.status ?? o?.correct ?? o?.isCorrect ?? o?.right;
         if (s === "right" || s === true || s === "correct") status = "right";
@@ -275,19 +283,16 @@ export default function SelectExerciseEditor({
       })
       .filter((c) => (c.option || c.reason).trim().length > 0);
 
-    // garante no mínimo 2 opções
-    if (options.length === 1) {
+    if (options.length === 1)
       options.push({ option: "—", status: "wrong", reason: "" });
-    }
     if (options.length === 0) return null;
 
-    // garante exatamente 1 correta
+    // garante 1 correta
     const rightIdxs = options
       .map((c, i) => (c.status === "right" ? i : -1))
       .filter((i) => i >= 0);
 
     if (rightIdxs.length === 0) {
-      // se backend mandou "answer", tenta casar
       const givenAnswer =
         rawQ?.answer ?? rawQ?.correctAnswer ?? rawQ?.rightAnswer ?? "";
 
@@ -295,15 +300,13 @@ export default function SelectExerciseEditor({
         const match = options.findIndex(
           (c) =>
             c.option.trim().toLowerCase() ===
-            String(givenAnswer).trim().toLowerCase()
+            String(givenAnswer).trim().toLowerCase(),
         );
-        if (match >= 0) options[match].status = "right";
-        else options[0].status = "right";
+        options[Math.max(0, match)].status = "right";
       } else {
         options[0].status = "right";
       }
     } else if (rightIdxs.length > 1) {
-      // mantém só a primeira correta
       const keep = rightIdxs[0];
       options = options.map((c, i) => ({
         ...c,
@@ -311,19 +314,16 @@ export default function SelectExerciseEditor({
       }));
     }
 
-    // sincroniza answer
-    const right = options.find((c) => c.status === "right");
-    let answer = right?.option ?? "";
-
-    // ✅ embaralhar para não deixar correta sempre no mesmo lugar (sua regra)
+    // ✅ embaralha (sua regra: correta não fica sempre na mesma posição)
     options = shuffleArray(options);
-    const rightAfterShuffle = options.find((c) => c.status === "right");
-    answer = rightAfterShuffle?.option ?? answer;
+
+    const right = options.find((c) => c.status === "right");
+    const answer = (right?.option ?? "").trim();
 
     return {
       audio: String(audio ?? ""),
       options,
-      answer: String(answer ?? ""),
+      answer,
       studentsWhoDidIt: Array.isArray(rawQ?.studentsWhoDidIt)
         ? rawQ.studentsWhoDidIt
         : [],
@@ -333,13 +333,10 @@ export default function SelectExerciseEditor({
   const handleReceiveJson = (raw: any) => {
     const json = parseMaybeJson(raw);
 
-    // 1) extrair array de perguntas (tolerante a envelopes)
     let arr: any[] = [];
-
     if (Array.isArray(json)) {
       arr = json;
     } else if (json && typeof json === "object") {
-      // possíveis envelopes
       const candidate =
         json.options ??
         json.questions ??
@@ -375,13 +372,12 @@ export default function SelectExerciseEditor({
     if (!Array.isArray(arr) || arr.length === 0) {
       notifyAlert(
         "Esperado um ARRAY de perguntas (ex.: [{ audio, options:[{option,status,reason}], answer }]). Ajuste o prompt/retorno.",
-        partnerColor()
+        partnerColor(),
       );
       console.warn("Conteúdo recebido (bruto):", raw);
       return;
     }
 
-    // 2) normalizar e filtrar vazias
     const mapped = arr
       .map((q) => normalizeQuestion(q))
       .filter((q): q is SelectExerciseQuestion => !!q);
@@ -389,19 +385,13 @@ export default function SelectExerciseEditor({
     if (mapped.length === 0) {
       notifyAlert(
         "Nenhuma pergunta válida encontrada no retorno da IA.",
-        partnerColor()
+        partnerColor(),
       );
       console.warn("Conteúdo recebido (bruto):", raw);
       return;
     }
 
-    // 3) atualizar bloco
-    onChange({
-      ...value,
-      type: "selectexercise",
-      options: mapped,
-    });
-
+    update({ options: mapped });
     setShowConfig(true);
   };
 
@@ -412,6 +402,8 @@ export default function SelectExerciseEditor({
         borderRadius: 6,
         padding: "5px 12px",
         background: "linear-gradient(to right, #3b50c655, #ffffff)",
+        display: "grid",
+        gap: 12,
       }}
     >
       {/* Header */}
@@ -421,6 +413,8 @@ export default function SelectExerciseEditor({
           justifyContent: "space-between",
           alignItems: "center",
           textAlign: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -440,10 +434,17 @@ export default function SelectExerciseEditor({
           />
           {value.subtitle
             ? truncateString(value.subtitle, 25)
-            : "Adicione  um título"}
+            : "Adicione um título"}
         </strong>
 
-        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <span
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <div>
             {onMoveUp && (
               <button onClick={onMoveUp} style={ghostBtn} title="Mover bloco ↑">
@@ -461,7 +462,6 @@ export default function SelectExerciseEditor({
             )}
           </div>
 
-          {/* ✅ Botão IA + Modal */}
           <button
             style={{ ...ghostBtn, border: "1px solid #0891b2" }}
             onClick={() => setAiOpen(true)}
@@ -482,7 +482,7 @@ export default function SelectExerciseEditor({
           />
 
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtn}>
+            <button onClick={onRemove} style={dangerBtn} title="Remover bloco">
               <i className="fa fa-trash" />
             </button>
           )}
@@ -490,8 +490,8 @@ export default function SelectExerciseEditor({
       </div>
 
       {showConfig && (
-        <div style={{ display: "grid", gap: 12, marginTop: 10 }}>
-          {/* Subtitle / Order */}
+        <div style={{ display: "grid", gap: 12 }}>
+          {/* Subtitle + Order */}
           <div
             style={{
               display: "grid",
@@ -506,12 +506,7 @@ export default function SelectExerciseEditor({
                 value={value.subtitle ?? ""}
                 onChange={(e) => update({ subtitle: e.target.value })}
                 placeholder="Exercise 4 - Choose the Correct Answer"
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
+                style={inputStyle}
               />
             </div>
 
@@ -521,17 +516,23 @@ export default function SelectExerciseEditor({
                 type="number"
                 value={Number(value.order ?? 0)}
                 onChange={(e) => update({ order: Number(e.target.value) })}
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
+                style={inputStyle}
               />
             </div>
           </div>
 
-          {/* Lista de perguntas */}
+          {/* Comments */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => update({ comments: e.target.value })}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+            />
+          </div>
+
+          {/* Lista */}
           <div style={{ display: "grid", gap: 14 }}>
             {questions.length === 0 && (
               <div
@@ -566,10 +567,16 @@ export default function SelectExerciseEditor({
                     justifyContent: "space-between",
                     alignItems: "center",
                     gap: 8,
+                    flexWrap: "wrap",
                   }}
                 >
                   <div
-                    style={{ display: "flex", gap: 8, alignItems: "center" }}
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                    }}
                   >
                     <strong style={{ color: "#0f172a" }}>
                       Pergunta #{qIndex + 1}
@@ -580,10 +587,11 @@ export default function SelectExerciseEditor({
                         : "Sem correta definida"}
                     </small>
                   </div>
+
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     <button
                       style={ghostSm}
-                      onClick={() => moveQuestionUp(qIndex)}
+                      onClick={() => moveQuestion(qIndex, qIndex - 1)}
                       disabled={qIndex === 0}
                       title="Mover pergunta ↑"
                     >
@@ -591,7 +599,7 @@ export default function SelectExerciseEditor({
                     </button>
                     <button
                       style={ghostSm}
-                      onClick={() => moveQuestionDown(qIndex)}
+                      onClick={() => moveQuestion(qIndex, qIndex + 1)}
                       disabled={qIndex === questions.length - 1}
                       title="Mover pergunta ↓"
                     >
@@ -618,12 +626,7 @@ export default function SelectExerciseEditor({
                       setQuestionAt(qIndex, { ...q, audio: e.target.value })
                     }
                     placeholder="Which sentence is correct?"
-                    style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 8,
-                      fontSize: 13,
-                    }}
+                    style={inputStyle}
                   />
                 </div>
 
@@ -648,6 +651,7 @@ export default function SelectExerciseEditor({
                           justifyContent: "space-between",
                           alignItems: "center",
                           gap: 8,
+                          flexWrap: "wrap",
                         }}
                       >
                         <div
@@ -685,10 +689,14 @@ export default function SelectExerciseEditor({
                           </small>
                         </div>
 
-                        <div style={{ display: "flex", gap: 6 }}>
+                        <div
+                          style={{ display: "flex", gap: 6, flexWrap: "wrap" }}
+                        >
                           <button
                             style={ghostSm}
-                            onClick={() => moveChoiceUp(qIndex, cIndex)}
+                            onClick={() =>
+                              moveChoice(qIndex, cIndex, cIndex - 1)
+                            }
                             disabled={cIndex === 0}
                             title="Mover alternativa ↑"
                           >
@@ -696,7 +704,9 @@ export default function SelectExerciseEditor({
                           </button>
                           <button
                             style={ghostSm}
-                            onClick={() => moveChoiceDown(qIndex, cIndex)}
+                            onClick={() =>
+                              moveChoice(qIndex, cIndex, cIndex + 1)
+                            }
                             disabled={cIndex === q.options.length - 1}
                             title="Mover alternativa ↓"
                           >
@@ -727,13 +737,9 @@ export default function SelectExerciseEditor({
                           })
                         }
                         placeholder="I am an engineer."
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          padding: 8,
-                          fontSize: 13,
-                        }}
+                        style={inputStyle}
                       />
+
                       <input
                         value={c.reason}
                         onChange={(e) =>
@@ -742,12 +748,7 @@ export default function SelectExerciseEditor({
                           })
                         }
                         placeholder="Reason/explanation for this option"
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 8,
-                          padding: 8,
-                          fontSize: 12.5,
-                        }}
+                        style={{ ...inputStyle, fontSize: 12.5 }}
                       />
                     </div>
                   ))}

@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { truncateString } from "../../../../Resources/UniversalComponents";
+
 export type VideoBlock = {
   subtitle?: string;
+  comments?: string; // ✅ novo
   type: "video";
   video?: string;
   order?: number;
@@ -13,8 +15,8 @@ type Props = {
   onChange: (next: VideoBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: any;
-  onMoveUp?: () => void; // NOVO
-  onMoveDown?: () => void; // NOVO
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 };
 
 export default function VideoEditor({
@@ -25,39 +27,44 @@ export default function VideoEditor({
   onMoveUp,
   onMoveDown,
 }: Props) {
-  const [forcePreviewKey, setForcePreviewKey] = useState(0); // para recarregar preview
+  const [forcePreviewKey, setForcePreviewKey] = useState(0);
   const [showConfig, setShowConfig] = useState(true);
 
-  const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-  const updateVideo = (video: string) => onChange({ ...value, video });
-
-  const trimAll = () => {
+  const update = (patch: Partial<VideoBlock>) =>
     onChange({
       ...value,
+      ...patch,
+      comments: patch.comments ?? value.comments ?? "", // ✅ garante string
+    });
+
+  const updateSubtitle = (subtitle: string) => update({ subtitle });
+  const updateVideo = (video: string) => update({ video });
+  const updateComments = (comments: string) => update({ comments });
+
+  const trimAll = () => {
+    update({
       subtitle: (value.subtitle || "").trim(),
       video: (value.video || "").trim(),
+      comments: (value.comments || "").trim(),
     });
   };
 
-  const testPreview = () => {
-    // força recarregar o iframe/video
-    setForcePreviewKey((k) => k + 1);
-  };
+  const testPreview = () => setForcePreviewKey((k) => k + 1);
 
-  // --- helpers de embed ---
+  /* ---------------- helpers de embed ---------------- */
   const classifyVideo = (url?: string) => {
     const u = (url || "").trim();
     if (!u) return { kind: "empty" as const };
 
-    const isMP4 = /\.(mp4|webm|ogg)(\?|#|$)/i.test(u);
-    if (isMP4) return { kind: "file" as const, src: u };
+    const isFile = /\.(mp4|webm|ogg)(\?|#|$)/i.test(u);
+    if (isFile) return { kind: "file" as const, src: u };
 
     // YouTube
     // https://www.youtube.com/watch?v=ID
     // https://youtu.be/ID
     try {
       const ytMatch1 = u.match(
-        /(?:youtube\.com\/watch\?v=)([A-Za-z0-9_\-]{6,})/i
+        /(?:youtube\.com\/watch\?v=)([A-Za-z0-9_\-]{6,})/i,
       );
       const ytMatch2 = u.match(/(?:youtu\.be\/)([A-Za-z0-9_\-]{6,})/i);
       const ytId = ytMatch1?.[1] || ytMatch2?.[1];
@@ -82,11 +89,11 @@ export default function VideoEditor({
       }
     } catch {}
 
-    // fallback: tentar embed direto (pode falhar, mas deixa o autor decidir)
     return { kind: "unknown" as const, src: u };
   };
 
   const embed = useMemo(() => classifyVideo(value.video), [value.video]);
+
   const isValid =
     embed.kind === "file" ||
     embed.kind === "youtube" ||
@@ -104,12 +111,15 @@ export default function VideoEditor({
         gap: 12,
       }}
     >
+      {/* Header */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           textAlign: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -129,7 +139,7 @@ export default function VideoEditor({
           />
           {value.subtitle
             ? truncateString(value.subtitle, 25)
-            : "Adicione  um título"}
+            : "Adicione um título"}
         </strong>
 
         <span
@@ -137,77 +147,103 @@ export default function VideoEditor({
             display: "flex",
             gap: 8,
             alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
+          {titleRightExtra}
+
           <div>
-            <div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onMoveUp?.();
-                }}
-                style={ghostBtnStyle}
-                title="Mover bloco para cima"
-              >
-                ↑
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onMoveDown?.();
-                }}
-                style={ghostBtnStyle}
-                title="Mover bloco para baixo"
-              >
-                ↓
-              </button>
-            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para cima"
+            >
+              ↑
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para baixo"
+            >
+              ↓
+            </button>
           </div>
+
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtnStyle}>
+            <button
+              onClick={onRemove}
+              style={dangerBtnStyle}
+              title="Remover bloco"
+            >
               <i className="fa fa-trash" />
             </button>
           )}
         </span>
       </div>
+
       {showConfig && (
         <>
-          {/* header + ações */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
-              <input
-                value={value.subtitle}
-                onChange={(e) => updateSubtitle(e.target.value)}
-                placeholder="Ex.: Verbs"
-                style={inputStyle}
-              />
-            </div>
+          {/* Subtitle */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
+            <input
+              value={value.subtitle ?? ""}
+              onChange={(e) => updateSubtitle(e.target.value)}
+              placeholder="Ex.: Verbs"
+              style={inputStyle}
+              onBlur={trimAll}
+            />
           </div>
+
+          {/* Comments */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => updateComments(e.target.value)}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+              onBlur={trimAll}
+            />
+          </div>
+
           {/* URL do vídeo */}
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>
-              Vídeo (YouTube/Vimeo/MP4)
+              Vídeo (YouTube / Vimeo / MP4)
             </label>
             <input
               type="url"
-              value={value.video}
+              value={value.video ?? ""}
               onChange={(e) => updateVideo(e.target.value)}
-              placeholder="https://vimeo.com/1020740651"
+              placeholder="Ex.: https://youtu.be/ID | https://vimeo.com/123456789 | https://site.com/video.mp4"
               style={inputStyle}
+              onBlur={trimAll}
             />
-            <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={testPreview} style={ghostBtnStyle}>
+
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                onClick={testPreview}
+                style={ghostBtnStyle}
+                title="Forçar recarregar a prévia"
+              >
                 Testar link
               </button>
-              {!isValid && value.video && (
+
+              {!isValid && (value.video || "").trim() && (
                 <span style={{ color: "#b91c1c", fontSize: 12 }}>
                   URL não reconhecida. Use YouTube, Vimeo ou arquivo
                   .mp4/.webm/.ogg.
@@ -217,11 +253,10 @@ export default function VideoEditor({
           </div>
 
           {/* Preview responsivo */}
-          {value.video && (
+          {(value.video || "").trim() && (
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>Prévia</label>
 
-              {/* container 16:9 responsivo */}
               <div style={ratioBox}>
                 <div style={ratioContent} key={forcePreviewKey}>
                   {embed.kind === "youtube" || embed.kind === "vimeo" ? (
@@ -238,7 +273,6 @@ export default function VideoEditor({
                       Seu navegador não suporta vídeo.
                     </video>
                   ) : (
-                    // unknown: tentar iframe mesmo assim
                     <iframe
                       src={embed.src}
                       title="video preview"
@@ -248,11 +282,10 @@ export default function VideoEditor({
                 </div>
               </div>
 
-              {/* dicas de link */}
               <small style={{ color: "#64748b" }}>
-                YouTube: cole a URL do vídeo (ex.:{" "}
-                <code>youtube.com/watch?v=ID</code> ou <code>youtu.be/ID</code>
-                ). Vimeo: <code>vimeo.com/123456789</code>. Arquivo: link direto{" "}
+                YouTube: <code>youtube.com/watch?v=ID</code> ou{" "}
+                <code>youtu.be/ID</code>. Vimeo:{" "}
+                <code>vimeo.com/123456789</code>. Arquivo: link direto{" "}
                 <code>.mp4/.webm/.ogg</code>.
               </small>
             </div>
@@ -270,6 +303,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
+  boxSizing: "border-box",
 };
 
 const ghostBtnStyle: React.CSSProperties = {
@@ -296,7 +330,7 @@ const dangerBtnStyle: React.CSSProperties = {
 const ratioBox: React.CSSProperties = {
   position: "relative",
   width: "100%",
-  paddingBottom: "56.25%", // 16:9
+  paddingBottom: "56.25%",
   background: "#0b1220",
   borderRadius: 8,
   overflow: "hidden",

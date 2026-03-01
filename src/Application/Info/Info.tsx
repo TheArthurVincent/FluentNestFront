@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { partnerColor } from "../../Styles/Styles";
 
 type HelpInfoProps = {
   title: string;
@@ -8,11 +7,9 @@ type HelpInfoProps = {
   youtubeUrl?: string;
   thePermissions?: string;
   glow?: boolean;
-  icon?: React.ReactNode;
   anchor?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "inline";
   initialPosition?: { x: number; y: number };
   zIndex?: number;
-  buttonSize?: number;
 };
 
 function extractYouTubeId(url?: string) {
@@ -46,11 +43,9 @@ export function HelpInfo({
   youtubeUrl,
   thePermissions,
   glow = true,
-  icon = "?",
   anchor = "inline",
   initialPosition = { x: 100, y: 120 },
   zIndex = 999999999,
-  buttonSize = 22,
 }: HelpInfoProps) {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState(initialPosition);
@@ -221,47 +216,105 @@ export function HelpInfo({
   return (
     <>
       {/* Botão Info */}
-      <span style={anchorStyle}>
+      <span style={anchorStyle} className="helpinfo-wrap">
         <button
           onClick={() => setOpen(true)}
-          style={{
-            width: 13,
-            height: 9,
-            border: "none",
-            cursor: "pointer",
-            fontWeight: 800,
-            fontSize: "10px",
-            borderRadius: "50%",
-            background: partnerColor(),
-            color: "#fff",
-            filter: "brightness(1.5) saturate(1.1)",
-            animation: glow
-              ? "helpinfo-glow 1.5s ease-in-out infinite"
-              : "none",
-            transition: "transform 0.15s ease, box-shadow 2s ease",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.transform =
-              "scale(1.06)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.transform = "scale(1)";
-          }}
+          className={`helpinfo-btn ${glow ? "helpinfo-btn--glow" : ""}`}
+          aria-label="Ajuda"
+          type="button"
         >
-          {icon}
+          ⓘ{/* Tooltip */}
+          <span className="helpinfo-tooltip" role="tooltip">
+            {title}
+          </span>
         </button>
-
         <style>
           {`
-    @keyframes helpinfo-glow {
-      0%   { filter: brightness(1.25) saturate(1.05); }
-      50%  { filter: brightness(1.55) saturate(1.15); }
-      100% { filter: brightness(1.25) saturate(1.05); }
-    }
-  `}
+      .helpinfo-wrap{
+        display: inline-flex;
+      }
+
+      .helpinfo-btn{
+        position: relative;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        font-size: 14px;
+        line-height: 1;
+        color: #c9a227;
+        font-weight: 800;
+
+        /* hover effect */
+        transition: transform 160ms ease, filter 160ms ease, text-shadow 160ms ease, opacity 160ms ease;
+        transform: scale(1);
+        filter: brightness(1);
+        opacity: 1;
+        user-select: none;
+      }
+
+      .helpinfo-btn:hover{
+        transform: scale(1.18);
+        filter: brightness(1.35);
+        text-shadow: 0 0 12px rgba(255, 215, 0, 0.75);
+      }
+
+      .helpinfo-btn--glow{
+        text-shadow: 0 0 6px rgba(201,162,39,0.45);
+        animation: helpinfo-gold-glow 2.2s ease-in-out infinite;
+      }
+
+      /* Tooltip */
+      .helpinfo-tooltip{
+        position: absolute;
+        z-index: 10000;  
+        max-width: 240px; 
+        left: 10%;
+        bottom: calc(100% + 10px);
+        transform: translateX(50%) translateY(4px);
+        white-space: nowrap;
+
+        background: rgba(20,20,20,0.95);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 8px;
+
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 160ms ease, transform 160ms ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        z-index: 1;
+      }
+
+      /* setinha */
+      .helpinfo-tooltip::after{
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid rgba(20,20,20,0.95);
+      }
+
+      .helpinfo-btn:hover .helpinfo-tooltip{
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @keyframes helpinfo-gold-glow {
+        0%   { text-shadow: 0 0 4px rgba(201,162,39,0.35); }
+        50%  { text-shadow: 0 0 10px rgba(255,215,0,0.65); }
+        100% { text-shadow: 0 0 4px rgba(201,162,39,0.35); }
+      }
+    `}
         </style>
       </span>
-
       {/* Portal no BODY */}
       {open && createPortal(modal, document.body)}
     </>

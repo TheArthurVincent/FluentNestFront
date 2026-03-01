@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   backDomain,
   truncateString,
@@ -10,6 +10,7 @@ import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 export type ExerciseBlock = {
   type: "exercise";
   subtitle: string;
+  comments?: string; // ✅ não é description
   items: string[];
   order?: number;
   grid?: number;
@@ -28,7 +29,7 @@ type Props = {
   // IA (opcional)
   studentId?: string;
   headers?: HeadersLike | null;
-  setChange?: any;
+  setChange?: (v: any) => void;
   change?: any;
   type: string; // "exercises" etc (para o prompt da IA)
   language: string;
@@ -43,66 +44,75 @@ export default function ExerciseEditor({
   onMoveDown,
   language,
   type,
-  // IA
   studentId,
   headers,
   setChange,
   change,
 }: Props) {
-  const [showConfig, setShowConfig] = React.useState(false);
-  const [aiOpen, setAiOpen] = React.useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
 
-  // =============== SAFETY GUARDS ===============
-  // Garante que sempre trabalhamos com array e subtitle string, mesmo se vier "quebrado"
-  const safeItems = React.useMemo<string[]>(
+  /* ===================== SAFETY GUARDS ===================== */
+  const safeItems = useMemo<string[]>(
     () => (Array.isArray(value?.items) ? value.items : []),
     [value?.items],
   );
 
   const safeSubtitle =
     typeof value?.subtitle === "string" ? value.subtitle : "";
+  const safeComments =
+    typeof value?.comments === "string" ? value.comments : "";
 
-  const setSubtitle = (subtitle: string) =>
+  const updateBlock = (patch: Partial<ExerciseBlock>) =>
     onChange({
       ...value,
-      subtitle: subtitle ?? "",
-      items: Array.isArray(value?.items) ? value.items : [],
+      ...patch,
       type: "exercise",
+      subtitle:
+        typeof patch.subtitle === "string" ? patch.subtitle : safeSubtitle,
+      comments:
+        typeof patch.comments === "string"
+          ? patch.comments
+          : patch.comments === undefined
+            ? safeComments
+            : String(patch.comments ?? ""),
+      items: Array.isArray(patch.items) ? patch.items : safeItems,
     });
+
+  /* ===================== UPDATERS ===================== */
+  const setSubtitle = (subtitle: string) => updateBlock({ subtitle });
+  const setComments = (comments: string) => updateBlock({ comments });
 
   const updateItem = (idx: number, nextText: string) => {
-    if (idx < 0 || idx >= safeItems.length) return; // evita acessar índice inexistente
+    if (idx < 0 || idx >= safeItems.length) return;
     const next = safeItems.slice();
     next[idx] = String(nextText ?? "");
-    onChange({ ...value, items: next, type: "exercise" });
+    updateBlock({ items: next });
   };
 
-  const addItem = (text = "") =>
-    onChange({
-      ...value,
-      items: safeItems.concat(String(text ?? "")),
-      type: "exercise",
-    });
+  const addItem = (text = "") => {
+    updateBlock({ items: safeItems.concat(String(text ?? "")) });
+  };
 
   const removeItem = (idx: number) => {
     if (idx < 0 || idx >= safeItems.length) return;
     const next = safeItems.slice();
     next.splice(idx, 1);
-    onChange({ ...value, items: next, type: "exercise" });
+    updateBlock({ items: next });
   };
 
   const moveUp = (idx: number) => {
     if (idx <= 0 || idx >= safeItems.length) return;
     const next = safeItems.slice();
     [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-    onChange({ ...value, items: next, type: "exercise" });
+    updateBlock({ items: next });
   };
 
   const moveDown = (idx: number) => {
     if (idx < 0 || idx >= safeItems.length - 1) return;
     const next = safeItems.slice();
     [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
-    onChange({ ...value, items: next, type: "exercise" });
+    updateBlock({ items: next });
   };
 
   const pasteBulk = (bulkText: string) => {
@@ -110,19 +120,13 @@ export default function ExerciseEditor({
       .split(/\r?\n/)
       .map((l) => l.trim())
       .filter(Boolean)
-      .map((line) => line.replace(/^\d+[\).\-\s]+/, "")); // remove "1. ", "2) " etc
+      .map((line) => line.replace(/^\d+[\).\-\s]+/, "")); // remove "1. ", "2) ", etc
 
     if (!lines.length) return;
-
-    onChange({
-      ...value,
-      items: safeItems.concat(lines),
-      type: "exercise",
-    });
+    updateBlock({ items: safeItems.concat(lines) });
   };
 
-  // ===== IA helpers =====
-
+  /* ===================== IA HELPERS ===================== */
   function parseMaybeJson(input: any): any {
     if (Array.isArray(input) || (input && typeof input === "object"))
       return input;
@@ -132,7 +136,7 @@ export default function ExerciseEditor({
       .trim()
       .replace(/^```json/i, "")
       .replace(/^```/i, "")
-      .replace(/```$/, "")
+      .replace(/```$/i, "")
       .trim();
 
     try {
@@ -145,7 +149,6 @@ export default function ExerciseEditor({
   function splitTextIntoQuestions(text: string): string[] {
     if (!text || !text.trim()) return [];
 
-    // 1) tenta por quebras de linha
     const byLines = text
       .split(/\r?\n/)
       .map((l) => l.trim())
@@ -154,7 +157,6 @@ export default function ExerciseEditor({
 
     if (byLines.length > 1) return byLines;
 
-    // 2) fallback: separa por "?" (mantendo o caractere)
     const chunks = text
       .split(/(?<=\?)/)
       .map((c) => c.trim())
@@ -164,7 +166,6 @@ export default function ExerciseEditor({
   }
 
   function normalizeExercisesPayload(raw: any): string[] {
-    // 1) já é array
     if (Array.isArray(raw)) {
       return raw
         .map((it) => {
@@ -184,7 +185,6 @@ export default function ExerciseEditor({
         .filter(Boolean);
     }
 
-    // 2) objeto
     if (raw && typeof raw === "object") {
       const candidateArr =
         (raw as any).items ||
@@ -195,11 +195,9 @@ export default function ExerciseEditor({
         (raw as any).sentences ||
         null;
 
-      if (Array.isArray(candidateArr)) {
+      if (Array.isArray(candidateArr))
         return normalizeExercisesPayload(candidateArr);
-      }
 
-      // envelopes: result/json/response
       const wrapped =
         (raw as any).result ??
         (raw as any).json ??
@@ -209,7 +207,6 @@ export default function ExerciseEditor({
 
       if (wrapped) return normalizeExercisesPayload(parseMaybeJson(wrapped));
 
-      // texto único
       const text =
         (raw as any).text ??
         (raw as any).body ??
@@ -223,7 +220,6 @@ export default function ExerciseEditor({
       }
     }
 
-    // 3) string solta
     if (typeof raw === "string" && raw.trim()) {
       return splitTextIntoQuestions(raw);
     }
@@ -244,10 +240,8 @@ export default function ExerciseEditor({
       return;
     }
 
-    onChange({
-      ...value,
-      type: "exercise",
-      subtitle: safeSubtitle, // preserva (e garante string)
+    updateBlock({
+      subtitle: safeSubtitle, // preserva (garante string)
       items: mapped,
     });
 
@@ -331,7 +325,6 @@ export default function ExerciseEditor({
             )}
           </div>
 
-          {/* IA */}
           <button
             style={primaryBtnStyle}
             onClick={() => {
@@ -363,7 +356,7 @@ export default function ExerciseEditor({
 
       {showConfig && (
         <>
-          {/* SUBTITLE / AÇÕES EXTRAS */}
+          {/* SUBTITLE + EXTRAS */}
           <div
             style={{
               display: "grid",
@@ -373,16 +366,28 @@ export default function ExerciseEditor({
             }}
           >
             <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
               <input
                 value={safeSubtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
-                placeholder="Subtitle (ex.: Discussion Questions – Andrew & Daisy Talk About Cities)"
+                placeholder='Subtitle (ex.: Discussion Questions – "Cities")'
                 style={inputStyle}
               />
             </div>
             <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
               {titleRightExtra}
             </div>
+          </div>
+
+          {/* COMMENTS */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={safeComments}
+              onChange={(e) => setComments(e.target.value)}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...textareaStyle, minHeight: 90, resize: "vertical" }}
+            />
           </div>
 
           {/* FERRAMENTAS DE LISTA */}
@@ -402,7 +407,7 @@ export default function ExerciseEditor({
               </summary>
               <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
                 <textarea
-                  placeholder={"Cole cada pergunta em uma linha..."}
+                  placeholder="Cole cada pergunta em uma linha..."
                   rows={5}
                   style={textareaStyle}
                   onBlur={(e) => {
@@ -412,8 +417,8 @@ export default function ExerciseEditor({
                   }}
                 />
                 <small style={{ color: "#64748b" }}>
-                  Dica: cole linhas, revise, e depois saia do campo para
-                  adicionar à lista.
+                  Cole linhas, revise e depois saia do campo para adicionar à
+                  lista.
                 </small>
               </div>
             </details>
@@ -435,7 +440,7 @@ export default function ExerciseEditor({
 
             {safeItems.map((q, idx) => (
               <div
-                key={`${idx}-${q?.slice?.(0, 12) ?? "item"}`}
+                key={`${idx}-${(q || "").slice(0, 12)}`}
                 style={{
                   border: "1px solid #e2e8f0",
                   borderRadius: 8,
@@ -451,6 +456,7 @@ export default function ExerciseEditor({
                   placeholder={`Questão ${idx + 1}`}
                   style={inputStyle}
                 />
+
                 <div
                   style={{
                     display: "flex",
@@ -502,13 +508,14 @@ export default function ExerciseEditor({
   );
 }
 
-/* estilos */
+/* ===================== estilos ===================== */
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
   borderRadius: 8,
   padding: "8px 10px",
   fontSize: 13,
+  boxSizing: "border-box",
 };
 
 const textareaStyle: React.CSSProperties = {

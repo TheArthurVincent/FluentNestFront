@@ -5,8 +5,9 @@ import { truncateString } from "../../../../Resources/UniversalComponents";
 export type SingleImagesBlock = {
   type: "singleimages";
   subtitle?: string;
+  comments?: string; // ✅ novo
   order?: number;
-  images: string[]; // URLs geradas via upload
+  images: string[];
 };
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-  headers?: any; // para uploads autenticados, se necessário
+  headers?: any;
 };
 
 const ghostBtn: React.CSSProperties = {
@@ -27,6 +28,7 @@ const ghostBtn: React.CSSProperties = {
   cursor: "pointer",
   fontSize: 13,
 };
+
 const dangerBtn: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
@@ -36,6 +38,14 @@ const dangerBtn: React.CSSProperties = {
   cursor: "pointer",
   fontSize: 13,
   fontWeight: 600,
+};
+
+const inputStyle: React.CSSProperties = {
+  border: "1px solid #e2e8f0",
+  borderRadius: 8,
+  padding: 8,
+  fontSize: 13,
+  width: "100%",
 };
 
 export default function SingleImagesEditor({
@@ -51,7 +61,12 @@ export default function SingleImagesEditor({
   const [err, setErr] = useState<string | null>(null);
 
   const update = (patch: Partial<SingleImagesBlock>) =>
-    onChange({ ...value, ...patch });
+    onChange({
+      ...value,
+      ...patch,
+      comments: patch.comments ?? value.comments ?? "", // ✅ garante string
+      images: patch.images ?? value.images ?? [],
+    });
 
   const removeAt = (i: number) => {
     const next = [...(value.images || [])];
@@ -71,8 +86,10 @@ export default function SingleImagesEditor({
     if (!files || !files.length) return;
     setErr(null);
     setUploading(true);
+
     try {
       const uploaded: string[] = [];
+
       for (const f of Array.from(files)) {
         const url = await uploadImageViaBackend(f, {
           folder: "/lessons/singleimages",
@@ -81,6 +98,7 @@ export default function SingleImagesEditor({
         });
         uploaded.push(url);
       }
+
       update({ images: [...(value.images || []), ...uploaded] });
     } catch (e: any) {
       console.error(e);
@@ -94,12 +112,14 @@ export default function SingleImagesEditor({
     if (!file) return;
     setErr(null);
     setUploading(true);
+
     try {
       const url = await uploadImageViaBackend(file, {
         folder: "/lessons/singleimages",
         fileName: `single_replace_${Date.now()}_${file.name}`,
         headers,
       });
+
       const next = [...(value.images || [])];
       next[i] = url;
       update({ images: next });
@@ -111,15 +131,13 @@ export default function SingleImagesEditor({
     }
   };
 
-  // opcional: suporte a arrastar-e-soltar
   const onDrop = useCallback(
     async (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       if (uploading) return;
-      const files = e.dataTransfer.files;
-      await addByUpload(files);
+      await addByUpload(e.dataTransfer.files);
     },
-    [uploading]
+    [uploading],
   );
 
   return (
@@ -139,9 +157,9 @@ export default function SingleImagesEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 10,
         }}
       >
-        <i className="fa fa-arrow-down" style={{ color: "#0f172a" }}></i>
         <strong
           onClick={() => setShow(!show)}
           style={{
@@ -159,7 +177,7 @@ export default function SingleImagesEditor({
           />
           {value.subtitle
             ? truncateString(value.subtitle, 25)
-            : "Adicione  um título"}
+            : "Adicione um título"}
         </strong>
 
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -175,8 +193,9 @@ export default function SingleImagesEditor({
               </button>
             )}
           </div>
+
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtn}>
+            <button onClick={onRemove} style={dangerBtn} title="Remover bloco">
               <i className="fa fa-trash" />
             </button>
           )}
@@ -192,12 +211,18 @@ export default function SingleImagesEditor({
               value={value.subtitle ?? ""}
               onChange={(e) => update({ subtitle: e.target.value })}
               placeholder="Ex.: Practice giving directions with the image below:"
-              style={{
-                border: "1px solid #e2e8f0",
-                borderRadius: 8,
-                padding: 8,
-                fontSize: 13,
-              }}
+              style={inputStyle}
+            />
+          </div>
+
+          {/* Comments */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => update({ comments: e.target.value })}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
             />
           </div>
 
@@ -206,11 +231,14 @@ export default function SingleImagesEditor({
             <label style={{ fontSize: 12, color: "#334155" }}>
               Upload (múltiplas imagens) — obrigatório para gerar a URL
             </label>
+
             <label
               style={{
                 ...ghostBtn,
                 display: "inline-block",
                 textAlign: "center",
+                opacity: uploading ? 0.7 : 1,
+                cursor: uploading ? "not-allowed" : "pointer",
               }}
             >
               {uploading ? "Enviando..." : "Selecionar arquivos"}
@@ -223,6 +251,7 @@ export default function SingleImagesEditor({
                 disabled={uploading}
               />
             </label>
+
             <small style={{ color: "#64748b" }}>
               Você também pode arrastar e soltar as imagens aqui.
             </small>
@@ -246,6 +275,7 @@ export default function SingleImagesEditor({
                   background: "white",
                   display: "grid",
                   gridTemplateRows: "140px auto",
+                  border: "1px solid #e2e8f0",
                 }}
               >
                 <div
@@ -255,21 +285,28 @@ export default function SingleImagesEditor({
                     background: "#f8fafc",
                     display: "grid",
                     placeItems: "center",
+                    position: "relative",
                   }}
                 >
                   <a
                     style={{
+                      position: "absolute",
+                      top: 6,
+                      left: 8,
                       fontSize: 12,
-                      margin: 4,
                       color: "#2563eb",
                       textDecoration: "underline",
+                      background: "rgba(255,255,255,0.85)",
+                      padding: "2px 6px",
+                      borderRadius: 6,
                     }}
                     href={img}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Abrir imagem
+                    Abrir
                   </a>
+
                   <img
                     src={img}
                     alt={`img-${i}`}
@@ -285,7 +322,7 @@ export default function SingleImagesEditor({
                   />
                 </div>
 
-                <div style={{ padding: 8, display: "grid", gap: 6 }}>
+                <div style={{ padding: 8, display: "grid", gap: 8 }}>
                   <div
                     style={{
                       display: "flex",
@@ -295,7 +332,14 @@ export default function SingleImagesEditor({
                     }}
                   >
                     {/* Substituir por upload */}
-                    <label style={{ ...ghostBtn }}>
+                    <label
+                      style={{
+                        ...ghostBtn,
+                        opacity: uploading ? 0.7 : 1,
+                        cursor: uploading ? "not-allowed" : "pointer",
+                      }}
+                      title="Substituir imagem"
+                    >
                       Substituir
                       <input
                         type="file"
@@ -308,16 +352,35 @@ export default function SingleImagesEditor({
                       />
                     </label>
 
-                    <button style={ghostBtn} onClick={() => moveImg(i, i - 1)}>
+                    <button
+                      style={ghostBtn}
+                      onClick={() => moveImg(i, i - 1)}
+                      disabled={uploading}
+                      title="Mover para cima"
+                    >
                       ↑
                     </button>
-                    <button style={ghostBtn} onClick={() => moveImg(i, i + 1)}>
+
+                    <button
+                      style={ghostBtn}
+                      onClick={() => moveImg(i, i + 1)}
+                      disabled={uploading}
+                      title="Mover para baixo"
+                    >
                       ↓
                     </button>
-                    <button style={dangerBtn} onClick={() => removeAt(i)}>
+
+                    <button
+                      style={dangerBtn}
+                      onClick={() => removeAt(i)}
+                      disabled={uploading}
+                      title="Excluir"
+                    >
                       Excluir
                     </button>
                   </div>
+
+                  <div style={{ fontSize: 12, color: "#64748b" }}>#{i + 1}</div>
                 </div>
               </div>
             ))}
