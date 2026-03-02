@@ -6,6 +6,7 @@ import { CircularProgress } from "@mui/material";
 import moment from "moment";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { alwaysWhite, partnerColor } from "../../../../Styles/Styles";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const times = [
@@ -279,6 +280,11 @@ export const GroupTutoringEditorModal: FC<Props> = ({
 
   const createNew = async () => {
     if (!groupId) return;
+    const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    if (!loggedIn || !loggedIn.id) {
+      notifyAlert("Usuário não identificado. Faça login novamente.");
+      return;
+    }
 
     setLoadingList(true);
     try {
@@ -298,9 +304,11 @@ export const GroupTutoringEditorModal: FC<Props> = ({
         {
           day: theNewWeekDay,
           time: formatTime(theNewTime),
+          studentID: loggedIn.id,
+          teacherID: loggedIn.id,
+          groupId,
           duration: Number(newDuration) || 60,
           link: theNewLink,
-          groupId,
           numberOfWeeks: Number(numberOfWeeks) || 4,
           startDate: computedStartDate,
           endDate,
