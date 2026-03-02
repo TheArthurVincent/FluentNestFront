@@ -46,7 +46,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -103,12 +103,12 @@ export default function TeacherSignupSection({ id, headers }: any) {
       const response = await axios.post(
         `${backDomain}/api/v1/newteachersubscription/${id}`,
         newTeacher,
-        { headers }
+        { headers },
       );
       resetForm();
       notifyAlert(
         `Usuário cadastrado com sucesso! ${response?.data?.message || ""}`,
-        "green"
+        "green",
       );
       window.location.assign("http://portal.arvinplatform.com/login");
     } catch (error: any) {
@@ -116,7 +116,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
         `Erro ao cadastrar ${formData.firstName}. ${
           error?.response?.data?.message || ""
         }`,
-        partnerColor()
+        partnerColor(),
       );
       setGoldVisible(true);
     } finally {
@@ -325,6 +325,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
                 <select
                   name="countryCode"
                   value={formData.countryCode}
+                  required
                   onChange={handleChange}
                   className="ts-select"
                 >
@@ -340,7 +341,8 @@ export default function TeacherSignupSection({ id, headers }: any) {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="11 9 3046 2094"
+                  required
+                  placeholder="11 9 9999 9999"
                   className="ts-input"
                   inputMode="numeric"
                 />
