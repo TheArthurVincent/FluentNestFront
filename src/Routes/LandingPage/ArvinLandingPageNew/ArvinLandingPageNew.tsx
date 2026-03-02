@@ -1079,7 +1079,7 @@ function ArvinLandingPageNew() {
                             <>/mês</>
                           ) : (
                             <>
-                              /ano <br /> (em até 10x sem juros)
+                              /ano <br /> (em até 5x sem juros)
                             </>
                           )}
                         </span>
