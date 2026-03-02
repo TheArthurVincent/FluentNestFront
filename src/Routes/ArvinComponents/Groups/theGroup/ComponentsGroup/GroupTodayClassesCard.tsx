@@ -138,7 +138,7 @@ export const GroupTodayClassesCard: FC<GroupTodayClassesCardProps> = ({
                 color: "#606060",
               }}
             >
-              {formatDateBr(NXTCLASS.date)}
+              {NXTCLASS.date}
               <br />
               {NXTCLASS.time}
               {endTimeStr && ` - ${endTimeStr}`}
