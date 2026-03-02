@@ -166,7 +166,7 @@ export function Groups({ headers, id }) {
       setArrayOfIds((prev) =>
         prev.includes(studentId)
           ? prev.filter((id) => id !== studentId)
-          : [...prev, studentId]
+          : [...prev, studentId],
       );
     }
   };
@@ -192,7 +192,7 @@ export function Groups({ headers, id }) {
           name: newName.trim(),
           description: newDescription.trim(),
         },
-        { headers }
+        { headers },
       );
       notifyAlert("Grupo criado com sucesso!", partnerColor());
       setArrayOfIds([]);
@@ -224,7 +224,7 @@ export function Groups({ headers, id }) {
         `${backDomain}/api/v1/group/${groupId}`,
         {
           headers,
-        }
+        },
       );
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
@@ -240,13 +240,13 @@ export function Groups({ headers, id }) {
         },
         {
           headers,
-        }
+        },
       );
       // Atualiza visual local
       setArrayOfIds((prev) =>
         prev.includes(studentId)
           ? prev.filter((id) => id !== studentId)
-          : [...prev, studentId]
+          : [...prev, studentId],
       );
       getGroups();
     } catch (error) {
@@ -265,14 +265,12 @@ export function Groups({ headers, id }) {
           },
           {
             headers,
-          }
+          },
         );
       } catch (error) {
         notifyAlert("Erro ao encontrar alunos");
       }
       getGroups();
-    } else {
-      console.log("no", groupName);
     }
   };
 
@@ -288,14 +286,12 @@ export function Groups({ headers, id }) {
           },
           {
             headers,
-          }
+          },
         );
       } catch (error) {
         notifyAlert("Erro ao encontrar alunos");
       }
       getGroups();
-    } else {
-      console.log("no", groupDescription);
     }
   };
 
@@ -305,7 +301,7 @@ export function Groups({ headers, id }) {
         `${backDomain}/api/v1/group/${groupId}`,
         {
           headers,
-        }
+        },
       );
       fetchStudents();
       getGroups();
@@ -338,7 +334,7 @@ export function Groups({ headers, id }) {
         `${backDomain}/api/v1/grouphistory/${group._id}`,
         {
           headers,
-        }
+        },
       );
 
       setClassesGroup(response.data.classesGroup);
@@ -428,7 +424,7 @@ export function Groups({ headers, id }) {
                   {group.studentIds.map((studentId, index2) => {
                     const sid = String(studentId?._id ?? studentId);
                     const student = students.find(
-                      (s) => String(s._id ?? s.id) === sid
+                      (s) => String(s._id ?? s.id) === sid,
                     );
                     return (
                       <span
@@ -693,7 +689,7 @@ export function Groups({ headers, id }) {
 
             {(classesGroup && classesGroup.length > 0
               ? [...classesGroup].sort(
-                  (a, b) => new Date(b.date) - new Date(a.date)
+                  (a, b) => new Date(b.date) - new Date(a.date),
                 )
               : []
             ).map((event, idx) => {
@@ -759,8 +755,8 @@ export function Groups({ headers, id }) {
                         {event?.date
                           ? new Date(
                               new Date(event.date).setDate(
-                                new Date(event.date).getDate() + 1
-                              )
+                                new Date(event.date).getDate() + 1,
+                              ),
                             ).toLocaleDateString("pt-BR")
                           : "—"}
                         {time}

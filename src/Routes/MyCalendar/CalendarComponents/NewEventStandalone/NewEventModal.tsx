@@ -67,7 +67,6 @@ function NewEventModal({
       );
       const res = response.data.listOfStudents;
       setStudentsList(res || []);
-      console.log("Estudantes buscados:", res);
     } catch (error: any) {
       console.log(error, "Erro ao buscar estudantes e Turmas");
     }
@@ -79,7 +78,6 @@ function NewEventModal({
       });
       const res = response.data.groups;
       setGroupsList(res || []);
-      console.log(res, "Turmas buscados");
     } catch (error: any) {
       console.log(error, "Erro ao buscar estudantes e Turmas");
     }
@@ -485,7 +483,6 @@ function NewEventModal({
                   <option value="">Selecione um estudante</option>
                   {studentsList.map((student) => {
                     const studentId = student._id || student.id;
-                    console.log("Student data:", student);
                     return (
                       <option key={studentId} value={studentId}>
                         {student.name} {student.lastname}
@@ -537,7 +534,6 @@ function NewEventModal({
                   </option>
                   {groupsList.map((group: any) => {
                     const groupId = group._id || group.id;
-                    console.log("Group data:", group);
                     return (
                       <option
                         style={{ color: "#000" }}

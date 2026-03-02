@@ -30,61 +30,79 @@ export const listOfCriteria = [
     icon: "fa fa-book",
     color: "rgb(230, 160, 32)",
     score: [
+      // =========================
+      // BASE
+      // =========================
       { description: "Homework Realizado", score: 750, color: "green" },
-      {
-        description: "Homework Atrasado (> 7 dias) ou incompleto",
-        score: 200,
-        color: "green",
-      },
-      {
-        color: "green",
-        score: 75,
-        description: "Participou da aula em grupo",
-        text: "Participou da aula em grupo",
-      },
+
       {
         description: "Revisou um card",
         score: 3,
         nobutton: true,
         color: "green",
       },
+
+      // =========================
+      // VOCABULARY MATCH
+      // =========================
       {
-        description: "Pontuação por palavra certa no Listening Exercise",
+        description: "Vocabulary Match — 3 pontos (acertou de primeira)",
         score: 3,
         nobutton: true,
         color: "green",
       },
       {
-        description: "Pontuação por palavra certa no Listening Exercise",
+        description:
+          "Vocabulary Match — 2 pontos (acertou na segunda tentativa)",
         score: 2,
         nobutton: true,
         color: "green",
       },
       {
-        color: "green",
-        score: 250,
-        description: "Recomendação de aluno (a) particular fechada",
-        text: "Recomendação",
-      },
-      // {
-      //   color: "green",
-      //   score: 50,
-      //   description: "Recomendação de usuário da plataforma fechada",
-      //   text: "Recomendação",
-      // },
-      {
-        color: "Green",
-        score: 500,
         description:
-          "Adicionou todas as palavras da semana (Words of the week) aos flashcards e mandou a foto de todas anotadas no caderno.",
-        text: "Adicionou todas as palavras da semana (Words of the week) aos flashcards e mandou a foto de todas anotadas no caderno.",
+          "Vocabulary Match — 1 ponto (acertou na terceira tentativa)",
+        score: 1,
+        nobutton: true,
+        color: "green",
       },
-      // {
-      //   color: "red",
-      //   score: -150,
-      //   description: "AWOL Faltou na aula e não avisou",
-      //   text: "Faltou na aula e não avisou",
-      // },
+      {
+        description: "Vocabulary Match — 0 pontos (3+ erros antes do acerto)",
+        score: 0,
+        nobutton: true,
+        color: "gray",
+      },
+
+      // =========================
+      // WORD → IMAGE
+      // =========================
+      {
+        description: "Word → Image — 3 pontos por acerto",
+        score: 3,
+        nobutton: true,
+        color: "green",
+      },
+      {
+        description: "Word → Image — 0 pontos por erro",
+        score: 0,
+        nobutton: true,
+        color: "gray",
+      },
+
+      // =========================
+      // SESSÃO COMPLETA
+      // =========================
+      {
+        description: "Word → Image — até 30 pontos por sessão (10 acertos)",
+        score: 30,
+        nobutton: true,
+        color: "green",
+      },
+      {
+        description: "Vocabulary Match — até 15 pontos por lote (5 pares)",
+        score: 15,
+        nobutton: true,
+        color: "green",
+      },
     ],
   },
 ];

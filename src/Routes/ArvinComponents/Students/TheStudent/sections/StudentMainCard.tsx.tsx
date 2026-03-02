@@ -100,7 +100,6 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
 
   // Inicializa a data de nascimento em formato yyyy-MM-dd (para <input type="date" />)
   useEffect(() => {
-    console.log(student);
     const raw = (student as any).dateOfBirth;
     if (!raw) return;
     const d = new Date(raw);

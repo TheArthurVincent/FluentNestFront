@@ -65,7 +65,6 @@ export const Continue: FC<ContinueProps> = ({
 
   // Buscar dados quando studentId/headers mudarem
   useEffect(() => {
-    console.log("studentId, actualHeaders", studentId, actualHeaders);
     fetchLastClassId();
   }, [studentId, actualHeaders]);
 

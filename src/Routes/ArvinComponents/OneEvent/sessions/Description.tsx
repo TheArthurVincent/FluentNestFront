@@ -117,7 +117,6 @@ const Description: FC<DescriptionProps> = ({
           { headers: headers as any },
         );
         const adapted = response.data.adapted;
-        console.log(adapted);
         setDescription(adapted);
         setTeacherDescription(response.data.teacherDescription);
         setLoadingDescription(false);

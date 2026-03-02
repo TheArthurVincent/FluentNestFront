@@ -22,6 +22,7 @@ export type SentenceItem = {
 
 export type SentencesBlock = {
   subtitle: string;
+  comments?: string; // ✅ novo
   type: "sentences";
   sentences: SentenceItem[];
   order?: number;
@@ -52,7 +53,7 @@ type LangCode = (typeof LANG_OPTIONS)[number];
 
 type FieldSide = "english" | "portuguese";
 
-const MAX_ITEMS = 20;
+const MAX_ITEMS = 25;
 
 /* ===================== COMPONENT ===================== */
 const SentencesEditor: React.FC<Props> = ({
@@ -86,7 +87,6 @@ const SentencesEditor: React.FC<Props> = ({
   const enforceMax = (sentences: SentenceItem[]) => {
     if (!Array.isArray(sentences)) return [];
     if (sentences.length <= MAX_ITEMS) return sentences;
-    // se por qualquer motivo tiver mais, remove os últimos
     return sentences.slice(0, MAX_ITEMS);
   };
 
@@ -109,14 +109,16 @@ const SentencesEditor: React.FC<Props> = ({
 
   /* ====== backfill languages + ENFORCE MAX ====== */
   useEffect(() => {
-    const needsBackfill = value.sentences.some((s: any) => !s?.languages);
+    const needsBackfill = (value.sentences || []).some(
+      (s: any) => !s?.languages,
+    );
     const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
 
     if (needsBackfill || exceedsMax) {
       const fixed = (value.sentences || []).map((s: any) => ({
-        english: s.english ?? "",
-        portuguese: s.portuguese ?? "",
-        languages: s.languages ?? {
+        english: s?.english ?? "",
+        portuguese: s?.portuguese ?? "",
+        languages: s?.languages ?? {
           language1: defaultLang1 || "en",
           language2: defaultLang2 || "pt",
         },
@@ -125,6 +127,7 @@ const SentencesEditor: React.FC<Props> = ({
       onChange({
         ...value,
         type: "sentences",
+        comments: value.comments ?? "", // ✅ garante string
         sentences: enforceMax(fixed),
       });
     }
@@ -140,13 +143,26 @@ const SentencesEditor: React.FC<Props> = ({
       sentences: enforceMax(value.sentences),
     });
 
+  const updateComments = (comments: string) =>
+    onChange({
+      ...value,
+      type: "sentences",
+      comments,
+      sentences: enforceMax(value.sentences),
+    });
+
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem,
   ) => {
     const next = (value.sentences || []).slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "sentences",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const addSentence = () => {
@@ -170,27 +186,47 @@ const SentencesEditor: React.FC<Props> = ({
       ...(value.sentences || []),
     ];
 
-    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "sentences",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const removeSentence = (index: number) => {
     const next = (value.sentences || []).slice();
     next.splice(index, 1);
-    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "sentences",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
     const next = (value.sentences || []).slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "sentences",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const moveDown = (index: number) => {
     if (index >= (value.sentences?.length || 0) - 1) return;
     const next = (value.sentences || []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, type: "sentences", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "sentences",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   /* ===================== PER-CARD SWAP ===================== */
@@ -314,7 +350,6 @@ const SentencesEditor: React.FC<Props> = ({
   }
 
   const handleReceiveJson = (raw: any) => {
-    // ✅ não processa lista da IA se já bateu no máximo
     if (isAtLimit) {
       notifyAlert(
         `Este bloco já está no limite (${MAX_ITEMS} sentenças).`,
@@ -414,6 +449,7 @@ const SentencesEditor: React.FC<Props> = ({
     onChange({
       ...value,
       type: "sentences",
+      comments: value.comments ?? "",
       sentences: limited,
     });
 
@@ -472,7 +508,6 @@ const SentencesEditor: React.FC<Props> = ({
 
   return (
     <div className="se-root">
-      {/* styles responsivos anti-vazamento */}
       <style>
         {`
         .se-root {
@@ -592,28 +627,14 @@ const SentencesEditor: React.FC<Props> = ({
           gap: 6px;
         }
         @media (max-width: 768px) {
-          .se-header {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-          .se-item-controls {
-            justify-content: space-between;
-          }
-          .se-lang-grid {
-            grid-template-columns: 1fr;
-          }
+          .se-header { flex-direction: column; align-items: flex-start; }
+          .se-item-controls { justify-content: space-between; }
+          .se-lang-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 480px) {
-          .se-root {
-            padding: 8px;
-          }
-          .se-actions {
-            width: 100%;
-            justify-content: flex-start;
-          }
-          .se-btn {
-            padding: 8px 10px;
-          }
+          .se-root { padding: 8px; }
+          .se-actions { width: 100%; justify-content: flex-start; }
+          .se-btn { padding: 8px 10px; }
         }
       `}
       </style>
@@ -637,7 +658,7 @@ const SentencesEditor: React.FC<Props> = ({
           />
           {value.subtitle
             ? truncateString(value.subtitle, 25)
-            : "Adicione  um título"}
+            : "Adicione um título"}
         </strong>
 
         <span className="se-actions">
@@ -669,7 +690,6 @@ const SentencesEditor: React.FC<Props> = ({
               </button>
             </div>
 
-            {/* ✅ Botão IA some se já tiver o máximo */}
             {!isAtLimit && (
               <button
                 className="se-btn se-btn--primary"
@@ -693,12 +713,11 @@ const SentencesEditor: React.FC<Props> = ({
         </span>
       </div>
 
-      {/* ✅ aviso: só cabem 20 */}
       {LimitNotice}
 
       {showConfig && (
         <div className="se-list">
-          {/* Topbar + Subtitle + Add */}
+          {/* Subtitle + Add */}
           <div className="se-topbar" style={{ alignItems: "end" }}>
             <div style={{ display: "grid", gap: 6, minWidth: 220 }}>
               <label className="se-label">Subtitle</label>
@@ -715,7 +734,6 @@ const SentencesEditor: React.FC<Props> = ({
                 List ({value.sentences.length})
               </strong>
 
-              {/* ✅ não deixa acrescentar mais se bater no máximo */}
               <button
                 onClick={addSentence}
                 className="se-btn se-btn--primary"
@@ -733,6 +751,18 @@ const SentencesEditor: React.FC<Props> = ({
                 + Adicionar sentença
               </button>
             </div>
+          </div>
+
+          {/* ✅ Comments */}
+          <div className="se-field">
+            <label className="se-label">Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => updateComments(e.target.value)}
+              placeholder="Observações, instruções, contexto..."
+              className="se-input"
+              style={{ minHeight: 90, resize: "vertical" }}
+            />
           </div>
 
           {value.sentences.length === 0 && (
@@ -788,7 +818,6 @@ const SentencesEditor: React.FC<Props> = ({
 
               {/* FRONT / BACK */}
               <div className="se-row">
-                {/* FRONT + IA */}
                 <div className="se-field">
                   <label className="se-label">Front</label>
 
@@ -821,7 +850,6 @@ const SentencesEditor: React.FC<Props> = ({
                   </div>
                 </div>
 
-                {/* BACK + IA */}
                 <div className="se-field">
                   <label className="se-label">Back</label>
 
@@ -872,6 +900,7 @@ const SentencesEditor: React.FC<Props> = ({
                     })),
                   'language1 (para "english")',
                 )}
+
                 {renderLangSelect(
                   s.languages?.language2,
                   (code) =>
@@ -898,7 +927,6 @@ const SentencesEditor: React.FC<Props> = ({
         </div>
       )}
 
-      {/* ✅ Gerador isolado: só renderiza se NÃO estiver no limite */}
       {!isAtLimit && (
         <SimpleAIGenerator
           visible={aiOpen}

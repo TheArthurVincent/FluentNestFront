@@ -130,7 +130,7 @@ export default function WordToImageExercise({
       Array.isArray(images)
         ? images.filter((i) => i?.img && hasValidLabel(i))
         : [],
-    [images]
+    [images],
   );
 
   if (!safeImgs.length) {
@@ -186,7 +186,7 @@ export default function WordToImageExercise({
 
   const correctIdx = useMemo(
     () => (isFinished ? -1 : options.findIndex((o) => o === current)),
-    [options, current, isFinished]
+    [options, current, isFinished],
   );
 
   const hasAnswered = answeredIndex !== null;
@@ -194,7 +194,7 @@ export default function WordToImageExercise({
 
   async function handleScoreStamp(
     pointsToSend: number,
-    descriptionToSend: string
+    descriptionToSend: string,
   ) {
     if (!courseId || !studentId) return;
 
@@ -550,7 +550,7 @@ export default function WordToImageExercise({
               </div>
             </div>
           </>,
-          document.body
+          document.body,
         )}
     </>
   );

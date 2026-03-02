@@ -22,6 +22,7 @@ export type SentenceItem = {
 
 export type SentencesBlock = {
   subtitle: string;
+  comments?: string; // ✅ novo (era "description")
   type: "sentences" | "vocabulary";
   sentences: SentenceItem[];
   order?: number;
@@ -57,7 +58,7 @@ type LangCode = (typeof LANG_OPTIONS)[number];
 
 type FieldSide = "english" | "portuguese";
 
-const MAX_ITEMS = 20;
+const MAX_ITEMS = 25;
 
 /* ===================== COMPONENT ===================== */
 export default function VocabularyEditor({
@@ -91,7 +92,6 @@ export default function VocabularyEditor({
   const enforceMax = (sentences: SentenceItem[]) => {
     if (!Array.isArray(sentences)) return [];
     if (sentences.length <= MAX_ITEMS) return sentences;
-    // se por qualquer motivo passou, remove os últimos
     return sentences.slice(0, MAX_ITEMS);
   };
 
@@ -114,7 +114,9 @@ export default function VocabularyEditor({
 
   /* ====== backfill languages + garantir type vocabulary + ENFORCE MAX ====== */
   useEffect(() => {
-    const needsBackfill = value.sentences.some((s: any) => !s?.languages);
+    const needsBackfill = (value.sentences || []).some(
+      (s: any) => !s?.languages,
+    );
     const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
 
     if (needsBackfill || value.type !== "vocabulary" || exceedsMax) {
@@ -130,6 +132,7 @@ export default function VocabularyEditor({
       onChange({
         ...value,
         type: "vocabulary",
+        comments: value.comments ?? "", // ✅ garante string
         sentences: enforceMax(fixed),
       });
     }
@@ -145,13 +148,27 @@ export default function VocabularyEditor({
       sentences: enforceMax(value.sentences),
     });
 
+  const updateComments = (comments: string) =>
+    onChange({
+      ...value,
+      comments,
+      type: "vocabulary",
+      sentences: enforceMax(value.sentences),
+    });
+
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem,
   ) => {
     const next = (value.sentences || []).slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
+
+    onChange({
+      ...value,
+      type: "vocabulary",
+      comments: value.comments ?? "", // ✅ garante string (sem "fixed" aqui!)
+      sentences: enforceMax(next), // ✅ usa next
+    });
   };
 
   const addSentence = () => {
@@ -175,27 +192,47 @@ export default function VocabularyEditor({
       ...(value.sentences || []),
     ];
 
-    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "vocabulary",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const removeSentence = (index: number) => {
     const next = (value.sentences || []).slice();
     next.splice(index, 1);
-    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "vocabulary",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
     const next = (value.sentences || []).slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "vocabulary",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   const moveDown = (index: number) => {
     if (index >= (value.sentences?.length || 0) - 1) return;
     const next = (value.sentences || []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, type: "vocabulary", sentences: enforceMax(next) });
+    onChange({
+      ...value,
+      type: "vocabulary",
+      comments: value.comments ?? "",
+      sentences: enforceMax(next),
+    });
   };
 
   /* ===================== PER-CARD SWAP ===================== */
@@ -411,20 +448,13 @@ export default function VocabularyEditor({
         (it: SentenceItem) => (it.english || it.portuguese).trim().length > 0,
       );
 
-    // merge priorizando os novos no topo e corta no máximo 20
     const merged = [...mapped, ...(value.sentences || [])];
-
-    // se quiser deduplicar, descomente:
-    // const mergedDedup = merged.filter((it, i, arr) => {
-    //   const key = `${it.english.trim().toLowerCase()}|${it.portuguese.trim().toLowerCase()}`;
-    //   return i === arr.findIndex((x) => `${x.english.trim().toLowerCase()}|${x.portuguese.trim().toLowerCase()}` === key);
-    // });
-
     const limited = enforceMax(merged);
 
     onChange({
       ...value,
       type: "vocabulary",
+      comments: value.comments ?? "",
       sentences: limited,
     });
 
@@ -555,7 +585,6 @@ export default function VocabularyEditor({
             </button>
           </div>
 
-          {/* ✅ Botão IA some se já tiver no máximo */}
           {!isAtLimit && (
             <button style={primaryBtnStyle} onClick={() => setAiOpen(true)}>
               ✨ IA
@@ -576,7 +605,6 @@ export default function VocabularyEditor({
         </span>
       </div>
 
-      {/* ✅ aviso: só cabem 20 */}
       {LimitNotice}
 
       {showConfig && (
@@ -604,6 +632,17 @@ export default function VocabularyEditor({
             </div>
           </div>
 
+          {/* Comments */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>Comments</label>
+            <textarea
+              value={value.comments ?? ""}
+              onChange={(e) => updateComments(e.target.value)}
+              placeholder="Observações, instruções, contexto..."
+              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
+            />
+          </div>
+
           {/* Grid de cartões */}
           <div style={{ display: "grid", gap: 8 }}>
             <div
@@ -617,7 +656,6 @@ export default function VocabularyEditor({
                 List ({value.sentences.length})
               </strong>
 
-              {/* ✅ não deixa acrescentar mais se bater no máximo */}
               <button
                 onClick={addSentence}
                 style={{
@@ -855,7 +893,6 @@ export default function VocabularyEditor({
         </>
       )}
 
-      {/* ✅ Gerador isolado: só abre/usa se NÃO estiver no limite */}
       {!isAtLimit && (
         <SimpleAIGenerator
           visible={aiOpen}

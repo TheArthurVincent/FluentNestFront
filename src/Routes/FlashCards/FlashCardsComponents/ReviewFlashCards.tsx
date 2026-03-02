@@ -35,7 +35,7 @@ const ReviewFlashCards = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [cards, setCards] = useState<any[]>([]);
   const [messageBack, setMessageBack] = useState<string>(
-    "Nenhum flashcard para revisar! Adicione palavras em seus flashcards."
+    "Nenhum flashcard para revisar! Adicione palavras em seus flashcards.",
   );
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [answer, setAnswer] = useState<boolean>(false);
@@ -73,7 +73,7 @@ const ReviewFlashCards = ({
         {
           headers: actualHeaders,
           params: { category, lang },
-        }
+        },
       );
 
       const thereAreCards = response.data.dueFlashcards.length > 0;
@@ -96,21 +96,20 @@ const ReviewFlashCards = ({
             response.data.dueFlashcards[0].front?.text,
             false,
             lg,
-            selectedVoice
+            selectedVoice,
           );
         }, 200);
       }
-      console.log("response.data.dueFlashcards", response.data.dueFlashcards);
       if (response.data.dueFlashcards.length > 0) {
         localStorage.setItem(
           "lastFlashcardReviewed",
-          JSON.stringify(response.data.dueFlashcards[0])
+          JSON.stringify(response.data.dueFlashcards[0]),
         );
         setCards(response.data.dueFlashcards);
         setFlashcardsToday(response.data.flashcardsToday);
         localStorage.setItem(
           "flashcardsToday",
-          JSON.stringify(response.data.flashcardsToday)
+          JSON.stringify(response.data.flashcardsToday),
         );
 
         setBackCardVisible(true);
@@ -140,7 +139,7 @@ const ReviewFlashCards = ({
           timerCardCount,
           dayToday: new Date().toISOString(),
         },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       setCards(response.data.dueFlashcards);
       setAnswer(false);
@@ -245,7 +244,7 @@ const ReviewFlashCards = ({
       const response = await axios.post(
         `${backDomain}/api/v1/flashcardhistory/${id}`,
         { dateToday: new Date().toISOString() },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       setFlashcardsToday(response.data.flashCardsReviewsToday);
       setLoading(false);
@@ -541,7 +540,7 @@ const ReviewFlashCards = ({
                                         cards[0].front.text,
                                         true,
                                         cards[0].front.language,
-                                        selectedVoice
+                                        selectedVoice,
                                       )
                                     }
                                     style={{
@@ -638,7 +637,7 @@ const ReviewFlashCards = ({
                                         cards[0].back.text,
                                         true,
                                         cards[0].back.language,
-                                        selectedVoice
+                                        selectedVoice,
                                       )
                                     }
                                     style={{

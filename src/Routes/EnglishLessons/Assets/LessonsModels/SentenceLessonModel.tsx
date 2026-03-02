@@ -254,7 +254,7 @@ export default function SentenceLessonModel({
               transition: "all .2s",
             }}
           >
-            {loading ? "Adding..." : "Add all"}
+            {loading ? "Adicionando..." : "+ Todos"}
           </button>
         )}
 
@@ -273,7 +273,7 @@ export default function SentenceLessonModel({
             transition: "all .2s",
           }}
         >
-          Exercises
+          Exercícios
         </button>
       </div>
 
@@ -440,7 +440,7 @@ export default function SentenceLessonModel({
                 <div
                   style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
                 >
-                  Sentence Exercises
+                  Exercícios de Sentença
                 </div>
 
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>

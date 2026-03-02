@@ -291,7 +291,7 @@ export default function ImageLessonModel({
           gap: 8,
         }}
       >
-        {!done && (
+        {/* {!done && (
           <button
             onClick={addAllCards}
             disabled={loading}
@@ -308,7 +308,7 @@ export default function ImageLessonModel({
           >
             {loading ? "Adding..." : "Add all"}
           </button>
-        )}
+        )} */}
 
         {/* Abrir exercícios */}
         <button
@@ -324,7 +324,7 @@ export default function ImageLessonModel({
             cursor: "pointer",
           }}
         >
-          Exercises
+          Exercícios
         </button>
       </div>
 
@@ -574,7 +574,7 @@ export default function ImageLessonModel({
                 <div
                   style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
                 >
-                  Image Exercises
+                  Exercícios de Imagem
                 </div>
 
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -582,13 +582,13 @@ export default function ImageLessonModel({
                     style={tabBtn(activeTab === "imageToWord")}
                     onClick={() => setActiveTab("imageToWord")}
                   >
-                    Image to Word
+                    Imagem {"> >"} Palavra
                   </button>
                   <button
                     style={tabBtn(activeTab === "wordToImage")}
                     onClick={() => setActiveTab("wordToImage")}
                   >
-                    Word to Image
+                    Palavra {"> >"} Imagem
                   </button>
 
                   <button

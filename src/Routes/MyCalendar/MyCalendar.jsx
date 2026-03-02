@@ -2479,6 +2479,16 @@ function MyCalendar({
                         }}
                       >
                         {/* Botão Hoje */}
+                        {authorizeOrNot && (
+                          <NewRecurringEventCalendar
+                            setAlternateBoolean={setAlternateBoolean}
+                            alternateBoolean={alternateBoolean}
+                            headers={headers}
+                            myId={myId}
+                            setChange={setChange}
+                            change={change}
+                          />
+                        )}
 
                         <button
                           disabled={!disabledAvoid}
@@ -2495,17 +2505,6 @@ function MyCalendar({
                         </button>
 
                         {/* Botão Recorrentes */}
-
-                        {authorizeOrNot && (
-                          <NewRecurringEventCalendar
-                            setAlternateBoolean={setAlternateBoolean}
-                            alternateBoolean={alternateBoolean}
-                            headers={headers}
-                            myId={myId}
-                            setChange={setChange}
-                            change={change}
-                          />
-                        )}
 
                         {authorizeOrNot && (
                           <ToDoAddButton

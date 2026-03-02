@@ -151,17 +151,17 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
       setTotalScore(response.data.formattedStudentData.totalScore);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
       setTotalFlashCards25(
-        response.data.formattedStudentData.flashcards25Reviews
+        response.data.formattedStudentData.flashcards25Reviews,
       );
       setTotalHomeworkDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone
+        response.data.formattedStudentData.homeworkAssignmentsDone,
       );
       setId(response.data.formattedStudentData.id);
       setPic(response.data.formattedStudentData.picture);
       setName(
         response.data.formattedStudentData.name +
           " " +
-          abreviateName(response.data.formattedStudentData.lastname)
+          abreviateName(response.data.formattedStudentData.lastname),
       );
       setDisabled(false);
 
@@ -184,10 +184,10 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
       setTotalScore(response.data.formattedStudentData.totalScore);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
       setTotalFlashCards25(
-        response.data.formattedStudentData.flashcards25Reviews
+        response.data.formattedStudentData.flashcards25Reviews,
       );
       setTotalHomeworkDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone
+        response.data.formattedStudentData.homeworkAssignmentsDone,
       );
     } catch (error: any) {
       console.log(error);
@@ -199,7 +199,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
     id: string,
     score: number,
     description: string,
-    type: string
+    type: string,
   ) => {
     setLoadingScore(true);
     setDisabled(true);
@@ -213,7 +213,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       updateScoreNow(id);
@@ -256,7 +256,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
         `${backDomain}/api/v1/scoresranking/${teacherID}?page=${page}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
 
       setStudents((prev) => [...prev, ...response.data.listOfStudents]);
@@ -284,7 +284,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
       });
       if (node) observer.current.observe(node);
     },
-    [loading, hasMore]
+    [loading, hasMore],
   );
 
   useEffect(() => {
@@ -298,7 +298,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
         {},
         {
           headers: actualHeaders,
-        }
+        },
       );
       fetchStudentsScore();
     } catch (error) {
@@ -313,7 +313,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
         {},
         {
           headers: actualHeaders,
-        }
+        },
       );
       fetchStudentsScore();
     } catch (error) {
@@ -327,7 +327,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
         {},
         {
           headers: actualHeaders,
-        }
+        },
       );
       fetchStudentsScore();
     } catch (error) {
@@ -351,7 +351,7 @@ export default function StudentsRanking({ headers }: StudentsRankingProps) {
               updateScore(
                 item.totalScore,
                 item.flashcards25Reviews,
-                item.homeworkAssignmentsDone
+                item.homeworkAssignmentsDone,
               ).level - 1;
 
             const isLast = index === students.length - 1;

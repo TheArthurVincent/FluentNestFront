@@ -583,21 +583,8 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
 
   return (
     <>
-      <button
-        onClick={handleSeeModalOfTutorings}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "4px 10px",
-          borderRadius: "999px",
-          border: "1px solid " + partnerColor(),
-          background: "rgba(0,0,0,0.02)",
-          color: partnerColor(),
-          fontSize: 12,
-          cursor: "pointer",
-        }}
-      >
+      <button onClick={handleSeeModalOfTutorings}>
+        <i className="fa fa-repeat " style={{ fontSize: "10px" }} />
         <span>{UniversalTexts.calendarModal.recurringClasses}</span>
       </button>
 

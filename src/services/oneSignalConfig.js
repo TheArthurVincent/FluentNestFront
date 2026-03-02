@@ -28,8 +28,6 @@ export const initializeOneSignal = async () => {
       }
     });
 
-    console.log('✅ OneSignal inicializado com sucesso!');
-
     // Evento quando usuário se inscreve
     OneSignal.User.PushSubscription.addEventListener('change', (event) => {
       console.log('Status de inscrição mudou:', event);

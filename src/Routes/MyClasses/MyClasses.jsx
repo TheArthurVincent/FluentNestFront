@@ -69,7 +69,6 @@ export function MyClasses({ headers }) {
         `${backDomain}/api/v1/tutoring/${getLoggedUser.id}`,
         requestConfig
       );
-      console.log(response.data.formattedTutoringFromParticularStudent);
       setClasses(response.data.formattedTutoringFromParticularStudent);
       setLoading(false);
     } catch (error) {
@@ -95,7 +94,6 @@ export function MyClasses({ headers }) {
       const response = await axios.get(`${backDomain}/api/v1/tutoring/${id}`, {
         headers,
       });
-      console.log(response.data.formattedTutoringFromParticularStudent);
       setClasses(response.data.formattedTutoringFromParticularStudent);
       setLoading(false);
     } catch (error) {

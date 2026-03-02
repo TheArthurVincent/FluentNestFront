@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import { useSearchParams, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
@@ -13,6 +13,7 @@ import { partnerColor } from "../../../Styles/Styles";
 import HomeworkClass from "./sessions/HomeworkClass";
 import Helmets from "../../../Resources/Helmets";
 import { flushSync } from "react-dom";
+
 type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
@@ -20,19 +21,26 @@ type EventProps = {
 
 const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
+
   const [eventData, setEventData] = useState<any>(null);
   const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
+
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [selectedFutureEventId, setSelectedFutureEventId] =
     useState<string>("");
   const [rescheduling, setRescheduling] = useState(false);
+
   const [statusOverride, setStatusOverride] = useState<string | null>(null);
   const [statusLoading, setStatusLoading] = useState<
     "marcado" | "realizada" | "desmarcado" | null
   >(null);
 
-  // status que a UI usa (instantâneo)
+  const event = eventData;
+  const lastLesson = eventData?.recentUnmarkedEvents?.[0] || null;
+
+  // ✅ NOVO: array de homeworks vindo do back (sempre array)
+  const homeworks = event?.homeworksDetails || event?.homeworkDetails || []; // status que a UI usa (instantâneo)
   const uiStatus = statusOverride ?? eventData?.status;
 
   const rescheduleEvent = async (
@@ -46,7 +54,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         { forced },
         { headers: headers as any },
       );
-      console.log("Evento reagendado com sucesso", response.data.event._id);
       window.location.assign(`/my-calendar/event/${response.data.event._id}`);
     } catch (error) {
       console.error("Erro ao reagendar o evento", error);
@@ -61,13 +68,16 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     );
 
     if (!eventId) return;
+
     try {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
         headers: headers as any,
       });
-      setEventData(res.data.event);
 
-      // IMPORTANT: depois que o back trouxe o dado “oficial”, remove override
+      setEventData(res.data.event);
+      console.log(res.data.event);
+
+      // depois que o back trouxe o dado “oficial”, remove override
       setStatusOverride(null);
 
       setReplicateLastEvent(res.data.event.replicateLastEvent);
@@ -111,13 +121,28 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     }, 0);
   };
 
+  const updateStatus = async (
+    id: string,
+    newStatus: "marcado" | "realizada" | "desmarcado",
+  ) => {
+    if (!id) return;
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/eventstatus/${id}`,
+        { status: newStatus },
+        { headers: headers as any },
+      );
+      if (response) fetchEventData();
+    } catch (error) {
+      console.log(error, "Erro ao atualizar evento");
+    }
+  };
+
   useEffect(() => {
     fetchEventData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
-
-  const event = eventData;
-  const lastLesson = eventData?.recentUnmarkedEvents?.[0] || null;
 
   const [futureEventsData, setFutureEventsData] = useState<any>(null);
 
@@ -129,74 +154,31 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     );
 
     if (!eventId) return;
+
     try {
       const res = await axios.get(
         `${backDomain}/api/v1/next-few-events/${student.id || student._id}?eventId=${eventId}`,
-        {
-          headers: headers as any,
-        },
+        { headers: headers as any },
       );
       setFutureEventsData(res.data.eventsList);
-      console.log(res.data.eventsList);
     } catch (err) {
-      console.error("Error fetching event data", err);
+      console.error("Error fetching future events data", err);
     }
   };
 
-  const updateScheduled = async (id: string) => {
-    if (!id) return;
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventstatus/${id}`,
-        { status: "marcado" },
-        { headers: headers as any },
-      );
-      if (response) {
-        fetchEventData();
-      }
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
+  // depois de const event = eventData;
+  const logged = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+  const loggedStudentId = String(logged.id || logged._id || "");
 
-  const updateUnscheduled = async (id: string) => {
-    if (!id) return;
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventstatus/${id}`,
-        { status: "desmarcado" },
-        { headers: headers as any },
-      );
-      if (response) {
-        fetchEventData();
-      }
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
-
-  const updateRealizedClass = async (id: string) => {
-    if (!id) return;
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventstatus/${id}`,
-        { status: "realizada" },
-        { headers: headers as any },
-      );
-      if (response) {
-        fetchEventData();
-      }
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
+  // ✅ regra de visibilidade
+  const visibleHomeworks =
+    permissionsUser !== "student"
+      ? homeworks
+      : homeworks.filter((hw: any) => String(hw.studentID) === loggedStudentId);
 
   return (
-    <div
-      style={{
-        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
-      }}
-    >
+    <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
+      {/* HEADER DESKTOP */}
       {isDesktop && (
         <div
           style={{
@@ -230,7 +212,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             />
           </section>
 
-          {/* Só mostra os botões se o evento já foi carregado */}
+          {/* Botões status (desktop) */}
           {event && event.category !== "Marcar Reposição" && (
             <div
               style={{
@@ -362,7 +344,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           gap: 12,
         }}
       >
-        {/* MOBILE – só renderiza se o evento existir */}
+        {/* STATUS MOBILE */}
         {!isDesktop &&
           event &&
           event.status &&
@@ -380,7 +362,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             >
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateScheduled(event._id)}
+                onClick={() => updateStatus(event._id, "marcado")}
               >
                 <i
                   className="fa fa-clock-o"
@@ -408,9 +390,10 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   Agendado
                 </div>
               </div>
+
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateRealizedClass(event._id)}
+                onClick={() => updateStatus(event._id, "realizada")}
               >
                 <i
                   className="fa fa-check-circle"
@@ -441,7 +424,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
               <div
                 style={{ textAlign: "center", cursor: "pointer" }}
-                onClick={() => updateUnscheduled(event._id)}
+                onClick={() => updateStatus(event._id, "desmarcado")}
               >
                 <i
                   className="fa fa-times-circle-o"
@@ -472,18 +455,14 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             </div>
           )}
 
+        {/* LOADING */}
         {!event && (
-          <div
-            style={{
-              fontWeight: 500,
-              fontSize: 13,
-              color: "#64748B",
-            }}
-          >
+          <div style={{ fontWeight: 500, fontSize: 13, color: "#64748B" }}>
             Carregando dados do evento...
           </div>
         )}
 
+        {/* MARCAR REPOSIÇÃO */}
         {event && event.category === "Marcar Reposição" && (
           <div
             style={{
@@ -498,7 +477,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               marginBottom: 20,
             }}
           >
-            {/* Botão principal */}
             {!seeReplenish && (
               <button
                 onClick={() => {
@@ -523,7 +501,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               </button>
             )}
 
-            {/* Confirmação */}
             {seeReplenish && (
               <div
                 style={{
@@ -538,13 +515,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   gap: 12,
                 }}
               >
-                <p
-                  style={{
-                    margin: 0,
-                    fontSize: 13,
-                    fontWeight: 500,
-                  }}
-                >
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>
                   Deseja agendar sua aula de reposição para este horário? Esta
                   ação não poderá ser desfeita.
                 </p>
@@ -562,6 +533,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     ? futureEventsData.map((futureEvent: any) => {
                         const isSelected =
                           selectedFutureEventId === futureEvent._id;
+
                         return (
                           <div
                             key={futureEvent._id}
@@ -614,15 +586,17 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   >
                     Cancelar
                   </button>
+
                   <button
                     disabled={!selectedFutureEventId || rescheduling}
                     onClick={async () => {
-                      if (!eventId) return; // slot destino (Marcar Reposição)
+                      if (!eventId) return;
                       if (!selectedFutureEventId) return;
+
                       await rescheduleEvent(selectedFutureEventId, {
-                        idNew: eventId, // o slot "Marcar Reposição" atual
-                        date: event.date, // só pra descrição no back
-                        time: event.time, // só pra descrição no back
+                        idNew: eventId,
+                        date: event.date,
+                        time: event.time,
                       });
 
                       setSeeReplenish(false);
@@ -650,24 +624,48 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           </div>
         )}
 
+        {/* EVENTO NORMAL */}
         {event && event.category !== "Marcar Reposição" && (
           <>
-            {(event.homeworkDetails || permissionsUser !== "student") && (
+            {/* ✅ HOMEWORKS (TODOS) */}
+            {(visibleHomeworks.length > 0 || permissionsUser !== "student") && (
               <>
-                <HomeworkClass
-                  homeworkID={event.homeworkID}
-                  homeworkData={event.homeworkDetails?.description || ""}
-                  homeworkAnswer={event.homeworkDetails?.answers || ""}
-                  headers={headers}
-                  evendId={event._id}
-                  event={event}
-                  isDesktop={isDesktop}
-                  fetchEventData={fetchEventData}
-                  allowedToEdit={permissionsUser !== "student"}
-                  allowedToAnswer={permissionsUser === "student"} // ou true
-                />
+                {visibleHomeworks.length > 0 ? (
+                  visibleHomeworks.map((hw: any) => (
+                    <HomeworkClass
+                      homeworkStudentName={hw.studentName}
+                      key={String(hw.id)}
+                      homeworkID={String(hw.id)}
+                      homeworkData={hw.description || ""}
+                      homeworkAnswer={hw.answers || ""}
+                      headers={headers}
+                      evendId={event._id}
+                      event={event}
+                      isDesktop={isDesktop}
+                      fetchEventData={fetchEventData}
+                      allowedToEdit={permissionsUser !== "student"}
+                      allowedToAnswer={permissionsUser === "student"}
+                    />
+                  ))
+                ) : (
+                  <HomeworkClass
+                    homeworkID={undefined}
+                    homeworkData={""}
+                    homeworkStudentName={undefined} // or just remove this prop
+                    homeworkAnswer={""}
+                    headers={headers}
+                    evendId={event._id}
+                    event={event}
+                    isDesktop={isDesktop}
+                    fetchEventData={fetchEventData}
+                    allowedToEdit={permissionsUser !== "student"}
+                    allowedToAnswer={permissionsUser === "student"}
+                  />
+                )}
               </>
             )}
+
+            {/* MAIN INFO */}
             <div
               style={{
                 display: "grid",
@@ -690,6 +688,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 title={event.student || "Aluno particular"}
               />
             </div>
+
+            {/* LESSON */}
             <LessonContent
               headers={headers}
               fetchEventData={fetchEventData}
@@ -699,14 +699,16 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               theLessonRender={event.theLessonRender}
               eventId={event._id}
               studentID={event.studentID}
-              studentsIds={event.listOfStudents.map((a: any) => a._id)}
+              studentsIds={(event.listOfStudents || []).map((a: any) => a._id)}
             />
+
+            {/* BOARD */}
             {(event.board || permissionsUser !== "student") && (
               <div
                 style={{
                   height: "fit-content",
                   maxHeight: isDesktop ? "90vw" : "none",
-                  zIndex: 5, // garante sobreposição
+                  zIndex: 5,
                 }}
               >
                 <Board
@@ -718,6 +720,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               </div>
             )}
 
+            {/* LAST CLASS */}
             {lastLesson && permissionsUser !== "student" && (
               <LastClass
                 replicateLastEvent={replicateLastEvent}
@@ -728,13 +731,10 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 lastLesson={lastLesson}
               />
             )}
-            {event && permissionsUser !== "student" && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                }}
-              >
+
+            {/* FOOTER ACTIONS */}
+            {event && permissionsUser !== "student" && lastLesson && (
+              <div style={{ display: "flex", justifyContent: "space-evenly" }}>
                 <button
                   style={{
                     display: "flex",
@@ -754,6 +754,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   <i className="fa fa-arrow-left" />
                   Aula anterior
                 </button>
+
                 <DeleteClass
                   headers={headers}
                   evendId={event._id}

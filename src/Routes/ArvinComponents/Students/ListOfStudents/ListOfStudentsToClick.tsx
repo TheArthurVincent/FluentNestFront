@@ -52,10 +52,9 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/students-ids/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
 
-      console.log(response.data.listOfStudents || response.data || []);
       setStudents(response.data.listOfStudents || response.data || []);
     } catch (error) {
       console.error(error);
@@ -73,7 +72,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/students-ids/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       setStudents(response.data.listOfStudents || []);
     } catch (error) {
@@ -90,7 +89,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/handle-replenish-plus/${id}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       fetchStudentsNoLoading();
     } catch (error) {
@@ -107,7 +106,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/handle-replenish-minus/${id}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       fetchStudentsNoLoading();
     } catch (error) {
@@ -125,7 +124,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/handle-replenish-reset/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       fetchStudentsNoLoading();
     } catch (error) {
@@ -145,7 +144,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/handle-replenish-all-plus/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       fetchStudentsNoLoading();
     } catch (error) {
@@ -165,7 +164,7 @@ export function ListOfStudentsToClick({
         `${backDomain}/api/v1/handle-replenish-all-minus/${userId}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
-        }
+        },
       );
       fetchStudentsNoLoading();
     } catch (error) {

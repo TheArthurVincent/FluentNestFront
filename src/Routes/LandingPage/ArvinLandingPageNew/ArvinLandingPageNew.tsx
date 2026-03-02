@@ -50,7 +50,6 @@ const safeStorage = {
 
 function ArvinLandingPageNew() {
   const getWhatsAppLink = () => {
-    console.log("clicou");
     const message = `Olá, gostaria de saber mais sobre a plataforma ARVIN.`;
     // Abre em nova aba
     window.open(

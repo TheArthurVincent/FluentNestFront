@@ -72,7 +72,7 @@ function isMobileDevice() {
   if (typeof window === "undefined") return false;
 
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
+    navigator.userAgent,
   );
 }
 
@@ -127,8 +127,6 @@ const InstallPWA = () => {
     deferredPrompt.prompt();
 
     const { outcome } = await deferredPrompt.userChoice;
-    console.log(`User response to the install prompt: ${outcome}`);
-
     setDeferredPrompt(null);
     setShowInstallPrompt(false);
 
@@ -165,7 +163,7 @@ const InstallPWA = () => {
         <DismissButton onClick={handleDismiss}>Agora não</DismissButton>
       </div>
     </InstallPromptContainer>,
-    document.body
+    document.body,
   );
 };
 

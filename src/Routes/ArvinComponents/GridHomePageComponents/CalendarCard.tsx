@@ -73,8 +73,6 @@ export const CalendarCard: FC<CalendarCardProps> = ({
       );
       setDayEvents(events);
       setLoadingModal(false);
-
-      console.log("EVENTS FOR", dateStr, data);
     } catch (error) {
       console.log("Erro ao buscar eventos do dia:", error);
       setModalDateLabel(

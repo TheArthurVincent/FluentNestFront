@@ -6,7 +6,7 @@ export const levels = () => {
       color: "#f8f8f8",
       flashcards25Reviews: 0,
       homeworkAssignmentsDone: 0,
-      textcolor: "white",
+      textcolor: "black",
       backgroundcolor: "#000",
       card: "https://ik.imagekit.io/vjz75qw96/cards/1.jpg?updatedAt=1735816547056",
       text: "White Belt",
