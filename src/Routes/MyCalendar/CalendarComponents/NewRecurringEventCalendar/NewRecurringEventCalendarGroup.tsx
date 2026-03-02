@@ -227,6 +227,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
 
   const updateOne = async () => {
     if (!groupId || !tutoringId || !weekDay || !timeOfTutoring || !link) return;
+    const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "{}");
 
     setLoadingList(true);
     try {
@@ -235,6 +236,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
         {
           id: tutoringId,
           groupId,
+          studentID: loggedIn.id,
           day: weekDay,
           time: formatTime(timeOfTutoring),
           duration,
