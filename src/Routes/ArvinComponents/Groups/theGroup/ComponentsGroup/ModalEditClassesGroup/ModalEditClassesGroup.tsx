@@ -38,7 +38,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
     null,
   );
 
-  // ✅ Aqui é MODAL DE GRUPO, então o dono é sempre o group
+  // ✅ Aqui é MODAL DE TURMA, então o dono é sempre o group
   const groupId: string = group?._id || "";
   const ownerType = "group";
   const ownerId = groupId;
@@ -65,7 +65,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
   ];
 
   // ================================
-  // Buscar tutorias do DONO (grupo)
+  // Buscar tutorias do DONO (turma)
   // ================================
   const fetchTutorings = async () => {
     if (!ownerId) return;
@@ -139,7 +139,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
       return;
     }
     if (!groupId) {
-      notifyAlert("Grupo inválido.", partnerColor());
+      notifyAlert("Turma inválido.", partnerColor());
       return;
     }
 
@@ -150,7 +150,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
         {
           tutoringId, // ✅ qual recorrência editar (antiga)
           editorId: myId, // ✅ quem editou
-          groupId, // ✅ dono (grupo)
+          groupId, // ✅ dono (turma)
           day: weekDay,
           time: timeOfTutoring,
           duration,
@@ -174,7 +174,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
   const newTutoring = async () => {
     if (!groupId || !myId) {
       notifyAlert(
-        "Não foi possível identificar grupo ou editor.",
+        "Não foi possível identificar turma ou editor.",
         partnerColor(),
       );
       return;
@@ -324,7 +324,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                   <div
                     style={{ fontWeight: 700, fontSize: 18, color: "#111827" }}
                   >
-                    {group?.fullname || group?.name || "Grupo"}
+                    {group?.fullname || group?.name || "Turma"}
                   </div>
                 </div>
                 <button
@@ -341,7 +341,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
               </div>
 
               {/* Lista */}
-              <div style={sectionTitle}>Tutorias recorrentes do grupo</div>
+              <div style={sectionTitle}>Tutorias recorrentes da turma</div>
 
               {tutorings.length === 0 ? (
                 <div style={{ fontSize: 13, color: "#6b7280" }}>

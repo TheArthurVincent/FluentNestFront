@@ -3701,7 +3701,7 @@ export default function EnglishClassCourse2({
                                 </button>
                               )}
 
-                              {/* Grupo Restaurar/Salvar + check + data */}
+                              {/* Turma Restaurar/Salvar + check + data */}
                               <div
                                 style={{
                                   display: "flex",

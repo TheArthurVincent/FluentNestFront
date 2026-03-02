@@ -90,7 +90,7 @@ export const GroupSummaryCard: FC<{
         <div>
           📚{" "}
           <strong>
-            {totalClasses} aula{totalClasses === 1 ? "" : "s"} em grupo
+            {totalClasses} aula{totalClasses === 1 ? "" : "s"} da turma
           </strong>
         </div>
 

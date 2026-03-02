@@ -242,7 +242,7 @@ export default function NewClassModal({
                       fontSize: "0.9rem",
                     }}
                   >
-                    👤 Selecionar Grupo
+                    👤 Selecionar Turma
                   </label>
 
                   <select
@@ -260,7 +260,7 @@ export default function NewClassModal({
                     }}
                   >
                     <option value="" hidden>
-                      Selecione o grupo...
+                      Selecione o turma...
                     </option>
 
                     {groupsList.map((group, index) => (

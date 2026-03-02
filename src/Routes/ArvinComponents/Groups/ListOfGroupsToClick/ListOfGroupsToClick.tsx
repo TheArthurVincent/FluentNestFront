@@ -62,7 +62,7 @@ export function ListOfGroupsToClick({
       setGroups(response.data.groups || response.data || []);
     } catch (error) {
       console.error(error);
-      notifyAlert("Erro ao buscar turmas (grupos).");
+      notifyAlert("Erro ao buscar turmas (turmas).");
     } finally {
       setLoading(false);
     }

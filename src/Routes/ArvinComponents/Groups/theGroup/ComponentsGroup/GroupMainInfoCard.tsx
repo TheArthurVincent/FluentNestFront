@@ -19,7 +19,7 @@ export const GroupMainInfoCard: FC<{
         <span>Dados da turma</span>
       </div>
 
-      {/* Nome do grupo */}
+      {/* Nome da turma */}
       <input
         className="no-focus"
         style={{
@@ -36,7 +36,7 @@ export const GroupMainInfoCard: FC<{
           color: "#111827",
         }}
         type="text"
-        placeholder="Nome do grupo"
+        placeholder="Nome da turma"
         value={group.name || ""}
         onChange={(e) => onChangeName(e.target.value)}
       />
@@ -56,7 +56,7 @@ export const GroupMainInfoCard: FC<{
           color: "#374151",
         }}
         type="text"
-        placeholder="Descrição do grupo"
+        placeholder="Descrição da turma"
         value={group.description || ""}
         onChange={(e) => onChangeDescription(e.target.value)}
       />

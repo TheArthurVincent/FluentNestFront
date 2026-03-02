@@ -154,10 +154,10 @@ export function ManageGroupClasses({ headers }) {
 
   return (
     <>
-      <HOne>Gerenciar Aulas em Grupo</HOne>
+      <HOne>Gerenciar Aulas da turma</HOne>
       <div id="1">
         {" "}
-        <HTwo>Postar aula em grupo</HTwo>
+        <HTwo>Postar aula da turma</HTwo>
         <div
           style={{
             display: "grid",

@@ -348,7 +348,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
     return buildSidebarModel(bottomItems, admin);
   }, [admin]);
 
-  // auto-abrir grupo que contém a rota atual (mas sem sobrescrever escolha do usuário)
+  // auto-abrir turma que contém a rota atual (mas sem sobrescrever escolha do usuário)
   useEffect(() => {
     if (collapsed) return;
 

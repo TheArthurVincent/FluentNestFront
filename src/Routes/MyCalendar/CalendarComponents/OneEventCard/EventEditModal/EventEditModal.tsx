@@ -154,7 +154,7 @@ function EditModal({
 
       // Determinar tipo de aula
       if (event.group || event.group?._id) {
-        setClassType("grupo");
+        setClassType("turma");
       } else if (event.student || event.student?._id) {
         setClassType("individual");
       }
@@ -223,7 +223,7 @@ function EditModal({
         fetchLastFewClasses(eventData.studentId);
       }
 
-      // Buscar estudantes do grupo se for aula em grupo
+      // Buscar estudantes da turma se for aula da turma
       if (
         (eventData.category === "Group Class" ||
           eventData.category === "Established Group Class") &&
@@ -312,7 +312,7 @@ function EditModal({
     }
   };
 
-  // Buscar estudantes do grupo
+  // Buscar estudantes da turma
   const fetchGroupStudents = async (groupId: string) => {
     try {
       const response = await axios.get(
@@ -323,7 +323,7 @@ function EditModal({
       setStudentsInGroup(students);
       setComments(students.map(() => ({ description: "" })));
     } catch (error) {
-      console.log(error, "Erro ao buscar estudantes do grupo");
+      console.log(error, "Erro ao buscar estudantes da turma");
     }
   };
 

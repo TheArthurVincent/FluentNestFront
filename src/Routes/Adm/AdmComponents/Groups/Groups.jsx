@@ -139,7 +139,7 @@ export function Groups({ headers, id }) {
   const [groupDescriptionToEdit, setGroupDescriptionToEdit] = useState("");
   const [classesGroup, setClassesGroup] = useState([]);
   const [loadingGroupClasses, setLoadingGroupClasses] = useState(false);
-  // 3) Ao selecionar um grupo para editar, normalize também:
+  // 3) Ao selecionar uma turma para editar, normalize também:
 
   // Para sair do modo edição
   const handleCancelEdit = () => {
@@ -154,7 +154,7 @@ export function Groups({ headers, id }) {
   const [arrayOfIds, setArrayOfIds] = useState([]);
   const [newName, setNewName] = useState("");
   const [newDescription, setNewDescription] = useState("");
-  // Removido campo de nome do grupo
+  // Removido campo de nome da turma
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -194,7 +194,7 @@ export function Groups({ headers, id }) {
         },
         { headers },
       );
-      notifyAlert("Grupo criado com sucesso!", partnerColor());
+      notifyAlert("Turma criada com sucesso!", partnerColor());
       setArrayOfIds([]);
       setNewName("");
       setNewDescription("");
@@ -204,7 +204,7 @@ export function Groups({ headers, id }) {
       getGroups();
     } catch (error) {
       console.error(error?.response?.data || error.message);
-      notifyAlert("Erro ao criar grupo");
+      notifyAlert("Erro ao criar turma");
     }
   };
 
@@ -230,7 +230,7 @@ export function Groups({ headers, id }) {
       notifyAlert("Erro ao encontrar alunos");
     }
   };
-  // Função para editar grupo, recebe id do grupo e id do aluno clicado
+  // Função para editar turma, recebe id da turma e id do aluno clicado
   const editGroup = async (groupId, studentId) => {
     try {
       const response = await axios.put(
@@ -397,7 +397,7 @@ export function Groups({ headers, id }) {
                     fontSize: 15,
                   }}
                 >
-                  #{index + 1} | {group.name ? group.name : "Grupo sem nome"}
+                  #{index + 1} | {group.name ? group.name : "Turma sem nome"}
                 </span>
                 <br />
                 <span
@@ -410,7 +410,7 @@ export function Groups({ headers, id }) {
                 >
                   {group.description
                     ? group.description
-                    : "Grupo sem descrição"}
+                    : "Turma sem descrição"}
                 </span>
                 <div
                   style={{
@@ -480,7 +480,7 @@ export function Groups({ headers, id }) {
               }}
             >
               <HOne>
-                {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
+                {selectedGroupId ? "Editar turma" : "Criar novo turma"}
               </HOne>
 
               {/* Botão só aparece se não estiver editando */}
@@ -529,7 +529,7 @@ export function Groups({ headers, id }) {
                   fontSize: 16,
                 }}
                 type="text"
-                placeholder="Nome do grupo"
+                placeholder="Nome da turma"
                 value={selectedGroupId ? groupNameToEdit : newName}
                 onChange={(e) => {
                   const v = e.target.value;
@@ -553,7 +553,7 @@ export function Groups({ headers, id }) {
                   fontSize: 16,
                 }}
                 type="text"
-                placeholder="Descrição do grupo"
+                placeholder="Descrição da turma"
                 value={
                   selectedGroupId ? groupDescriptionToEdit : newDescription
                 }
@@ -589,7 +589,7 @@ export function Groups({ headers, id }) {
                 marginBottom: 8,
               }}
             >
-              Tem certeza que deseja excluir este grupo?
+              Tem certeza que deseja excluir este turma?
             </div>
             <button
               onClick={() => {
@@ -680,7 +680,7 @@ export function Groups({ headers, id }) {
         {selectedGroupId && (
           <div style={styles.card}>
             <h3 style={styles.h3}>
-              📚 Histórico de Aulas em Grupo: {groupNameToEdit}
+              📚 Histórico de Aulas da turma: {groupNameToEdit}
             </h3>
 
             <div style={{ marginBottom: 12 }}>
@@ -835,7 +835,7 @@ export function Groups({ headers, id }) {
               transition: "opacity 0.2s",
             }}
           >
-            Criar grupo
+            Criar turma
           </button>
         )}
       </section>

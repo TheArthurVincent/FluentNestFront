@@ -269,7 +269,7 @@ export function FindTeacher({ headers, id, plan }) {
         setLoadingEventsList(false);
       }, 100);
     } catch (error) {
-      notifyAlert("Erro ao buscar histórico de aulas em grupo");
+      notifyAlert("Erro ao buscar histórico de aulas da turma");
       setSeeGroupClassesHistory(!seeGroupClassesHistory);
       setLoadingEventsList(false);
     }
