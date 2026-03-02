@@ -67,13 +67,13 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
         }
       );
 
-      notifyAlert("Grupo criado com sucesso!", partnerColor());
+      notifyAlert("Turma criada com sucesso!", partnerColor());
       setLoading(false);
       handleClose();
       onCreated && onCreated();
     } catch (error: any) {
       console.error(error?.response?.data || error?.message);
-      notifyAlert("Erro ao criar grupo");
+      notifyAlert("Erro ao criar turma");
       setLoading(false);
     }
   };

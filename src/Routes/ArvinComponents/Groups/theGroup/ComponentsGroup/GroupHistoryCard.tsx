@@ -39,7 +39,7 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
       {/* Título no mesmo padrão do StudentLessonsCard */}
       <div style={cardTitle}>
         <ClockCounterClockwise size={18} weight="bold" color="#111827" />
-        <span>Histórico de aulas em grupo</span>
+        <span>Histórico de aulas da turma</span>
       </div>
 
       {loadingHistory ? (
@@ -64,7 +64,7 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
             Esta turma possui{" "}
             <strong>
               {totalClasses} aula
-              {totalClasses === 1 ? "" : "s"} em grupo
+              {totalClasses === 1 ? "" : "s"} da turma
             </strong>{" "}
             registradas.
           </p>

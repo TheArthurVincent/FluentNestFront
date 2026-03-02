@@ -129,7 +129,7 @@ function NewEventCalendar({
     }
   };
 
-  // Regras condicionais: aluno obrigatório para Tutoring/Prize/Rep; grupo para Established Group Class
+  // Regras condicionais: aluno obrigatório para Tutoring/Prize/Rep; turma para Established Group Class
   const needsStudent = ["Tutoring", "Prize Class", "Rep"].includes(
     newClass.category
   );
@@ -340,7 +340,7 @@ function NewEventCalendar({
                       fontSize: "0.9rem",
                     }}
                   >
-                    👥 Selecionar Grupo
+                    👥 Selecionar Turma
                   </label>
                   <select
                     value={newClass.group}
@@ -357,7 +357,7 @@ function NewEventCalendar({
                     }}
                   >
                     <option value="" hidden>
-                      Selecione o grupo...
+                      Selecione o turma...
                     </option>
                     {groupsList.map((group: any) => (
                       <option key={group._id} value={group._id}>

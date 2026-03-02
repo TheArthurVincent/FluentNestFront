@@ -316,7 +316,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
         setLoadingEventsList(false);
       }, 100);
     } catch (error) {
-      notifyAlert("Erro ao buscar histórico de aulas em grupo");
+      notifyAlert("Erro ao buscar histórico de aulas da turma");
       setSeeGroupClassesHistory(!seeGroupClassesHistory);
       setLoadingEventsList(false);
     }
@@ -2109,7 +2109,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               e.target.style.color = "#2c3e50";
             }}
           >
-            Histórico de Aulas em Grupo de {selectedStudent.name}{" "}
+            Histórico de Aulas da turma de {selectedStudent.name}{" "}
             {selectedStudent.lastname}
           </Typography>
 
@@ -2242,7 +2242,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                     marginBottom: "4px",
                                   }}
                                 >
-                                  👤👤👤 GRUPO
+                                  👤👤👤 TURMA
                                 </div>
                                 <div
                                   style={{
@@ -2392,7 +2392,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       color: "#6c757d",
                     }}
                   >
-                    Não há histórico de aulas em grupo para este aluno.
+                    Não há histórico de aulas da turma para este aluno.
                   </div>
                 </div>
               )}

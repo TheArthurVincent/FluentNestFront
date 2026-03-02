@@ -55,7 +55,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
           setLoadingStudents(false);
         }
 
-        // Carrega o grupo
+        // Carrega o turma
         const resGroup = await axios.get(
           `${backDomain}/api/v1/group/${groupId}`,
           { headers: headers as any }
@@ -78,8 +78,8 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
         setClassesGroup(resHistory.data.classesGroup || []);
         setLoadingHistory(false);
       } catch (err) {
-        console.error("Erro ao carregar grupo", err);
-        notifyAlert("Erro ao carregar turma (grupo).");
+        console.error("Erro ao carregar turma", err);
+        notifyAlert("Erro ao carregar turma (turma).");
         setLoadingStudents(false);
         setLoadingHistory(false);
       } finally {

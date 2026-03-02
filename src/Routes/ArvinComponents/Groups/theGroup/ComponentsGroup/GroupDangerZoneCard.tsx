@@ -33,7 +33,7 @@ export const GroupDangerZoneCard: FC<{ onDeleteGroup: () => void }> = ({
           lineHeight: 1.4,
         }}
       >
-        Excluir esta turma irá remover o vínculo dos alunos com este grupo.
+        Excluir esta turma irá remover o vínculo dos alunos com este turma.
         <br />
         <strong>Esta ação não pode ser desfeita.</strong>
       </p>

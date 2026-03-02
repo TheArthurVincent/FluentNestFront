@@ -16,7 +16,7 @@ const categoryList = [
   { text: "Aula Experimental", value: "Test" },
   { text: "Aula Única", value: "Standalone" },
   { text: "Aula Geral", value: "Group Class" },
-  { text: "Aula de um Grupo", value: "Established Group Class" },
+  { text: "Aula de uma turma", value: "Established Group Class" },
   { text: "Aula de Reposição", value: "Rep" },
   { text: "Aula de Prêmio", value: "Prize Class" },
   { text: "Aula Particular Individual", value: "Tutoring" },
@@ -136,7 +136,7 @@ function NewEventModal({
         setIsTutoring(false);
         break;
       case "Established Group Class":
-        setDescription("Aula do grupo");
+        setDescription("Aula da turma");
         setIsTutoring(false);
         break;
       case "Test":
@@ -174,7 +174,7 @@ function NewEventModal({
     }
 
     if (category === "Established Group Class" && !selectedGroupId) {
-      notifyAlert("Por favor, selecione um grupo para aulas em grupo.");
+      notifyAlert("Por favor, selecione uma turma para aulas da turma.");
       return;
     }
 
@@ -493,7 +493,7 @@ function NewEventModal({
               </div>
             )}
 
-            {/* Seleção de Grupo (se for Group Class ou Established Group Class) */}
+            {/* Seleção da turma (se for Group Class ou Established Group Class) */}
             {category === "Established Group Class" && (
               <div>
                 <label
@@ -505,7 +505,7 @@ function NewEventModal({
                     fontSize: "0.9rem",
                   }}
                 >
-                  👥 Grupo *
+                  👥 Turma *
                 </label>
                 <select
                   value={selectedGroupId}
@@ -530,7 +530,7 @@ function NewEventModal({
                     }}
                     value=""
                   >
-                    Selecione um grupo
+                    Selecione uma turma
                   </option>
                   {groupsList.map((group: any) => {
                     const groupId = group._id || group.id;

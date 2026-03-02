@@ -24,7 +24,7 @@ export const contentFaq = [
         <ul>
           <li>Estude as aulas dos cursos pelo menos 2 vezes por semana.</li>
           <li>Faça aulas particulares (1 a 2 vezes por semana).</li>
-          <li>Participe de aulas em grupo (1 a 2 vezes por semana).</li>
+          <li>Participe de aulas da turma (1 a 2 vezes por semana).</li>
           <li>Realize as lições de casa e atividades propostas.</li>
         </ul>
 
@@ -106,11 +106,11 @@ export const contentFaq = [
     ),
   },
   {
-    instruction: "Sou obrigado a participar das aulas em grupo?",
-    tags: ["aula", "grupo", "vivo", "group", "live"],
+    instruction: "Sou obrigado a participar das aulas da turma?",
+    tags: ["aula", "turma", "vivo", "group", "live"],
     explanation: (
       <div>
-        Não é obrigatório, mas é altamente recomendado! 💡 As aulas em grupo
+        Não é obrigatório, mas é altamente recomendado! 💡 As aulas da turma
         ajudam a consolidar o aprendizado, oferecem interação com outros alunos
         e... valem pontos extras! 😉
       </div>
@@ -124,11 +124,11 @@ export const contentFaq = [
         As aulas particulares não acontecem em feriados. Mas você não fica na
         mão! 👇
         <br />
-        <br />✅ As <strong>aulas em grupo</strong> funcionam como reposição em
+        <br />✅ As <strong>aulas da turma</strong> funcionam como reposição em
         casos de feriado ou ausência.
         <br />
         Por exemplo: se você tem 1 aula particular por semana, pode participar
-        de até <strong>2 aulas em grupo extras</strong> por semana, como
+        de até <strong>2 aulas da turma extras</strong> por semana, como
         reposição ou bônus. Assim, você nunca fica sem estudar!
       </div>
     ),
@@ -177,8 +177,8 @@ export const contentFaq = [
     ),
   },
   {
-    instruction: "Como funcionam as aulas em grupo?",
-    tags: ["aulas", "grupo", "interação", "coletivo"],
+    instruction: "Como funcionam as aulas da turma?",
+    tags: ["aulas", "turma", "interação", "coletivo"],
     explanation: (
       <div>
         São encontros online com outros alunos, focados em conversação, revisão
@@ -204,7 +204,7 @@ export const contentFaq = [
     explanation: (
       <div>
         A ausência sem aviso prévio de 24h pode contar como aula dada. Mas você
-        sempre pode repor com as aulas em grupo!
+        sempre pode repor com as aulas da turma!
       </div>
     ),
   },
@@ -228,7 +228,7 @@ export const contentFaq = [
     tags: ["lição", "dever", "exercício", "tarefas"],
     explanation: (
       <div>
-        As lições de casa são indicadas nas aulas particulares ou no grupo do
+        As lições de casa são indicadas nas aulas particulares ou no turma do
         WhatsApp. Você também pode revisar os conteúdos indicados nos cursos da
         plataforma.
       </div>
@@ -275,7 +275,7 @@ export const contentFaq = [
           <li>Estabeleça metas claras e curtas.</li>
           <li>Use conteúdos que você gosta (música, séries).</li>
           <li>Compare seu progresso mensal, não diário.</li>
-          <li>Participe das aulas em grupo para se inspirar.</li>
+          <li>Participe das aulas da turma para se inspirar.</li>
         </ul>
       </div>
     ),
