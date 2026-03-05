@@ -42,8 +42,7 @@ interface ImageLessonModelProps {
   exerciseScore?: (points: number, description?: string, id?: string) => void;
 }
 
-const sanitizeUrlForImg = (u: string): string =>
-  u.replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/ /g, "%20");
+const sanitizeUrlForImg = (u: string): string => u;
 
 const fallbackSvgDataUri = (txt = "Imagem indisponível") => {
   const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
