@@ -120,7 +120,7 @@ export default function VocabularyEditor({
     const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
 
     if (needsBackfill || value.type !== "vocabulary" || exceedsMax) {
-      const fixed = (value.sentences || []).map((s: any) => ({
+      const fixed = (value && value.sentences ? value.sentences : []).map((s: any) => ({
         english: s?.english ?? "",
         portuguese: s?.portuguese ?? "",
         languages: s?.languages ?? {
@@ -213,7 +213,7 @@ export default function VocabularyEditor({
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
-    const next = (value.sentences || []).slice();
+    const next = (value && value.sentences ? value.sentences : []).slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
     onChange({
       ...value,
@@ -224,8 +224,8 @@ export default function VocabularyEditor({
   };
 
   const moveDown = (index: number) => {
-    if (index >= (value.sentences?.length || 0) - 1) return;
-    const next = (value.sentences || []).slice();
+    if (index >= (value && value.sentences ? value.sentences.length : 0) - 1) return;
+    const next = (value && value.sentences ? value.sentences : []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
     onChange({
       ...value,
@@ -653,7 +653,7 @@ export default function VocabularyEditor({
               }}
             >
               <strong style={{ fontSize: 14, color: "#0f172a" }}>
-                List ({value.sentences.length})
+                List ({value && value.sentences ? value.sentences.length : 0})
               </strong>
 
               <button
@@ -674,7 +674,7 @@ export default function VocabularyEditor({
               </button>
             </div>
 
-            {value.sentences.length === 0 && (
+            {value && value.sentences && value.sentences.length === 0 && (
               <div style={emptyStyle}>
                 Nenhum item. Use “Adicionar vocabulário”.
               </div>
@@ -692,7 +692,7 @@ export default function VocabularyEditor({
                   "repeat(auto-fit, minmax(min(270px, 100%), 1fr))",
               }}
             >
-              {value.sentences.map((s, idx) => (
+              {value && value.sentences && value.sentences.map((s, idx) => (
                 <div
                   key={idx}
                   style={{
@@ -723,7 +723,7 @@ export default function VocabularyEditor({
                       </button>
                     )}
                     Order: {idx + 1}
-                    {idx !== value.sentences.length - 1 && (
+                    {(idx !== (value && value.sentences ? value.sentences.length : 0) - 1) && (
                       <button
                         onClick={() => moveDown(idx)}
                         style={ghostBtnStyle}

@@ -115,7 +115,7 @@ const SentencesEditor: React.FC<Props> = ({
     const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
 
     if (needsBackfill || exceedsMax) {
-      const fixed = (value.sentences || []).map((s: any) => ({
+      const fixed = (value && value.sentences ? value.sentences : []).map((s: any) => ({
         english: s?.english ?? "",
         portuguese: s?.portuguese ?? "",
         languages: s?.languages ?? {
@@ -218,8 +218,8 @@ const SentencesEditor: React.FC<Props> = ({
   };
 
   const moveDown = (index: number) => {
-    if (index >= (value.sentences?.length || 0) - 1) return;
-    const next = (value.sentences || []).slice();
+    if (index >= (value && value.sentences ? value.sentences.length : 0) - 1) return;
+    const next = (value && value.sentences ? value.sentences : []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
     onChange({
       ...value,
@@ -731,7 +731,7 @@ const SentencesEditor: React.FC<Props> = ({
 
             <div className="se-actions">
               <strong style={{ fontSize: 14, color: "#0f172a" }}>
-                List ({value.sentences.length})
+                List ({value && value.sentences ? value.sentences.length : 0})
               </strong>
 
               <button
@@ -765,13 +765,13 @@ const SentencesEditor: React.FC<Props> = ({
             />
           </div>
 
-          {value.sentences.length === 0 && (
+          {value && value.sentences && value.sentences.length === 0 && (
             <div className="se-empty">
               Nenhuma sentença. Use “Adicionar sentença” ou IA.
             </div>
           )}
 
-          {value.sentences.map((s, idx) => (
+          {value && value.sentences && value.sentences.map((s, idx) => (
             <div key={idx} className="se-item">
               {/* Controles do item */}
               <div className="se-item-controls">
@@ -787,7 +787,9 @@ const SentencesEditor: React.FC<Props> = ({
                 <span style={{ fontSize: 12, color: "#334155" }}>
                   Order: {idx + 1}
                 </span>
-                {idx !== value.sentences.length - 1 && (
+                {idx !==
+                  (value && value.sentences ? value.sentences.length : 0) -
+                    1 && (
                   <button
                     onClick={() => moveDown(idx)}
                     className="se-btn"
