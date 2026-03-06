@@ -139,6 +139,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [attendanceSaving, setAttendanceSaving] = useState(false);
+  const [theNameOfTheStudents, setTheNameOfTheStudents] = useState("");
+  const [thePermissionsOfTheStudents, setThePermissionsOfTheStudents] =
+    useState("");
   const [attendanceSearch, setAttendanceSearch] = useState("");
   const [attendanceList, setAttendanceList] = useState<AttendanceItem[]>([]);
   const [attendanceOriginal, setAttendanceOriginal] = useState<
@@ -738,16 +741,20 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   const fetchEventsFree = async () => {
     const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "false");
+
     if (!loggedIn) return;
 
     try {
       setLoadingEventsFree(true);
 
       const response = await axios.get(
-        `${backDomain}/api/v1/free-events/${event.studentID}`,
+        `${backDomain}/api/v1/free-events/${event.studentID}?loggedInId=${loggedIn._id || loggedIn.id}&foo=bar`,
         { headers: headers as any },
       );
-
+      const permissions = response.data?.permissions || "";
+      const theName = response.data?.name || "";
+      setThePermissionsOfTheStudents(permissions);
+      setTheNameOfTheStudents(theName);
       const arr = (response.data?.events || []) as FreeEventItem[];
       setAllowedToReschedule(response.data?.allowedToReschedule || false);
       setEventsFreeArray(arr);
@@ -987,6 +994,15 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           <div style={{ padding: 12, display: "grid", gap: 12 }}>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>Data</label>
+              <span
+                style={{
+                  fontSize: 8,
+                  fontStyle: "italic",
+                }}
+              >
+                (a alteração da data por aqui não desconta créditos de
+                reagendamento do aluno, apenas altera a data do evento)
+              </span>{" "}
               <input
                 type="date"
                 disabled={savingMainInfo}
@@ -1165,7 +1181,48 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
           {!allowedToReschedule ? (
             <div style={{ padding: 12 }}>
-              Você excedeu o limite de reagendamentos.
+              {thePermissionsOfTheStudents == "student"
+                ? `${theNameOfTheStudents}, você excedeu o limite de reagendamentos.`
+                : `${theNameOfTheStudents} excedeu o limite de 
+                reagendamentos. Se quiser permitir que este (a) aluno (a)
+                 reagende novamente, dê créditos a este (a) aluno(a),
+                 ou simplesmente mude a data da aula no botão Editar`}
+
+              {thePermissionsOfTheStudents !== "student" && (
+                <a
+                  style={{
+                    marginLeft: 10,
+                  }}
+                  target="_blank"
+                  href="/students"
+                >
+                  Clique aqui para dar mais créditos a este aluno.
+                </a>
+              )}
+              <br />
+              <br />
+              {thePermissionsOfTheStudents !== "student" && (
+                <button
+                  onClick={() => {
+                    setSelectedFreeEvent(null);
+                    setIsMainInfoModalOpen(true);
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    backgroundColor: partnerColor(),
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    width: isDesktop ? "auto" : "100%",
+                    minWidth: 0,
+                  }}
+                >
+                  Clique aqui para editar as informações do evento
+                </button>
+              )}
             </div>
           ) : (
             <div style={{ padding: 12, display: "grid", gap: 12 }}>
