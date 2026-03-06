@@ -386,7 +386,7 @@ export default function VocabularyLessonModel({
               style={{
                 position: "fixed",
                 inset: 0,
-                backgroundColor: "rgba(15, 23, 42, 0.70)",
+                backgroundColor: "rgba(15, 23, 42, 0.90)",
                 zIndex: 999,
               }}
               onClick={() => setShowMatchModal(false)}

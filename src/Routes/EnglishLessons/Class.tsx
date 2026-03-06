@@ -3475,7 +3475,6 @@ export default function EnglishClassCourse2({
                                     element.type !== "selectexercise" && (
                                       <div
                                         style={{
-                                          // position: "sticky",
                                           display: element.subtitle
                                             ? "block"
                                             : "none",
