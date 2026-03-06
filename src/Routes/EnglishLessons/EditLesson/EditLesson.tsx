@@ -77,6 +77,7 @@ interface EditLessonModelProps {
   setSeeEdit?: (v: boolean) => void;
   headers?: any;
   fetchEventData?: any;
+  isDesktop?: boolean;
   buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
   studentId?: string | any;
@@ -171,6 +172,7 @@ export default function EditLesson({
   studentId,
   fetchEventData,
   setChange,
+  isDesktop,
   change,
   language,
 }: EditLessonModelProps) {
@@ -1318,7 +1320,7 @@ export default function EditLesson({
                       disabled={isAtBlockLimit}
                       style={{
                         ...ghostButton,
-                        width: 140,
+                        width: 150,
                         fontWeight: 700,
                         opacity: isAtBlockLimit ? 0.6 : 1,
                         cursor: isAtBlockLimit ? "not-allowed" : "pointer",
@@ -1433,6 +1435,7 @@ export default function EditLesson({
 
                     {!isAtBlockLimit && (
                       <GenerateEVSModal
+                        isDesktop={isDesktop}
                         visible={openAIGenerator}
                         studentId={studentId}
                         classId={classId}

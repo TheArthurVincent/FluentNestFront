@@ -7,6 +7,8 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 
 type HeadersLike = Record<string, string>;
 
+type ContentType = "prompt" | "content" | "disorganized content";
+
 type ElementType = {
   type: "explanation" | "vocabulary" | "sentences" | "exercise";
   subtitle?: string;
@@ -27,17 +29,12 @@ type Props = {
   visible: boolean;
   classId: string;
   headers?: HeadersLike | null;
-
+  isDesktop?: boolean;
   theme?: string;
-
   language1: "en" | "pt" | "es" | "fr" | string;
-
   postUrl?: string;
-
   onClose: () => void;
-
   onAppendElements: (newElements: ElementType[]) => void;
-
   title?: string;
 };
 
@@ -52,34 +49,37 @@ export default function GenerateEVSModal({
   visible,
   classId,
   headers,
+  isDesktop,
   theme,
   language1,
   onClose,
   onAppendElements,
   postUrl,
-  title = "Gerar blocos (Explanation / Vocabulary / Sentences)",
+  title = "Gerar Blocos",
 }: Props) {
   const BRAND = partnerColor();
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
   const [textInput, setTextInput] = useState("");
-
+  const [contentType, setContentType] = useState<ContentType>("prompt");
   const [wantExplanation, setWantExplanation] = useState(true);
   const [wantVocabulary, setWantVocabulary] = useState(true);
   const [wantSentences, setWantSentences] = useState(true);
   const [wantExercise, setWantExercise] = useState(true);
+  const [wantDialogue, setWantDialogue] = useState(true);
   const [exerciseCount, setExerciseCount] = useState(5);
   const [explanationCount, setExplanationCount] = useState(3);
   const [vocabularyCount, setVocabularyCount] = useState(12);
   const [sentencesCount, setSentencesCount] = useState(12);
+  const [dialogueCount, setDialogueCount] = useState(12);
 
   useEffect(() => {
     if (!visible) {
       setLoading(false);
       setErrorMsg(null);
       setTextInput("");
+      setContentType("prompt");
     }
   }, [visible]);
 
@@ -88,10 +88,8 @@ export default function GenerateEVSModal({
     const softBrand = `${BRAND}12`;
 
     const btnBase: React.CSSProperties = {
-      borderRadius: 12,
       border: "1px solid #e5e7eb",
-      padding: "10px 12px",
-      fontSize: 13,
+      fontSize: 8,
       fontWeight: 900,
       cursor: "pointer",
       userSelect: "none",
@@ -110,11 +108,10 @@ export default function GenerateEVSModal({
         padding: 14,
       },
       modal: {
-        width: "min(96vw, 860px)",
+        width: "min(96vw, 980px)",
         maxHeight: "92vh",
         overflow: "auto",
         background: "#fff",
-        borderRadius: 16,
         border: "1px solid #e5e7eb",
         boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
         padding: 16,
@@ -123,16 +120,15 @@ export default function GenerateEVSModal({
       headerRow: {
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-start",
+        alignItems: "center",
         gap: 12,
         marginBottom: 12,
       },
-      title: { margin: 0, fontSize: 18, fontWeight: 950, color: "#111827" },
-      subtitle: {
-        margin: "6px 0 0 0",
-        fontSize: 13,
-        color: "#6b7280",
-        lineHeight: 1.35,
+      title: {
+        margin: 0,
+        fontSize: 18,
+        fontWeight: 950,
+        color: "#111827",
       },
       ghostBtn: {
         ...btnBase,
@@ -143,6 +139,7 @@ export default function GenerateEVSModal({
         placeItems: "center",
         background: "#fff",
         color: "#111827",
+        flexShrink: 0,
       },
       primaryBtn: {
         ...btnBase,
@@ -157,70 +154,88 @@ export default function GenerateEVSModal({
         background: softBrand,
         color: "#111827",
       },
-      input: {
-        width: "100%",
-        border: "1px solid #e2e8f0",
-        borderRadius: 12,
-        padding: "10px 12px",
-        fontSize: 13,
-        outline: "none",
-      },
       textarea: {
         width: "100%",
+        minHeight: 380,
         border: "1px solid #e2e8f0",
-        borderRadius: 12,
-        padding: "10px 12px",
-        fontSize: 13,
+
+        fontSize: 10,
         outline: "none",
         resize: "vertical" as const,
-      },
-      row: {
-        display: "flex",
-        flexWrap: "wrap" as const,
-        gap: 10,
-        alignItems: "center",
+        background: "#fff",
       },
       box: {
         border: "1px solid #e5e7eb",
-        borderRadius: 14,
         padding: 12,
         background: "#f9fafb",
+        overflow: "auto",
       },
       errorBox: {
         marginTop: 10,
-        padding: "10px 12px",
-        borderRadius: 12,
         background: "#fef2f2",
         border: "1px solid #fecaca",
         color: "#991b1b",
-        fontSize: 13,
+        fontSize: 10,
       },
       miniLabel: {
-        fontSize: 12,
+        fontSize: 10,
         color: "#334155",
         fontWeight: 900,
+        whiteSpace: "nowrap" as const,
       },
       checkboxWrap: {
         display: "flex",
         alignItems: "center",
-        gap: 8,
-        padding: "8px 10px",
-        borderRadius: 12,
+        gap: 6,
+        padding: "4px",
         border: "1px solid #e5e7eb",
         background: "#fff",
+        minHeight: 38,
       },
       smallNumber: {
-        width: 90,
+        width: 52,
         border: "1px solid #e2e8f0",
-        borderRadius: 12,
-        padding: "8px 10px",
-        fontSize: 13,
+        padding: "4px",
+        fontSize: 10,
         outline: "none",
       },
-      divider: {
-        height: 1,
-        background: "#e5e7eb",
-        margin: "14px 0",
+      compactGrid: {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 8,
+      },
+      topGrid: {
+        display: "grid",
+        gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+        gap: 12,
+        alignItems: "stretch",
+      },
+      rightCol: {
+        display: "grid",
+        gap: 8,
+        alignContent: "start",
+      },
+      rightCard: {
+        border: "1px solid #e5e7eb",
+        background: "#fff",
+        padding: 10,
+      },
+      typeButtons: {
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: 6,
+      },
+      costBox: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 10,
+        padding: "4px",
+        border: "1px solid #e5e7eb",
+        background: "#fff",
+        fontSize: 10,
+        color: "#334155",
+        fontWeight: 800,
       },
     };
   }, [BRAND]);
@@ -249,6 +264,7 @@ export default function GenerateEVSModal({
       !wantExplanation &&
       !wantVocabulary &&
       !wantSentences &&
+      !wantDialogue &&
       !wantExercise
     ) {
       setErrorMsg("Selecione ao menos um bloco para gerar.");
@@ -256,13 +272,15 @@ export default function GenerateEVSModal({
     }
     const payload = {
       theme: "",
-      classId: classId,
-      input: input,
+      classId,
+      input,
+      contentType,
       language1: language1 || "en",
       requested: {
         explanation: wantExplanation ? clampInt(explanationCount, 1, 20) : 0,
         vocabulary: wantVocabulary ? clampInt(vocabularyCount, 1, 20) : 0,
         sentences: wantSentences ? clampInt(sentencesCount, 1, 20) : 0,
+        dialogue: wantDialogue ? clampInt(dialogueCount, 1, 12) : 0,
         exercise: wantExercise ? clampInt(exerciseCount, 1, 20) : 0,
       },
     };
@@ -331,11 +349,6 @@ export default function GenerateEVSModal({
         <div style={styles.headerRow}>
           <div style={{ minWidth: 0 }}>
             <h2 style={styles.title}>{title}</h2>
-            <p style={styles.subtitle}>
-              Selecione quais blocos gerar e quantos itens (1–20) dentro de
-              cada. O resultado será retornado pelo backend e você pode anexar
-              no seu elements.
-            </p>
           </div>
 
           <button
@@ -352,112 +365,260 @@ export default function GenerateEVSModal({
         </div>
 
         <div style={styles.box}>
-          <div style={{ display: "grid", gap: 10 }}>
-            <div style={styles.row}>
-              <div style={styles.checkboxWrap}>
-                <input
-                  type="checkbox"
-                  checked={wantExplanation}
-                  disabled={loading}
-                  onChange={(e) => setWantExplanation(e.target.checked)}
-                />
-                <span style={styles.miniLabel}>explanation</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={explanationCount}
-                  disabled={loading || !wantExplanation}
-                  onChange={(e) =>
-                    setExplanationCount(clampInt(e.target.value, 1, 20))
-                  }
-                  style={styles.smallNumber}
-                  title="Quantidade de sessões dentro de explanation (1–20)"
-                />
+          <div style={styles.topGrid}>
+            <div style={styles.rightCol}>
+              <div style={styles.costBox}>
+                <span>Cost: AI</span>
+                <span>
+                  -
+                  {Math.ceil(
+                    (explanationCount +
+                      vocabularyCount +
+                      sentencesCount +
+                      dialogueCount +
+                      exerciseCount) /
+                      2,
+                  )}
+                </span>
               </div>
 
-              <div style={styles.checkboxWrap}>
-                <input
-                  type="checkbox"
-                  checked={wantVocabulary}
-                  disabled={loading}
-                  onChange={(e) => setWantVocabulary(e.target.checked)}
-                />
-                <span style={styles.miniLabel}>vocabulary</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={vocabularyCount}
-                  disabled={loading || !wantVocabulary}
-                  onChange={(e) =>
-                    setVocabularyCount(clampInt(e.target.value, 1, 20))
-                  }
-                  style={styles.smallNumber}
-                  title="Quantidade de itens dentro de vocabulary.sentences (1–20)"
-                />
+              <div style={styles.rightCard}>
+                <div
+                  style={{
+                    ...styles.miniLabel,
+                    marginBottom: 8,
+                  }}
+                >
+                  Tipo de entrada
+                </div>
+
+                <div style={styles.typeButtons}>
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setContentType("prompt")}
+                    style={{
+                      ...styles.secondaryBtn,
+
+                      width: "100%",
+                      background: contentType === "prompt" ? BRAND : "#fff",
+                      color: contentType === "prompt" ? "#fff" : "#111827",
+                      border: `1px solid ${
+                        contentType === "prompt" ? BRAND : "#e5e7eb"
+                      }`,
+                    }}
+                  >
+                    Prompt
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setContentType("content")}
+                    style={{
+                      ...styles.secondaryBtn,
+
+                      width: "100%",
+                      background: contentType === "content" ? BRAND : "#fff",
+                      color: contentType === "content" ? "#fff" : "#111827",
+                      border: `1px solid ${
+                        contentType === "content" ? BRAND : "#e5e7eb"
+                      }`,
+                    }}
+                  >
+                    Conteúdo (Organizado)
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setContentType("disorganized content")}
+                    style={{
+                      ...styles.secondaryBtn,
+
+                      width: "100%",
+                      background:
+                        contentType === "disorganized content" ? BRAND : "#fff",
+                      color:
+                        contentType === "disorganized content"
+                          ? "#fff"
+                          : "#111827",
+                      border: `1px solid ${
+                        contentType === "disorganized content"
+                          ? BRAND
+                          : "#e5e7eb"
+                      }`,
+                    }}
+                  >
+                    Conteúdo (Desorganizado)
+                  </button>
+                </div>
               </div>
 
-              <div style={styles.checkboxWrap}>
-                <input
-                  type="checkbox"
-                  checked={wantSentences}
-                  disabled={loading}
-                  onChange={(e) => setWantSentences(e.target.checked)}
-                />
-                <span style={styles.miniLabel}>sentences</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={sentencesCount}
-                  disabled={loading || !wantSentences}
-                  onChange={(e) =>
-                    setSentencesCount(clampInt(e.target.value, 1, 20))
-                  }
-                  style={styles.smallNumber}
-                  title="Quantidade de itens dentro de sentences.sentences (1–20)"
-                />
-              </div>
+              <div style={styles.rightCard}>
+                <div
+                  style={{
+                    ...styles.miniLabel,
+                    marginBottom: 8,
+                  }}
+                >
+                  Blocos
+                </div>
 
-              <div style={styles.checkboxWrap}>
-                <input
-                  type="checkbox"
-                  checked={wantExercise}
-                  disabled={loading}
-                  onChange={(e) => setWantExercise(e.target.checked)}
-                />
-                <span style={styles.miniLabel}>exercise</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={exerciseCount}
-                  disabled={loading || !wantExercise}
-                  onChange={(e) =>
-                    setExerciseCount(clampInt(e.target.value, 1, 20))
-                  }
-                  style={styles.smallNumber}
-                  title="Quantidade de itens dentro de exercise.exercises (1–20)"
-                />
+                <div style={styles.compactGrid}>
+                  <div style={styles.checkboxWrap}>
+                    <input
+                      type="checkbox"
+                      checked={wantExplanation}
+                      disabled={loading}
+                      onChange={(e) => setWantExplanation(e.target.checked)}
+                    />
+                    <span style={styles.miniLabel}>explanation</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={3}
+                      value={explanationCount}
+                      disabled={loading || !wantExplanation}
+                      onChange={(e) =>
+                        setExplanationCount(clampInt(e.target.value, 1, 3))
+                      }
+                      style={styles.smallNumber}
+                      title="Quantidade de sessões dentro de explanation (1–3)"
+                    />
+                  </div>
+
+                  <div style={styles.checkboxWrap}>
+                    <input
+                      type="checkbox"
+                      checked={wantVocabulary}
+                      disabled={loading}
+                      onChange={(e) => setWantVocabulary(e.target.checked)}
+                    />
+                    <span style={styles.miniLabel}>vocabulary</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={vocabularyCount}
+                      disabled={loading || !wantVocabulary}
+                      onChange={(e) =>
+                        setVocabularyCount(clampInt(e.target.value, 1, 20))
+                      }
+                      style={styles.smallNumber}
+                      title="Quantidade de itens dentro de vocabulary.sentences (1–20)"
+                    />
+                  </div>
+
+                  <div style={styles.checkboxWrap}>
+                    <input
+                      type="checkbox"
+                      checked={wantSentences}
+                      disabled={loading}
+                      onChange={(e) => setWantSentences(e.target.checked)}
+                    />
+                    <span style={styles.miniLabel}>sentences</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={sentencesCount}
+                      disabled={loading || !wantSentences}
+                      onChange={(e) =>
+                        setSentencesCount(clampInt(e.target.value, 1, 20))
+                      }
+                      style={styles.smallNumber}
+                      title="Quantidade de itens dentro de sentences.sentences (1–20)"
+                    />
+                  </div>
+
+                  <div style={styles.checkboxWrap}>
+                    <input
+                      type="checkbox"
+                      checked={wantDialogue}
+                      disabled={loading}
+                      onChange={(e) => setWantDialogue(e.target.checked)}
+                    />
+                    <span style={styles.miniLabel}>dialogue</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={12}
+                      value={dialogueCount}
+                      disabled={loading || !wantDialogue}
+                      onChange={(e) =>
+                        setDialogueCount(clampInt(e.target.value, 1, 12))
+                      }
+                      style={styles.smallNumber}
+                      title="Quantidade de itens dentro de dialogue.dialogues (1–12)"
+                    />
+                  </div>
+
+                  <div style={styles.checkboxWrap}>
+                    <input
+                      type="checkbox"
+                      checked={wantExercise}
+                      disabled={loading}
+                      onChange={(e) => setWantExercise(e.target.checked)}
+                    />
+                    <span style={styles.miniLabel}>exercise</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={exerciseCount}
+                      disabled={loading || !wantExercise}
+                      onChange={(e) =>
+                        setExerciseCount(clampInt(e.target.value, 1, 20))
+                      }
+                      style={styles.smallNumber}
+                      title="Quantidade de itens dentro de exercise.exercises (1–20)"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div style={styles.divider} />
-            <div style={{ display: "grid", gap: 6 }}>
-              <div style={styles.miniLabel}>Prompt / Conteúdo</div>
+            <div style={{ minWidth: 0 }}>
               <textarea
                 disabled={loading}
                 rows={10}
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
-                placeholder="Cole aqui o prompt ou o conteúdo bruto que você quer transformar em blocos."
+                placeholder={
+                  contentType === "prompt"
+                    ? `Exemplo de prompt para gerar os blocos: 
+                    Crie uma aula sobre [TEMA].
+                                                Nível: [NÍVEL]
+                                                Objetivo da aula: [OBJETIVO]
+
+                                                Gere o conteúdo com foco em:
+                                                - [TÓPICO 1]
+                                                - [TÓPICO 2]
+                                                - [TÓPICO 3]
+
+                                                Instruções adicionais:
+                                                - Use linguagem clara e natural
+                                                - Foque em conteúdo útil para o aluno
+                                                - Crie exemplos práticos e coerentes com o tema
+                                                - Evite conteúdo genérico demais`
+                    : contentType === "content"
+                      ? `Exemplo de conteúdo organizado para gerar os blocos: 
+                                                Tema: [TEMA]
+                                                Nível: [NÍVEL]
+                                                Objetivo da aula: [OBJETIVO]`
+                      : contentType === "disorganized content"
+                        ? `Exemplo de conteúdo desorganizado para gerar os blocos: 
+                                                  [TEMA]
+                                                  [NÍVEL]
+                                                  [OBJETIVO]`
+                        : ""
+                }
                 style={styles.textarea}
               />
             </div>
-
-            {errorMsg && <div style={styles.errorBox}>{errorMsg}</div>}
           </div>
+
+          {errorMsg && <div style={styles.errorBox}>{errorMsg}</div>}
         </div>
 
         <div
@@ -482,10 +643,11 @@ export default function GenerateEVSModal({
 
           <button
             onClick={handleGenerate}
-            disabled={loading}
+            disabled={loading || (!textInput.trim() && !theme?.trim())}
             style={{
               ...styles.primaryBtn,
-              opacity: loading ? 0.75 : 1,
+              opacity: loading || !textInput ? 0.6 : 1,
+              cursor: loading || !textInput ? "not-allowed" : "pointer",
               display: "flex",
               gap: 10,
               alignItems: "center",

@@ -205,7 +205,7 @@ const Description: FC<DescriptionProps> = ({
                   placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
                   style={{
                     ...inputStyle,
-                    minHeight: 140,
+                    minHeight: 150,
                     resize: "vertical",
                     fontFamily: "Plus Jakarta Sans",
                   }}
@@ -254,7 +254,7 @@ const Description: FC<DescriptionProps> = ({
                   placeholder="Tome notas particulares sobre a aula aqui (invisível para o aluno). Esta área é útil para te lembrar de pontos importantes, dificuldades do aluno, ou qualquer outro detalhe que queira guardar para as próximas aulas."
                   style={{
                     ...inputStyle,
-                    minHeight: 140,
+                    minHeight: 150,
                     resize: "vertical",
                     fontFamily: "Plus Jakarta Sans",
                   }}
