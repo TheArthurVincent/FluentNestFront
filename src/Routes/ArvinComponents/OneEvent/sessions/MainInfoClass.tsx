@@ -1178,7 +1178,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           >
             Reagendar aula
           </div>
-
           {!allowedToReschedule ? (
             <div style={{ padding: 12 }}>
               {thePermissionsOfTheStudents == "student"
@@ -1187,7 +1186,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 reagendamentos. Se quiser permitir que este (a) aluno (a)
                  reagende novamente, dê créditos a este (a) aluno(a),
                  ou simplesmente mude a data da aula no botão Editar`}
-
               {thePermissionsOfTheStudents !== "student" && (
                 <a
                   style={{
@@ -1255,6 +1253,19 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       }}
                     >
                       Nenhum horário disponível encontrado.
+                      {thePermissionsOfTheStudents !== "student" &&
+                        `${" "} Agende aulas de reposição no calendário. Escolha a opção: 'Horário Vazio Para Reposição (Para que seus alunos marquem)'`}
+                      {thePermissionsOfTheStudents !== "student" && (
+                        <a
+                          style={{
+                            marginLeft: "10px",
+                          }}
+                          target="_blank"
+                          href="/my-calendar"
+                        >
+                          Acesse o Calendário
+                        </a>
+                      )}
                     </div>
                   ) : (
                     <div
@@ -1299,9 +1310,12 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         Reagendar para esse horário (esta ação não pode ser
                         desfeita)
                       </div>
-
                       <div
-                        style={{ display: "flex", gap: 8, marginLeft: "auto" }}
+                        style={{
+                          display: "flex",
+                          gap: 8,
+                          marginLeft: "auto",
+                        }}
                       >
                         <button
                           type="button"
@@ -1376,7 +1390,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             style={{
               padding: 12,
               borderTop: "1px solid #e2e8f0",
-              display: "flex",
+              display:
+                thePermissionsOfTheStudents !== "student" ? "flex" : "none",
               justifyContent: "flex-end",
               gap: 8,
             }}
