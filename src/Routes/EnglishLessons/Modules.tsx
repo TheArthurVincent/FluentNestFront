@@ -733,7 +733,7 @@ export default function Modules({
                                               style={{
                                                 fontSize: 11,
                                                 color: "#64748b",
-                                                maxWidth: 140,
+                                                maxWidth: 150,
                                                 whiteSpace: "nowrap",
                                                 overflow: "hidden",
                                                 textOverflow: "ellipsis",

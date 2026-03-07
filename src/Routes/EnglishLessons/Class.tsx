@@ -3052,6 +3052,7 @@ export default function EnglishClassCourse2({
                 !seeBoard &&
                 thePermissions !== "student" && (
                   <EditLesson
+                    isDesktop={isDesktop}
                     setChange={setChange}
                     change={change}
                     studentId={myId}
@@ -3063,17 +3064,18 @@ export default function EnglishClassCourse2({
                     fetchEventData={fetchEventData}
                   />
                 )}
-{thePermissions !=="student" && 
-              <HelpInfo
-                title="Como manipular  com os Elementos Dinâmicos"
-                text=""
-                youtubeUrl="https://youtu.be/KyUQRZbsz5M"
-                glow={true}
-                thePermissions="teacher"
-                anchor="inline"
-                initialPosition={{ x: 80, y: 120 }}
-                zIndex={2147484563647} // mais alto que quase tudo
-              />}
+              {thePermissions !== "student" && (
+                <HelpInfo
+                  title="Como manipular  com os Elementos Dinâmicos"
+                  text=""
+                  youtubeUrl="https://youtu.be/KyUQRZbsz5M"
+                  glow={true}
+                  thePermissions="teacher"
+                  anchor="inline"
+                  initialPosition={{ x: 80, y: 120 }}
+                  zIndex={2147484563647} // mais alto que quase tudo
+                />
+              )}
             </div>
           }
           {!seeEdit && (
@@ -3475,7 +3477,6 @@ export default function EnglishClassCourse2({
                                     element.type !== "selectexercise" && (
                                       <div
                                         style={{
-                                          // position: "sticky",
                                           display: element.subtitle
                                             ? "block"
                                             : "none",
@@ -3585,11 +3586,6 @@ export default function EnglishClassCourse2({
                                         }}
                                       />
                                     </div>
-                                  ) : element.type === "multipletexts" ? (
-                                    <MultipleTextsLessonModel
-                                      headers={headers}
-                                      element={element}
-                                    />
                                   ) : element.type === "explanation" ? (
                                     <ExplanationLesson
                                       headers={headers}
@@ -3622,6 +3618,21 @@ export default function EnglishClassCourse2({
                                     <ExerciseLessonModel
                                       headers={headers}
                                       item={element.items}
+                                    />
+                                  ) : element.type === "selectexercise" ? (
+                                    <MultipleTextsLessonModel
+                                      headers={headers}
+                                      element={element}
+                                      studentId={studentID}
+                                      courseId={classId}
+                                      selectedVoice={selectedVoice}
+                                      exerciseScore={(points, desc, id) => {
+                                        exerciseScore?.(
+                                          points,
+                                          desc || "Multiple Choice",
+                                          id,
+                                        );
+                                      }}
                                     />
                                   ) : (
                                     <></>
@@ -4139,6 +4150,7 @@ export default function EnglishClassCourse2({
                           {" "}
                           <EditLesson
                             setChange={setChange}
+                            isDesktop={isDesktop}
                             change={change}
                             studentId={myId}
                             buttonText={"Elementos Dinâmicos"}

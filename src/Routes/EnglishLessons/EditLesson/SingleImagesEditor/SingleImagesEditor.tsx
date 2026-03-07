@@ -281,7 +281,7 @@ export default function SingleImagesEditor({
                 <div
                   style={{
                     width: "100%",
-                    height: 140,
+                    height: 150,
                     background: "#f8fafc",
                     display: "grid",
                     placeItems: "center",

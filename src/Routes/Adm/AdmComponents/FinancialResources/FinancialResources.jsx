@@ -2060,6 +2060,10 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             </section>
           </div>
           <EntriesAndExits headers={headers} id={id} />
+          <br />
+          <br />
+          <br />
+          <br />
           {/* Modal para Novo Custo Fixo */}
           <Dialog
             open={newCostModalOpen}

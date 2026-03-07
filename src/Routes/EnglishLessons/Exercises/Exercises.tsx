@@ -598,7 +598,6 @@ export default function ExerciseRunner({
           exercise={exerciseScore}
           exerciseElement={selectElement}
           studentId={studentId || ""}
-          labels={labels}
           selectedVoice={selectedVoice}
           language={language}
           courseId={classId}

@@ -30,7 +30,6 @@ export function SelectExercise({
   exercise,
   exerciseElement,
   studentId,
-  labels,
   selectedVoice,
   language,
   courseId,
@@ -38,7 +37,6 @@ export function SelectExercise({
   exercise: (points: number, label?: string) => void;
   exerciseElement: ElementSelectExercise;
   studentId: string;
-  labels: typeof defaultLabels;
   selectedVoice?: string;
   language?: string;
   courseId?: string; // id da aula para /exercise-done/:id
