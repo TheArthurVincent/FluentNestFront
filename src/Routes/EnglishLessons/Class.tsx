@@ -3586,11 +3586,6 @@ export default function EnglishClassCourse2({
                                         }}
                                       />
                                     </div>
-                                  ) : element.type === "multipletexts" ? (
-                                    <MultipleTextsLessonModel
-                                      headers={headers}
-                                      element={element}
-                                    />
                                   ) : element.type === "explanation" ? (
                                     <ExplanationLesson
                                       headers={headers}
@@ -3623,6 +3618,21 @@ export default function EnglishClassCourse2({
                                     <ExerciseLessonModel
                                       headers={headers}
                                       item={element.items}
+                                    />
+                                  ) : element.type === "selectexercise" ? (
+                                    <MultipleTextsLessonModel
+                                      headers={headers}
+                                      element={element}
+                                      studentId={studentID}
+                                      courseId={classId}
+                                      selectedVoice={selectedVoice}
+                                      exerciseScore={(points, desc, id) => {
+                                        exerciseScore?.(
+                                          points,
+                                          desc || "Multiple Choice",
+                                          id,
+                                        );
+                                      }}
                                     />
                                   ) : (
                                     <></>
