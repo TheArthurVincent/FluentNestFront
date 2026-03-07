@@ -160,7 +160,7 @@ export default function MultipleTextsLessonModel({
                   )}
                 </div>
 
-                {question?.audio && (
+                {/* {question?.audio && (
                   <div
                     style={{
                       marginBottom: 12,
@@ -170,12 +170,13 @@ export default function MultipleTextsLessonModel({
                   >
                     Audio/Text: {question.audio}
                   </div>
-                )}
+                )} */}
 
                 <div
                   style={{
                     display: "grid",
                     gap: 10,
+                    gridTemplateColumns: "1fr 1fr",
                   }}
                 >
                   {Array.isArray(question?.options) &&
