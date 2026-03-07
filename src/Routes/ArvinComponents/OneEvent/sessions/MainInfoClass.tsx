@@ -1317,7 +1317,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                         >
                           Cancelar
                         </button>
-
                         <button
                           type="button"
                           disabled={rescheduling}
@@ -1831,12 +1830,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 gap: 8,
                 width: "100%",
                 minWidth: 0,
-
-                // Desktop: exatamente 4 colunas
                 gridTemplateColumns: isDesktop
                   ? "repeat(4, minmax(0, 1fr))"
-                  : "repeat(auto-fit, minmax(140px, 1fr))",
-
+                  : "repeat(2, minmax(0, 1fr))",
                 justifyContent: "flex-end",
                 alignItems: "stretch",
               }}
