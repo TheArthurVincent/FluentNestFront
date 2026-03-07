@@ -168,6 +168,7 @@ export default function ModalShowAllCORINGA({
             style={{ display: "grid", gap: "14px" }}
           >
             <TextField
+              required
               label="Nome"
               name="name"
               value={editData.name}
@@ -176,6 +177,7 @@ export default function ModalShowAllCORINGA({
               size="small"
             />
             <TextField
+              required
               label="Sobrenome"
               name="lastname"
               value={editData.lastname}
@@ -184,6 +186,7 @@ export default function ModalShowAllCORINGA({
               size="small"
             />
             <TextField
+              required
               label="Telefone"
               name="phoneNumber"
               value={editData.phoneNumber}
@@ -192,6 +195,7 @@ export default function ModalShowAllCORINGA({
               size="small"
             />
             <TextField
+              required
               label="Email"
               name="email"
               value={editData.email}
@@ -200,6 +204,7 @@ export default function ModalShowAllCORINGA({
               size="small"
             />
             <TextField
+              required
               label="Nascimento"
               name="dateOfBirth"
               type="date"
