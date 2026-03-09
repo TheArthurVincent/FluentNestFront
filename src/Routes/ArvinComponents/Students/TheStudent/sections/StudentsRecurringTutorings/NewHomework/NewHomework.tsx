@@ -60,7 +60,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
 
   const handleChange = (
     field: keyof HomeworkFormState,
-    value: string
+    value: string,
   ): void => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -77,12 +77,12 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
       notifyAlert("A descrição do homework é obrigatória.");
       return false;
     }
-    if (!eventID) {
-      notifyAlert(
-        "Evento inválido. Atualize a página ou selecione a aula novamente."
-      );
-      return false;
-    }
+    // if (!eventID) {
+    //   notifyAlert(
+    //     "Evento inválido. Atualize a página ou selecione a aula novamente."
+    //   );
+    //   return false;
+    // }
     return true;
   };
 
@@ -102,7 +102,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
       eventID: string;
     } = {
       description: formData.description.trim(),
-      eventID,
+      eventID: "",
     };
 
     if (formData.dueDate) {
