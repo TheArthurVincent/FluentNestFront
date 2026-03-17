@@ -441,11 +441,9 @@ export default function SentenceLessonModel({
                 <div
                   style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
                 >
-                  Exercícios de Sentença
-                </div>
-                <HelpInfo
-                  title="Como funciona o ditado"
-                  text="Você vai ouvir uma frase em inglês e precisa escrever exatamente o que escutou.
+                  <HelpInfo
+                    title="Como funciona o ditado"
+                    text="Você vai ouvir uma frase em inglês e precisa escrever exatamente o que escutou.
 
 Depois de responder, o sistema analisa sua frase palavra por palavra e mostra o resultado com cores:
 
@@ -490,13 +488,21 @@ Tente pensar na frase completa, não palavra por palavra
 🏁 Objetivo
 
 Conseguir escrever a frase exatamente como foi dita, com todas as palavras corretas e na ordem certa."
-                  youtubeUrl=""
-                  glow={true}
-                  thePermissions="student"
-                  anchor="inline"
-                  initialPosition={{ x: 80, y: 120 }}
-                  zIndex={2147484563647} // mais alto que quase tudo
-                />
+                    youtubeUrl=""
+                    glow={true}
+                    thePermissions="student"
+                    anchor="inline"
+                    initialPosition={{ x: 80, y: 120 }}
+                    zIndex={2147484563647} // mais alto que quase tudo
+                  />
+                  <span
+                    style={{
+                      marginLeft: 8,
+                    }}
+                  >
+                    Exercícios de Sentença
+                  </span>
+                </div>
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <button
                     onClick={() => setShowExercisesModal(false)}
