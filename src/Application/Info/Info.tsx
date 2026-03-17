@@ -177,7 +177,14 @@ export function HelpInfo({
         </button>
       </div>
 
-      <div style={{ padding: 12, fontSize: 13 }}>
+      <div
+        style={{
+          padding: 12,
+          maxHeight: "300px",
+          overflowY: "auto",
+          fontSize: 13,
+        }}
+      >
         {typeof text === "string" ? (
           <div style={{ whiteSpace: "pre-wrap" }}>{text}</div>
         ) : (
@@ -270,7 +277,7 @@ export function HelpInfo({
         z-index: 10000;  
         max-width: 240px; 
         left: 10%;
-        bottom: calc(100% + 10px);
+        top: calc(100% + 10px);
         transform: translateX(50%) translateY(4px);
         white-space: nowrap;
 
@@ -293,13 +300,13 @@ export function HelpInfo({
         content: "";
         position: absolute;
         left: 50%;
-        top: 100%;
+        bottom: 100%;
         transform: translateX(-50%);
         width: 0;
         height: 0;
         border-left: 6px solid transparent;
         border-right: 6px solid transparent;
-        border-top: 6px solid rgba(20,20,20,0.95);
+        border-bottom: 6px solid rgba(20,20,20,0.95);
       }
 
       .helpinfo-btn:hover .helpinfo-tooltip{

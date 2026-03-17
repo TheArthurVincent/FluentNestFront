@@ -15,6 +15,7 @@ import {
 import { DictationExercise } from "../../Exercises/Exercises/DictationExercise";
 import { LessonListeningExercise } from "../../Exercises/Exercises/ListenInEnglishExercise";
 import { defaultLabels } from "../../Exercises/Exercises";
+import { HelpInfo } from "../../../../Application/Info/Info";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -442,7 +443,60 @@ export default function SentenceLessonModel({
                 >
                   Exercícios de Sentença
                 </div>
+                <HelpInfo
+                  title="Como funciona o ditado"
+                  text="Você vai ouvir uma frase em inglês e precisa escrever exatamente o que escutou.
 
+Depois de responder, o sistema analisa sua frase palavra por palavra e mostra o resultado com cores:
+
+🎯 Como as palavras são avaliadas
+
+🟢 Verde (na posição correta)
+A palavra está correta e no lugar certo na frase.
+→ Esse é o melhor resultado.
+
+🟡 Amarelo (fora da posição)
+A palavra está correta, mas no lugar errado.
+→ Você ouviu certo, mas organizou errado.
+
+🔴 Vermelho (errada)
+A palavra está incorreta ou não existe na frase original.
+→ Aqui houve erro de escuta ou escrita.
+
+🧮 Como sua pontuação é calculada
+
+Sua nota é baseada principalmente nas palavras:
+
+🟢 Palavra correta na posição → vale mais pontos
+
+🟡 Palavra fora da posição → vale menos pontos
+
+🔴 Palavra errada → não pontua
+
+Além disso:
+
+📊 Se sua frase estiver muito parecida com a original, você ganha um bônus de similaridade
+
+💡 Dicas importantes
+
+Preste atenção na ordem das palavras
+
+Escute mais de uma vez se precisar
+
+Pequenos erros (como plural ou artigo) já fazem diferença
+
+Tente pensar na frase completa, não palavra por palavra
+
+🏁 Objetivo
+
+Conseguir escrever a frase exatamente como foi dita, com todas as palavras corretas e na ordem certa."
+                  youtubeUrl=""
+                  glow={true}
+                  thePermissions="student"
+                  anchor="inline"
+                  initialPosition={{ x: 80, y: 120 }}
+                  zIndex={2147484563647} // mais alto que quase tudo
+                />
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <button
                     onClick={() => setShowExercisesModal(false)}
