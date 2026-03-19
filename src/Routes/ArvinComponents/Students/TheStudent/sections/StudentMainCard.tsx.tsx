@@ -507,15 +507,45 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                 />
 
                 {/* Mensalidade */}
-                <Field
-                  label="Mensalidade (R$)"
-                  type="number"
-                  value={editFee}
-                  onChange={(e) => setEditFee(Number(e.target.value))}
-                  disabled={saving}
-                  placeholder="0,00"
-                />
-
+                <div
+                  style={{
+                    padding: 8,
+                    backgroundColor: "#ddd",
+                    borderRadius: 6,
+                    margin: "16px 0",
+                    display: "flex",
+                    gap: 8,
+                    flexDirection: "column",
+                    boxShadow: "0 5px 100px #fff",
+                  }}
+                >
+                  <Field
+                    label="Mensalidade (R$)"
+                    type="number"
+                    value={editFee}
+                    onChange={(e) => setEditFee(Number(e.target.value))}
+                    disabled={saving}
+                    placeholder="0,00"
+                  />
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      color: "#eee",
+                      backgroundColor: partnerColor(),
+                      padding: "8px",
+                      fontWeight: 600,
+                      textAlign: "center",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    <i
+                      className="fa fa-info-circle"
+                      style={{ marginRight: "4px" }}
+                    />
+                    Alterar a mensalidade por aqui não altera o relatório
+                    financeiro deste mês.
+                  </p>
+                </div>
                 {/* Flags: em dia / em pausa */}
                 <div
                   style={{

@@ -560,7 +560,6 @@ export function EntriesAndExits({
                       // color: student.onHold ?  "#eee":"white",
                       transition: "background-color 0.2s",
                     }}
-              
                   >
                     <div
                       style={{
@@ -1137,6 +1136,32 @@ export function EntriesAndExits({
             <>
               <div style={{ display: "flex", gap: "8px" }}>
                 <button
+                  onClick={closeCostDetailModal}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 12px",
+                    backgroundColor: `${partnerColor()}30`,
+                    color: "black",
+                  }}
+                >
+                  Fechar
+                </button>
+                <button
+                  onClick={() => setShowDeleteConfirmation(true)}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 12px",
+                    backgroundColor: "red",
+                    color: "white",
+                  }}
+                >
+                  Excluir
+                </button>
+                <button
                   onClick={() => setIsEditingCost(true)}
                   style={{
                     fontSize: "12px",
@@ -1149,34 +1174,7 @@ export function EntriesAndExits({
                 >
                   Editar
                 </button>
-                <button
-                  onClick={() => setShowDeleteConfirmation(true)}
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    textTransform: "none",
-                    padding: "6px 12px",
-                    backgroundColor: partnerColor(),
-                    color: "white",
-                  }}
-                >
-                  Excluir
-                </button>
               </div>
-
-              <button
-                onClick={closeCostDetailModal}
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "6px 12px",
-                  backgroundColor: partnerColor(),
-                  color: "white",
-                }}
-              >
-                Fechar
-              </button>
             </>
           )}
 
@@ -1194,14 +1192,13 @@ export function EntriesAndExits({
                   fontSize: "12px",
                   fontWeight: "500",
                   textTransform: "none",
-                  backgroundColor: partnerColor(),
-                  color: "white",
+                  backgroundColor: `${partnerColor()}30`,
+                  color: "black",
                   padding: "6px 16px",
                 }}
               >
                 Cancelar
               </button>
-
               <button
                 onClick={() =>
                   selectedCost &&
@@ -1259,8 +1256,8 @@ export function EntriesAndExits({
                   fontWeight: "500",
                   textTransform: "none",
                   padding: "6px 16px",
-                  backgroundColor: partnerColor(),
-                  color: "white",
+                  backgroundColor: `${partnerColor()}30`,
+                  color: "black",
                 }}
               >
                 Sim, excluir
