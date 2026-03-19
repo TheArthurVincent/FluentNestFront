@@ -425,9 +425,15 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             ? response.data.financialReportsOfTheMonth
             : [],
         );
+        console.log(
+          response.data.financialReportsOfTheMonth?.length > 0
+            ? response.data.financialReportsOfTheMonth
+            : [],
+        );
         setThereAreReports(false);
       } else {
         setStudentName(response.data.studentName);
+        console.log(response.data.financialReportsOfTheMonth || []);
         setFinancialReports(response.data.financialReportsOfTheMonth || []);
         setTimeout(() => {
           setThereAreReports(true);
@@ -610,9 +616,11 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       console.log("error", error);
     }
   };
+  const [loadingFD, setLoadingFD] = useState(false);
   const handleSaveFinancialReport = async () => {
     if (!selectedFinancialReport) return;
     setShowGenerateButton(false);
+    setLoadingFD(true);
 
     try {
       const updatedReport = {
@@ -643,6 +651,8 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
     } catch (error) {
       console.log("error", error);
       notifyAlert("Erro ao atualizar relatório financeiro");
+    } finally {
+      setLoadingFD(false);
     }
   };
 
@@ -2059,7 +2069,11 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               )}
             </section>
           </div>
-          <EntriesAndExits headers={headers} id={id} />
+          <EntriesAndExits
+            fetchFinancialReports={seeReports}
+            headers={headers}
+            id={id}
+          />
           <br />
           <br />
           <br />
@@ -2562,47 +2576,256 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 </button>
               </div>
             </DialogTitle>
-
-            <DialogContent style={{ padding: "24px 24px 16px" }}>
-              {selectedFinancialReport && (
-                <div>
-                  <div className="linguee-form-group">
-                    <label className="linguee-label linguee-label-required">
-                      Descrição
-                    </label>
-                    <input
-                      type="text"
-                      className="linguee-input linguee-input-text"
-                      value={editReportDescription}
-                      onChange={(e) => setEditReportDescription(e.target.value)}
-                      placeholder="Descrição do item financeiro"
-                    />
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "16px",
-                    }}
-                  >
+            {loadingFD ? (
+              <CircularProgress style={{ color: primaryColor() }} />
+            ) : (
+              <DialogContent style={{ padding: "24px 24px 16px" }}>
+                {selectedFinancialReport && (
+                  <div>
                     <div className="linguee-form-group">
                       <label className="linguee-label linguee-label-required">
-                        Valor (R$)
+                        Descrição
                       </label>
+                      <input
+                        type="text"
+                        className="linguee-input linguee-input-text"
+                        value={editReportDescription}
+                        onChange={(e) =>
+                          setEditReportDescription(e.target.value)
+                        }
+                        placeholder="Descrição do item financeiro"
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "16px",
+                      }}
+                    >
+                      <div className="linguee-form-group">
+                        <label className="linguee-label linguee-label-required">
+                          Valor (R$)
+                        </label>
+                        <input
+                          type="number"
+                          className="linguee-input linguee-input-number"
+                          value={
+                            editReportAmount ? Math.abs(editReportAmount) : ""
+                          }
+                          onChange={(e) => {
+                            setEditReportAmount(e.target.value);
+                            if (editReportPaidFor) {
+                              const finalAmount =
+                                Math.abs(e.target.value) -
+                                (parseFloat(editReportDiscount) || 0);
+                              setEditReportPaidSoFar(finalAmount);
+                            }
+                          }}
+                          placeholder="0,00"
+                          min="0"
+                          step="0.01"
+                        />
+                      </div>
+
+                      {editReportTypeOfItem !== "debt" && (
+                        <div className="linguee-form-group">
+                          <label className="linguee-label">Desconto</label>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px",
+                              marginBottom: "8px",
+                            }}
+                          >
+                            <label
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <input
+                                type="radio"
+                                value="absolute"
+                                checked={editReportDiscountType === "absolute"}
+                                onChange={() => {
+                                  setEditReportDiscountType("absolute");
+                                  // Manter o valor atual do desconto
+                                }}
+                              />
+                              <span
+                                style={{ marginLeft: "5px", fontSize: "12px" }}
+                              >
+                                R$
+                              </span>
+                            </label>
+                            <label
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <input
+                                type="radio"
+                                value="percentage"
+                                checked={
+                                  editReportDiscountType === "percentage"
+                                }
+                                onChange={() => {
+                                  setEditReportDiscountType("percentage");
+                                  // Calcular a porcentagem equivalente ao valor absoluto atual
+                                  const currentDiscount =
+                                    parseFloat(editReportDiscount) || 0;
+                                  const amount =
+                                    parseFloat(editReportAmount) || 0;
+                                  if (amount > 0) {
+                                    const percentage =
+                                      (currentDiscount / amount) * 100;
+                                    setEditReportDiscountPercentage(
+                                      percentage.toFixed(2),
+                                    );
+                                  }
+                                }}
+                              />
+                              <span
+                                style={{ marginLeft: "5px", fontSize: "12px" }}
+                              >
+                                %
+                              </span>
+                            </label>
+                          </div>
+                          <input
+                            type="number"
+                            className="linguee-input linguee-input-number"
+                            value={
+                              editReportDiscountType === "absolute"
+                                ? editReportDiscount
+                                : editReportDiscountPercentage
+                            }
+                            onChange={(e) => {
+                              if (editReportDiscountType === "absolute") {
+                                setEditReportDiscount(e.target.value);
+                              } else {
+                                setEditReportDiscountPercentage(e.target.value);
+                                // Calcular desconto absoluto baseado na porcentagem
+                                const percentage =
+                                  parseFloat(e.target.value) || 0;
+                                const amount =
+                                  parseFloat(editReportAmount) || 0;
+                                const absoluteDiscount =
+                                  (amount * percentage) / 100;
+                                setEditReportDiscount(
+                                  absoluteDiscount.toString(),
+                                );
+                              }
+
+                              // Atualizar paidSoFar se paidFor estiver marcado
+                              if (editReportPaidFor) {
+                                const finalAmount =
+                                  Math.abs(editReportAmount) -
+                                  (parseFloat(editReportDiscount) || 0);
+                                setEditReportPaidSoFar(finalAmount);
+                              }
+                            }}
+                            placeholder={
+                              editReportDiscountType === "absolute"
+                                ? "0,00"
+                                : "0,00"
+                            }
+                            min="0"
+                            step={
+                              editReportDiscountType === "absolute"
+                                ? "0.01"
+                                : "0.01"
+                            }
+                            max={
+                              editReportDiscountType === "percentage"
+                                ? "100"
+                                : undefined
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* DIV DO CÁLCULO DO VALOR FINAL */}
+                    {editReportAmount && (
+                      <div
+                        style={{
+                          backgroundColor: "#f8f9fa",
+                          border: "1px solid #e9ecef",
+                          borderRadius: "4px",
+                          padding: "16px",
+                          margin: "16px 0",
+                          fontSize: "16px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontWeight: "bold",
+                            marginBottom: "8px",
+                            color: "#495057",
+                          }}
+                        >
+                          Cálculo do Valor Final:
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "4px",
+                          }}
+                        >
+                          <div style={{ color: "#28a745" }}>
+                            Valor Total: R$ {formatNumber(editReportAmount)}
+                          </div>
+                          <div style={{ color: "#dc3545" }}>
+                            Desconto: R$ {formatNumber(editReportDiscount)}
+                            {editReportDiscountType === "percentage" &&
+                              editReportDiscountPercentage &&
+                              ` (${editReportDiscountPercentage}%)`}
+                          </div>
+                          <hr
+                            style={{ margin: "8px 0", borderColor: "#dee2e6" }}
+                          />
+                          <div
+                            style={{
+                              fontWeight: "bold",
+                              fontSize: "18px",
+                              color: "#007bff",
+                            }}
+                          >
+                            Valor Líquido: R${" "}
+                            {(
+                              Math.abs(parseFloat(editReportAmount) || 0) -
+                              (parseFloat(editReportDiscount) || 0)
+                            )
+                              .toFixed(2)
+                              .replace(".", ",")}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="linguee-form-group">
+                      <label className="linguee-label">Pago até aqui</label>
                       <input
                         type="number"
                         className="linguee-input linguee-input-number"
-                        value={
-                          editReportAmount ? Math.abs(editReportAmount) : ""
-                        }
+                        value={editReportPaidSoFar}
                         onChange={(e) => {
-                          setEditReportAmount(e.target.value);
-                          if (editReportPaidFor) {
-                            const finalAmount =
-                              Math.abs(e.target.value) -
-                              (parseFloat(editReportDiscount) || 0);
-                            setEditReportPaidSoFar(finalAmount);
+                          setEditReportPaidSoFar(e.target.value);
+                          const finalAmount =
+                            Math.abs(editReportAmount) -
+                            (parseFloat(editReportDiscount) || 0);
+                          if (e.target.value >= finalAmount) {
+                            setEditReportPaidFor(true);
+                          } else if (e.target.value < finalAmount) {
+                            setEditReportPaidFor(false);
                           }
                         }}
                         placeholder="0,00"
@@ -2610,380 +2833,178 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         step="0.01"
                       />
                     </div>
-
                     {editReportTypeOfItem !== "debt" && (
                       <div className="linguee-form-group">
-                        <label className="linguee-label">Desconto</label>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            marginBottom: "8px",
-                          }}
+                        <label className="linguee-label">Tipo de Item</label>
+                        <select
+                          className="linguee-select"
+                          value={editReportTypeOfItem}
+                          onChange={(e) =>
+                            setEditReportTypeOfItem(e.target.value)
+                          }
                         >
-                          <label
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                            }}
-                          >
+                          <option value="fee">Mensalidade</option>
+                          <option value="others">Outro</option>
+                        </select>
+                      </div>
+                    )}
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: editReportAccountFor
+                          ? "1fr 1fr"
+                          : "1fr",
+                        gap: "16px",
+                      }}
+                    >
+                      <div className="linguee-form-group">
+                        <label className="linguee-checkbox-item">
+                          <div className="linguee-toggle">
                             <input
-                              type="radio"
-                              value="absolute"
-                              checked={editReportDiscountType === "absolute"}
-                              onChange={() => {
-                                setEditReportDiscountType("absolute");
-                                // Manter o valor atual do desconto
-                              }}
-                            />
-                            <span
-                              style={{ marginLeft: "5px", fontSize: "12px" }}
-                            >
-                              R$
-                            </span>
-                          </label>
-                          <label
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              cursor: "pointer",
-                            }}
-                          >
-                            <input
-                              type="radio"
-                              value="percentage"
-                              checked={editReportDiscountType === "percentage"}
-                              onChange={() => {
-                                setEditReportDiscountType("percentage");
-                                // Calcular a porcentagem equivalente ao valor absoluto atual
-                                const currentDiscount =
-                                  parseFloat(editReportDiscount) || 0;
-                                const amount =
-                                  parseFloat(editReportAmount) || 0;
-                                if (amount > 0) {
-                                  const percentage =
-                                    (currentDiscount / amount) * 100;
-                                  setEditReportDiscountPercentage(
-                                    percentage.toFixed(2),
-                                  );
+                              type="checkbox"
+                              checked={editReportAccountFor}
+                              onChange={(e) => {
+                                setEditReportAccountFor(e.target.checked);
+                                // Se desmarcar "Contabilizar", desmarcar "Quitado"
+                                if (!e.target.checked) {
+                                  setEditReportPaidFor(false);
                                 }
                               }}
                             />
-                            <span
-                              style={{ marginLeft: "5px", fontSize: "12px" }}
-                            >
-                              %
-                            </span>
-                          </label>
-                        </div>
-                        <input
-                          type="number"
-                          className="linguee-input linguee-input-number"
-                          value={
-                            editReportDiscountType === "absolute"
-                              ? editReportDiscount
-                              : editReportDiscountPercentage
-                          }
-                          onChange={(e) => {
-                            if (editReportDiscountType === "absolute") {
-                              setEditReportDiscount(e.target.value);
-                            } else {
-                              setEditReportDiscountPercentage(e.target.value);
-                              // Calcular desconto absoluto baseado na porcentagem
-                              const percentage =
-                                parseFloat(e.target.value) || 0;
-                              const amount = parseFloat(editReportAmount) || 0;
-                              const absoluteDiscount =
-                                (amount * percentage) / 100;
-                              setEditReportDiscount(
-                                absoluteDiscount.toString(),
-                              );
-                            }
+                            <div className="linguee-toggle-slider"></div>
+                          </div>
+                          <span className="linguee-checkbox-label">
+                            Contabilizar
+                          </span>
+                        </label>
+                      </div>
 
-                            // Atualizar paidSoFar se paidFor estiver marcado
-                            if (editReportPaidFor) {
-                              const finalAmount =
-                                Math.abs(editReportAmount) -
-                                (parseFloat(editReportDiscount) || 0);
-                              setEditReportPaidSoFar(finalAmount);
-                            }
-                          }}
-                          placeholder={
-                            editReportDiscountType === "absolute"
-                              ? "0,00"
-                              : "0,00"
-                          }
-                          min="0"
-                          step={
-                            editReportDiscountType === "absolute"
-                              ? "0.01"
-                              : "0.01"
-                          }
-                          max={
-                            editReportDiscountType === "percentage"
-                              ? "100"
-                              : undefined
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* DIV DO CÁLCULO DO VALOR FINAL */}
-                  {editReportAmount && (
-                    <div
-                      style={{
-                        backgroundColor: "#f8f9fa",
-                        border: "1px solid #e9ecef",
-                        borderRadius: "4px",
-                        padding: "16px",
-                        margin: "16px 0",
-                        fontSize: "16px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight: "bold",
-                          marginBottom: "8px",
-                          color: "#495057",
-                        }}
-                      >
-                        💰 Cálculo do Valor Final:
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "4px",
-                        }}
-                      >
-                        <div style={{ color: "#28a745" }}>
-                          Valor Total: R$ {formatNumber(editReportAmount)}
+                      {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
+                      {editReportAccountFor && (
+                        <div className="linguee-form-group">
+                          {reportEditId !== "" && (
+                            <label className="linguee-checkbox-item">
+                              <div className="linguee-toggle">
+                                <input
+                                  type="checkbox"
+                                  checked={editReportPaidFor}
+                                  onChange={(e) => {
+                                    setEditReportPaidFor(e.target.checked);
+                                    if (e.target.checked) {
+                                      const finalAmount =
+                                        Math.abs(editReportAmount) -
+                                        (parseFloat(editReportDiscount) || 0);
+                                      setEditReportPaidSoFar(finalAmount);
+                                    }
+                                  }}
+                                />
+                                <div className="linguee-toggle-slider"></div>
+                              </div>
+                              <span className="linguee-checkbox-label">
+                                Quitado
+                              </span>
+                            </label>
+                          )}
                         </div>
-                        <div style={{ color: "#dc3545" }}>
-                          Desconto: R$ {formatNumber(editReportDiscount)}
-                          {editReportDiscountType === "percentage" &&
-                            editReportDiscountPercentage &&
-                            ` (${editReportDiscountPercentage}%)`}
-                        </div>
-                        <hr
-                          style={{ margin: "8px 0", borderColor: "#dee2e6" }}
-                        />
-                        <div
-                          style={{
-                            fontWeight: "bold",
-                            fontSize: "18px",
-                            color: "#007bff",
-                          }}
-                        >
-                          Valor Líquido: R${" "}
-                          {(
-                            Math.abs(parseFloat(editReportAmount) || 0) -
-                            (parseFloat(editReportDiscount) || 0)
-                          )
-                            .toFixed(2)
-                            .replace(".", ",")}
-                        </div>
-                      </div>
+                      )}
                     </div>
-                  )}
-
-                  <div className="linguee-form-group">
-                    <label className="linguee-label">Pago até aqui</label>
-                    <input
-                      type="number"
-                      className="linguee-input linguee-input-number"
-                      value={editReportPaidSoFar}
-                      onChange={(e) => {
-                        setEditReportPaidSoFar(e.target.value);
-                        const finalAmount =
-                          Math.abs(editReportAmount) -
-                          (parseFloat(editReportDiscount) || 0);
-                        if (e.target.value >= finalAmount) {
-                          setEditReportPaidFor(true);
-                        } else if (e.target.value < finalAmount) {
-                          setEditReportPaidFor(false);
-                        }
-                      }}
-                      placeholder="0,00"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                  {editReportTypeOfItem !== "debt" && (
-                    <div className="linguee-form-group">
-                      <label className="linguee-label">Tipo de Item</label>
-                      <select
-                        className="linguee-select"
-                        value={editReportTypeOfItem}
-                        onChange={(e) =>
-                          setEditReportTypeOfItem(e.target.value)
-                        }
-                      >
-                        <option value="fee">Mensalidade</option>
-                        <option value="others">Outro</option>
-                      </select>
-                    </div>
-                  )}
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: editReportAccountFor
-                        ? "1fr 1fr"
-                        : "1fr",
-                      gap: "16px",
-                    }}
-                  >
-                    <div className="linguee-form-group">
-                      <label className="linguee-checkbox-item">
-                        <div className="linguee-toggle">
-                          <input
-                            type="checkbox"
-                            checked={editReportAccountFor}
-                            onChange={(e) => {
-                              setEditReportAccountFor(e.target.checked);
-                              // Se desmarcar "Contabilizar", desmarcar "Quitado"
-                              if (!e.target.checked) {
-                                setEditReportPaidFor(false);
-                              }
+                    {/* Trash button */}
+                    {reportEditId !== "" && (
+                      <div>
+                        {!seeButtonDeleteItem && (
+                          <button
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "#d9534f",
+                              fontSize: "18px",
+                              padding: "4px",
+                              transition: "background 0.2s",
                             }}
-                          />
-                          <div className="linguee-toggle-slider"></div>
-                        </div>
-                        <span className="linguee-checkbox-label">
-                          Contabilizar
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
-                    {editReportAccountFor && (
-                      <div className="linguee-form-group">
-                        {reportEditId !== "" && (
-                          <label className="linguee-checkbox-item">
-                            <div className="linguee-toggle">
-                              <input
-                                type="checkbox"
-                                checked={editReportPaidFor}
-                                onChange={(e) => {
-                                  setEditReportPaidFor(e.target.checked);
-                                  if (e.target.checked) {
-                                    const finalAmount =
-                                      Math.abs(editReportAmount) -
-                                      (parseFloat(editReportDiscount) || 0);
-                                    setEditReportPaidSoFar(finalAmount);
-                                  }
+                            title="Excluir entrada do mês"
+                            onClick={() => {
+                              setSeeButtonDeleteItem(true);
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.currentTarget.style.background = "#fbe9e7")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.currentTarget.style.background = "none")
+                            }
+                          >
+                            Excluir este ítem
+                          </button>
+                        )}
+                        {seeButtonDeleteItem && (
+                          <div
+                            style={{
+                              display: "grid",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              backgroundColor: "#ffdbdbff",
+                              padding: "1rem",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            <p>Tem certeza que deseja excluir este item?</p>
+                            <div style={{ display: "flex" }}>
+                              <button
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  color: "blue",
+                                  fontSize: "18px",
+                                  padding: "4px",
+                                  transition: "background 0.2s",
                                 }}
-                              />
-                              <div className="linguee-toggle-slider"></div>
+                                title="Excluir entrada do mês"
+                                onClick={() => {
+                                  setSeeButtonDeleteItem(false);
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.background = "#fbe9e7")
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.background = "none")
+                                }
+                              >
+                                Não!{" "}
+                              </button>
+                              <button
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  color: "#d9534f",
+                                  fontSize: "18px",
+                                  padding: "4px",
+                                  transition: "background 0.2s",
+                                }}
+                                title="Excluir entrada do mês"
+                                onClick={() => {
+                                  handleDeleteMonthlyEntry(reportEditId);
+                                }}
+                                onMouseEnter={(e) =>
+                                  (e.currentTarget.style.background = "#fbe9e7")
+                                }
+                                onMouseLeave={(e) =>
+                                  (e.currentTarget.style.background = "none")
+                                }
+                              >
+                                Sim! Excluir este item{" "}
+                              </button>
                             </div>
-                            <span className="linguee-checkbox-label">
-                              Quitado
-                            </span>
-                          </label>
+                          </div>
                         )}
                       </div>
                     )}
                   </div>
-                  {/* Trash button */}
-                  {reportEditId !== "" && (
-                    <div>
-                      {!seeButtonDeleteItem && (
-                        <button
-                          style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            color: "#d9534f",
-                            fontSize: "18px",
-                            padding: "4px",
-                            transition: "background 0.2s",
-                          }}
-                          title="Excluir entrada do mês"
-                          onClick={() => {
-                            setSeeButtonDeleteItem(true);
-                          }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.style.background = "#fbe9e7")
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.style.background = "none")
-                          }
-                        >
-                          🗑️ Excluir este ítem
-                        </button>
-                      )}
-                      {seeButtonDeleteItem && (
-                        <div
-                          style={{
-                            display: "grid",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            backgroundColor: "#ffdbdbff",
-                            padding: "1rem",
-                            borderRadius: "4px",
-                          }}
-                        >
-                          <p>Tem certeza que deseja excluir este item?</p>
-                          <div style={{ display: "flex" }}>
-                            <button
-                              style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "blue",
-                                fontSize: "18px",
-                                padding: "4px",
-                                transition: "background 0.2s",
-                              }}
-                              title="Excluir entrada do mês"
-                              onClick={() => {
-                                setSeeButtonDeleteItem(false);
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.style.background = "#fbe9e7")
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.style.background = "none")
-                              }
-                            >
-                              Não!{" "}
-                            </button>
-                            <button
-                              style={{
-                                background: "none",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "#d9534f",
-                                fontSize: "18px",
-                                padding: "4px",
-                                transition: "background 0.2s",
-                              }}
-                              title="Excluir entrada do mês"
-                              onClick={() => {
-                                handleDeleteMonthlyEntry(reportEditId);
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.currentTarget.style.background = "#fbe9e7")
-                              }
-                              onMouseLeave={(e) =>
-                                (e.currentTarget.style.background = "none")
-                              }
-                            >
-                              Sim! Excluir este item{" "}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </DialogContent>
-
+                )}
+              </DialogContent>
+            )}
             <DialogActions
               style={{
                 padding: "16px 24px 24px",
@@ -3006,10 +3027,11 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 onClick={handleSaveFinancialReport}
                 disabled={!editReportDescription.trim() || !editReportAmount}
                 style={{
+                  color: "white",
                   backgroundColor:
                     !editReportDescription.trim() || !editReportAmount
-                      ? "#9ca3af"
-                      : undefined,
+                      ? undefined
+                      : partnerColor(),
                   cursor:
                     !editReportDescription.trim() || !editReportAmount
                       ? "not-allowed"

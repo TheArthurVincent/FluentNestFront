@@ -26,6 +26,7 @@ interface NewStudentModalProps {
 interface FormDataState {
   name: string;
   lastname: string;
+  fee: number;
   email: string;
   dateOfBirth: string;
   cpf: string;
@@ -33,10 +34,45 @@ interface FormDataState {
   confirmPassword: string;
 }
 
+const switchTrackBase: React.CSSProperties = {
+  width: 44,
+  height: 24,
+  borderRadius: 999,
+  position: "relative",
+  border: "1px solid #e2e8f0",
+  transition: "background-color 180ms ease",
+  cursor: "pointer",
+  flexShrink: 0,
+};
+
+const switchThumbBase: React.CSSProperties = {
+  width: 20,
+  height: 20,
+  borderRadius: 999,
+  background: "#fff",
+  position: "absolute",
+  top: 1.5,
+  transition: "transform 180ms ease",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
+};
+
+const switchRowStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 12,
+  padding: "10px 12px",
+  border: "1px solid #e2e8f0",
+  borderRadius: 10,
+  background: "#fff",
+  marginTop: 8,
+};
+
 export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
   const [formData, setFormData] = useState<FormDataState>({
     name: "",
     lastname: "",
+    fee: 0,
     email: "",
     dateOfBirth: "",
     cpf: "",
@@ -44,13 +80,17 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
     confirmPassword: "",
   });
 
+  const [includeThisMonth, setIncludeThisMonth] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState(false);
   const [upload, setUpload] = useState(true);
   const [goldVisible, setGoldVisible] = useState(false);
-  const [open, setOpen] = useState(false); // controla o modal
+  const [open, setOpen] = useState(false);
 
   const handleChange = (field: keyof FormDataState, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [field]: field === "fee" ? Number(value) : value,
+    }));
   };
 
   const resetForm = () => {
@@ -58,19 +98,26 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
       name: "",
       lastname: "",
       email: "",
+      fee: 0,
       dateOfBirth: "",
       cpf: "",
       password: "",
       confirmPassword: "",
     });
+    setIncludeThisMonth(true);
     setUpload((prev) => !prev);
   };
 
   const validateForm = () => {
-    const { name, lastname, email, password, confirmPassword } = formData;
+    const { name, lastname, email, password, confirmPassword, fee } = formData;
 
     if (!name || !lastname || !email || !password || !confirmPassword) {
       notifyAlert("Preencha todos os campos obrigatórios!");
+      return false;
+    }
+
+    if (!fee && fee !== 0) {
+      notifyAlert("Preencha a mensalidade!");
       return false;
     }
 
@@ -95,27 +142,29 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
       email: formData.email,
       password: formData.password,
       dateOfBirth: formData.dateOfBirth,
+      fee: formData.fee,
+      includeThisMonth,
     };
 
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/newstudentbyteacher/${id}`,
         newStudent,
-        { headers: headers || {} }
+        { headers: headers || {} },
       );
       resetForm();
       notifyAlert(
         `Usuário cadastrado com sucesso! ${response.data.message}`,
-        "green"
+        "green",
       );
-      setOpen(false); // fecha o modal após sucesso
+      setOpen(false);
       window.location.reload();
     } catch (error: any) {
       notifyAlert(
         `Erro ao cadastrar aluno ${formData.name}. ${
           error?.response?.data?.message || ""
         }`,
-        partnerColor()
+        partnerColor(),
       );
       setGoldVisible(true);
     } finally {
@@ -141,6 +190,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
   }[] = [
     { label: "Nome", type: "text", key: "name", required: true },
     { label: "Sobrenome", type: "text", key: "lastname", required: true },
+    { label: "Mensalidade", type: "number", key: "fee", required: true },
     { label: "E-mail", type: "email", key: "email", required: true },
     { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
     { label: "Senha", type: "password", key: "password", required: true },
@@ -154,7 +204,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
 
   return (
     <>
-      {/* Botão que abre o modal */}
       <Button
         onClick={() => setOpen(true)}
         style={{
@@ -169,7 +218,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
         + Novo Aluno
       </Button>
 
-      {/* Modal */}
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -200,7 +248,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
               padding: "0.5rem 0",
             }}
           >
-            <HOne>Cadastro rápido</HOne>
             <form className="grid-2-1" onSubmit={handleSubmit}>
               {formFields.map(({ label, type, key, required }) => (
                 <div key={key}>
@@ -216,6 +263,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
                     {label}{" "}
                     {required && <span style={{ color: "#e74c3c" }}>*</span>}
                   </label>
+
                   <input
                     type={type}
                     value={formData[key]}
@@ -236,10 +284,55 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
                     }
                     maxLength={key === "cpf" ? 11 : undefined}
                   />
+
+                  {key === "fee" && (
+                    <div style={switchRowStyle}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 2,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 13,
+                            fontWeight: 600,
+                            color: "#0f172a",
+                          }}
+                        >
+                          {includeThisMonth
+                            ? "Incluir este mês"
+                            : "Não incluir este mês"}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        aria-pressed={includeThisMonth}
+                        onClick={() => setIncludeThisMonth((prev) => !prev)}
+                        style={{
+                          ...switchTrackBase,
+                          backgroundColor: includeThisMonth
+                            ? partnerColor()
+                            : "#e5e7eb",
+                        }}
+                      >
+                        <span
+                          style={{
+                            ...switchThumbBase,
+                            left: 2,
+                            transform: includeThisMonth
+                              ? "translateX(20px)"
+                              : "translateX(0px)",
+                          }}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
 
-              {/* Espaço para alinhar botão na grid */}
               <div />
 
               <button
@@ -271,6 +364,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
                 )}
               </button>
             </form>
+
             {goldVisible && <UpgradeGoldButton />}
           </div>
         </DialogContent>

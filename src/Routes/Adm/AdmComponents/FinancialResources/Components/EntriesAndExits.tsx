@@ -22,6 +22,7 @@ type HeadersType = Record<string, string>;
 type EntriesAndExitsProps = {
   headers: HeadersType;
   id: string;
+  fetchFinancialReports: any;
 };
 
 type Student = {
@@ -46,10 +47,14 @@ type ItemType = "others" | "debt";
 const pad2 = (n: number) => String(n).padStart(2, "0");
 const getCurrentMonthYear = () => {
   const d = new Date();
-  return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}`;
+  return `${pad2(d.getMonth() + 1)}-${d.getFullYear()}`;
 };
 
-export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
+export function EntriesAndExits({
+  headers,
+  id,
+  fetchFinancialReports,
+}: EntriesAndExitsProps) {
   const currentMonthYear = useMemo(() => getCurrentMonthYear(), []);
 
   const [loading, setLoading] = useState(true);
@@ -94,7 +99,7 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
       const list = (response.data?.listOfStudentsFees || []) as Student[];
       setStudents(list);
     } catch {
-      notifyAlert("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar relatório financeiro");
     }
   }, [headers, id]);
 
@@ -252,6 +257,7 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
   // =========================
   // CRUD Fixed Costs
   // =========================
+  const [loadingNewCost, setLoadingNewCost] = useState(false);
   const createFixedCost = useCallback(
     async (typeOfItem: ItemType): Promise<void> => {
       if (!newCostAmount || !newCostDescription.trim()) {
@@ -266,7 +272,7 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
         );
         return;
       }
-
+      setLoadingNewCost(true);
       try {
         const response = await axios.post(
           `${backDomain}/api/v1/fixed-cost/${id}`,
@@ -282,12 +288,14 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
 
         setFixedCosts((response.data?.fixedCosts || []) as FixedCost[]);
         setIncludeThisMonth(false);
-
         // mantém coerência do checkbox
         void fetchHasReports(currentMonthYear);
-
         notifyAlert("Custo fixo adicionado com sucesso!", "green");
-        closeNewCostModal();
+        setTimeout(() => {
+          closeNewCostModal();
+          window.location.reload();
+          setLoadingNewCost(false);
+        }, 500);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log("error", error);
@@ -841,101 +849,142 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
             </h2>
             <button
               onClick={closeNewCostModal}
-              style={{ minWidth: "auto", padding: "8px" }}
+              style={{
+                minWidth: "auto",
+                padding: "8px",
+                backgroundColor: partnerColor(),
+                color: "white",
+              }}
             >
               X
             </button>
           </div>
         </DialogTitle>
-
-        <DialogContent style={{ padding: "24px 24px 16px" }}>
-          <div className="linguee-form-group">
-            <label className="linguee-label">
-              Mês:{" "}
-              {new Date().toLocaleDateString("pt-BR", {
-                month: "long",
-                year: "numeric",
-              })}
-            </label>
-          </div>
-
-          <div className="linguee-form-group">
-            <label className="linguee-label linguee-label-required">
-              Descrição
-            </label>
-            <input
-              type="text"
-              className="linguee-input linguee-input-text"
-              value={newCostDescription}
-              onChange={(e) => setNewCostDescription(e.target.value)}
-              placeholder="Ex: Aluguel, Energia, Internet..."
-            />
-            {isDuplicateCostName && (
-              <div className="linguee-error-text">
-                Já existe um custo com esta descrição
+        {loadingNewCost ? (
+          <CircularProgress style={{ color: partnerColor() }} />
+        ) : (
+          <>
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              <div className="linguee-form-group">
+                <label className="linguee-label">
+                  Mês:{" "}
+                  {new Date().toLocaleDateString("pt-BR", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </label>
               </div>
-            )}
-          </div>
 
-          <div className="linguee-form-group">
-            <label className="linguee-label linguee-label-required">
-              Valor (R$)
-            </label>
-            <input
-              type="number"
-              className="linguee-input linguee-input-number"
-              value={newCostAmount ? Math.abs(Number(newCostAmount)) : ""}
-              onChange={(e) => setNewCostAmount(e.target.value)}
-              placeholder="0,00"
-              min={0}
-              step={0.01}
-            />
-          </div>
-        </DialogContent>
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  className="linguee-input linguee-input-text"
+                  value={newCostDescription}
+                  onChange={(e) => setNewCostDescription(e.target.value)}
+                  placeholder="Ex: Aluguel, Energia, Internet..."
+                />
+                {isDuplicateCostName && (
+                  <div className="linguee-error-text">
+                    Já existe um custo com esta descrição
+                  </div>
+                )}
+              </div>
 
-        {hasReportsThisMonth && (
-          <DialogContent>
-            <div
-              onClick={() => setIncludeThisMonth((v) => !v)}
-              style={{ display: "flex", alignItems: "center", gap: "8px" }}
-              className="linguee-form-group"
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Valor (R$)
+                </label>
+                <input
+                  type="number"
+                  className="linguee-input linguee-input-number"
+                  value={newCostAmount ? Math.abs(Number(newCostAmount)) : ""}
+                  onChange={(e) => setNewCostAmount(e.target.value)}
+                  placeholder="0,00"
+                  min={0}
+                  step={0.01}
+                />
+              </div>
+            </DialogContent>
+
+            {/* {hasReportsThisMonth && ( */}
+            <DialogContent>
+              <div
+                onClick={() => setIncludeThisMonth((v) => !v)}
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                className="linguee-form-group"
+              >
+                <input
+                  type="checkbox"
+                  className="linguee-input linguee-input-checkbox"
+                  checked={includeThisMonth}
+                  onChange={() => setIncludeThisMonth((v) => !v)}
+                  style={{
+                    display: "none",
+                  }}
+                />
+                <label
+                  style={{
+                    fontSize: "16px",
+                    backgroundColor: includeThisMonth ? "green" : "red",
+                    color: "white",
+                    padding: "2px 4px",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Incluir este mês?{" "}
+                  {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
+                </label>
+              </div>
+            </DialogContent>
+            {/* )} */}
+
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
             >
-              <input
-                type="checkbox"
-                className="linguee-input linguee-input-checkbox"
-                checked={includeThisMonth}
-                onChange={() => setIncludeThisMonth((v) => !v)}
-              />
-              <label>
-                Incluir este mês?{" "}
-                {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
-              </label>
-            </div>
-          </DialogContent>
+              <button
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: "white",
+                }}
+                className="linguee-btn"
+                onClick={closeNewCostModal}
+              >
+                Cancelar
+              </button>
+              <button
+                className={`linguee-btn ${!isSaveCostDisabled ? "linguee-btn-primary" : ""}`}
+                onClick={() => void createFixedCost("debt")}
+                disabled={isSaveCostDisabled || loadingNewCost}
+                style={{
+                  backgroundColor:
+                    isSaveCostDisabled || loadingNewCost
+                      ? "#9ca3af"
+                      : partnerColor(),
+                  color:
+                    isSaveCostDisabled || loadingNewCost ? "#333" : "white",
+                  cursor:
+                    isSaveCostDisabled || loadingNewCost
+                      ? "not-allowed"
+                      : "pointer",
+                }}
+              >
+                {isDuplicateCostName
+                  ? "Nome já existe"
+                  : loadingNewCost
+                    ? "Carregando..."
+                    : "Adicionar Custo"}
+              </button>
+            </DialogActions>
+          </>
         )}
-
-        <DialogActions
-          style={{
-            padding: "16px 24px 24px",
-            gap: "12px",
-            justifyContent: "flex-end",
-          }}
-        >
-          <button className="linguee-btn" onClick={closeNewCostModal}>
-            Cancelar
-          </button>
-          <button
-            className={`linguee-btn ${!isSaveCostDisabled ? "linguee-btn-primary" : ""}`}
-            onClick={() => void createFixedCost("debt")}
-            disabled={isSaveCostDisabled}
-            style={{
-              backgroundColor: isSaveCostDisabled ? "#9ca3af" : undefined,
-              cursor: isSaveCostDisabled ? "not-allowed" : "pointer",
-            }}
-          >
-            {isDuplicateCostName ? "Nome já existe" : "Adicionar Custo"}
-          </button>
-        </DialogActions>
       </Dialog>
 
       {/* MODAL DETALHES DO CUSTO */}
@@ -968,7 +1017,13 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
             </div>
             <button
               onClick={closeCostDetailModal}
-              style={{ minWidth: "auto", padding: "8px", color: "#6b7280" }}
+              style={{
+                minWidth: "auto",
+                padding: "8px",
+
+                backgroundColor: partnerColor(),
+                color: "white",
+              }}
             >
               X
             </button>
@@ -1121,6 +1176,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                     fontWeight: "500",
                     textTransform: "none",
                     padding: "6px 12px",
+                    backgroundColor: partnerColor(),
+                    color: "white",
                   }}
                 >
                   Editar
@@ -1132,6 +1189,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                     fontWeight: "500",
                     textTransform: "none",
                     padding: "6px 12px",
+                    backgroundColor: partnerColor(),
+                    color: "white",
                   }}
                 >
                   Excluir
@@ -1145,6 +1204,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                   fontWeight: "500",
                   textTransform: "none",
                   padding: "6px 12px",
+                  backgroundColor: partnerColor(),
+                  color: "white",
                 }}
               >
                 Fechar
@@ -1166,6 +1227,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                   fontSize: "12px",
                   fontWeight: "500",
                   textTransform: "none",
+                  backgroundColor: partnerColor(),
+                  color: "white",
                   padding: "6px 16px",
                 }}
               >
@@ -1191,7 +1254,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                   backgroundColor:
                     !editCostDescription.trim() || !editCostAmount
                       ? "#9ca3af"
-                      : primaryColor(),
+                      : partnerColor(),
+                  color: "white",
                   cursor:
                     !editCostDescription.trim() || !editCostAmount
                       ? "not-allowed"
@@ -1208,10 +1272,11 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
               <button
                 onClick={() => setShowDeleteConfirmation(false)}
                 style={{
-                  color: "#6b7280",
                   fontSize: "12px",
                   fontWeight: "500",
                   textTransform: "none",
+                  backgroundColor: partnerColor(),
+                  color: "white",
                   padding: "6px 16px",
                 }}
               >
@@ -1227,6 +1292,8 @@ export function EntriesAndExits({ headers, id }: EntriesAndExitsProps) {
                   fontWeight: "500",
                   textTransform: "none",
                   padding: "6px 16px",
+                  backgroundColor: partnerColor(),
+                  color: "white",
                 }}
               >
                 Sim, excluir
