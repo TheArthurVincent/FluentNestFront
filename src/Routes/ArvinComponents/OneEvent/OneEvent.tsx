@@ -637,8 +637,9 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       homeworkID={String(hw.id)}
                       homeworkData={hw.description || ""}
                       homeworkAnswer={hw.answers || ""}
-                      headers={headers}
                       commentAnswer={hw.commentAnswer || ""}
+                      homeworkAttachment={hw.attachments || ""}
+                      headers={headers}
                       evendId={event._id}
                       event={event}
                       isDesktop={isDesktop}
@@ -654,6 +655,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     homeworkStudentName={undefined} // or just remove this prop
                     homeworkAnswer={""}
                     commentAnswer={""}
+                    homeworkAttachment={""}
                     headers={headers}
                     evendId={event._id}
                     event={event}

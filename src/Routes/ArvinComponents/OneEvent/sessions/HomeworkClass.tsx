@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import {
@@ -12,7 +12,7 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 type HomeworkClassProps = {
   headers: MyHeadersType;
   evendId: string;
-  fetchEventData: () => void;
+  fetchEventData: () => Promise<void>;
   isDesktop?: boolean;
   event?: any;
   homeworkStudentName?: string;
@@ -22,6 +22,7 @@ type HomeworkClassProps = {
   homeworkData: string;
   homeworkAnswer?: string;
   commentAnswer?: string;
+  homeworkAttachment?: string;
 };
 
 const overlayStyle: React.CSSProperties = {
@@ -112,7 +113,22 @@ const switchThumbBase: React.CSSProperties = {
   boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
 };
 
+const modeButtonBase: React.CSSProperties = {
+  flex: 1,
+  padding: "10px 12px",
+  borderRadius: 8,
+  fontSize: 13,
+  fontWeight: 500,
+  cursor: "pointer",
+  transition: "all 0.2s",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+};
+
 type ModalMode = "description" | "answer" | "comment";
+type SubmissionMode = "file" | "editor";
 
 const HomeworkClass: FC<HomeworkClassProps> = ({
   headers,
@@ -121,6 +137,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   homeworkData,
   homeworkAnswer,
   commentAnswer,
+  homeworkAttachment,
   allowedToEdit,
   homeworkStudentName,
   allowedToAnswer,
@@ -131,15 +148,29 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   const [mode, setMode] = useState<ModalMode>("description");
   const [saving, setSaving] = useState(false);
   const [notifyTeacher, setNotifyTeacher] = useState<boolean>(false);
+  const [submissionMode, setSubmissionMode] =
+    useState<SubmissionMode>("editor");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const hasHomework = !!homeworkID;
-  const hasAnswer = !!(homeworkAnswer || "").trim();
+  const hasTextAnswer = !!(homeworkAnswer || "").trim();
+  const hasAttachment = !!(homeworkAttachment || "").trim();
+  const hasAnswer = hasTextAnswer || hasAttachment;
   const hasCommentAnswer = !!(commentAnswer || "").trim();
 
   const htmlToTextarea = (html: string) =>
     (html || "").replace(/<br\s*\/?>/gi, "\n");
+
   const textareaToHtml = (text: string) =>
     (text || "").replace(/\r?\n/g, "<br />");
+
+  const stripHtml = (html: string) =>
+    (html || "")
+      .replace(/<[^>]*>/g, "")
+      .replace(/&nbsp;/g, " ")
+      .trim();
 
   const [descriptionText, setDescriptionText] = useState<string>(
     htmlToTextarea(homeworkData || ""),
@@ -157,6 +188,12 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     setCommentText(htmlToTextarea(commentAnswer || ""));
   }, [homeworkData, homeworkAnswer, commentAnswer]);
 
+  const resetAnswerUi = () => {
+    setSelectedFile(null);
+    setNotifyTeacher(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const openModalDescription = () => {
     if (!allowedToEdit) return;
     setMode("description");
@@ -169,6 +206,8 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
     setAnswerText(htmlToTextarea(homeworkAnswer || ""));
     setNotifyTeacher(false);
+    setSelectedFile(null);
+    setSubmissionMode(hasTextAnswer ? "editor" : "file");
     setMode("answer");
     setIsModalOpen(true);
   };
@@ -184,18 +223,23 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   };
 
   const closeModal = () => {
-    if (!saving) setIsModalOpen(false);
+    if (!saving) {
+      setIsModalOpen(false);
+      resetAnswerUi();
+    }
   };
 
   const canSave = useMemo(() => {
     if (saving) return false;
 
     if (mode === "description") {
-      return !!allowedToEdit && !!descriptionText.trim();
+      return !!allowedToEdit;
     }
 
     if (mode === "answer") {
-      return !!homeworkID;
+      if (!homeworkID || !allowedToAnswer) return false;
+      if (submissionMode === "file") return !!selectedFile || hasAttachment;
+      return !!stripHtml(answerText);
     }
 
     if (mode === "comment") {
@@ -203,7 +247,56 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     }
 
     return false;
-  }, [saving, mode, allowedToEdit, homeworkID, descriptionText, commentText]);
+  }, [
+    saving,
+    mode,
+    allowedToEdit,
+    allowedToAnswer,
+    homeworkID,
+    descriptionText,
+    answerText,
+    commentText,
+    submissionMode,
+    selectedFile,
+    hasAttachment,
+  ]);
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const base64Data = base64String.split(",")[1];
+        resolve(base64Data);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const deleteAttachment = async () => {
+    if (!homeworkID) return;
+
+    try {
+      setSaving(true);
+      await axios.delete(
+        `${backDomain}/api/v1/delete-homework-attachment/${homeworkID}`,
+        {
+          headers: headers as any,
+        },
+      );
+
+      await fetchEventData();
+      if (mode === "answer") {
+        setSelectedFile(null);
+        setSubmissionMode(hasTextAnswer ? "editor" : "file");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir arquivo", error);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const save = async () => {
     try {
@@ -237,16 +330,33 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
         if (!allowedToAnswer) return;
         if (!homeworkID) return;
 
-        const answerToSave = textareaToHtml(answerText);
+        if (submissionMode === "file") {
+          if (!selectedFile) return;
 
-        await axios.put(
-          `${backDomain}/api/v1/homeworkanswer/${homeworkID}`,
-          {
-            answers: answerToSave,
-            notifyTeacher,
-          },
-          { headers: headers as any },
-        );
+          const base64File = await convertToBase64(selectedFile);
+
+          await axios.post(
+            `${backDomain}/api/v1/submithomework/${homeworkID}`,
+            {
+              base64String: base64File,
+              fileName: selectedFile.name,
+              fileType: selectedFile.type,
+              submissionMode: "file",
+            },
+            { headers: headers as any },
+          );
+        } else {
+          const answerToSave = textareaToHtml(answerText);
+
+          await axios.put(
+            `${backDomain}/api/v1/homeworkanswer/${homeworkID}`,
+            {
+              answers: answerToSave,
+              notifyTeacher,
+            },
+            { headers: headers as any },
+          );
+        }
       }
 
       if (mode === "comment") {
@@ -266,12 +376,154 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
       await fetchEventData();
       setIsModalOpen(false);
+      resetAnswerUi();
     } catch (error) {
       console.error("Erro ao salvar", error);
     } finally {
       setSaving(false);
     }
   };
+
+  const renderAnswerInput = () => {
+    if (submissionMode === "file") {
+      return (
+        <div>
+          <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
+            Arquivo da resposta
+          </div>
+
+          <div
+            style={{
+              border: "2px dashed #e2e8f0",
+              borderRadius: 8,
+              padding: 12,
+              background: "#f8fafc",
+            }}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+              style={{ width: "100%" }}
+            />
+
+            {selectedFile && (
+              <div
+                style={{
+                  marginTop: 10,
+                  padding: 10,
+                  borderRadius: 8,
+                  background: "#eff6ff",
+                  border: "1px solid #bfdbfe",
+                  fontSize: 13,
+                  color: "#1e3a8a",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <span
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {selectedFile.name}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                  style={{
+                    ...ghostBtnStyle,
+                    padding: "4px 8px",
+                    fontSize: 12,
+                  }}
+                >
+                  Remover
+                </button>
+              </div>
+            )}
+
+            {!selectedFile && hasAttachment && (
+              <div
+                style={{
+                  marginTop: 10,
+                  padding: 10,
+                  borderRadius: 8,
+                  background: "#fafafa",
+                  border: "1px solid #e2e8f0",
+                  fontSize: 13,
+                  color: "#334155",
+                }}
+              >
+                <div style={{ marginBottom: 8 }}>Arquivo atual enviado</div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <a
+                    href={homeworkAttachment}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: partnerColor(),
+                      fontWeight: 600,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Baixar arquivo
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={deleteAttachment}
+                    disabled={saving}
+                    style={{
+                      ...ghostBtnStyle,
+                      color: "#dc2626",
+                      borderColor: "#fecaca",
+                      backgroundColor: "#fef2f2",
+                    }}
+                  >
+                    Excluir arquivo
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
+          Sua resposta
+        </div>
+
+        <textarea
+          style={textareaStyle}
+          value={answerText}
+          onChange={(e) => setAnswerText(e.target.value)}
+          placeholder="Digite sua resposta..."
+        />
+      </>
+    );
+  };
+
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -357,47 +609,117 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                       marginBottom: 14,
                     }}
                   >
-                    <div
-                      dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }}
-                    />
+                    {hasAttachment && (
+                      <div style={{ marginBottom: hasTextAnswer ? 10 : 0 }}>
+                        <a
+                          href={homeworkAttachment}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: partnerColor(),
+                            fontWeight: 600,
+                            textDecoration: "none",
+                          }}
+                        >
+                          Baixar arquivo enviado
+                        </a>
+                      </div>
+                    )}
+
+                    {hasTextAnswer && (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: homeworkAnswer || "",
+                        }}
+                      />
+                    )}
                   </div>
                 </>
               )}
 
-              <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
-                {mode === "description"
-                  ? "Descrição"
-                  : mode === "answer"
-                    ? "Sua resposta"
-                    : "Comentário do professor"}
-              </div>
+              {mode === "description" && (
+                <>
+                  <div
+                    style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
+                  >
+                    Descrição
+                  </div>
 
-              <textarea
-                style={textareaStyle}
-                value={
-                  mode === "description"
-                    ? descriptionText
-                    : mode === "answer"
-                      ? answerText
-                      : commentText
-                }
-                onChange={(e) => {
-                  if (mode === "description") {
-                    setDescriptionText(e.target.value);
-                  } else if (mode === "answer") {
-                    setAnswerText(e.target.value);
-                  } else {
-                    setCommentText(e.target.value);
-                  }
-                }}
-                placeholder={
-                  mode === "answer"
-                    ? "Digite sua resposta..."
-                    : mode === "comment"
-                      ? "Digite seu comentário..."
-                      : "Digite a descrição..."
-                }
-              />
+                  <textarea
+                    style={textareaStyle}
+                    value={descriptionText}
+                    onChange={(e) => setDescriptionText(e.target.value)}
+                    placeholder="Digite a descrição..."
+                  />
+                </>
+              )}
+
+              {mode === "answer" && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      marginBottom: 14,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSubmissionMode("file")}
+                      style={{
+                        ...modeButtonBase,
+                        border:
+                          submissionMode === "file"
+                            ? "1px solid #cbd5e1"
+                            : "1px solid #e2e8f0",
+                        backgroundColor:
+                          submissionMode === "file" ? "#e9ecef" : "#f8fafc",
+                        color:
+                          submissionMode === "file" ? "#334155" : "#64748b",
+                      }}
+                    >
+                      Enviar arquivo
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setSubmissionMode("editor")}
+                      style={{
+                        ...modeButtonBase,
+                        border:
+                          submissionMode === "editor"
+                            ? "1px solid #cbd5e1"
+                            : "1px solid #e2e8f0",
+                        backgroundColor:
+                          submissionMode === "editor" ? "#e9ecef" : "#f8fafc",
+                        color:
+                          submissionMode === "editor" ? "#334155" : "#64748b",
+                      }}
+                    >
+                      Responder no campo
+                    </button>
+                  </div>
+
+                  {renderAnswerInput()}
+                </>
+              )}
+
+              {mode === "comment" && (
+                <>
+                  <div
+                    style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
+                  >
+                    Comentário do professor
+                  </div>
+
+                  <textarea
+                    style={textareaStyle}
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Digite seu comentário..."
+                  />
+                </>
+              )}
             </div>
           </div>
 
@@ -463,7 +785,10 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
               <div style={{ display: "flex", gap: 8 }}>
                 <button
-                  style={ghostBtnStyle}
+                  style={{
+                    cursor: saving ? "not-allowed" : "pointer",
+                    ...ghostBtnStyle,
+                  }}
                   onClick={closeModal}
                   disabled={saving}
                 >
@@ -473,7 +798,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 <button
                   onClick={save}
                   style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-                  disabled={!canSave}
+                  disabled={saving}
                 >
                   {saving ? "Salvando..." : "Salvar"}
                 </button>
@@ -535,13 +860,15 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                   color: "#fff",
                   border: "none",
                   borderRadius: 6,
-                  cursor: hasCommentAnswer ? "not-allowed" : "pointer",
+                  cursor:
+                    !hasHomework || hasCommentAnswer
+                      ? "not-allowed"
+                      : "pointer",
                   fontSize: 12,
-
                   fontWeight: 600,
                   opacity: hasHomework ? 1 : 0.6,
                 }}
-                disabled={hasCommentAnswer}
+                disabled={!hasHomework || hasCommentAnswer}
                 title={
                   !hasHomework
                     ? "Lição de casa ainda não disponível"
@@ -586,7 +913,45 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
               Resposta do aluno
             </div>
 
-            <div dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }} />
+            {hasAttachment && (
+              <div style={{ marginBottom: hasTextAnswer ? 10 : 0 }}>
+                {!allowedToEdit && (
+                  <button
+                    onClick={deleteAttachment}
+                    style={{
+                      marginRight: 8,
+                      color: "#ef4444",
+                      padding: "0",
+                      border: "none",
+                      fontWeight: "bold",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                    }}
+                    title="Excluir arquivo"
+                    disabled={saving}
+                  >
+                    Excluir arquivo
+                  </button>
+                )}
+
+                <a
+                  href={homeworkAttachment}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: partnerColor(),
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  Baixar arquivo
+                </a>
+              </div>
+            )}
+
+            {hasTextAnswer && (
+              <div dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }} />
+            )}
           </div>
         )}
 
@@ -632,6 +997,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             )}
           </div>
         )}
+
         {allowedToEdit && !hasCommentAnswer && hasAnswer && (
           <button
             onClick={openModalComment}
