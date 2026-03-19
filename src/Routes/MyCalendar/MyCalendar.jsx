@@ -145,45 +145,49 @@ function EventPreviewModal({ event, onClose }) {
             <span style={{ color: "#4B5563" }}>
               {formatDateBr(new Date(event.date))}
             </span>
-
             <strong style={{ color: "#111827" }}>Horário</strong>
             <span style={{ color: "#4B5563" }}>{event.time}</span>
-
-            <strong style={{ color: "#111827" }}>Status</strong>
-            <span
-              style={{
-                fontWeight: 800,
-                color:
-                  event.status === "realizada"
-                    ? partnerColor()
-                    : event.status === "desmarcado"
-                      ? "rgba(220,38,38,0.9)"
-                      : "#2563EB",
-              }}
-            >
-              {event.status}
-            </span>
+            {event.category !== "Marcar Reposição" && (
+              <>
+                <strong style={{ color: "#111827" }}>Status</strong>
+                <span
+                  style={{
+                    fontWeight: 800,
+                    color:
+                      event.status === "realizada"
+                        ? partnerColor()
+                        : event.status === "desmarcado"
+                          ? "rgba(220,38,38,0.9)"
+                          : "#2563EB",
+                  }}
+                >
+                  {event.status}
+                </span>
+              </>
+            )}{" "}
           </div>
 
-          {event.link && event.status == "marcado" && (
-            <a
-              href={event.link}
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                fontSize: "13px",
-                color: partnerColor(),
-                textDecoration: "none",
-                border: `1px solid ${partnerColor()}40`,
-                padding: "10px 12px",
-                borderRadius: "8px",
-                textAlign: "center",
-                background: `${partnerColor()}10`,
-              }}
-            >
-              Abrir link da aula
-            </a>
-          )}
+          {event.link &&
+            event.status == "marcado" &&
+            event.category !== "Marcar Reposição" && (
+              <a
+                href={event.link}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  fontSize: "13px",
+                  color: partnerColor(),
+                  textDecoration: "none",
+                  border: `1px solid ${partnerColor()}40`,
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  textAlign: "center",
+                  background: `${partnerColor()}10`,
+                }}
+              >
+                Abrir link da aula
+              </a>
+            )}
         </div>
         {/* Footer */}
         <div
@@ -209,7 +213,9 @@ function EventPreviewModal({ event, onClose }) {
               justifyContent: "center",
             }}
           >
-            Abrir Aula
+            {event.category === "Marcar Reposição"
+              ? "Marcar Reposição"
+              : "Abrir Aula"}
           </a>
         </div>
       </div>

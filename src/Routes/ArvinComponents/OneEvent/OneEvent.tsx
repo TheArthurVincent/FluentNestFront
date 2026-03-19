@@ -144,6 +144,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   }, [eventId]);
 
   const [futureEventsData, setFutureEventsData] = useState<any>(null);
+  const [pastEventsData, setPastEventsData] = useState<any>(null);
 
   const fetchFutureEventsData = async () => {
     const student = JSON.parse(localStorage.getItem("loggedIn") || "{}");
@@ -159,6 +160,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         `${backDomain}/api/v1/next-few-events/${student.id || student._id}?eventId=${eventId}`,
         { headers: headers as any },
       );
+      setPastEventsData(res.data.eventsPast);
       setFutureEventsData(res.data.eventsList);
     } catch (err) {
       console.error("Error fetching future events data", err);
@@ -522,43 +524,116 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 {event.date}: <br />
                 <div
                   style={{
+                    background: "#1e293b",
+                    borderRadius: 8,
+                    padding: 12,
                     display: "grid",
                     overflowY: "auto",
                     gap: 8,
                     marginBottom: 8,
                   }}
                 >
-                  {futureEventsData && futureEventsData.length > 0
-                    ? futureEventsData.map((futureEvent: any) => {
-                        const isSelected =
-                          selectedFutureEventId === futureEvent._id;
+                  Eventos Passados (Não Realizados)
+                  <div
+                    style={{
+                      maxHeight: 200,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {" "}
+                    {pastEventsData && pastEventsData.length > 0
+                      ? pastEventsData.map((pastEvent: any) => {
+                          const isSelected =
+                            selectedFutureEventId === pastEvent._id;
 
-                        return (
-                          <div
-                            key={futureEvent._id}
-                            onClick={() =>
-                              setSelectedFutureEventId(futureEvent._id)
-                            }
-                            style={{
-                              gap: 20,
-                              border: isSelected
-                                ? `1px solid ${partnerColor()}`
-                                : "1px solid #334155",
-                              borderRadius: 8,
-                              padding: 8,
-                              fontSize: 12,
-                              color: "#e5e7eb",
-                              cursor: "pointer",
-                              background: isSelected
-                                ? partnerColor()
-                                : "transparent",
-                            }}
-                          >
-                            {futureEvent.date} às {futureEvent.time}
-                          </div>
-                        );
-                      })
-                    : "Nenhuma aula agendada disponível para substituição/reposição."}
+                          return (
+                            <div
+                              key={pastEvent._id}
+                              onClick={() =>
+                                setSelectedFutureEventId(pastEvent._id)
+                              }
+                              style={{
+                                gap: 20,
+                                border: isSelected
+                                  ? `1px solid ${partnerColor()}`
+                                  : "1px solid #334155",
+                                borderRadius: 8,
+                                padding: 8,
+
+                                fontSize: 12,
+                                color: "#e5e7eb",
+                                cursor: "pointer",
+                                background: isSelected
+                                  ? partnerColor()
+                                  : "transparent",
+                              }}
+                            >
+                              {pastEvent.date} às {pastEvent.time} (
+                              {pastEvent.status == "marcado"
+                                ? "Evento Marcado"
+                                : "Evento Desmarcado"}
+                              )
+                            </div>
+                          );
+                        })
+                      : "Nenhuma aula passada disponível para substituição/reposição."}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    background: "#2e293b",
+                    borderRadius: 8,
+                    padding: 12,
+                    display: "grid",
+                    overflowY: "auto",
+                    gap: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  Eventos Futuros
+                  <div
+                    style={{
+                      maxHeight: 200,
+                      overflowY: "auto",
+                    }}
+                  >
+                    {" "}
+                    {futureEventsData && futureEventsData.length > 0
+                      ? futureEventsData.map((futureEvent: any) => {
+                          const isSelected =
+                            selectedFutureEventId === futureEvent._id;
+
+                          return (
+                            <div
+                              key={futureEvent._id}
+                              onClick={() =>
+                                setSelectedFutureEventId(futureEvent._id)
+                              }
+                              style={{
+                                gap: 20,
+                                border: isSelected
+                                  ? `1px solid ${partnerColor()}`
+                                  : "1px solid #334155",
+                                borderRadius: 8,
+                                padding: 8,
+                                fontSize: 12,
+                                color: "#e5e7eb",
+                                cursor: "pointer",
+                                background: isSelected
+                                  ? partnerColor()
+                                  : "transparent",
+                              }}
+                            >
+                              {futureEvent.date} às {futureEvent.time} (
+                              {futureEvent.status == "marcado"
+                                ? "Evento Marcado"
+                                : "Evento Desmarcado"}
+                              )
+                            </div>
+                          );
+                        })
+                      : "Nenhuma aula agendada disponível para substituição/reposição."}
+                  </div>
                 </div>
                 <div
                   style={{

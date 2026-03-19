@@ -13,6 +13,7 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 import EventVideo from "./VideoClass";
 import StudentClassesHistory from "../../Students/TheStudent/StudentsClasses/StudentClassesHistory";
 import GroupClassesHistory from "../../Groups/theGroup/GroupClassesHistory/GroupClassesHistory";
+import { CircularProgress } from "@mui/material";
 
 type FreeEventItem = {
   _id: string;
@@ -1167,257 +1168,271 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     return createPortal(
       <div style={overlayStyle} onClick={close}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-          <div
-            style={{
-              padding: "16px 16px",
-              borderBottom: "1px solid #e2e8f0",
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#0f172a",
-            }}
-          >
-            Reagendar aula
-          </div>
-          {!allowedToReschedule ? (
-            <div style={{ padding: 12 }}>
-              {thePermissionsOfTheStudents == "student"
-                ? `${theNameOfTheStudents}, você excedeu o limite de reagendamentos.`
-                : `${theNameOfTheStudents} excedeu o limite de 
+          {loadingEventsFree ? (
+            <CircularProgress
+              style={{
+                color: partnerColor(),
+                margin: "auto",
+                display: "block",
+              }}
+            />
+          ) : (
+            <>
+              <div
+                style={{
+                  padding: "16px 16px",
+                  borderBottom: "1px solid #e2e8f0",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "#0f172a",
+                }}
+              >
+                Reagendar aula
+              </div>
+              {!allowedToReschedule ? (
+                <div style={{ padding: 12 }}>
+                  {thePermissionsOfTheStudents == "student"
+                    ? `${theNameOfTheStudents}, você excedeu o limite de reagendamentos.`
+                    : `${theNameOfTheStudents} excedeu o limite de 
                 reagendamentos. Se quiser permitir que este (a) aluno (a)
                  reagende novamente, dê créditos a este (a) aluno(a),
                  ou simplesmente mude a data da aula no botão Editar`}
-              {thePermissionsOfTheStudents !== "student" && (
-                <a
-                  style={{
-                    marginLeft: 10,
-                  }}
-                  target="_blank"
-                  href="/students"
-                >
-                  Clique aqui para dar mais créditos a este aluno.
-                </a>
-              )}
-              <br />
-              <br />
-              {thePermissionsOfTheStudents !== "student" && (
-                <button
-                  onClick={() => {
-                    setSelectedFreeEvent(null);
-                    setIsMainInfoModalOpen(true);
-                  }}
-                  style={{
-                    padding: "8px 12px",
-                    backgroundColor: partnerColor(),
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    width: isDesktop ? "auto" : "100%",
-                    minWidth: 0,
-                  }}
-                >
-                  Clique aqui para editar as informações do evento
-                </button>
-              )}
-            </div>
-          ) : (
-            <div style={{ padding: 12, display: "grid", gap: 12 }}>
-              {rescheduleTab === "fixed" ? (
-                <>
-                  <div style={{ fontSize: 13, color: "#334155" }}>
-                    Selecione um horário disponível abaixo.
-                  </div>
-
-                  {loadingEventsFree ? (
-                    <div
+                  {thePermissionsOfTheStudents !== "student" && (
+                    <a
                       style={{
-                        border: "1px dashed #e2e8f0",
-                        borderRadius: 10,
-                        padding: 14,
-                        color: "#64748b",
-                        fontSize: 13,
+                        marginLeft: 10,
                       }}
+                      target="_blank"
+                      href="/students"
                     >
-                      Carregando horários...
-                    </div>
-                  ) : futureEventsFree.length === 0 ? (
-                    <div
-                      style={{
-                        border: "1px dashed #e2e8f0",
-                        borderRadius: 10,
-                        padding: 14,
-                        color: "#64748b",
-                        fontSize: 13,
-                      }}
-                    >
-                      Nenhum horário disponível encontrado.
-                      {thePermissionsOfTheStudents !== "student" &&
-                        `${" "} Agende aulas de reposição no calendário. Escolha a opção: 'Horário Vazio Para Reposição (Para que seus alunos marquem)'`}
-                      {thePermissionsOfTheStudents !== "student" && (
-                        <a
-                          style={{
-                            marginLeft: "10px",
-                          }}
-                          target="_blank"
-                          href="/my-calendar"
-                        >
-                          Acesse o Calendário
-                        </a>
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        display: "grid",
-                        gap: 10,
-                        maxHeight: 300,
-                        overflowY: "auto",
-                        paddingRight: 4,
-                      }}
-                    >
-                      {futureEventsFree.map((it) => (
-                        <FreeEventItemButton
-                          key={it._id}
-                          item={it}
-                          selected={selectedFreeEvent?._id === it._id}
-                          onClick={() => setSelectedFreeEvent(it)}
-                        />
-                      ))}
-                    </div>
+                      Clique aqui para dar mais créditos a este aluno.
+                    </a>
                   )}
-
-                  {selectedFreeEvent && (
-                    <div
+                  <br />
+                  <br />
+                  {thePermissionsOfTheStudents !== "student" && (
+                    <button
+                      onClick={() => {
+                        setSelectedFreeEvent(null);
+                        setIsMainInfoModalOpen(true);
+                      }}
                       style={{
-                        marginTop: 6,
-                        border: "1px solid rgba(239,68,68,0.25)",
-                        background: "rgba(239,68,68,0.06)",
-                        borderRadius: 10,
-                        padding: 12,
-                        display: "grid",
-                        gap: 10,
+                        padding: "8px 12px",
+                        backgroundColor: partnerColor(),
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        width: isDesktop ? "auto" : "100%",
+                        minWidth: 0,
                       }}
                     >
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 800,
-                          color: "#7f1d1d",
-                        }}
-                      >
-                        Reagendar para esse horário (esta ação não pode ser
-                        desfeita)
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: 8,
-                          marginLeft: "auto",
-                        }}
-                      >
-                        <button
-                          type="button"
-                          disabled={rescheduling}
-                          onClick={() => setSelectedFreeEvent(null)}
-                          style={{
-                            ...primaryBtnStyle,
-                            border: "1px solid #eee",
-                            color: "#555",
-                            background: "#fff",
-                            opacity: rescheduling ? 0.7 : 1,
-                          }}
-                        >
-                          Cancelar
-                        </button>
-                        <button
-                          type="button"
-                          disabled={rescheduling}
-                          onClick={async () => {
-                            await rescheduleEvent(evendId, {
-                              date: selectedFreeEvent.date,
-                              time: selectedFreeEvent.time,
-                              idNew: selectedFreeEvent._id,
-                            });
-                            setIsRescheduleOpen(false);
-                          }}
-                          style={{
-                            ...primaryBtnStyle,
-                            background: partnerColor(),
-                            opacity: rescheduling ? 0.7 : 1,
-                          }}
-                        >
-                          {rescheduling ? "Reagendando..." : "REAGENDAR AGORA"}
-                        </button>
-                      </div>
-                    </div>
+                      Clique aqui para editar as informações do evento
+                    </button>
                   )}
-                </>
+                </div>
               ) : (
-                <>
-                  <div style={{ display: "grid", gap: 6 }}>
-                    <label style={{ fontSize: 12, color: "#334155" }}>
-                      Data
-                    </label>
-                    <input
-                      type="date"
-                      disabled={rescheduling}
-                      value={newDate}
-                      onChange={(e) => setNewDate(e.target.value)}
-                      style={inputStyle}
-                    />
-                  </div>
+                <div style={{ padding: 12, display: "grid", gap: 12 }}>
+                  {rescheduleTab === "fixed" ? (
+                    <>
+                      <div style={{ fontSize: 13, color: "#334155" }}>
+                        Selecione um horário disponível abaixo.
+                      </div>
 
-                  <div style={{ display: "grid", gap: 6 }}>
-                    <label style={{ fontSize: 12, color: "#334155" }}>
-                      Horário
-                    </label>
-                    <input
-                      type="time"
-                      disabled={rescheduling}
-                      value={newTime}
-                      onChange={(e) => setNewTime(e.target.value)}
-                      style={inputStyle}
-                    />
-                  </div>
-                </>
+                      {loadingEventsFree ? (
+                        <div
+                          style={{
+                            border: "1px dashed #e2e8f0",
+                            borderRadius: 10,
+                            padding: 14,
+                            color: "#64748b",
+                            fontSize: 13,
+                          }}
+                        >
+                          Carregando horários...
+                        </div>
+                      ) : futureEventsFree.length === 0 ? (
+                        <div
+                          style={{
+                            border: "1px dashed #e2e8f0",
+                            borderRadius: 10,
+                            padding: 14,
+                            color: "#64748b",
+                            fontSize: 13,
+                          }}
+                        >
+                          Nenhum horário disponível encontrado.
+                          {thePermissionsOfTheStudents !== "student" &&
+                            `${" "} Agende aulas de reposição no calendário. Escolha a opção: 'Horário Vazio Para Reposição (Para que seus alunos marquem)'`}
+                          {thePermissionsOfTheStudents !== "student" && (
+                            <a
+                              style={{
+                                marginLeft: "10px",
+                              }}
+                              target="_blank"
+                              href="/my-calendar"
+                            >
+                              Acesse o Calendário
+                            </a>
+                          )}
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            display: "grid",
+                            gap: 10,
+                            maxHeight: 300,
+                            overflowY: "auto",
+                            paddingRight: 4,
+                          }}
+                        >
+                          {futureEventsFree.map((it) => (
+                            <FreeEventItemButton
+                              key={it._id}
+                              item={it}
+                              selected={selectedFreeEvent?._id === it._id}
+                              onClick={() => setSelectedFreeEvent(it)}
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      {selectedFreeEvent && (
+                        <div
+                          style={{
+                            marginTop: 6,
+                            border: "1px solid rgba(239,68,68,0.25)",
+                            background: "rgba(239,68,68,0.06)",
+                            borderRadius: 10,
+                            padding: 12,
+                            display: "grid",
+                            gap: 10,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 800,
+                              color: "#7f1d1d",
+                            }}
+                          >
+                            Reagendar para esse horário (esta ação não pode ser
+                            desfeita)
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: 8,
+                              marginLeft: "auto",
+                            }}
+                          >
+                            <button
+                              type="button"
+                              disabled={rescheduling}
+                              onClick={() => setSelectedFreeEvent(null)}
+                              style={{
+                                ...primaryBtnStyle,
+                                border: "1px solid #eee",
+                                color: "#555",
+                                background: "#fff",
+                                opacity: rescheduling ? 0.7 : 1,
+                              }}
+                            >
+                              Cancelar
+                            </button>
+                            <button
+                              type="button"
+                              disabled={rescheduling}
+                              onClick={async () => {
+                                await rescheduleEvent(evendId, {
+                                  date: selectedFreeEvent.date,
+                                  time: selectedFreeEvent.time,
+                                  idNew: selectedFreeEvent._id,
+                                });
+                                setIsRescheduleOpen(false);
+                              }}
+                              style={{
+                                ...primaryBtnStyle,
+                                background: partnerColor(),
+                                opacity: rescheduling ? 0.7 : 1,
+                              }}
+                            >
+                              {rescheduling
+                                ? "Reagendando..."
+                                : "REAGENDAR AGORA"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label style={{ fontSize: 12, color: "#334155" }}>
+                          Data
+                        </label>
+                        <input
+                          type="date"
+                          disabled={rescheduling}
+                          value={newDate}
+                          onChange={(e) => setNewDate(e.target.value)}
+                          style={inputStyle}
+                        />
+                      </div>
+
+                      <div style={{ display: "grid", gap: 6 }}>
+                        <label style={{ fontSize: 12, color: "#334155" }}>
+                          Horário
+                        </label>
+                        <input
+                          type="time"
+                          disabled={rescheduling}
+                          value={newTime}
+                          onChange={(e) => setNewTime(e.target.value)}
+                          style={inputStyle}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
-            </div>
+
+              <div
+                style={{
+                  padding: 12,
+                  borderTop: "1px solid #e2e8f0",
+                  display:
+                    thePermissionsOfTheStudents !== "student" ? "flex" : "none",
+                  justifyContent: "flex-end",
+                  gap: 8,
+                }}
+              >
+                <button
+                  style={ghostBtnStyle}
+                  onClick={close}
+                  disabled={rescheduling}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {}}
+                  style={{
+                    ...primaryBtnStyle,
+                    opacity: 0.7,
+                    cursor: "not-allowed",
+                  }}
+                  disabled
+                  title="Por enquanto este botão não faz nada"
+                >
+                  Salvar
+                </button>
+              </div>
+            </>
           )}
-
-          <div
-            style={{
-              padding: 12,
-              borderTop: "1px solid #e2e8f0",
-              display:
-                thePermissionsOfTheStudents !== "student" ? "flex" : "none",
-              justifyContent: "flex-end",
-              gap: 8,
-            }}
-          >
-            <button
-              style={ghostBtnStyle}
-              onClick={close}
-              disabled={rescheduling}
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {}}
-              style={{
-                ...primaryBtnStyle,
-                opacity: 0.7,
-                cursor: "not-allowed",
-              }}
-              disabled
-              title="Por enquanto este botão não faz nada"
-            >
-              Salvar
-            </button>
-          </div>
         </div>
       </div>,
       document.body,
@@ -1654,7 +1669,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 boxSizing: "border-box",
               }}
             >
-              {event.link && (
+              {event.link && event.status == "marcado" && (
                 <a
                   href={event.link}
                   target="_blank"
