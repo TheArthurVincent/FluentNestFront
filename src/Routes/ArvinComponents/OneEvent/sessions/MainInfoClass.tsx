@@ -1603,7 +1603,32 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             justifyContent: "space-between",
           }}
         >
-          <span>Informações Gerais</span>
+          <span>Informações Gerais</span>{" "}
+          <i
+            className={
+              event.status === "Realized" || event.status === "realizada"
+                ? "fa fa-check-circle"
+                : event.status === "Cancelled" || event.status === "desmarcado"
+                  ? "fa fa-times-circle-o"
+                  : "fa fa-clock-o"
+            }
+            style={{
+              color:
+                event.status === "Realized" || event.status === "realizada"
+                  ? "#28a745"
+                  : event.status === "Canceled" || event.status === "desmarcado"
+                    ? "#dc3545"
+                    : "#007bff",
+              transition: "all 0.2s",
+            }}
+            title={`Status da aula: ${
+              event.status === "Realized" || event.status === "realizada"
+                ? "Realizada"
+                : event.status === "Cancelled" || event.status === "desmarcado"
+                  ? "Desmarcada"
+                  : "Marcada"
+            }`}
+          />
         </div>
 
         <article
