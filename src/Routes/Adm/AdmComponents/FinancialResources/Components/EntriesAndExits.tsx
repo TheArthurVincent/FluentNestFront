@@ -95,7 +95,7 @@ export function EntriesAndExits({
         `${backDomain}/api/v1/studentsfinancialreports/${id}`,
         { headers },
       );
-
+      console.log("response students", response.data);
       const list = (response.data?.listOfStudentsFees || []) as Student[];
       setStudents(list);
     } catch {
@@ -412,6 +412,7 @@ export function EntriesAndExits({
               fontWeight: "600",
               margin: 0,
             }}
+            onClick={fetchStudents}
           >
             Entradas Fixas
           </div>
@@ -513,7 +514,7 @@ export function EntriesAndExits({
                   {activeStudents.length}
                 </div>
                 <div style={{ fontSize: "10px", color: "#666" }}>
-                  Alunos Ativos
+                  Alunos Ativos/Com mensalidades contabilizadas
                 </div>
               </div>
             </div>
@@ -530,7 +531,7 @@ export function EntriesAndExits({
                 }}
               >
                 Mensalidades ({students.length} total • {activeStudents.length}{" "}
-                ativos)
+                ativos/mensalidades contabilizadas)
               </div>
 
               <div
@@ -542,32 +543,24 @@ export function EntriesAndExits({
                 }}
               >
                 {sortedStudents.map((student) => (
-                  <div
+                  <a
                     key={student.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onStudentClick(student.id);
-                    }}
+                    href={`/students/${student.id}`}
+                    target="_blank"
                     style={{
                       display: "flex",
                       gap: "8px",
+                      textDecoration: "none",
                       justifyContent: "space-between",
                       padding: "8px",
                       borderBottom: "1px solid #eee",
                       alignItems: "center",
                       cursor: "pointer",
-                      backgroundColor: student.onHold ? "#f8f8f8" : "#fff",
+                      // backgroundColor: student.onHold  ?  partnerColor(): "#f8f8f8",
+                      // color: student.onHold ?  "#eee":"white",
                       transition: "background-color 0.2s",
                     }}
-                    onMouseEnter={(e) => {
-                      if (!student.onHold)
-                        e.currentTarget.style.backgroundColor = "#f5f5f5";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = student.onHold
-                        ? "#f8f8f8"
-                        : "#fff";
-                    }}
+              
                   >
                     <div
                       style={{
@@ -617,7 +610,7 @@ export function EntriesAndExits({
                         R$ {formatNumber(student.fee ?? 0)}
                       </div>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -635,19 +628,6 @@ export function EntriesAndExits({
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      {!revenueExpanded && activeStudents.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "16px",
-            color: "#9ca3af",
-            fontSize: "11px",
-          }}
-        >
-          Clique para ver
         </div>
       )}
 
@@ -803,19 +783,6 @@ export function EntriesAndExits({
               </div>
             </div>
           )}
-        </div>
-      )}
-
-      {!fixedCostsExpanded && fixedCosts.length === 0 && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "16px",
-            color: "#9ca3af",
-            fontSize: "11px",
-          }}
-        >
-          Clique para ver
         </div>
       )}
 
