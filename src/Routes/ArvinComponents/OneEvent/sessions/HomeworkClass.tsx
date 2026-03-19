@@ -21,6 +21,7 @@ type HomeworkClassProps = {
   homeworkID?: string;
   homeworkData: string;
   homeworkAnswer?: string;
+  commentAnswer?: string;
 };
 
 const overlayStyle: React.CSSProperties = {
@@ -111,7 +112,7 @@ const switchThumbBase: React.CSSProperties = {
   boxShadow: "0 2px 6px rgba(0,0,0,0.18)",
 };
 
-type ModalMode = "description" | "answer";
+type ModalMode = "description" | "answer" | "comment";
 
 const HomeworkClass: FC<HomeworkClassProps> = ({
   headers,
@@ -119,30 +120,13 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   fetchEventData,
   homeworkData,
   homeworkAnswer,
+  commentAnswer,
   allowedToEdit,
   homeworkStudentName,
   allowedToAnswer,
   homeworkID,
   event,
 }) => {
-  useEffect(() => {
-    console.log(
-      "homeworkData: ",
-      homeworkData,
-      "homeworkAnswer: ",
-      homeworkAnswer,
-      "allowedToEdit: ",
-      allowedToEdit,
-      "allowedToAnswer: ",
-      allowedToAnswer,
-      "homeworkID: ",
-      homeworkID,
-      "event: ",
-      event,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [mode, setMode] = useState<ModalMode>("description");
   const [saving, setSaving] = useState(false);
@@ -150,6 +134,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
   const hasHomework = !!homeworkID;
   const hasAnswer = !!(homeworkAnswer || "").trim();
+  const hasCommentAnswer = !!(commentAnswer || "").trim();
 
   const htmlToTextarea = (html: string) =>
     (html || "").replace(/<br\s*\/?>/gi, "\n");
@@ -162,11 +147,15 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
   const [answerText, setAnswerText] = useState<string>(
     htmlToTextarea(homeworkAnswer || ""),
   );
+  const [commentText, setCommentText] = useState<string>(
+    htmlToTextarea(commentAnswer || ""),
+  );
 
   useEffect(() => {
     setDescriptionText(htmlToTextarea(homeworkData || ""));
     setAnswerText(htmlToTextarea(homeworkAnswer || ""));
-  }, [homeworkData, homeworkAnswer]);
+    setCommentText(htmlToTextarea(commentAnswer || ""));
+  }, [homeworkData, homeworkAnswer, commentAnswer]);
 
   const openModalDescription = () => {
     if (!allowedToEdit) return;
@@ -184,6 +173,16 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
     setIsModalOpen(true);
   };
 
+  const openModalComment = () => {
+    if (!allowedToEdit) return;
+    if (!homeworkID) return;
+    if (!hasAnswer) return;
+
+    setCommentText(htmlToTextarea(commentAnswer || ""));
+    setMode("comment");
+    setIsModalOpen(true);
+  };
+
   const closeModal = () => {
     if (!saving) setIsModalOpen(false);
   };
@@ -195,8 +194,16 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
       return !!allowedToEdit && !!descriptionText.trim();
     }
 
-    return !!homeworkID;
-  }, [saving, mode, allowedToEdit, homeworkID, descriptionText]);
+    if (mode === "answer") {
+      return !!homeworkID;
+    }
+
+    if (mode === "comment") {
+      return !!allowedToEdit && !!homeworkID;
+    }
+
+    return false;
+  }, [saving, mode, allowedToEdit, homeworkID, descriptionText, commentText]);
 
   const save = async () => {
     try {
@@ -232,7 +239,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
         const answerToSave = textareaToHtml(answerText);
 
-        const response = await axios.put(
+        await axios.put(
           `${backDomain}/api/v1/homeworkanswer/${homeworkID}`,
           {
             answers: answerToSave,
@@ -240,11 +247,24 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           },
           { headers: headers as any },
         );
-
-        console.log(response.data, "Resposta salva:");
       }
 
-      fetchEventData();
+      if (mode === "comment") {
+        if (!allowedToEdit) return;
+        if (!homeworkID) return;
+
+        const commentToSave = textareaToHtml(commentText);
+
+        await axios.put(
+          `${backDomain}/api/v1/editcommentanswer/${homeworkID}`,
+          {
+            commentAnswer: commentToSave,
+          },
+          { headers: headers as any },
+        );
+      }
+
+      await fetchEventData();
       setIsModalOpen(false);
     } catch (error) {
       console.error("Erro ao salvar", error);
@@ -252,7 +272,6 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
       setSaving(false);
     }
   };
-
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -262,9 +281,13 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
         ? hasHomework
           ? "Editar lição de casa"
           : "Criar lição de casa"
-        : hasAnswer
-          ? "Editar resposta"
-          : "Responder lição de casa";
+        : mode === "answer"
+          ? hasAnswer
+            ? "Editar resposta"
+            : "Responder lição de casa"
+          : hasCommentAnswer
+            ? "Editar resposta do professor"
+            : "Comentar resposta do aluno";
 
     return createPortal(
       <div style={overlayStyle} onClick={closeModal}>
@@ -282,6 +305,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           >
             {title}
           </div>
+
           <div
             style={{
               maxHeight: "60vh",
@@ -289,7 +313,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             }}
           >
             <div style={{ padding: 16 }}>
-              {mode === "answer" && (
+              {(mode === "answer" || mode === "comment") && (
                 <>
                   <div
                     style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
@@ -314,22 +338,64 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 </>
               )}
 
+              {mode === "comment" && hasAnswer && (
+                <>
+                  <div
+                    style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}
+                  >
+                    Resposta do aluno
+                  </div>
+
+                  <div
+                    style={{
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 8,
+                      background: "#fafafa",
+                      padding: 10,
+                      fontSize: 13,
+                      color: "#334155",
+                      marginBottom: 14,
+                    }}
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }}
+                    />
+                  </div>
+                </>
+              )}
+
               <div style={{ fontSize: 12, color: "#64748b", marginBottom: 8 }}>
-                {mode === "description" ? "Descrição" : "Sua resposta"}
+                {mode === "description"
+                  ? "Descrição"
+                  : mode === "answer"
+                    ? "Sua resposta"
+                    : "Comentário do professor"}
               </div>
 
               <textarea
                 style={textareaStyle}
-                value={mode === "description" ? descriptionText : answerText}
+                value={
+                  mode === "description"
+                    ? descriptionText
+                    : mode === "answer"
+                      ? answerText
+                      : commentText
+                }
                 onChange={(e) => {
-                  if (mode === "description")
+                  if (mode === "description") {
                     setDescriptionText(e.target.value);
-                  else setAnswerText(e.target.value);
+                  } else if (mode === "answer") {
+                    setAnswerText(e.target.value);
+                  } else {
+                    setCommentText(e.target.value);
+                  }
                 }}
                 placeholder={
                   mode === "answer"
                     ? "Digite sua resposta..."
-                    : "Digite a descrição..."
+                    : mode === "comment"
+                      ? "Digite seu comentário..."
+                      : "Digite a descrição..."
                 }
               />
             </div>
@@ -350,9 +416,10 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 12,
+                width: "100%",
               }}
             >
-              {mode === "answer" && (
+              {mode === "answer" ? (
                 <div style={switchRowStyle}>
                   <div
                     style={{ display: "flex", flexDirection: "column", gap: 2 }}
@@ -390,8 +457,11 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                     />
                   </button>
                 </div>
+              ) : (
+                <div />
               )}
-              <div>
+
+              <div style={{ display: "flex", gap: 8 }}>
                 <button
                   style={ghostBtnStyle}
                   onClick={closeModal}
@@ -399,6 +469,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 >
                   Cancelar
                 </button>
+
                 <button
                   onClick={save}
                   style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
@@ -440,10 +511,16 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                   color: "#fff",
                   border: "none",
                   borderRadius: 6,
-                  cursor: "pointer",
+                  cursor: hasAnswer ? "not-allowed" : "pointer",
                   fontSize: 12,
                   fontWeight: 600,
                 }}
+                title={
+                  hasAnswer
+                    ? "Não é possível editar após a resposta"
+                    : "Editar descrição da lição de casa"
+                }
+                disabled={hasAnswer}
               >
                 {hasHomework ? "Editar" : "Criar"}
               </button>
@@ -458,12 +535,20 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                   color: "#fff",
                   border: "none",
                   borderRadius: 6,
-                  cursor: hasHomework ? "pointer" : "not-allowed",
+                  cursor: hasCommentAnswer ? "not-allowed" : "pointer",
                   fontSize: 12,
+
                   fontWeight: 600,
                   opacity: hasHomework ? 1 : 0.6,
                 }}
-                disabled={!hasHomework}
+                disabled={hasCommentAnswer}
+                title={
+                  !hasHomework
+                    ? "Lição de casa ainda não disponível"
+                    : hasCommentAnswer
+                      ? "Não é possível editar após o comentário do professor"
+                      : "Responder lição de casa"
+                }
               >
                 {hasAnswer ? "Editar resposta" : "Responder"}
               </button>
@@ -503,6 +588,69 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
             <div dangerouslySetInnerHTML={{ __html: homeworkAnswer || "" }} />
           </div>
+        )}
+
+        {hasHomework && hasAnswer && hasCommentAnswer && (
+          <div
+            style={{
+              padding: 12,
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              background: "#fdfdfd",
+              color: "#334155",
+            }}
+          >
+            <div style={{ fontSize: 12, color: "#878f9a", marginBottom: 6 }}>
+              Comentário do professor
+            </div>
+            <div
+              style={{
+                fontStyle: "italic",
+                fontSize: 12,
+              }}
+              dangerouslySetInnerHTML={{ __html: commentAnswer || "" }}
+            />
+            {allowedToEdit && (
+              <button
+                onClick={openModalComment}
+                style={{
+                  marginTop: 10,
+                  padding: "6px 12px",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 6,
+                  marginLeft: "auto",
+                  display: "block",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Editar Comentário
+              </button>
+            )}
+          </div>
+        )}
+        {allowedToEdit && !hasCommentAnswer && hasAnswer && (
+          <button
+            onClick={openModalComment}
+            style={{
+              marginTop: 10,
+              padding: "6px 12px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              border: "none",
+              borderRadius: 6,
+              marginLeft: "auto",
+              display: "block",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Comentar resposta de {homeworkStudentName || "aluno"}
+          </button>
         )}
       </div>
 

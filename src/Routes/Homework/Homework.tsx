@@ -415,17 +415,17 @@ export default function Homework({
               />
             </a>
 
-            {mainEventIdForNewHomework && (
-              <NewHomeworkModal
-                headers={actualHeaders}
-                studentID={studentId || ID}
-                eventID={mainEventIdForNewHomework}
-                buttonLabel="+ Novo Homework"
-                onHomeworkCreated={(newHomeworks) => {
-                  setTutoringList((prev) => [...newHomeworks, ...prev]);
-                }}
-              />
-            )}
+            {/* {mainEventIdForNewHomework && ( */}
+            <NewHomeworkModal
+              headers={actualHeaders}
+              studentID={studentId || ID}
+              eventID={""}
+              buttonLabel="+ Novo Homework"
+              onHomeworkCreated={(newHomeworks) => {
+                setTutoringList((prev) => [...newHomeworks, ...prev]);
+              }}
+            />
+            {/* )} */}
           </div>
         )}
 

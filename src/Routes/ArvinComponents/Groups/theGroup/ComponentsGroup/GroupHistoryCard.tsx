@@ -95,7 +95,7 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
 
               <div>
                 <strong>
-                  {formatDate(lastClass.date)}{" "}
+                  {lastClass.date && lastClass.date}{" "}
                   {lastClass.time && `• ${lastClass.time}`}
                 </strong>
               </div>

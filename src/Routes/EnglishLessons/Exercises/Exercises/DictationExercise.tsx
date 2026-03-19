@@ -10,15 +10,14 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 
 function normalizeText(text: string): string {
   let t = (text || "").toLowerCase().normalize("NFKC");
-  // mantém números com vírgula como decimal
+
   t = t
     .replace(/(?<=\d),(?=\d)/g, ".")
-    // remove separadores de milhar
     .replace(/(?<=\d)[.\u202F\u00A0 ](?=\d{3}\b)/g, "")
-    // hífens entre números viram espaço
     .replace(/(?<=\d)[\-–—](?=\d)/g, " ");
-  // mantém letras (com acento), dígitos e espaços
+
   t = t.replace(/[^0-9a-záàâãäéèêíïîóôõöúüûçñ\s]/gi, " ");
+
   return t.replace(/\s+/g, " ").trim();
 }
 
@@ -31,6 +30,7 @@ function levenshteinDistance(str1: string, str2: string): number {
   const s2 = str2 || "";
   const len1 = s1.length;
   const len2 = s2.length;
+
   const dp = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
 
   for (let i = 0; i <= len1; i++) dp[i][0] = i;
@@ -45,6 +45,7 @@ function levenshteinDistance(str1: string, str2: string): number {
       }
     }
   }
+
   return dp[len1][len2];
 }
 
@@ -52,38 +53,65 @@ function similarityPercentage(str1: string, str2: string): number {
   const clean1 = normalizeText(str1 || "");
   const clean2 = normalizeText(str2 || "");
   const maxLen = Math.max(clean1.length, clean2.length);
+
   if (maxLen === 0) return 100;
+
   const distance = levenshteinDistance(clean1, clean2);
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
 
-function tokenize(t: string) {
-  const norm = normalizeText(t);
+function tokenize(text: string): string[] {
+  const norm = normalizeText(text);
   return norm ? norm.split(" ") : [];
 }
 
 function countPositionMatches(target: string, attempt: string) {
   const gt = tokenize(target);
   const at = tokenize(attempt);
-  const len = Math.max(gt.length, at.length);
-  let matches = 0;
-  const perWordCorrect: boolean[] = [];
 
-  for (let i = 0; i < len; i++) {
-    const ok = !!gt[i] && !!at[i] && gt[i] === at[i];
-    perWordCorrect.push(ok);
-    if (ok) matches++;
+  const exactMatches: boolean[] = Array(at.length).fill(false);
+  const misplacedMatches: boolean[] = Array(at.length).fill(false);
+
+  const remainingTargetCounts: Record<string, number> = {};
+
+  for (let i = 0; i < gt.length; i++) {
+    if (at[i] === gt[i] && at[i] !== undefined) {
+      exactMatches[i] = true;
+    } else {
+      const word = gt[i];
+      if (word) {
+        remainingTargetCounts[word] = (remainingTargetCounts[word] || 0) + 1;
+      }
+    }
   }
+
+  for (let i = 0; i < at.length; i++) {
+    if (exactMatches[i]) continue;
+
+    const word = at[i];
+    if (word && remainingTargetCounts[word] > 0) {
+      misplacedMatches[i] = true;
+      remainingTargetCounts[word]--;
+    }
+  }
+
+  const matches = exactMatches.filter(Boolean).length;
+  const misplaced = misplacedMatches.filter(Boolean).length;
 
   return {
     matches,
+    misplaced,
     total: gt.length,
-    perWordCorrect,
+    exactMatches,
+    misplacedMatches,
     atTokens: at,
   };
 }
 
-type SentenceItem = { portuguese: string; english?: string };
+type SentenceItem = {
+  portuguese: string;
+  english?: string;
+};
 
 function hasTTS(): boolean {
   return (
@@ -91,6 +119,52 @@ function hasTTS(): boolean {
     "speechSynthesis" in window &&
     !!window.speechSynthesis
   );
+}
+
+// ===================== CORES =====================
+
+const exactColor = {
+  text: "#166534",
+  border: "#86EFAC",
+  background: "#DCFCE7",
+};
+
+const misplacedColor = {
+  text: "#92400E",
+  border: "#FCD34D",
+  background: "#FEF3C7",
+};
+
+const wrongColor = {
+  text: "#991B1B",
+  border: "#FCA5A5",
+  background: "#FEE2E2",
+};
+
+const scoreColor = {
+  text: "#3730A3",
+  border: "#C7D2FE",
+  background: "#EEF2FF",
+};
+
+function metricChipStyle(
+  background: string,
+  border: string,
+  color: string,
+): React.CSSProperties {
+  return {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "7px 11px",
+    borderRadius: 999,
+    background,
+    border: `1px solid ${border}`,
+    color,
+    fontSize: 12,
+    fontWeight: 600,
+    fontFamily: "Plus Jakarta Sans",
+  };
 }
 
 // ===================== ESTILOS =====================
@@ -117,14 +191,15 @@ const progressBarBgStyle: React.CSSProperties = {
   marginBottom: 16,
 };
 
-const metricsChipStyle: React.CSSProperties = {
+const neutralMetricsChipStyle: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 8,
-  padding: "6px 10px",
+  padding: "7px 11px",
   borderRadius: 999,
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
+  color: "#111827",
   fontSize: 12,
   fontFamily: "Plus Jakarta Sans",
 };
@@ -218,12 +293,12 @@ export function DictationExercise({
   language,
   courseId,
 }: DictationExerciseProps) {
-  // pool embaralhado
   const [seed, setSeed] = useState(0);
+
   const pool = useMemo(
     () => shuffle(sentences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sentences, seed]
+    [sentences, seed],
   );
 
   const [index, setIndex] = useState(0);
@@ -231,20 +306,15 @@ export function DictationExercise({
   const [checked, setChecked] = useState(false);
   const [showKey, setShowKey] = useState(false);
 
-  // performance geral
   const [totalPoints, setTotalPoints] = useState(0);
   const [performanceDescription, setPerformanceDescription] = useState("");
-
-  // modal de performance
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
 
   const finished = index >= pool.length;
-
   const current = !finished ? pool[index] : null;
   const target = current?.english || "";
   const targetTr = current?.portuguese || "";
 
-  // reset quando muda conjunto de frases
   useEffect(() => {
     setIndex(0);
     setAnswer("");
@@ -254,10 +324,10 @@ export function DictationExercise({
     setPerformanceDescription("");
     setShowPerformanceModal(false);
     setSeed((s) => s + 1);
+
     if (hasTTS()) window.speechSynthesis.cancel();
   }, [sentences.length]);
 
-  // cleanup TTS
   useEffect(() => {
     return () => {
       if (hasTTS()) window.speechSynthesis.cancel();
@@ -281,16 +351,15 @@ export function DictationExercise({
     );
   }
 
-  // ===================== exercise-done =====================
-
   const handleScoreStamp = async (
     pointsToSend: number,
-    descriptionToSend: string
+    descriptionToSend: string,
   ) => {
     if (!courseId || !studentId) return;
 
     try {
       const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
+
       const studentName =
         (loggedIn?.name && loggedIn?.lastname
           ? `${loggedIn.name} ${loggedIn.lastname}`
@@ -308,27 +377,34 @@ export function DictationExercise({
     }
   };
 
-  // ===================== MÉTRICAS (apenas em andamento) =====================
-
   const wordsExpected = finished ? 0 : wordCount(target);
   const wordsTyped = finished ? 0 : wordCount(answer);
   const similarity = finished ? 0 : similarityPercentage(target, answer);
 
-  const { matches, total, perWordCorrect, atTokens } = finished
+  const {
+    matches,
+    misplaced,
+    total,
+    exactMatches,
+    misplacedMatches,
+    atTokens,
+  } = finished
     ? {
         matches: 0,
+        misplaced: 0,
         total: 0,
-        perWordCorrect: [] as boolean[],
+        exactMatches: [] as boolean[],
+        misplacedMatches: [] as boolean[],
         atTokens: [] as string[],
       }
     : countPositionMatches(target, answer);
 
-  // nota: se similaridade >= 70%, converte aproximando blocos de 20% em "pontos"
-  const roundedSimilarity =
-    !finished && similarity >= 70
-      ? Math.floor(similarity / 20) * wordsExpected
-      : 0;
+  const exactPoints = matches * 10;
+  const misplacedPoints = misplaced * 6;
+  const similarityBonus = similarity >= 80 ? 5 : similarity >= 65 ? 2 : 0;
 
+  const score = !finished ? exactPoints + misplacedPoints + similarityBonus : 0;
+  const wrong = Math.max(0, atTokens.length - matches - misplaced);
   const progressPct = finished ? 100 : Math.round((index / pool.length) * 100);
   const displayIndex = finished ? pool.length : index + 1;
   const isLastItem = index === pool.length - 1;
@@ -342,10 +418,9 @@ export function DictationExercise({
     setPerformanceDescription("");
     setShowPerformanceModal(false);
     setSeed((s) => s + 1);
+
     if (hasTTS()) window.speechSynthesis.cancel();
   }
-
-  // ===================== RENDER PRINCIPAL =====================
 
   return (
     <>
@@ -367,7 +442,6 @@ export function DictationExercise({
             }
           />
 
-          {/* Barra de progresso */}
           <div style={progressBarBgStyle}>
             <div
               style={{
@@ -380,7 +454,6 @@ export function DictationExercise({
             />
           </div>
 
-          {/* FINALIZADO */}
           {finished && (
             <div
               style={{
@@ -430,13 +503,12 @@ export function DictationExercise({
             </div>
           )}
 
-          {/* EM ANDAMENTO */}
           {!finished && (
             <>
-              {/* Entrada de resposta */}
               {!checked && (
                 <>
                   <label style={labelStyle}>{labels.yourAnswer}</label>
+
                   <div
                     style={{
                       display: "flex",
@@ -472,15 +544,17 @@ export function DictationExercise({
                         setChecked(true);
                         return;
                       }
+
                       const isPasteCombo =
                         ((e.ctrlKey || e.metaKey) &&
                           (e.key === "v" || e.key === "V")) ||
                         (e.shiftKey && e.key === "Insert");
+
                       if (isPasteCombo) {
                         e.preventDefault();
                         notifyAlert(
                           "Colar texto não é permitido aqui.",
-                          partnerColor()
+                          partnerColor(),
                         );
                       }
                     }}
@@ -511,7 +585,6 @@ export function DictationExercise({
                 </>
               )}
 
-              {/* Resultado depois de conferir */}
               {checked && (
                 <div
                   style={{
@@ -525,33 +598,146 @@ export function DictationExercise({
                     gap: 16,
                   }}
                 >
-                  {/* Métricas */}
                   <div style={metricsWrapperStyle}>
-                    <span style={metricsChipStyle}>
+                    <span
+                      style={metricChipStyle(
+                        exactColor.background,
+                        exactColor.border,
+                        exactColor.text,
+                      )}
+                    >
+                      🟢 Na posição:{" "}
+                      <strong>
+                        {matches}/{total}
+                      </strong>
+                    </span>
+
+                    <span
+                      style={metricChipStyle(
+                        misplacedColor.background,
+                        misplacedColor.border,
+                        misplacedColor.text,
+                      )}
+                    >
+                      🟡 Fora da posição: <strong>{misplaced}</strong>
+                    </span>
+                    <span
+                      style={metricChipStyle(
+                        wrongColor.background,
+                        wrongColor.border,
+                        wrongColor.text,
+                      )}
+                    >
+                      🔴 Erradas: <strong>{wrong}</strong>
+                    </span>
+                    <span style={neutralMetricsChipStyle}>
                       🧮 Palavras:{" "}
                       <strong>
                         {wordsTyped}/{wordsExpected}
                       </strong>
                     </span>
 
-                    <span style={metricsChipStyle}>
-                      🎯 Corretas por posição:{" "}
-                      <strong>
-                        {matches}/{total}
-                      </strong>
-                    </span>
-
-                    <span style={metricsChipStyle}>
-                      📊 Similaridade: <strong>{similarity}%</strong>
-                    </span>
-
-                    <span style={metricsChipStyle}>
-                      🏆 Sua nota: <strong>{roundedSimilarity}</strong>
+                    <span
+                      style={metricChipStyle(
+                        scoreColor.background,
+                        scoreColor.border,
+                        scoreColor.text,
+                      )}
+                    >
+                      🏆 <strong>{similarity}%</strong>/
+                      <strong>{score} pts</strong>
                     </span>
                   </div>
 
-                  {/* Tokens digitados */}
-                  <div style={{ display: "grid", gap: 8 }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: 8,
+                    }}
+                  >
+                    {/* <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: 8,
+                        marginBottom: 4,
+                      }}
+                    >
+                      <span
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          border: `1px solid ${exactColor.border}`,
+                          background: exactColor.background,
+                          color: exactColor.text,
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        🟢 Na posição
+                      </span>
+
+                      <span
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          border: `1px solid ${misplacedColor.border}`,
+                          background: misplacedColor.background,
+                          color: misplacedColor.text,
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        🟡 Fora da posição
+                      </span>
+
+                      <span
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: 999,
+                          border: `1px solid ${wrongColor.border}`,
+                          background: wrongColor.background,
+                          color: wrongColor.text,
+                          fontFamily: "Plus Jakarta Sans",
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        🔴 Errada
+                      </span>
+                    </div> */}
+
+                    {/* <div
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontSize: 13,
+                        color: "#374151",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Você acertou{" "}
+                      <span
+                        style={{
+                          color: exactColor.text,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {matches} na posição correta
+                      </span>{" "}
+                      e{" "}
+                      <span
+                        style={{
+                          color: misplacedColor.text,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {misplaced} fora da posição
+                      </span>
+                      .
+                    </div> */}
+
                     <div
                       style={{
                         fontSize: 12,
@@ -561,6 +747,7 @@ export function DictationExercise({
                     >
                       Sua resposta
                     </div>
+
                     <div
                       style={{
                         display: "flex",
@@ -568,29 +755,39 @@ export function DictationExercise({
                         gap: 8,
                       }}
                     >
-                      {atTokens.map((w, i) => (
-                        <span
-                          key={`at-${i}-${w}-${index}`}
-                          style={{
-                            padding: "6px 10px",
-                            borderRadius: 999,
-                            border: `1px solid ${
-                              perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
-                            }`,
-                            background: perWordCorrect[i]
-                              ? "#D1FAE5"
-                              : "#FEE2E2",
-                            fontFamily: "Plus Jakarta Sans",
-                            fontSize: 12,
-                          }}
-                        >
-                          {w}
-                        </span>
-                      ))}
+                      {atTokens.map((word, i) => {
+                        const isExact = exactMatches[i];
+                        const isMisplaced = misplacedMatches[i];
+
+                        let palette = wrongColor;
+
+                        if (isExact) {
+                          palette = exactColor;
+                        } else if (isMisplaced) {
+                          palette = misplacedColor;
+                        }
+
+                        return (
+                          <span
+                            key={`at-${i}-${word}-${index}`}
+                            style={{
+                              padding: "7px 12px",
+                              borderRadius: 999,
+                              border: `1px solid ${palette.border}`,
+                              background: palette.background,
+                              color: palette.text,
+                              fontFamily: "Plus Jakarta Sans",
+                              fontSize: 12,
+                              fontWeight: 700,
+                            }}
+                          >
+                            {word}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* Gabarito + áudio */}
                   <div
                     style={{
                       fontSize: 12,
@@ -601,6 +798,7 @@ export function DictationExercise({
                   >
                     Gabarito:
                   </div>
+
                   <div
                     style={{
                       display: "flex",
@@ -622,6 +820,7 @@ export function DictationExercise({
                     >
                       🔊 {labels.play || "Ouvir"}
                     </button>
+
                     <div style={{ display: "grid", gap: 4 }}>
                       <b
                         style={{
@@ -632,6 +831,7 @@ export function DictationExercise({
                       >
                         {target}
                       </b>
+
                       <i
                         style={{
                           color: "#6B7280",
@@ -644,7 +844,6 @@ export function DictationExercise({
                     </div>
                   </div>
 
-                  {/* Botão próximo */}
                   <div
                     style={{
                       marginTop: 20,
@@ -654,25 +853,24 @@ export function DictationExercise({
                   >
                     <button
                       onClick={() => {
-                        // monta snippet dessa frase
-                        const snippet = `◾Ditado "${target}" | Resposta: "${answer}" | nota: ${roundedSimilarity}.◾`;
+                        const snippet = `◾Ditado "${target}" | Resposta: "${answer}" | nota: ${score}.◾`;
+
                         const newDescription = performanceDescription
                           ? `${performanceDescription} ${snippet}`
                           : snippet;
 
                         const newTotalPoints =
-                          roundedSimilarity > 0
-                            ? totalPoints + roundedSimilarity
-                            : totalPoints;
+                          score > 0 ? totalPoints + score : totalPoints;
 
                         setPerformanceDescription(newDescription);
-                        if (roundedSimilarity > 0) {
+
+                        if (score > 0) {
                           setTotalPoints(newTotalPoints);
                         }
 
                         exerciseScore?.(
-                          roundedSimilarity,
-                          `Ditado: ${target} / Resposta: ${answer}`
+                          score,
+                          `Ditado: ${target} / Resposta: ${answer}`,
                         );
 
                         if (isLastItem) {
@@ -683,6 +881,7 @@ export function DictationExercise({
                         setAnswer("");
                         setChecked(false);
                         setShowKey(false);
+
                         if (hasTTS()) window.speechSynthesis.cancel();
                       }}
                       style={primaryButtonStyle}
@@ -693,7 +892,6 @@ export function DictationExercise({
                 </div>
               )}
 
-              {/* Gabarito literal extra se quiser (showKey) */}
               {checked && showKey && (
                 <div
                   style={{
@@ -720,11 +918,9 @@ export function DictationExercise({
         </div>
       </div>
 
-      {/* MODAL DE PERFORMANCE — GRUDADO NO BODY */}
       {showPerformanceModal &&
         ReactDOM.createPortal(
           <>
-            {/* Overlay */}
             <div
               style={{
                 position: "fixed",
@@ -735,7 +931,6 @@ export function DictationExercise({
               onClick={() => setShowPerformanceModal(false)}
             />
 
-            {/* Caixa */}
             <div
               style={{
                 position: "fixed",
@@ -813,7 +1008,7 @@ export function DictationExercise({
               </div>
             </div>
           </>,
-          document.body
+          document.body,
         )}
     </>
   );

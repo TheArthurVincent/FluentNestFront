@@ -74,12 +74,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
 
+      console.log("EVENT UPDATED:", res.data.event);
+      console.log("HOMEWORKS UPDATED:", res.data.event?.homeworksDetails);
+
       setEventData(res.data.event);
-      console.log(res.data.event);
-
-      // depois que o back trouxe o dado “oficial”, remove override
       setStatusOverride(null);
-
       setReplicateLastEvent(res.data.event.replicateLastEvent);
     } catch (err) {
       console.error("Error fetching event data", err);
@@ -639,6 +638,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       homeworkData={hw.description || ""}
                       homeworkAnswer={hw.answers || ""}
                       headers={headers}
+                      commentAnswer={hw.commentAnswer || ""}
                       evendId={event._id}
                       event={event}
                       isDesktop={isDesktop}
@@ -653,6 +653,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     homeworkData={""}
                     homeworkStudentName={undefined} // or just remove this prop
                     homeworkAnswer={""}
+                    commentAnswer={""}
                     headers={headers}
                     evendId={event._id}
                     event={event}
