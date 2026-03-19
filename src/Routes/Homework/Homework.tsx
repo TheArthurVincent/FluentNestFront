@@ -48,23 +48,65 @@ export default function Homework({
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState<boolean>(false);
+
   const [selectedHomeworkId, setSelectedHomeworkId] = useState<string>("");
   const [selectedHomeworkContent, setSelectedHomeworkContent] =
+    useState<string>("");
+  const [selectedHomeworkAnswer, setSelectedHomeworkAnswer] =
+    useState<string>("");
+  const [selectedCommentAnswer, setSelectedCommentAnswer] =
     useState<string>("");
   const [submissionMode, setSubmissionMode] = useState<"file" | "editor">(
     "file",
   );
   const [homeworkAnswer, setHomeworkAnswer] = useState<string>("");
+  const [commentAnswerText, setCommentAnswerText] = useState<string>("");
 
   const [studentName, setStudentName] = useState<string>("");
 
   const { UniversalTexts } = useUserContext();
 
+  const handleDeleteFile = async (targetId: string) => {
+    try {
+      await axios.delete(
+        `${backDomain}/api/v1/delete-homework-attachment/${targetId}`,
+        {
+          headers: actualHeaders,
+        },
+      );
+
+      notifyAlert("Arquivo excluído com sucesso!", "green");
+      setSelectedFile(null);
+      setHomeworkAnswer("");
+      setIsModalOpen(false);
+      setIsEditModalOpen(false);
+      setSelectedHomeworkId("");
+      setSelectedHomeworkContent("");
+      setSubmissionMode("file");
+      await fetchHW(studentId || ID);
+    } catch (error) {
+      notifyAlert(
+        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework",
+      );
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const actualHeaders = headers || {};
   const pointsMadeHW = listOfCriteria[0].score[0].score;
   const pointsLateHW = listOfCriteria[0].score[1].score;
+
+  const stripHtml = (html: string) =>
+    (html || "")
+      .replace(/<[^>]*>/g, "")
+      .replace(/&nbsp;/g, " ")
+      .trim();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -88,8 +130,37 @@ export default function Homework({
     setHomeworkAnswer(content);
   };
 
+  const openSubmissionModal = (hw: any) => {
+    setSelectedHomeworkId(hw._id);
+    setSelectedHomeworkContent(hw.answers || "");
+    setHomeworkAnswer(hw.answers || "");
+    setSubmissionMode(hw.answers ? "editor" : "file");
+    setIsModalOpen(true);
+  };
+
+  const openEditHomeworkModal = (hw: any) => {
+    setSelectedHomeworkId(hw._id);
+    setSelectedHomeworkContent(hw.description || "");
+    setHomeworkAnswer(hw.description || "");
+    setIsEditModalOpen(true);
+  };
+
+  const openCommentModal = (hw: any) => {
+    setSelectedHomeworkId(hw._id);
+    setSelectedHomeworkAnswer(hw.answers || "");
+    setSelectedCommentAnswer(hw.commentAnswer || "");
+    setCommentAnswerText(hw.commentAnswer || "");
+    setIsCommentModalOpen(true);
+  };
+
   const saveEditedDescription = async (homeworkId?: string) => {
     const targetId = homeworkId || selectedHomeworkId;
+
+    if (!stripHtml(homeworkAnswer)) {
+      notifyAlert("Digite a descrição antes de salvar.");
+      return;
+    }
+
     setUploading(true);
     try {
       await axios.put(
@@ -110,9 +181,7 @@ export default function Homework({
       setSelectedHomeworkId("");
       setSelectedHomeworkContent("");
       setSubmissionMode("file");
-      setTimeout(() => {
-        fetchHW(studentId || ID);
-      }, 500);
+      await fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
         UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework",
@@ -133,7 +202,7 @@ export default function Homework({
       return;
     }
 
-    if (submissionMode === "editor" && !homeworkAnswer.trim()) {
+    if (submissionMode === "editor" && !stripHtml(homeworkAnswer)) {
       notifyAlert(
         UniversalTexts?.pleaseWriteAnswerBeforeSending ||
           "Por favor, escreva sua resposta antes de enviar",
@@ -179,13 +248,46 @@ export default function Homework({
       setSelectedHomeworkId("");
       setSelectedHomeworkContent("");
       setSubmissionMode("file");
-      setTimeout(() => {
-        fetchHW(studentId || ID);
-      }, 500);
+      await fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
         UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework",
       );
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const saveCommentAnswer = async (homeworkId?: string) => {
+    const targetId = homeworkId || selectedHomeworkId;
+
+    if (!stripHtml(commentAnswerText)) {
+      notifyAlert("Digite um comentário antes de salvar.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/editcommentanswer/${targetId}`,
+        {
+          commentAnswer: commentAnswerText,
+        },
+        {
+          headers: actualHeaders,
+        },
+      );
+
+      notifyAlert("Comentário salvo com sucesso!", "green");
+      setCommentAnswerText("");
+      setSelectedCommentAnswer("");
+      setSelectedHomeworkAnswer("");
+      setSelectedHomeworkId("");
+      setIsCommentModalOpen(false);
+      await fetchHW(studentId || ID);
+    } catch (error) {
+      notifyAlert("Erro ao salvar comentário");
       console.error(error);
     } finally {
       setUploading(false);
@@ -205,7 +307,7 @@ export default function Homework({
         },
       );
       setChange(!change);
-      fetchHW(studentId || ID);
+      await fetchHW(studentId || ID);
       setDisabled(false);
     } catch (error) {
       notifyAlert(
@@ -218,8 +320,12 @@ export default function Homework({
   const closeSubmissionModal = () => {
     setIsModalOpen(false);
     setIsEditModalOpen(false);
+    setIsCommentModalOpen(false);
     setSelectedHomeworkId("");
     setSelectedHomeworkContent("");
+    setSelectedHomeworkAnswer("");
+    setSelectedCommentAnswer("");
+    setCommentAnswerText("");
     setSelectedFile(null);
     setHomeworkAnswer("");
     setSubmissionMode("file");
@@ -272,7 +378,7 @@ export default function Homework({
         },
       );
       setChange(!change);
-      fetchHW(studentId || ID);
+      await fetchHW(studentId || ID);
       setDisabled(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
@@ -292,7 +398,7 @@ export default function Homework({
         },
       );
       setChange(!change);
-      fetchHW(studentId || ID);
+      await fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert(
         UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos",
@@ -321,7 +427,7 @@ export default function Homework({
         headers: actualHeaders,
       });
       notifyAlert("Homework deletado com sucesso.", "green");
-      fetchHW(studentId || ID);
+      await fetchHW(studentId || ID);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     } finally {
@@ -333,7 +439,6 @@ export default function Homework({
   const isAllowed =
     myPermissions === "superadmin" || myPermissions === "teacher";
 
-  // EVENTO PADRÃO PARA CRIAR NOVO HOMEWORK
   const mainEventIdForNewHomework =
     tutoringList[0]?.eventDetails?.id || tutoringList[0]?.eventID || "";
 
@@ -415,7 +520,6 @@ export default function Homework({
               />
             </a>
 
-            {/* {mainEventIdForNewHomework && ( */}
             <NewHomeworkModal
               headers={actualHeaders}
               studentID={studentId || ID}
@@ -425,7 +529,6 @@ export default function Homework({
                 setTutoringList((prev) => [...newHomeworks, ...prev]);
               }}
             />
-            {/* )} */}
           </div>
         )}
 
@@ -453,8 +556,12 @@ export default function Homework({
                 </p>
               ) : (
                 tutoringList.map((hw: any) => {
+                  console.log(hw, "hw 1");
                   const isDone = hw.status === "done";
                   const eventId = hw?.eventDetails?.id || hw?.eventID;
+                  const hasAnswer =
+                    !!(hw.answers || "").trim() || hw.attachments?.length > 0;
+                  const hasCommentAnswer = !!(hw.commentAnswer || "").trim();
 
                   return hw.description ? (
                     <div
@@ -465,7 +572,6 @@ export default function Homework({
                         marginBottom: 10,
                       }}
                     >
-                      {/* Cabeçalho do card */}
                       <div
                         style={{
                           display: "flex",
@@ -521,6 +627,7 @@ export default function Homework({
                             flexWrap: "wrap",
                             gap: 8,
                             marginTop: 4,
+                            marginBottom: 10,
                           }}
                         >
                           {isDone ? (
@@ -577,7 +684,6 @@ export default function Homework({
                             Só mudar status
                           </button>
 
-                          {/* NOVO BOTÃO DELETAR */}
                           <button
                             type="button"
                             onClick={() => openDeleteModal(hw._id)}
@@ -597,7 +703,6 @@ export default function Homework({
                         </div>
                       )}
 
-                      {/* Descrição do homework */}
                       <div
                         style={{
                           fontFamily: "Plus Jakarta Sans",
@@ -616,13 +721,196 @@ export default function Homework({
                         />
                       </div>
 
-                      {/* Link para o evento */}
+                      {hasAnswer && (
+                        <div
+                          style={{
+                            padding: 12,
+                            border: "1px solid #e2e8f0",
+                            borderRadius: 8,
+                            background: "#fafafa",
+                            color: "#334155",
+                            marginBottom: 10,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 12,
+                              color: "#64748b",
+                              marginBottom: 6,
+                            }}
+                          >
+                            Resposta do aluno
+                          </div>
+                          {hw.attachments && (
+                            <>
+                              {!isAllowed && (
+                                <button
+                                  style={{
+                                    marginRight: 8,
+                                    color: "#ef4444",
+                                    padding: "0",
+                                    border: "none",
+                                    fontWeight: "bold",
+                                    backgroundColor: "transparent",
+                                    cursor: "pointer",
+                                  }}
+                                  title="Excluir arquivo"
+                                  onClick={() => handleDeleteFile(hw._id)}
+                                >
+                                  Excluir arquivo
+                                </button>
+                              )}
+                              <a
+                                href={hw.attachments}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                Baixar Arquivo
+                              </a>
+                            </>
+                          )}
+
+                          {hw.answers && (
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: hw.answers || "",
+                              }}
+                            />
+                          )}
+                        </div>
+                      )}
+
+                      {hasCommentAnswer && (
+                        <div
+                          style={{
+                            padding: 12,
+                            border: "1px solid #e2e8f0",
+                            borderRadius: 8,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 12,
+                              marginBottom: 6,
+                            }}
+                          >
+                            Comentário do professor
+                          </div>
+                          <div
+                            style={{
+                              fontStyle: "italic",
+                              fontSize: 12,
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: hw.commentAnswer || "",
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      {!isAllowed && !hasCommentAnswer && !hw.attachments && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 8,
+                            marginTop: 8,
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => openSubmissionModal(hw)}
+                            disabled={!hw.description || hasCommentAnswer}
+                            title={
+                              !hw.description
+                                ? "Lição de casa ainda não disponível"
+                                : hasCommentAnswer
+                                  ? "Não é possível editar após o comentário do professor"
+                                  : "Responder homework"
+                            }
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #E5E7EB",
+                              backgroundColor: "#FFF",
+                              fontSize: 12,
+                              fontWeight: 500,
+                              cursor:
+                                !hw.description || hasCommentAnswer
+                                  ? "not-allowed"
+                                  : "pointer",
+                              opacity:
+                                !hw.description || hasCommentAnswer ? 0.6 : 1,
+                            }}
+                          >
+                            {hasAnswer ? "Editar resposta" : "Responder"}
+                          </button>
+                        </div>
+                      )}
+                      {isAllowed && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 8,
+                            marginTop: 4,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => openEditHomeworkModal(hw)}
+                            disabled={hasAnswer}
+                            title={
+                              hasAnswer
+                                ? "Não é possível editar após a resposta"
+                                : "Editar descrição da lição de casa"
+                            }
+                            style={{
+                              padding: "6px 10px",
+                              borderRadius: 6,
+                              border: "1px solid #E5E7EB",
+                              backgroundColor: "#F9FAFB",
+                              fontSize: 12,
+                              fontWeight: 500,
+                              cursor: hasAnswer ? "not-allowed" : "pointer",
+                              opacity: hasAnswer ? 0.6 : 1,
+                            }}
+                          >
+                            Editar homework
+                          </button>
+
+                          {hasAnswer && (
+                            <button
+                              type="button"
+                              onClick={() => openCommentModal(hw)}
+                              style={{
+                                padding: "6px 10px",
+                                borderRadius: 6,
+                                border: "1px solid #E5E7EB",
+                                backgroundColor: "#FFF",
+                                fontSize: 12,
+                                fontWeight: 500,
+                                cursor: "pointer",
+                              }}
+                            >
+                              {hasCommentAnswer
+                                ? "Editar comentário"
+                                : "Comentar resposta"}
+                            </button>
+                          )}
+                        </div>
+                      )}
+
                       {eventId && (
                         <a
                           href={`/my-calendar/event/${eventId}`}
                           style={{
                             marginTop: 14,
+                            marginLeft: "auto",
                             display: "block",
+                            maxWidth: "fit-content",
                             fontWeight: 700,
                             textAlign: "right",
                             color: partnerColor(),
@@ -633,7 +921,7 @@ export default function Homework({
                             gap: 6,
                           }}
                         >
-                          {isDone ? "Ver Lição de Casa" : "Fazer Lição de Casa"}
+                          Acessar Aula
                           <i
                             style={{
                               marginLeft: 8,
@@ -649,7 +937,6 @@ export default function Homework({
             </div>
           )}
 
-          {/* Modais existentes (envio / edição) – mantidos exatamente como estavam */}
           {isDeleteModalOpen &&
             createPortal(
               <div
@@ -745,6 +1032,7 @@ export default function Homework({
               </div>,
               document.body,
             )}
+
           {isModalOpen && (
             <div
               style={{
@@ -777,7 +1065,6 @@ export default function Homework({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Header */}
                 <div
                   style={{
                     display: "flex",
@@ -830,7 +1117,6 @@ export default function Homework({
                   </button>
                 </div>
 
-                {/* Modo de envio */}
                 <div
                   style={{
                     marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
@@ -883,7 +1169,6 @@ export default function Homework({
                         gap: "6px",
                       }}
                     >
-                      <i className="fa fa-file" style={{ fontSize: "12px" }} />
                       {UniversalTexts?.submitFile || "Enviar Arquivo"}
                     </button>
                     <button
@@ -923,7 +1208,6 @@ export default function Homework({
                   </div>
                 </div>
 
-                {/* Conteúdo do modal de envio */}
                 {submissionMode === "file" ? (
                   <div
                     style={{
@@ -939,7 +1223,14 @@ export default function Homework({
                         color: "#374151",
                       }}
                     >
-                      📎 {UniversalTexts?.chooseFile || "Escolha o arquivo:"}
+                      {" "}
+                      <i
+                        className={`fa fa-${
+                          submissionMode === "file" ? "upload" : "paper-plane"
+                        }`}
+                        style={{ fontSize: "11px", marginRight: "6px" }}
+                      />
+                      {UniversalTexts?.chooseFile || "Escolha o arquivo:"}
                     </label>
                     <input
                       type="file"
@@ -1040,7 +1331,6 @@ export default function Homework({
                   </div>
                 )}
 
-                {/* Actions */}
                 <div
                   style={{
                     display: "flex",
@@ -1083,7 +1373,7 @@ export default function Homework({
                       uploading ||
                       (submissionMode === "file"
                         ? !selectedFile
-                        : !homeworkAnswer.trim())
+                        : !stripHtml(homeworkAnswer))
                     }
                     style={{
                       backgroundColor: "transparent",
@@ -1091,7 +1381,7 @@ export default function Homework({
                         uploading ||
                         (submissionMode === "file"
                           ? !selectedFile
-                          : !homeworkAnswer.trim())
+                          : !stripHtml(homeworkAnswer))
                           ? "#999"
                           : "#666",
                       border: "1px solid #ddd",
@@ -1104,7 +1394,7 @@ export default function Homework({
                         uploading ||
                         (submissionMode === "file"
                           ? !selectedFile
-                          : !homeworkAnswer.trim())
+                          : !stripHtml(homeworkAnswer))
                           ? "not-allowed"
                           : "pointer",
                       display: "flex",
@@ -1119,7 +1409,7 @@ export default function Homework({
                         !uploading &&
                         !(submissionMode === "file"
                           ? !selectedFile
-                          : !homeworkAnswer.trim())
+                          : !stripHtml(homeworkAnswer))
                       ) {
                         e.currentTarget.style.backgroundColor = "#f5f5f5";
                         e.currentTarget.style.borderColor = "#bbb";
@@ -1130,7 +1420,7 @@ export default function Homework({
                         !uploading &&
                         !(submissionMode === "file"
                           ? !selectedFile
-                          : !homeworkAnswer.trim())
+                          : !stripHtml(homeworkAnswer))
                       ) {
                         e.currentTarget.style.backgroundColor = "transparent";
                         e.currentTarget.style.borderColor = "#ddd";
@@ -1144,15 +1434,9 @@ export default function Homework({
                       </>
                     ) : (
                       <>
-                        <i
-                          className={`fa fa-${
-                            submissionMode === "file" ? "upload" : "paper-plane"
-                          }`}
-                          style={{ fontSize: "11px" }}
-                        />
                         {submissionMode === "file"
-                          ? UniversalTexts?.send || "Enviar Arquivo"
-                          : UniversalTexts?.submitResponse || "Enviar Resposta"}
+                          ? "Enviar Arquivo"
+                          : "Enviar Resposta"}
                       </>
                     )}
                   </button>
@@ -1281,10 +1565,10 @@ export default function Homework({
                   </button>
                   <button
                     onClick={() => saveEditedDescription()}
-                    disabled={uploading || !homeworkAnswer.trim()}
+                    disabled={uploading || !stripHtml(homeworkAnswer)}
                     style={{
                       backgroundColor:
-                        uploading || !homeworkAnswer.trim()
+                        uploading || !stripHtml(homeworkAnswer)
                           ? "#ccc"
                           : partnerColor(),
                       color: "#fff",
@@ -1293,7 +1577,7 @@ export default function Homework({
                       borderRadius: 6,
                       fontSize: 12,
                       cursor:
-                        uploading || !homeworkAnswer.trim()
+                        uploading || !stripHtml(homeworkAnswer)
                           ? "not-allowed"
                           : "pointer",
                     }}
@@ -1304,6 +1588,169 @@ export default function Homework({
               </div>
             </div>
           )}
+
+          {isCommentModalOpen &&
+            createPortal(
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems:
+                    window.innerWidth <= 768 ? "flex-start" : "center",
+                  zIndex: 1000,
+                  padding: window.innerWidth <= 768 ? "20px 8px" : "0",
+                }}
+                onClick={closeSubmissionModal}
+              >
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 6,
+                    padding: window.innerWidth <= 768 ? "16px" : "24px",
+                    maxWidth: window.innerWidth <= 768 ? "100%" : "500px",
+                    width: window.innerWidth <= 768 ? "100%" : "90%",
+                    maxHeight:
+                      window.innerWidth <= 768 ? "calc(100vh - 40px)" : "90vh",
+                    overflowY: "auto",
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                    marginTop: window.innerWidth <= 768 ? "20px" : "0",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 20,
+                      borderBottom: "1px solid #e2e8f0",
+                      paddingBottom: "16px",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: 16,
+                        fontWeight: 500,
+                        color: "#495057",
+                      }}
+                    >
+                      {selectedCommentAnswer
+                        ? "Editar comentário"
+                        : "Comentar resposta"}
+                    </h2>
+
+                    <button
+                      onClick={closeSubmissionModal}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        fontSize: 24,
+                        cursor: "pointer",
+                        color: "#6b7280",
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  {selectedHomeworkAnswer && (
+                    <div style={{ marginBottom: 16 }}>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "8px",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151",
+                        }}
+                      >
+                        Resposta do aluno
+                      </label>
+
+                      <div
+                        style={{
+                          border: "1px solid #e2e8f0",
+                          borderRadius: 6,
+                          backgroundColor: "#f8fafc",
+                          padding: 12,
+                          fontSize: 13,
+                          color: "#334155",
+                          marginBottom: 16,
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: selectedHomeworkAnswer || "",
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      borderRadius: 6,
+                      backgroundColor: "#ffffff",
+                      minHeight: "300px",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <textarea
+                      value={commentAnswerText}
+                      onChange={(e) => setCommentAnswerText(e.target.value)}
+                      placeholder="Comente a resposta"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      gap: 8,
+                    }}
+                  >
+                    <button
+                      onClick={closeSubmissionModal}
+                      style={{
+                        backgroundColor: "transparent",
+                        color: "#666",
+                        border: "1px solid #ddd",
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        fontSize: 12,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Cancelar
+                    </button>
+
+                    <button
+                      onClick={() => saveCommentAnswer()}
+                      disabled={uploading || !stripHtml(commentAnswerText)}
+                      style={{
+                        backgroundColor:
+                          uploading || !stripHtml(commentAnswerText)
+                            ? "#ccc"
+                            : partnerColor(),
+                        color: "#fff",
+                        border: "none",
+                        padding: "6px 12px",
+                        borderRadius: 6,
+                        fontSize: 12,
+                        cursor:
+                          uploading || !stripHtml(commentAnswerText)
+                            ? "not-allowed"
+                            : "pointer",
+                      }}
+                    >
+                      {uploading ? "Salvando..." : "Salvar"}
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body,
+            )}
         </>
       </div>
     </div>
