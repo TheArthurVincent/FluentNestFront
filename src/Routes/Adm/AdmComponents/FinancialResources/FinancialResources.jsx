@@ -1144,20 +1144,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 financialReports={financialReports}
                 formatNumber={formatNumber}
               />
-
-              <button
-                title={`Novo ítem para o mês de ${transformMonth(
-                  selectedMonth,
-                )}`}
-                style={{
-                  marginLeft: "8px",
-                  color: "white",
-                  backgroundColor: partnerColor(),
-                }}
-                onClick={handleNewItemModal}
-              >
-                + Novo Ítem
-              </button>
             </div>
           )}
           <div
@@ -1379,7 +1365,27 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                           </div>
                         ))}
                       </div>
-
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          marginBottom: "16px",
+                        }}
+                      >
+                        <button
+                          title={`Novo ítem para o mês de ${transformMonth(
+                            selectedMonth,
+                          )}`}
+                          style={{
+                            marginLeft: "8px",
+                            color: "white",
+                            backgroundColor: partnerColor(),
+                          }}
+                          onClick={handleNewItemModal}
+                        >
+                          + Entrada/Saída para {transformMonth(selectedMonth)}
+                        </button>
+                      </div>
                       <div
                         style={{
                           display: "grid",
