@@ -3531,6 +3531,7 @@ export default function EnglishClassCourse2({
                                   {element.type === "sentences" ? (
                                     <SentenceLessonModel
                                       mainTag={theclass.mainTag}
+                                      exerciseScore={exerciseScore}
                                       element={element}
                                       studentId={mainStudentID || studentID}
                                       headers={headers}
@@ -3545,6 +3546,7 @@ export default function EnglishClassCourse2({
                                       headers={headers}
                                       element={element}
                                       selectedVoice={selectedVoice}
+                                      exerciseScore={exerciseScore}
                                       studentsIds={studentsIds}
                                     />
                                   ) : element.type === "vocabulary" ? (

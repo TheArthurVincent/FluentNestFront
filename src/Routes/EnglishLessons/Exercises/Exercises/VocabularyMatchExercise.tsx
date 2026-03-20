@@ -217,7 +217,7 @@ export default function VocabularyMatchExercise({
       Array.isArray(sentences)
         ? sentences.filter((s) => s?.english?.trim() && s?.portuguese?.trim())
         : [],
-    [sentences]
+    [sentences],
   );
 
   // "seed" para reembaralhar (dentro do lote)
@@ -239,7 +239,7 @@ export default function VocabularyMatchExercise({
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
   const handleScoreStamp = async (
     pointsToSend: number,
-    descriptionToSend: string
+    descriptionToSend: string,
   ) => {
     try {
       const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
@@ -301,12 +301,12 @@ export default function VocabularyMatchExercise({
   // agora as DUAS colunas são embaralhadas, ambas baseadas nos índices visíveis do pool
   const frontOrder = useMemo(
     () => shuffle(visibleIndices),
-    [visibleIndices, seed]
+    [visibleIndices, seed],
   );
 
   const backOrder = useMemo(
     () => shuffle(visibleIndices),
-    [visibleIndices, seed]
+    [visibleIndices, seed],
   );
 
   const total = visibleIndices.length;
@@ -361,7 +361,7 @@ export default function VocabularyMatchExercise({
   function buildPerformanceDescriptionOnHit(
     sentence: SentenceItem,
     cardIndex: number,
-    points: number
+    points: number,
   ) {
     const tries = attempts[cardIndex] ?? 0;
 
@@ -375,8 +375,8 @@ export default function VocabularyMatchExercise({
       points === 0
         ? "e não ganhou pontos"
         : points === 1
-        ? "e ganhou 1 ponto"
-        : `e ganhou ${points} pontos`;
+          ? "e ganhou 1 ponto"
+          : `e ganhou ${points} pontos`;
 
     const base = `◾Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.◾`;
 
@@ -385,7 +385,7 @@ export default function VocabularyMatchExercise({
 
   function buildPerformanceDescriptionOnError(
     frontIndex: number,
-    backIndex: number
+    backIndex: number,
   ) {
     const front = pool[frontIndex];
     const back = pool[backIndex];
@@ -426,8 +426,8 @@ export default function VocabularyMatchExercise({
         points === 0
           ? "e não ganhou pontos"
           : points === 1
-          ? "e ganhou 1 ponto"
-          : `e ganhou ${points} pontos`;
+            ? "e ganhou 1 ponto"
+            : `e ganhou ${points} pontos`;
 
       const baseSnippet = `Par "${sentence.english} ⇄ ${sentence.portuguese}": ${attemptText} ${pointsText}.`;
 
@@ -478,146 +478,138 @@ export default function VocabularyMatchExercise({
     <div style={cardContainerStyle}>
       <HeaderBar title={L.title} right={<></>} />
 
-      {/* layout duas colunas */}
-      {!done && (
-        <div style={gridWrapperStyle}>
-          {/* LEFT: fronts (áudio, com highlight de par) */}
-          <div style={columnStyle}>
-            {frontOrder.map((realIndex, frontSlot) => {
-              const s = pool[realIndex];
-              const isSelected = selectedFront === realIndex;
-              const isDone = matched.has(realIndex);
-              const color = pairColors[realIndex % pairColors.length];
-              const { frontLang } = getLanguages(s);
+      <div style={gridWrapperStyle}>
+        {/* LEFT: fronts (áudio, com highlight de par) */}
+        <div style={columnStyle}>
+          {frontOrder.map((realIndex, frontSlot) => {
+            const s = pool[realIndex];
+            const isSelected = selectedFront === realIndex;
+            const isDone = matched.has(realIndex);
+            const color = pairColors[realIndex % pairColors.length];
+            const { frontLang } = getLanguages(s);
 
-              return (
+            return (
+              <div
+                key={`front-${frontSlot}`}
+                style={{
+                  ...baseCardStyle,
+                  border: `2px solid ${isDone ? color : "#E5E7EB"}`,
+                  ...(isSelected ? selectedStyle : {}),
+                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                }}
+                onClick={() => {
+                  handlePickFront(realIndex);
+                  readText(s.english, true, frontLang, selectedVoice);
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = isDone
+                    ? `${color}1F`
+                    : "#F9FAFB";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isDone
+                    ? `${color}14`
+                    : "#FFFFFF";
+                }}
+              >
                 <div
-                  key={`front-${frontSlot}`}
                   style={{
-                    ...baseCardStyle,
-                    border: `2px solid ${isDone ? color : "#E5E7EB"}`,
-                    ...(isSelected ? selectedStyle : {}),
-                    ...(isDone ? { backgroundColor: `${color}14` } : {}),
-                  }}
-                  onClick={() => {
-                    handlePickFront(realIndex);
-                    readText(s.english, true, frontLang, selectedVoice);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? `${color}1F`
-                      : "#F9FAFB";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? `${color}14`
-                      : "#FFFFFF";
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <div
+                  <span
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 8,
-                      justifyContent: "space-between",
+                      gap: 12,
                     }}
                   >
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                      }}
-                    >
-                      <i className="fa fa-volume-up" aria-hidden="true" />
-                    </span>
-                    {isDone && <span style={checkTagStyle}>✔</span>}
-                  </div>
+                    <i className="fa fa-volume-up" aria-hidden="true" />
+                  </span>
+                  {isDone && <span style={checkTagStyle}>✔</span>}
                 </div>
-              );
-            })}
-          </div>
-
-          {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
-          <div style={columnStyle}>
-            {backOrder.map((realIndex, slot) => {
-              const s = pool[realIndex];
-              const isDone = matched.has(realIndex);
-              const color = pairColors[realIndex % pairColors.length];
-              const { backLang } = getLanguages(s);
-
-              return (
-                <div
-                  key={`back-${slot}`}
-                  style={{
-                    ...baseCardStyle,
-                    border: `2px solid ${isDone ? color : "#E5E7EB"}`,
-                    ...(isDone ? { backgroundColor: `${color}14` } : {}),
-                  }}
-                  onClick={() => {
-                    if (!isDone) handlePickBack(slot);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? `${color}1F`
-                      : "#F9FAFB";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? `${color}14`
-                      : "#FFFFFF";
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <span
-                      style={{ display: "flex", alignItems: "center", gap: 12 }}
-                    >
-                      {backLang !== "pt" && s?.portuguese && (
-                        <button
-                          style={audioButtonStyle}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            readText(
-                              s.portuguese,
-                              true,
-                              backLang,
-                              selectedVoice
-                            );
-                          }}
-                          title="Ouvir definição"
-                        >
-                          <i className="fa fa-volume-up" aria-hidden="true" />
-                        </button>
-                      )}
-                      <div style={{ marginLeft: 4 }}>
-                        <div
-                          style={{
-                            color: "#4B5563",
-                            fontStyle: "italic",
-                            fontSize: 13,
-                            wordBreak: "break-word",
-                            fontFamily: "Plus Jakarta Sans",
-                          }}
-                        >
-                          {s.portuguese}
-                        </div>
-                      </div>
-                    </span>
-                    {isDone && <span style={checkTagStyle}>✔</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
-      )}
+
+        {/* RIGHT: backs embaralhados (texto + áudio se idioma != pt) */}
+        <div style={columnStyle}>
+          {backOrder.map((realIndex, slot) => {
+            const s = pool[realIndex];
+            const isDone = matched.has(realIndex);
+            const color = pairColors[realIndex % pairColors.length];
+            const { backLang } = getLanguages(s);
+
+            return (
+              <div
+                key={`back-${slot}`}
+                style={{
+                  ...baseCardStyle,
+                  border: `2px solid ${isDone ? color : "#E5E7EB"}`,
+                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                }}
+                onClick={() => {
+                  if (!isDone) handlePickBack(slot);
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = isDone
+                    ? `${color}1F`
+                    : "#F9FAFB";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = isDone
+                    ? `${color}14`
+                    : "#FFFFFF";
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span
+                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                  >
+                    {backLang !== "pt" && s?.portuguese && (
+                      <button
+                        style={audioButtonStyle}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          readText(s.portuguese, true, backLang, selectedVoice);
+                        }}
+                        title="Ouvir definição"
+                      >
+                        <i className="fa fa-volume-up" aria-hidden="true" />
+                      </button>
+                    )}
+                    <div style={{ marginLeft: 4 }}>
+                      <div
+                        style={{
+                          color: "#4B5563",
+                          fontStyle: "italic",
+                          fontSize: 13,
+                          wordBreak: "break-word",
+                          fontFamily: "Plus Jakarta Sans",
+                        }}
+                      >
+                        {s.portuguese}
+                      </div>
+                    </div>
+                  </span>
+                  {isDone && <span style={checkTagStyle}>✔</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       {done && (
         <div
@@ -738,7 +730,7 @@ export default function VocabularyMatchExercise({
                   </div>
                 </div>
               </>,
-              document.body
+              document.body,
             )}
         </div>
       )}

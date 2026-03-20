@@ -24,11 +24,9 @@ interface SentenceLessonModelProps {
   mainTag: string;
   selectedVoice: any;
   studentsIds?: string[];
-
-  // ✅ precisa disso pros exercícios gravarem no /exercise-done/:courseId
   courseId?: string;
   language?: string; // se você quiser controlar Listening (ele só roda em "en")
-  exerciseScore?: (points: number, description?: string, id?: string) => void;
+  exerciseScore?: any;
 }
 
 export default function SentenceLessonModel({

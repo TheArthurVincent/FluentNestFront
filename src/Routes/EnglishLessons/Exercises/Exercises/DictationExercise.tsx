@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { defaultLabels, HeaderBar, shuffle } from "../Exercises";
-import { backDomain } from "../../../../Resources/UniversalComponents";
 
 // ===================== HELPERS =====================
 
@@ -276,7 +274,11 @@ type DictationExerciseProps = {
   sentences: SentenceItem[];
   studentId?: string;
   labels: typeof defaultLabels;
-  exerciseScore?: (points: number, desc?: string) => void;
+  exerciseScore?: (
+    score: number,
+    description: string,
+    id?: string,
+  ) => Promise<any> | void;
   selectedVoice?: string;
   language?: string;
   courseId?: string;
@@ -291,7 +293,6 @@ export function DictationExercise({
   studentId,
   selectedVoice,
   language,
-  courseId,
 }: DictationExerciseProps) {
   const [seed, setSeed] = useState(0);
 
@@ -305,10 +306,10 @@ export function DictationExercise({
   const [answer, setAnswer] = useState("");
   const [checked, setChecked] = useState(false);
   const [showKey, setShowKey] = useState(false);
-
   const [totalPoints, setTotalPoints] = useState(0);
   const [performanceDescription, setPerformanceDescription] = useState("");
   const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [savingRound, setSavingRound] = useState(false);
 
   const finished = index >= pool.length;
   const current = !finished ? pool[index] : null;
@@ -323,6 +324,7 @@ export function DictationExercise({
     setTotalPoints(0);
     setPerformanceDescription("");
     setShowPerformanceModal(false);
+    setSavingRound(false);
     setSeed((s) => s + 1);
 
     if (hasTTS()) window.speechSynthesis.cancel();
@@ -351,32 +353,6 @@ export function DictationExercise({
     );
   }
 
-  const handleScoreStamp = async (
-    pointsToSend: number,
-    descriptionToSend: string,
-  ) => {
-    if (!courseId || !studentId) return;
-
-    try {
-      const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "null");
-
-      const studentName =
-        (loggedIn?.name && loggedIn?.lastname
-          ? `${loggedIn.name} ${loggedIn.lastname}`
-          : "Student") || "Student";
-
-      await axios.put(`${backDomain}/api/v1/exercise-done/${courseId}`, {
-        type: "sentences",
-        points: pointsToSend,
-        student: studentId,
-        description: descriptionToSend,
-        studentName,
-      });
-    } catch (error) {
-      console.log(error, "Erro ao atualizar dados (dictation)");
-    }
-  };
-
   const wordsExpected = finished ? 0 : wordCount(target);
   const wordsTyped = finished ? 0 : wordCount(answer);
   const similarity = finished ? 0 : similarityPercentage(target, answer);
@@ -402,12 +378,13 @@ export function DictationExercise({
   const exactPoints = matches * 10;
   const misplacedPoints = misplaced * 6;
   const similarityBonus = similarity >= 80 ? 5 : similarity >= 65 ? 2 : 0;
+  const roundScore = !finished
+    ? exactPoints + misplacedPoints + similarityBonus
+    : 0;
 
-  const score = !finished ? exactPoints + misplacedPoints + similarityBonus : 0;
   const wrong = Math.max(0, atTokens.length - matches - misplaced);
   const progressPct = finished ? 100 : Math.round((index / pool.length) * 100);
   const displayIndex = finished ? pool.length : index + 1;
-  const isLastItem = index === pool.length - 1;
 
   function handleRestart() {
     setIndex(0);
@@ -417,10 +394,43 @@ export function DictationExercise({
     setTotalPoints(0);
     setPerformanceDescription("");
     setShowPerformanceModal(false);
+    setSavingRound(false);
     setSeed((s) => s + 1);
 
     if (hasTTS()) window.speechSynthesis.cancel();
   }
+
+  const handleNext = async () => {
+    if (savingRound || finished) return;
+
+    const snippet = `◾Ditado "${target}" | Resposta: "${answer}" | nota: ${roundScore}.◾`;
+    const newDescription = performanceDescription
+      ? `${performanceDescription} ${snippet}`
+      : snippet;
+
+    try {
+      setSavingRound(true);
+
+      // Aqui está o ponto principal:
+      // a cada NEXT ele chama a função do pai,
+      // e essa função já bate no backend
+      await exerciseScore?.(roundScore, snippet, studentId);
+
+      setTotalPoints((prev) => prev + roundScore);
+      setPerformanceDescription(newDescription);
+
+      setIndex((prev) => prev + 1);
+      setAnswer("");
+      setChecked(false);
+      setShowKey(false);
+
+      if (hasTTS()) window.speechSynthesis.cancel();
+    } catch (error) {
+      notifyAlert("Erro ao pontuar", partnerColor());
+    } finally {
+      setSavingRound(false);
+    }
+  };
 
   return (
     <>
@@ -478,7 +488,7 @@ export function DictationExercise({
                   fontFamily: "Plus Jakarta Sans",
                 }}
               >
-                Seu desempenho foi registrado para esta atividade.
+                Total de pontos: <strong>{totalPoints}</strong>
               </div>
 
               <div
@@ -621,6 +631,7 @@ export function DictationExercise({
                     >
                       🟡 Fora da posição: <strong>{misplaced}</strong>
                     </span>
+
                     <span
                       style={metricChipStyle(
                         wrongColor.background,
@@ -630,6 +641,7 @@ export function DictationExercise({
                     >
                       🔴 Erradas: <strong>{wrong}</strong>
                     </span>
+
                     <span style={neutralMetricsChipStyle}>
                       🧮 Palavras:{" "}
                       <strong>
@@ -645,7 +657,7 @@ export function DictationExercise({
                       )}
                     >
                       🏆 <strong>{similarity}%</strong>/
-                      <strong>{score} pts</strong>
+                      <strong>{roundScore} pts</strong>
                     </span>
                   </div>
 
@@ -655,89 +667,6 @@ export function DictationExercise({
                       gap: 8,
                     }}
                   >
-                    {/* <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        marginBottom: 4,
-                      }}
-                    >
-                      <span
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: 6,
-                          border: `1px solid ${exactColor.border}`,
-                          background: exactColor.background,
-                          color: exactColor.text,
-                          fontFamily: "Plus Jakarta Sans",
-                          fontSize: 12,
-                          fontWeight: 600,
-                        }}
-                      >
-                        🟢 Na posição
-                      </span>
-
-                      <span
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: 6,
-                          border: `1px solid ${misplacedColor.border}`,
-                          background: misplacedColor.background,
-                          color: misplacedColor.text,
-                          fontFamily: "Plus Jakarta Sans",
-                          fontSize: 12,
-                          fontWeight: 600,
-                        }}
-                      >
-                        🟡 Fora da posição
-                      </span>
-
-                      <span
-                        style={{
-                          padding: "6px 10px",
-                          borderRadius: 6,
-                          border: `1px solid ${wrongColor.border}`,
-                          background: wrongColor.background,
-                          color: wrongColor.text,
-                          fontFamily: "Plus Jakarta Sans",
-                          fontSize: 12,
-                          fontWeight: 600,
-                        }}
-                      >
-                        🔴 Errada
-                      </span>
-                    </div> */}
-
-                    {/* <div
-                      style={{
-                        fontFamily: "Plus Jakarta Sans",
-                        fontSize: 13,
-                        color: "#374151",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      Você acertou{" "}
-                      <span
-                        style={{
-                          color: exactColor.text,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {matches} na posição correta
-                      </span>{" "}
-                      e{" "}
-                      <span
-                        style={{
-                          color: misplacedColor.text,
-                          fontWeight: 700,
-                        }}
-                      >
-                        {misplaced} fora da posição
-                      </span>
-                      .
-                    </div> */}
-
                     <div
                       style={{
                         fontSize: 12,
@@ -761,11 +690,8 @@ export function DictationExercise({
 
                         let palette = wrongColor;
 
-                        if (isExact) {
-                          palette = exactColor;
-                        } else if (isMisplaced) {
-                          palette = misplacedColor;
-                        }
+                        if (isExact) palette = exactColor;
+                        else if (isMisplaced) palette = misplacedColor;
 
                         return (
                           <span
@@ -852,41 +778,15 @@ export function DictationExercise({
                     }}
                   >
                     <button
-                      onClick={() => {
-                        const snippet = `◾Ditado "${target}" | Resposta: "${answer}" | nota: ${score}.◾`;
-
-                        const newDescription = performanceDescription
-                          ? `${performanceDescription} ${snippet}`
-                          : snippet;
-
-                        const newTotalPoints =
-                          score > 0 ? totalPoints + score : totalPoints;
-
-                        setPerformanceDescription(newDescription);
-
-                        if (score > 0) {
-                          setTotalPoints(newTotalPoints);
-                        }
-
-                        exerciseScore?.(
-                          score,
-                          `Ditado: ${target} / Resposta: ${answer}`,
-                        );
-
-                        if (isLastItem) {
-                          handleScoreStamp(newTotalPoints, newDescription);
-                        }
-
-                        setIndex((i) => i + 1);
-                        setAnswer("");
-                        setChecked(false);
-                        setShowKey(false);
-
-                        if (hasTTS()) window.speechSynthesis.cancel();
+                      onClick={handleNext}
+                      style={{
+                        ...primaryButtonStyle,
+                        opacity: savingRound ? 0.7 : 1,
+                        cursor: savingRound ? "not-allowed" : "pointer",
                       }}
-                      style={primaryButtonStyle}
+                      disabled={savingRound}
                     >
-                      {defaultLabels.next} ▶︎
+                      {savingRound ? "Salvando..." : `${defaultLabels.next} ▶︎`}
                     </button>
                   </div>
                 </div>

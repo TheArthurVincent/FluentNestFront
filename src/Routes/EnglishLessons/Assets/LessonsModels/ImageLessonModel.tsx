@@ -39,7 +39,7 @@ interface ImageLessonModelProps {
   // para registrar /exercise-done/:courseId
   courseId?: string;
   language?: string;
-  exerciseScore?: (points: number, description?: string, id?: string) => void;
+  exerciseScore?: any;
 }
 
 const sanitizeUrlForImg = (u: string): string => u;
