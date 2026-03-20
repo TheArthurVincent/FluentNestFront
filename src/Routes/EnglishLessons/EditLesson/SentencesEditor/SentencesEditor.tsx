@@ -115,14 +115,16 @@ const SentencesEditor: React.FC<Props> = ({
     const exceedsMax = (value.sentences?.length || 0) > MAX_ITEMS;
 
     if (needsBackfill || exceedsMax) {
-      const fixed = (value && value.sentences ? value.sentences : []).map((s: any) => ({
-        english: s?.english ?? "",
-        portuguese: s?.portuguese ?? "",
-        languages: s?.languages ?? {
-          language1: defaultLang1 || "en",
-          language2: defaultLang2 || "pt",
-        },
-      }));
+      const fixed = (value && value.sentences ? value.sentences : []).map(
+        (s: any) => ({
+          english: s?.english ?? "",
+          portuguese: s?.portuguese ?? "",
+          languages: s?.languages ?? {
+            language1: defaultLang1 || "en",
+            language2: defaultLang2 || "pt",
+          },
+        }),
+      );
 
       onChange({
         ...value,
@@ -218,7 +220,8 @@ const SentencesEditor: React.FC<Props> = ({
   };
 
   const moveDown = (index: number) => {
-    if (index >= (value && value.sentences ? value.sentences.length : 0) - 1) return;
+    if (index >= (value && value.sentences ? value.sentences.length : 0) - 1)
+      return;
     const next = (value && value.sentences ? value.sentences : []).slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
     onChange({
@@ -254,40 +257,31 @@ const SentencesEditor: React.FC<Props> = ({
       return;
     }
 
-    const baseText =
-      targetSide === "english"
-        ? String(s?.english ?? "").trim()
-        : String(s?.portuguese ?? "").trim();
-
-    const otherText =
-      targetSide === "english"
-        ? String(s?.portuguese ?? "").trim()
-        : String(s?.english ?? "").trim();
-
-    if (!baseText && !otherText) {
-      notifyAlert(
-        "Preencha ao menos um dos lados antes de usar IA.",
-        partnerColor(),
-      );
-      return;
-    }
+    const frontText = String(s?.english ?? "").trim();
+    const backText = String(s?.portuguese ?? "").trim();
 
     const lang1 = String(
       s?.languages?.language1 || defaultLang1 || "en",
     ).trim();
+
     const lang2 = String(
       s?.languages?.language2 || defaultLang2 || "pt",
     ).trim();
 
-    const targetLang = targetSide === "english" ? lang1 : lang2;
+    const isTargetFront = targetSide === "english";
 
-    const seedText = baseText || otherText;
+    // SEMPRE usa a OUTRA caixa como referência
+    const referenceText = isTargetFront ? backText : frontText;
+    const referenceLang = isTargetFront ? lang2 : lang1;
+    const targetLang = isTargetFront ? lang1 : lang2;
 
-    const seedLang = baseText
-      ? targetLang
-      : targetSide === "english"
-        ? lang2
-        : lang1;
+    if (!referenceText) {
+      notifyAlert(
+        "Preencha a outra caixa da linha para a IA usar como referência.",
+        partnerColor(),
+      );
+      return;
+    }
 
     const key = `${idx}:${targetSide}`;
 
@@ -296,8 +290,8 @@ const SentencesEditor: React.FC<Props> = ({
 
       const url = `${backDomain}/api/v1/translateOrDefineSentence/${studentId}`;
       const payload = {
-        sentence: seedText,
-        language1: seedLang,
+        sentence: referenceText,
+        language1: referenceLang,
         language2: targetLang,
       };
 
@@ -307,15 +301,22 @@ const SentencesEditor: React.FC<Props> = ({
           : await axios.post(url, payload);
 
       const out = String(response?.data?.backText || "").trim();
+
       if (!out) {
         notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
         return;
       }
 
-      if (targetSide === "english") {
-        updateSentence(idx, (prev) => ({ ...prev, english: out }));
+      if (isTargetFront) {
+        updateSentence(idx, (prev) => ({
+          ...prev,
+          english: out,
+        }));
       } else {
-        updateSentence(idx, (prev) => ({ ...prev, portuguese: out }));
+        updateSentence(idx, (prev) => ({
+          ...prev,
+          portuguese: out,
+        }));
       }
     } catch (error: any) {
       console.error(error);
@@ -771,154 +772,156 @@ const SentencesEditor: React.FC<Props> = ({
             </div>
           )}
 
-          {value && value.sentences && value.sentences.map((s, idx) => (
-            <div key={idx} className="se-item">
-              {/* Controles do item */}
-              <div className="se-item-controls">
-                {idx !== 0 && (
-                  <button
-                    onClick={() => moveUp(idx)}
-                    className="se-btn"
-                    aria-label="Mover item para cima"
-                  >
-                    ↑
-                  </button>
-                )}
-                <span style={{ fontSize: 12, color: "#334155" }}>
-                  Order: {idx + 1}
-                </span>
-                {idx !==
-                  (value && value.sentences ? value.sentences.length : 0) -
-                    1 && (
-                  <button
-                    onClick={() => moveDown(idx)}
-                    className="se-btn"
-                    aria-label="Mover item para baixo"
-                  >
-                    ↓
-                  </button>
-                )}
-
-                <button
-                  onClick={() => swapCardSides(idx)}
-                  className="se-btn"
-                  title="Trocar Front/Back deste card (swap dos textos e dos idiomas)"
-                  aria-label="Trocar Front/Back"
-                >
-                  Trocar
-                </button>
-
-                <button
-                  onClick={() => removeSentence(idx)}
-                  className="se-btn se-btn--danger"
-                  title="Remover sentença"
-                  aria-label="Remover sentença"
-                >
-                  Remover
-                </button>
-              </div>
-
-              {/* FRONT / BACK */}
-              <div className="se-row">
-                <div className="se-field">
-                  <label className="se-label">Front</label>
-
-                  <div className="se-row-inline">
-                    <input
-                      value={s.english}
-                      onChange={(e) =>
-                        updateSentence(idx, (prev) => ({
-                          ...prev,
-                          english: e.target.value,
-                        }))
-                      }
-                      placeholder="Ex.: She went to the supermarket to buy groceries."
-                      className="se-input"
-                    />
-
+          {value &&
+            value.sentences &&
+            value.sentences.map((s, idx) => (
+              <div key={idx} className="se-item">
+                {/* Controles do item */}
+                <div className="se-item-controls">
+                  {idx !== 0 && (
                     <button
+                      onClick={() => moveUp(idx)}
                       className="se-btn"
-                      style={{ opacity: isLoading(idx, "english") ? 0.6 : 1 }}
-                      onClick={() => handleAI(idx, "english")}
-                      disabled={
-                        isLoading(idx, "english") ||
-                        isLoading(idx, "portuguese")
-                      }
-                      title="Gerar/revisar o Front usando IA"
-                      aria-label="Gerar/revisar Front"
+                      aria-label="Mover item para cima"
                     >
-                      {isLoading(idx, "english") ? "..." : "IA"}
+                      ↑
                     </button>
+                  )}
+                  <span style={{ fontSize: 12, color: "#334155" }}>
+                    Order: {idx + 1}
+                  </span>
+                  {idx !==
+                    (value && value.sentences ? value.sentences.length : 0) -
+                      1 && (
+                    <button
+                      onClick={() => moveDown(idx)}
+                      className="se-btn"
+                      aria-label="Mover item para baixo"
+                    >
+                      ↓
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => swapCardSides(idx)}
+                    className="se-btn"
+                    title="Trocar Front/Back deste card (swap dos textos e dos idiomas)"
+                    aria-label="Trocar Front/Back"
+                  >
+                    Trocar
+                  </button>
+
+                  <button
+                    onClick={() => removeSentence(idx)}
+                    className="se-btn se-btn--danger"
+                    title="Remover sentença"
+                    aria-label="Remover sentença"
+                  >
+                    Remover
+                  </button>
+                </div>
+
+                {/* FRONT / BACK */}
+                <div className="se-row">
+                  <div className="se-field">
+                    <label className="se-label">Front</label>
+
+                    <div className="se-row-inline">
+                      <input
+                        value={s.english}
+                        onChange={(e) =>
+                          updateSentence(idx, (prev) => ({
+                            ...prev,
+                            english: e.target.value,
+                          }))
+                        }
+                        placeholder="Ex.: She went to the supermarket to buy groceries."
+                        className="se-input"
+                      />
+
+                      <button
+                        className="se-btn"
+                        style={{ opacity: isLoading(idx, "english") ? 0.6 : 1 }}
+                        onClick={() => handleAI(idx, "english")}
+                        disabled={
+                          isLoading(idx, "english") ||
+                          isLoading(idx, "portuguese")
+                        }
+                        title="Gerar/revisar o Front usando IA"
+                        aria-label="Gerar/revisar Front"
+                      >
+                        {isLoading(idx, "english") ? "..." : "IA"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="se-field">
+                    <label className="se-label">Back</label>
+
+                    <div className="se-row-inline">
+                      <input
+                        value={s.portuguese}
+                        onChange={(e) =>
+                          updateSentence(idx, (prev) => ({
+                            ...prev,
+                            portuguese: e.target.value,
+                          }))
+                        }
+                        placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
+                        className="se-input"
+                      />
+
+                      <button
+                        className="se-btn"
+                        style={{
+                          opacity: isLoading(idx, "portuguese") ? 0.6 : 1,
+                        }}
+                        onClick={() => handleAI(idx, "portuguese")}
+                        disabled={
+                          isLoading(idx, "portuguese") ||
+                          isLoading(idx, "english")
+                        }
+                        title="Gerar/revisar o Back usando IA"
+                        aria-label="Gerar/revisar Back"
+                      >
+                        {isLoading(idx, "portuguese") ? "..." : "IA"}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="se-field">
-                  <label className="se-label">Back</label>
+                {/* Idiomas por sentença */}
+                <div className="se-lang-grid">
+                  {renderLangSelect(
+                    s.languages?.language1,
+                    (code) =>
+                      updateSentence(idx, (prev) => ({
+                        ...prev,
+                        languages: {
+                          language1: code,
+                          language2:
+                            prev.languages?.language2 ?? (defaultLang2 || "pt"),
+                        },
+                      })),
+                    'language1 (para "english")',
+                  )}
 
-                  <div className="se-row-inline">
-                    <input
-                      value={s.portuguese}
-                      onChange={(e) =>
-                        updateSentence(idx, (prev) => ({
-                          ...prev,
-                          portuguese: e.target.value,
-                        }))
-                      }
-                      placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
-                      className="se-input"
-                    />
-
-                    <button
-                      className="se-btn"
-                      style={{
-                        opacity: isLoading(idx, "portuguese") ? 0.6 : 1,
-                      }}
-                      onClick={() => handleAI(idx, "portuguese")}
-                      disabled={
-                        isLoading(idx, "portuguese") ||
-                        isLoading(idx, "english")
-                      }
-                      title="Gerar/revisar o Back usando IA"
-                      aria-label="Gerar/revisar Back"
-                    >
-                      {isLoading(idx, "portuguese") ? "..." : "IA"}
-                    </button>
-                  </div>
+                  {renderLangSelect(
+                    s.languages?.language2,
+                    (code) =>
+                      updateSentence(idx, (prev) => ({
+                        ...prev,
+                        languages: {
+                          language1:
+                            prev.languages?.language1 ?? (defaultLang1 || "en"),
+                          language2: code,
+                        },
+                      })),
+                    'language2 (para "portuguese")',
+                  )}
                 </div>
               </div>
-
-              {/* Idiomas por sentença */}
-              <div className="se-lang-grid">
-                {renderLangSelect(
-                  s.languages?.language1,
-                  (code) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      languages: {
-                        language1: code,
-                        language2:
-                          prev.languages?.language2 ?? (defaultLang2 || "pt"),
-                      },
-                    })),
-                  'language1 (para "english")',
-                )}
-
-                {renderLangSelect(
-                  s.languages?.language2,
-                  (code) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      languages: {
-                        language1:
-                          prev.languages?.language1 ?? (defaultLang1 || "en"),
-                        language2: code,
-                      },
-                    })),
-                  'language2 (para "portuguese")',
-                )}
-              </div>
-            </div>
-          ))}
+            ))}
 
           {defaultLang2 === defaultLang1 && (
             <span style={{ fontSize: 12, color: "#475569" }}>

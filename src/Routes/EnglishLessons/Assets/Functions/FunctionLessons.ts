@@ -24,7 +24,7 @@ export const notifyAlert = (
   toast.style.padding = "10px 20px";
   toast.style.borderRadius = "8px";
   toast.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.6)";
-  toast.style.zIndex = "9999";
+  toast.style.zIndex = "99999999999999999";
   toast.style.fontWeight = "500";
   toast.style.opacity = "0.5";
 
