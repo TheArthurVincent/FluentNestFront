@@ -12,7 +12,7 @@ import {
 } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
-import { partnerColor  } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { isArthurVincent, localStorageLoggedIn } from "../../../../App";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -39,7 +39,7 @@ export function Contract({ headers }: HeadersProps) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/students/${localStorageLoggedIn.id}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       setStudentsList(response.data.listOfStudents);
     } catch (error) {
@@ -53,7 +53,7 @@ export function Contract({ headers }: HeadersProps) {
   }, []);
 
   const handleStudentChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setSeeContract(true);
     const studentID = event.target.value;
@@ -62,7 +62,7 @@ export function Contract({ headers }: HeadersProps) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/contract/${event.target.value}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       const data = response.data.contract;
@@ -93,7 +93,7 @@ export function Contract({ headers }: HeadersProps) {
           phoneNumber,
           email,
         },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       notifyAlert("Contrato atualizado com sucesso!", partnerColor());
       setEditing(false);
@@ -125,8 +125,121 @@ export function Contract({ headers }: HeadersProps) {
     paddingTop: "5px",
   };
 
+  const printStyles = `
+  @media print {
+    html, body {
+      width: 210mm;
+      height: 297mm;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: white;
+    }
+
+    body * {
+      visibility: hidden !important;
+    }
+
+    #contract-content,
+    #contract-content * {
+      visibility: visible !important;
+    }
+#contract-content {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 186mm;
+  height: 273mm;
+
+  padding: 8mm 10mm;
+  box-sizing: border-box;
+
+  background: white;
+}
+    #contract-content h1 {
+      font-size: 18px !important;
+      margin: 0 0 8px 0 !important;
+    }
+
+    #contract-content h2 {
+      font-size: 14px !important;
+      margin: 10px 0 6px 0 !important;
+      padding: 0 !important;
+    }
+
+    #contract-content p,
+    #contract-content li,
+    #contract-content span,
+    #contract-content div {
+      font-size: 10px !important;
+      line-height: 1.2 !important;
+    }
+
+    #contract-content ol {
+      margin: 6px 0 0 18px !important;
+      padding: 0 !important;
+    }
+
+    #contract-content li {
+      margin-bottom: 4px !important;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+
+    .contract-student-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 1fr !important;
+      gap: 4px !important;
+      margin-bottom: 4px !important;
+    }
+
+    .contract-details-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 4px !important;
+      margin-bottom: 4px !important;
+    }
+
+    .contract-signatures {
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: flex-end !important;
+      gap: 16px !important;
+      margin-top: 10px !important;
+    }
+
+    .contract-signature-line {
+      width: 220px !important;
+      border-top: 1px solid #000 !important;
+      padding-top: 4px !important;
+      font-size: 10px !important;
+    }
+
+    .contract-signature-image {
+      max-width: 70px !important;
+      max-height: 35px !important;
+      object-fit: contain !important;
+      display: block !important;
+      margin: 0 auto 4px auto !important;
+      border-bottom: 1px solid #000 !important;
+    }
+@page {
+  margin: 0;
+}
+    @page {
+      size: A4 portrait;
+      margin: 8mm;
+    }
+  }
+`;
+
   return (
-    <div>
+    <div className="contract-page">
+      <style>{printStyles}</style>
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
@@ -152,15 +265,9 @@ export function Contract({ headers }: HeadersProps) {
 
           <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
             <button
-              variant="contained"
-              sx={{
+              style={{
                 backgroundColor: editing ? "red" : partnerColor(),
                 color: "#fff",
-                "&:hover": {
-                  backgroundColor: editing
-                    ? "rgba(251, 85, 85, 0)"
-                    : partnerColor(),
-                },
               }}
               onClick={() => setEditing(!editing)}
             >
@@ -169,13 +276,9 @@ export function Contract({ headers }: HeadersProps) {
 
             {editing && (
               <button
-                variant="contained"
-                sx={{
+                style={{
                   backgroundColor: partnerColor(),
                   color: "#fff",
-                  "&:hover": {
-                    backgroundColor: partnerColor(),
-                  },
                 }}
                 onClick={handleSaveContractTerms}
               >
@@ -184,13 +287,9 @@ export function Contract({ headers }: HeadersProps) {
             )}
 
             <button
-              variant="contained"
-              sx={{
+              style={{
                 backgroundColor: partnerColor(),
                 color: "#fff",
-                "&:hover": {
-                  backgroundColor: partnerColor(),
-                },
               }}
               onClick={generatePDF}
             >
@@ -251,6 +350,7 @@ export function Contract({ headers }: HeadersProps) {
               Dados do Aluno
             </HTwo>
             <div
+              className="contract-student-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr 1fr",
@@ -312,6 +412,7 @@ export function Contract({ headers }: HeadersProps) {
               Detalhes do Contrato
             </HTwo>
             <div
+              className="contract-details-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
@@ -422,6 +523,7 @@ export function Contract({ headers }: HeadersProps) {
             )}
             <HTwo style={{ textAlign: "center" }}>Assinaturas</HTwo>
             <div
+              className="contract-signatures"
               style={{
                 display: "flex",
                 alignItems: "flex-end",
@@ -430,10 +532,14 @@ export function Contract({ headers }: HeadersProps) {
                 gap: "5rem",
               }}
             >
-              <p style={topSignature}> {name} (ou RESPONSÁVEL) ___/___/___</p>
+              <p className="contract-signature-line" style={topSignature}>
+                {" "}
+                {name} (ou RESPONSÁVEL) ___/___/___
+              </p>
               <div>
                 {isArthurVincent && (
                   <img
+                    className="contract-signature-image"
                     style={{ maxWidth: "6rem", borderBottom: "solid 2px" }}
                     src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
                     alt="signatureArth"
@@ -446,15 +552,9 @@ export function Contract({ headers }: HeadersProps) {
 
           <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
             <button
-              variant="contained"
-              sx={{
+              style={{
                 backgroundColor: editing ? "red" : partnerColor(),
                 color: "#fff",
-                "&:hover": {
-                  backgroundColor: editing
-                    ? "rgba(251, 85, 85, 0)"
-                    : partnerColor(),
-                },
               }}
               onClick={() => setEditing(!editing)}
             >
@@ -463,13 +563,9 @@ export function Contract({ headers }: HeadersProps) {
 
             {editing && (
               <button
-                variant="contained"
-                sx={{
+                style={{
                   backgroundColor: partnerColor(),
                   color: "#fff",
-                  "&:hover": {
-                    backgroundColor: partnerColor(),
-                  },
                 }}
                 onClick={handleSaveContractTerms}
               >
@@ -478,13 +574,9 @@ export function Contract({ headers }: HeadersProps) {
             )}
 
             <button
-              variant="contained"
-              sx={{
+              style={{
                 backgroundColor: partnerColor(),
                 color: "#fff",
-                "&:hover": {
-                  backgroundColor: partnerColor(),
-                },
               }}
               onClick={generatePDF}
             >
