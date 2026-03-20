@@ -115,7 +115,7 @@ export function HWUp({
 
       <div style={cardStyle}>
         {/* Tabs do portal (sem MUI) */}
-        {/* <div style={tabBarWrap}>
+        <div style={tabBarWrap}>
           {tabs.map((t) => {
             const isActive = activeTab === t.key;
             return (
@@ -147,7 +147,7 @@ export function HWUp({
               </button>
             );
           })}
-        </div> */}
+        </div>
 
         {/* Conteúdo */}
         {activeTab === "students" ? (
