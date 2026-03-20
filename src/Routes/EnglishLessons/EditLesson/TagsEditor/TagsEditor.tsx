@@ -78,7 +78,7 @@ export default function TagsEditor({
             flex: 1,
             minWidth: 220,
             border: "1px solid #e2e8f0",
-            borderRadius: 8,
+            borderRadius: 6,
             padding: "8px 10px",
             fontSize: 13,
           }}
@@ -88,7 +88,7 @@ export default function TagsEditor({
           type="button"
           onClick={() => addTag(input)}
           style={{
-            borderRadius: 8,
+            borderRadius: 6,
             border: "1px solid #e2e8f0",
             backgroundColor: "white",
             color: "#0f172a",
@@ -106,7 +106,7 @@ export default function TagsEditor({
             type="button"
             onClick={onScanVocabularyTags}
             style={{
-              borderRadius: 8,
+              borderRadius: 6,
               border: "1px solid #e2e8f0",
               backgroundColor: "white",
               color: "#0f172a",
@@ -126,7 +126,7 @@ export default function TagsEditor({
             type="button"
             onClick={clearAll}
             style={{
-              borderRadius: 8,
+              borderRadius: 6,
               border: "1px solid #ef4444",
               backgroundColor: "#ef4444",
               color: "white",
@@ -153,7 +153,7 @@ export default function TagsEditor({
               alignItems: "center",
               gap: 6,
               padding: "4px 8px",
-              borderRadius: 999,
+              borderRadius: 6,
               border: "1px solid #cbd5e1",
               background: "#f8fafc",
               fontSize: 12,

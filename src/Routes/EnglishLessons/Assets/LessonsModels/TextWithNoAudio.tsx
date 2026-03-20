@@ -16,7 +16,7 @@ export default function TextsWithTranslateLessonModel({
         style={{
           padding: "10px",
           backgroundColor: "#f0f0f0",
-          borderRadius: "4px",
+          borderRadius: "6px",
         }}
       >
         <p>Nenhum item para exibir neste elemento.</p>
@@ -41,7 +41,7 @@ export default function TextsWithTranslateLessonModel({
               style={{
                 padding: "8px",
                 backgroundColor: "#f9f9f9",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               {/* Tentar diferentes propriedades do item */}

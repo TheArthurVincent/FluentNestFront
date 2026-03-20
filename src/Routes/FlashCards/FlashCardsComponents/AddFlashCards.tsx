@@ -216,7 +216,7 @@ const AddFlashCards = ({
   return (
     <div
       style={{
-        borderRadius: "4px",
+        borderRadius: "6px",
         zIndex: 10000,
         bottom: 10,
         right: 10,
@@ -258,7 +258,7 @@ const AddFlashCards = ({
                     backgroundColor: isAIMode ? partnerColor() : "#f0f0f0",
                     color: isAIMode ? textpartnerColorContrast() : "#333",
                     border: "1px solid #ccc",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "0.5rem 1rem",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
@@ -283,7 +283,7 @@ const AddFlashCards = ({
                         minHeight: "200px",
                         padding: "1rem",
                         border: "1px solid #ccc",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         fontSize: "14px",
                         resize: "vertical",
                       }}
@@ -324,7 +324,7 @@ const AddFlashCards = ({
                             : partnerColor(),
                         color: textpartnerColorContrast(),
                         border: "none",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         padding: "0.5rem 1rem",
                         cursor: "pointer",
                         flex: 1,
@@ -348,7 +348,7 @@ const AddFlashCards = ({
                         style={{
                           padding: "0.4rem 0.5rem",
                           border: "1px solid #ccc",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           fontSize: "14px",
                           backgroundColor: "#fff",
                           cursor: "pointer",
@@ -463,7 +463,7 @@ const AddFlashCards = ({
                       listStyle: "none",
                       padding: "1rem",
                       border: "1px solid #ccc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#f9f9f9",
                       boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
                     }}

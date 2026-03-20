@@ -137,7 +137,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                   border: `1px solid ${theItems[levelNumber - 1].color}`,
                   backgroundColor: "#000",
                   marginBottom: "0.5rem",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   padding: "5px",
                 }}
               >
@@ -149,7 +149,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     marginBottom: "0.5rem",
                     background: theItems[levelNumber - 1].color,
                     color: theItems[levelNumber - 1].textcolor,
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     position: "relative",
                   }}
                 >
@@ -179,7 +179,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     className="hover-color2"
                     style={{
                       padding: "5px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       color: "white",
                       cursor: "pointer",
                       maxWidth: "11rem",
@@ -202,7 +202,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                             remainingPoints <= 0 ? "green" : "red",
                           color: "white",
                           padding: "5px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
                           textAlign: "left",
@@ -218,7 +218,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     className="hover-color2"
                     style={{
                       padding: "5px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       color: "white",
                       cursor: "pointer",
                       maxWidth: "11rem",
@@ -240,7 +240,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           backgroundColor: remainingHW <= 0 ? "green" : "red",
                           color: "white",
                           padding: "5px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
                           textAlign: "left",
@@ -256,7 +256,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     className="hover-color2"
                     style={{
                       padding: "5px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       color: "white",
                       cursor: "pointer",
 
@@ -279,7 +279,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           backgroundColor: remainingFC <= 0 ? "green" : "red",
                           color: "white",
                           padding: "5px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
                           textAlign: "left",

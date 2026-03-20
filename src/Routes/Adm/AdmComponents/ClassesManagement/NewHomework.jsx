@@ -144,7 +144,7 @@ export function NewHomeworkAssignment({ headers, id }) {
             required
             style={{
               padding: "0.8rem 1rem",
-              borderRadius: 8,
+              borderRadius: 6,
               border: `1px solid ${lightGreyColor()}`,
               fontSize: "1.08rem",
               background: "#f5f6fa",
@@ -166,7 +166,7 @@ export function NewHomeworkAssignment({ headers, id }) {
           <input
             style={{
               padding: "0.8rem 1rem",
-              borderRadius: 8,
+              borderRadius: 6,
               border: `1px solid ${lightGreyColor()}`,
               fontSize: "1.08rem",
               marginBottom: "0.5rem",
@@ -183,7 +183,7 @@ export function NewHomeworkAssignment({ headers, id }) {
             style={{
               marginBottom: "0.5rem",
               border: `1px solid ${lightGreyColor()}`,
-              borderRadius: 8,
+              borderRadius: 6,
               background: "#fff",
               padding: "1rem",
               minHeight: "120px",
@@ -198,7 +198,7 @@ export function NewHomeworkAssignment({ headers, id }) {
           <button
             type="submit"
             style={{
-              borderRadius: 8,
+              borderRadius: 6,
               fontWeight: 700,
               fontSize: "1.08rem",
               padding: "0.8rem 1.5rem",

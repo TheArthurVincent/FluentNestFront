@@ -635,7 +635,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                   borderTop: `4px solid ${
                     active ? partnerColor() : "transparent"
                   }`,
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "8px",
                   justifyContent: "center",
                   fontSize: 12,
@@ -668,7 +668,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             borderTop: `4px solid ${
               seeMenuDown ? partnerColor() : "transparent"
             }`,
-            borderRadius: "8px",
+            borderRadius: "6px",
             padding: "8px",
             justifyContent: "center",
             fontSize: 12,
@@ -738,7 +738,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                   style={{
                     display: "grid",
                     alignItems: "center",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                   }}
                 >
                   <ItemRow

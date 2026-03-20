@@ -734,7 +734,7 @@ function EditModal({
                 gap: "1rem",
                 padding: "0.5rem",
                 backgroundColor: "#f8f9fa",
-                borderRadius: 4,
+                borderRadius: 6,
                 marginBottom: "1rem",
               }}
             >
@@ -835,7 +835,7 @@ function EditModal({
                   color: "white",
                   border: "none",
                   padding: "8px 16px",
-                  borderRadius: 4,
+                  borderRadius: 6,
                   cursor: "pointer",
                 }}
               >
@@ -848,7 +848,7 @@ function EditModal({
                   color: "white",
                   border: "none",
                   padding: "8px 16px",
-                  borderRadius: 4,
+                  borderRadius: 6,
                   cursor: "pointer",
                 }}
               >
@@ -863,7 +863,7 @@ function EditModal({
               style={{
                 backgroundColor: "#f8f9fa",
                 padding: "1rem",
-                borderRadius: 4,
+                borderRadius: 6,
                 border: "1px solid #dee2e6",
                 marginTop: "1rem",
                 textAlign: "center",
@@ -885,7 +885,7 @@ function EditModal({
                     color: "white",
                     border: "none",
                     padding: "8px 16px",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     cursor: "pointer",
                   }}
                 >
@@ -898,7 +898,7 @@ function EditModal({
                     color: "white",
                     border: "none",
                     padding: "8px 16px",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     cursor: "pointer",
                   }}
                 >
@@ -923,7 +923,7 @@ function EditModal({
                     padding: "12px 16px",
                     textAlign: "center",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     marginBottom: "8px",
                     border: "1px solid #e9ecef",
                   }}
@@ -967,7 +967,7 @@ function EditModal({
                       alignItems: "center",
                       padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       border: "1px solid #e9ecef",
                       fontSize: "13px",
                     }}
@@ -997,7 +997,7 @@ function EditModal({
                       alignItems: "center",
                       padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       border: "1px solid #e9ecef",
                       fontSize: "13px",
                     }}
@@ -1021,7 +1021,7 @@ function EditModal({
                       alignItems: "center",
                       padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       border: "1px solid #e9ecef",
                       fontSize: "13px",
                     }}
@@ -1062,7 +1062,7 @@ function EditModal({
                       alignItems: "center",
                       padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       border: "1px solid #e9ecef",
                       fontSize: "13px",
                     }}
@@ -1106,7 +1106,7 @@ function EditModal({
                   style={{
                     backgroundColor: "#fff",
                     padding: "16px",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     border: "1px solid #e9ecef",
                     borderLeft: `4px solid ${partnerColor()}`,
                     marginBottom: "1.5rem",
@@ -1143,7 +1143,7 @@ function EditModal({
                   style={{
                     backgroundColor: "#fff",
                     padding: "16px",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     border: "1px solid #e9ecef",
                     borderLeft: `4px solid #ffc107`,
                     marginBottom: "1.5rem",
@@ -1199,7 +1199,7 @@ function EditModal({
                         justifyContent: "space-between",
                         padding: "12px 16px",
                         backgroundColor: "#f8f9fa",
-                        borderRadius: 4,
+                        borderRadius: 6,
                         border: "1px solid #e9ecef",
                         cursor: "pointer",
                       }}
@@ -1222,7 +1222,7 @@ function EditModal({
                           marginTop: "8px",
                           padding: "12px",
                           backgroundColor: "#fff",
-                          borderRadius: 4,
+                          borderRadius: 6,
                           border: "1px solid #e9ecef",
                         }}
                       >
@@ -1266,7 +1266,7 @@ function EditModal({
                               style={{
                                 width: "8px",
                                 height: "8px",
-                                borderRadius: 4,
+                                borderRadius: 6,
                                 backgroundColor: "#28a745",
                               }}
                             />
@@ -1286,7 +1286,7 @@ function EditModal({
                       paddingBottom: "56.25%",
                       height: 0,
                       overflow: "hidden",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       backgroundColor: "#000",
                       boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                     }}
@@ -1300,7 +1300,7 @@ function EditModal({
                         width: "100%",
                         height: "100%",
                         border: "none",
-                        borderRadius: 4,
+                        borderRadius: 6,
                       }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -1319,7 +1319,7 @@ function EditModal({
                 style={{
                   backgroundColor: "#f8f9fa",
                   padding: "1rem",
-                  borderRadius: 4,
+                  borderRadius: 6,
                   border: "1px solid #dee2e6",
                   marginTop: "1rem",
                 }}
@@ -1577,7 +1577,7 @@ function EditModal({
                             color: "#6c757d",
                             backgroundColor: "white",
                             border: "1px solid #e9ecef",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             cursor: "pointer",
                             transition: "all 0.2s ease",
                             display: "inline-flex",
@@ -1605,7 +1605,7 @@ function EditModal({
                                 <div
                                   style={{
                                     backgroundColor: "white",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     border: "1px solid #ced4da",
                                     overflow: "hidden",
                                   }}
@@ -1716,7 +1716,7 @@ function EditModal({
                             color: "#6c757d",
                             backgroundColor: "white",
                             border: "1px solid #e9ecef",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             cursor: "pointer",
                             transition: "all 0.2s ease",
                             display: "inline-flex",
@@ -1750,7 +1750,7 @@ function EditModal({
                             style={{
                               width: "100%",
                               padding: "8px 12px",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               border: "1px solid #ced4da",
                               fontSize: "14px",
                             }}
@@ -1779,7 +1779,7 @@ function EditModal({
                       color: "white",
                       border: "none",
                       padding: "10px 20px",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       cursor: "pointer",
                     }}
                   >
@@ -1793,7 +1793,7 @@ function EditModal({
                       color: "white",
                       border: "none",
                       padding: "10px 20px",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       cursor: "pointer",
                       marginRight: "10px",
                     }}
@@ -1877,7 +1877,7 @@ function EditModal({
                       color: "white",
                       border: "none",
                       padding: "10px 20px",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       cursor: "pointer",
                     }}
                   >
@@ -1891,7 +1891,7 @@ function EditModal({
                       color: "white",
                       border: "none",
                       padding: "10px 20px",
-                      borderRadius: 4,
+                      borderRadius: 6,
                       cursor: "pointer",
                       marginRight: "10px",
                     }}

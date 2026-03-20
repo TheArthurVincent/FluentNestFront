@@ -95,7 +95,7 @@ export function Groups({ headers, id }) {
       backgroundColor: "#ffffff",
       margin: "auto",
       marginTop: "16px",
-      borderRadius: "4px",
+      borderRadius: "6px",
       boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
       border: "1px solid #e8eaed",
       padding: "20px",
@@ -112,7 +112,7 @@ export function Groups({ headers, id }) {
     item: (borderColor) => ({
       backgroundColor: "#fff",
       border: "1px solid #e9ecef",
-      borderRadius: "4px",
+      borderRadius: "6px",
       padding: "20px",
       transition: "all 0.3s ease",
       borderLeft: `4px solid ${borderColor}`,
@@ -350,7 +350,7 @@ export function Groups({ headers, id }) {
       style={{
         margin: "32px auto",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: 6,
         padding: "24px 18px",
       }}
     >
@@ -375,7 +375,7 @@ export function Groups({ headers, id }) {
                   listStyle: "none",
                   marginBottom: 10,
                   padding: "10px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   borderBottom: "1px solid #f2f2f2",
                   background:
                     group._id === selectedGroupId ? "#f6f6f6ff" : "#fcfcfcff",
@@ -434,7 +434,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: partnerColor(),
                           fontSize: 12,
                           padding: "3px 6px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           marginRight: 10,
                         }}
                       >
@@ -602,7 +602,7 @@ export function Groups({ headers, id }) {
                 background: "#e53935",
                 color: "#fff",
                 border: "none",
-                borderRadius: 4,
+                borderRadius: 6,
                 fontWeight: 500,
                 fontSize: 15,
                 marginRight: 8,
@@ -618,7 +618,7 @@ export function Groups({ headers, id }) {
                 background: "#eee",
                 color: "#222",
                 border: "none",
-                borderRadius: 4,
+                borderRadius: 6,
                 fontWeight: 500,
                 fontSize: 15,
                 cursor: "pointer",
@@ -648,7 +648,7 @@ export function Groups({ headers, id }) {
                 maxHeight: 160,
                 overflowY: "auto",
                 border: "1px solid #eee",
-                borderRadius: 4,
+                borderRadius: 6,
                 background: "#fafbfc",
                 padding: "8px 6px",
               }}
@@ -720,7 +720,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: t.pillBg,
                           color: t.pillFg,
                           padding: "4px 10px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           fontSize: "11px",
                           textTransform: "uppercase",
                           fontWeight: 600,
@@ -734,7 +734,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: "#f1f3f5",
                           color: "#495057",
                           padding: "4px 8px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           fontSize: "11px",
                         }}
                       >
@@ -817,7 +817,7 @@ export function Groups({ headers, id }) {
               background: partnerColor(),
               color: "#fff",
               border: "none",
-              borderRadius: 4,
+              borderRadius: 6,
               fontWeight: 500,
               fontSize: 16,
               cursor:

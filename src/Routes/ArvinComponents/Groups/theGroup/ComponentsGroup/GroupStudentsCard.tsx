@@ -68,7 +68,7 @@ export const GroupStudentsCard: FC<GroupStudentsCardProps> = ({
         className="no-focus"
         style={{
           width: "100%",
-          borderRadius: 999,
+          borderRadius: 6,
           border: "1px solid #E2E8F0",
           padding: "6px 12px",
           fontSize: 12,
@@ -90,7 +90,7 @@ export const GroupStudentsCard: FC<GroupStudentsCardProps> = ({
             maxHeight: 220,
             overflowY: "auto",
             border: "1px solid #e5e7eb",
-            borderRadius: 8,
+            borderRadius: 6,
             background: "#f9fafb",
             padding: "8px 6px",
             marginTop: 4,

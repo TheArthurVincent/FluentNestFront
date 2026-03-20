@@ -157,7 +157,7 @@ export function NewTutoring({ headers, id }) {
               style={{
                 flex: 1,
                 padding: "0.6rem",
-                borderRadius: 8,
+                borderRadius: 6,
                 border: `1px solid ${lightGreyColor()}`,
                 fontSize: "1rem",
                 background: "#f5f6fa",
@@ -182,7 +182,7 @@ export function NewTutoring({ headers, id }) {
             <div
               style={{
                 cursor: "pointer",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 backgroundColor: partnerColor(),
                 color: "#fff",
                 padding: "0.6rem 1.2rem",
@@ -203,7 +203,7 @@ export function NewTutoring({ headers, id }) {
               style={{
                 marginBottom: 16,
                 border: `1px solid ${lightGreyColor()}`,
-                borderRadius: 8,
+                borderRadius: 6,
                 padding: 16,
                 background: "#fafbfc",
               }}
@@ -389,7 +389,7 @@ export function NewTutoring({ headers, id }) {
                       style={{
                         background: partnerColor(),
                         color: "#fff",
-                        borderRadius: 8,
+                        borderRadius: 6,
                         fontWeight: 600,
                         fontSize: 15,
                         padding: "0.5rem 1.2rem",
@@ -407,7 +407,7 @@ export function NewTutoring({ headers, id }) {
                       style={{
                         background: partnerColor(),
                         color: "#fff",
-                        borderRadius: 8,
+                        borderRadius: 6,
                         fontWeight: 600,
                         fontSize: 15,
                         padding: "0.5rem 1.2rem",
@@ -429,7 +429,7 @@ export function NewTutoring({ headers, id }) {
                   style={{
                     marginTop: 16,
                     border: `1px solid ${lightGreyColor()}`,
-                    borderRadius: 8,
+                    borderRadius: 6,
                     background: "#fff",
                     padding: 12,
                     position: "relative",
@@ -447,7 +447,7 @@ export function NewTutoring({ headers, id }) {
                       style={{
                         background: "#eee",
                         color: "#888",
-                        borderRadius: 8,
+                        borderRadius: 6,
                         fontWeight: 600,
                         fontSize: 13,
                         padding: "0.2rem 0.8rem",
@@ -491,7 +491,7 @@ export function NewTutoring({ headers, id }) {
                   style={{
                     marginTop: 16,
                     border: `solid 2px ${lightGreyColor()}`,
-                    borderRadius: 8,
+                    borderRadius: 6,
                     background: "#fff",
                     padding: 16,
                     position: "relative",
@@ -509,7 +509,7 @@ export function NewTutoring({ headers, id }) {
                       style={{
                         background: "#eee",
                         color: "#888",
-                        borderRadius: 8,
+                        borderRadius: 6,
                         fontWeight: 600,
                         fontSize: 13,
                         padding: "0.2rem 0.8rem",
@@ -555,7 +555,7 @@ export function NewTutoring({ headers, id }) {
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
               backgroundColor: partnerColor(),
               minWidth: 120,
-              borderRadius: 8,
+              borderRadius: 6,
               fontWeight: 600,
               fontSize: 16,
               padding: "0.7rem 2rem",

@@ -78,7 +78,7 @@ export const ItemRow: FC<{
         listStyleType: "none",
         display: showItem ? "grid" : "none",
         alignItems: "center",
-        borderRadius: "8px",
+        borderRadius: "6px",
         padding: collapsed ? "10px 0" : "8px 12px",
         backgroundColor: active ? bgActive : "transparent",
         transition:

@@ -45,7 +45,7 @@ export const GroupDangerZoneCard: FC<{ onDeleteGroup: () => void }> = ({
             marginTop: 12,
             width: "100%",
             padding: "8px 0",
-            borderRadius: 999,
+            borderRadius: 6,
             background: "#dc2626",
             color: "#fff",
             fontWeight: 700,
@@ -71,7 +71,7 @@ export const GroupDangerZoneCard: FC<{ onDeleteGroup: () => void }> = ({
             style={{
               width: "100%",
               padding: "8px 0",
-              borderRadius: 999,
+              borderRadius: 6,
               background: "#b91c1c",
               color: "#fff",
               fontWeight: 700,
@@ -89,7 +89,7 @@ export const GroupDangerZoneCard: FC<{ onDeleteGroup: () => void }> = ({
             style={{
               width: "100%",
               padding: "8px 0",
-              borderRadius: 999,
+              borderRadius: 6,
               background: "#e5e7eb",
               color: "#111827",
               fontWeight: 600,

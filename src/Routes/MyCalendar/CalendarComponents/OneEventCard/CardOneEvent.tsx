@@ -107,7 +107,7 @@ const CardOneEvent: React.FC<CardOneEventProps> = ({
       key={`${event._id ?? "noid"}-${eventIndex}`}
       style={{
         marginBottom: "5px",
-        borderRadius: 4,
+        borderRadius: 6,
         overflow: "hidden",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         transition: "all 0.2s ease",
@@ -180,7 +180,7 @@ const CardOneEvent: React.FC<CardOneEventProps> = ({
             backgroundColor: "rgba(255,255,255,0.2)",
             color: categoryColor.text,
             padding: "2px 5px",
-            borderRadius: 4,
+            borderRadius: 6,
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.3px",

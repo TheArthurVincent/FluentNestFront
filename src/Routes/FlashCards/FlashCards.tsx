@@ -201,7 +201,7 @@ const FlashCards = ({
           margin: !isDesktop ? "12px" : "16px auto",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "1px solid #e8eaed",
           padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
           maxWidth: 960,
@@ -342,7 +342,7 @@ const FlashCards = ({
                   "& .MuiTabs-flexContainer": {
                     gap: 4,
                     backgroundColor: "#f1f5f9",
-                    borderRadius: 999,
+                    borderRadius: 6,
                     padding: "3px",
                   },
                   "& .MuiTab-root": {
@@ -350,7 +350,7 @@ const FlashCards = ({
                     minHeight: 32,
                     fontSize: 12,
                     padding: "4px 12px",
-                    borderRadius: 999,
+                    borderRadius: 6,
                     color: "#64748b",
                     "&.Mui-selected": {
                       color: color,

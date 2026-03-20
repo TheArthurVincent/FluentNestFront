@@ -53,14 +53,14 @@ const rowStyles: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 8,
   fontSize: 13,
   boxSizing: "border-box",
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -70,7 +70,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const dangerBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -276,7 +276,7 @@ export default function ImagesEditor({
                         width: 96,
                         height: 72,
                         border: "1px solid #e2e8f0",
-                        borderRadius: 8,
+                        borderRadius: 6,
                         overflow: "hidden",
                         display: "grid",
                         placeItems: "center",

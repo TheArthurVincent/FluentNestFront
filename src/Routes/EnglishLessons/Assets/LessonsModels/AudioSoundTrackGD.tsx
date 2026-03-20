@@ -116,7 +116,7 @@ export default function AudioFile({
             title="Reprodutor de áudio (Google Drive)"
             style={{
               border: "1px solid #ddd",
-              borderRadius: "4px",
+              borderRadius: "6px",
             }}
           />
           {/* <div

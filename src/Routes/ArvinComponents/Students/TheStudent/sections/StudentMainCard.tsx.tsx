@@ -364,7 +364,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             width: "100%",
             maxWidth: "560px",
             background: "#fff",
-            borderRadius: "8px",
+            borderRadius: "6px",
             height: "80vh",
             boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
             overflow: "auto",
@@ -415,7 +415,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                       background: "#fef2f2",
                       color: "#991b1b",
                       border: "1px solid #fecaca",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       padding: "10px 12px",
                       fontSize: "13px",
                     }}
@@ -587,7 +587,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                     background: "#fff1f2",
                     color: "#9f1239",
                     border: "1px solid #fecdd3",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     padding: "14px 14px",
                     display: "grid",
                     gap: "10px",
@@ -607,7 +607,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                     style={{
                       background: "#ffffff",
                       border: "1px solid #ffe4e6",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       padding: "10px 12px",
                       fontSize: 13,
                       color: "#4c0519",
@@ -636,7 +636,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                         background: "#fef2f2",
                         color: "#991b1b",
                         border: "1px solid #fecaca",
-                        borderRadius: "8px",
+                        borderRadius: "6px",
                         padding: "10px 12px",
                         fontSize: "13px",
                       }}
@@ -668,7 +668,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   disabled={saving}
                   style={{
                     padding: "10px 14px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     background: "#dc2626",
                     color: "#fff",
@@ -684,7 +684,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   disabled={saving}
                   style={{
                     padding: "10px 14px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     background: "#ffffff",
                     color: "#334155",
@@ -703,7 +703,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                     alignItems: "center",
                     gap: "8px",
                     padding: "10px 14px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: `1px solid ${partnerColor()}`,
                     background: saving
                       ? `${partnerColor()}50`
@@ -734,7 +734,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   disabled={deleting}
                   style={{
                     padding: "10px 14px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     background: "#ffffff",
                     color: "#334155",
@@ -754,7 +754,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                     alignItems: "center",
                     gap: "8px",
                     padding: "10px 14px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #fecaca",
                     background:
                       deleting || !isDeleteConfirmValid ? "#fca5a5" : "#b91c1c",
@@ -820,7 +820,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             width: "100%",
             maxWidth: "420px",
             background: "#fff",
-            borderRadius: "8px",
+            borderRadius: "6px",
             boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
             overflow: "hidden",
           }}
@@ -867,7 +867,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   background: "#fef2f2",
                   color: "#991b1b",
                   border: "1px solid #fecaca",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "10px 12px",
                   fontSize: "13px",
                 }}
@@ -882,7 +882,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   background: "#ecfdf3",
                   color: "#166534",
                   border: "1px solid #bbf7d0",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "10px 12px",
                   fontSize: "13px",
                 }}
@@ -924,7 +924,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               disabled={savingPwd}
               style={{
                 padding: "10px 14px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: "1px solid #e2e8f0",
                 background: "#ffffff",
                 color: "#334155",
@@ -943,7 +943,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                 alignItems: "center",
                 gap: "8px",
                 padding: "10px 14px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: `1px solid ${partnerColor()}`,
                 background: savingPwd
                   ? `${partnerColor()}50`
@@ -1005,7 +1005,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  borderRadius: 8,
+                  borderRadius: 6,
                 }}
               />
             ) : (
@@ -1125,7 +1125,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             type="button"
             onClick={openModal}
             style={{
-              borderRadius: 8,
+              borderRadius: 6,
               padding: "8px 16px",
               border: "none",
               backgroundColor: partnerColor(),
@@ -1141,7 +1141,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
             type="button"
             onClick={openPasswordModal}
             style={{
-              borderRadius: 8,
+              borderRadius: 6,
               padding: "8px 16px",
               border: "none",
               backgroundColor: `${partnerColor()}30`,
@@ -1198,7 +1198,7 @@ const Field = React.forwardRef<HTMLInputElement, FieldProps>(
         style={{
           width: "100%",
           padding: "10px 12px",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "1px solid #e2e8f0",
           outline: "none",
           boxSizing: "border-box",

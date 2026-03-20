@@ -66,7 +66,7 @@ export function NewPost({ headers }) {
         style={{
           backgroundColor: "#ffffff",
           border: "1px solid #e2e8f0",
-          borderRadius: "4px",
+          borderRadius: "6px",
           padding: "2rem",
           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
         }}
@@ -102,7 +102,7 @@ export function NewPost({ headers }) {
                 width: "100%",
                 padding: "12px",
                 border: "1px solid #e2e8f0",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontSize: "16px",
                 outline: "none",
                 transition: "border-color 0.2s",
@@ -142,7 +142,7 @@ export function NewPost({ headers }) {
                 width: "100%",
                 padding: "12px",
                 border: "1px solid #e2e8f0",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontSize: "16px",
                 outline: "none",
                 backgroundColor: "#f8fafc",
@@ -174,7 +174,7 @@ export function NewPost({ headers }) {
             <div
               style={{
                 border: "1px solid #e2e8f0",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 backgroundColor: "#ffffff",
                 minHeight: "300px",
                 overflow: "hidden",
@@ -199,7 +199,7 @@ export function NewPost({ headers }) {
                 color: "#ffffff",
                 border: "none",
                 padding: "12px 24px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontSize: "16px",
                 fontWeight: "600",
                 cursor: "pointer",

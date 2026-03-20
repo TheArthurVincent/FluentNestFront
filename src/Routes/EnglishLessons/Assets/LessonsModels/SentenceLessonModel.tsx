@@ -211,7 +211,7 @@ export default function SentenceLessonModel({
 
   const tabBtn = (active: boolean): React.CSSProperties => ({
     padding: "8px 12px",
-    borderRadius: 999,
+    borderRadius: 6,
     border: `1px solid ${active ? partnerColor() : "#E5E7EB"}`,
     background: active ? partnerColor() : "#FFFFFF",
     color: active ? "#fff" : "#111827",
@@ -225,7 +225,7 @@ export default function SentenceLessonModel({
       style={{
         padding: "0px",
         minHeight: "100px",
-        borderRadius: "4px",
+        borderRadius: "6px",
         width: "100%",
         margin: "auto",
       }}

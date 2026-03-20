@@ -29,7 +29,7 @@ export const Streak: React.FC<StreakProps> = ({
           alignItems: "center",
           cursor: "pointer",
           padding: "8px",
-          borderRadius: "4px",
+          borderRadius: "6px",
           transition: "background-color 0.2s",
         }}
         onClick={() => setShowModal(true)}
@@ -69,7 +69,7 @@ export const Streak: React.FC<StreakProps> = ({
             width: "100%",
             height: "12px",
             backgroundColor: "#e0e0e0",
-            borderRadius: "4px",
+            borderRadius: "6px",
             overflow: "hidden",
             margin: "5px 0",
             position: "relative",
@@ -79,7 +79,7 @@ export const Streak: React.FC<StreakProps> = ({
             style={{
               height: "100%",
               backgroundColor: partnerColor(),
-              borderRadius: "4px",
+              borderRadius: "6px",
             }}
             initial={{ width: "0%" }}
             animate={{ width: `${progressPercentage}%` }}
@@ -129,7 +129,7 @@ export const Streak: React.FC<StreakProps> = ({
             transition={{ duration: 0.2 }}
             style={{
               backgroundColor: "#fff",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "24px",
               maxWidth: "320px",
               width: "90%",
@@ -166,7 +166,7 @@ export const Streak: React.FC<StreakProps> = ({
                 marginBottom: "20px",
                 padding: "16px",
                 backgroundColor: "#f8f9fa",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <div
@@ -309,7 +309,7 @@ export const Streak: React.FC<StreakProps> = ({
                 textAlign: "center",
                 padding: "12px",
                 backgroundColor: "#f8f9fa",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 marginBottom: "16px",
               }}
             >
@@ -349,7 +349,7 @@ export const Streak: React.FC<StreakProps> = ({
                 backgroundColor: partnerColor(),
                 color: "#fff",
                 border: "none",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontSize: "14px",
                 fontWeight: "600",
                 cursor: "pointer",

@@ -141,7 +141,7 @@ export function HelpInfo({
         width: 420,
         maxWidth: "92vw",
         background: "#fff",
-        borderRadius: 8,
+        borderRadius: 6,
         overflow: "hidden",
         zIndex,
         boxShadow: "0 25px 80px rgba(0,0,0,0.65)",
@@ -209,7 +209,7 @@ export function HelpInfo({
                   width: "100%",
                   height: "100%",
                   border: 0,
-                  borderRadius: 8,
+                  borderRadius: 6,
                 }}
               />
             </div>

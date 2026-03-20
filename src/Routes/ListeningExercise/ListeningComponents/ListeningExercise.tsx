@@ -122,7 +122,7 @@ interface FlashCardsPropsRv {
 // ---------------------- Estilos reutilizáveis ----------------------
 
 const baseCardStyle: React.CSSProperties = {
-  borderRadius: "4px",
+  borderRadius: "6px",
   backgroundColor: alwaysWhite(),
 };
 
@@ -696,7 +696,7 @@ const ListeningExercise = ({
 
             <div
               style={{
-                borderRadius: "4px",
+                borderRadius: "6px",
                 backgroundColor: "#f1f5f9",
                 border: "1px solid #e2e8f0",
                 padding: "16px",
@@ -981,7 +981,7 @@ const ListeningExercise = ({
                           display: "grid",
                           gap: "6px",
                           border: "1px solid #e2e8f0",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           padding: "14px 12px",
                           backgroundColor: "#fdfeff",
                         }}
@@ -1020,7 +1020,7 @@ const ListeningExercise = ({
                           display: "grid",
                           gap: "6px",
                           border: "1px solid #e5e7eb",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           padding: "14px 12px",
                           backgroundColor: "#ffffff",
                         }}
@@ -1210,7 +1210,7 @@ const ListeningExercise = ({
                         width: "100%",
                         minHeight: "72px",
                         padding: "10px 12px",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         border: "1px solid #e5e7eb",
                         fontSize: "0.9rem",
                         resize: "vertical",

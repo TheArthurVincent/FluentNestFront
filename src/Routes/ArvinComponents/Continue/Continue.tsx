@@ -233,7 +233,7 @@ export const Continue: FC<ContinueProps> = ({
         style={{
           textDecoration: "none",
           padding: "14px 12px",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: `1px solid ${partnerColor()}45`,
           marginTop: 4,
           display: "flex",

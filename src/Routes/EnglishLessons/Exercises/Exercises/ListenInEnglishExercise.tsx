@@ -108,7 +108,7 @@ const progressBarBgStyle: React.CSSProperties = {
   width: "100%",
   height: 8,
   background: "#F2F4F7",
-  borderRadius: 999,
+  borderRadius: 6,
   overflow: "hidden",
   marginBottom: 16,
 };
@@ -118,7 +118,7 @@ const metricsChipStyle: React.CSSProperties = {
   alignItems: "center",
   gap: 8,
   padding: "6px 10px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   fontSize: 12,
@@ -136,7 +136,7 @@ const metricsWrapperStyle: React.CSSProperties = {
 
 const primaryButtonStyle: React.CSSProperties = {
   padding: "8px 14px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: partnerColor(),
   color: "#FFFFFF",
   border: "none",
@@ -151,7 +151,7 @@ const primaryButtonStyle: React.CSSProperties = {
 
 const ghostButtonStyle: React.CSSProperties = {
   padding: "6px 12px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#F3F4F6",
   color: "#111827",
   border: "1px solid #E5E7EB",
@@ -422,7 +422,7 @@ export function LessonListeningExercise({
                 width: `${progressPct}%`,
                 background: partnerColor(),
                 transition: "width 240ms ease",
-                borderRadius: 999,
+                borderRadius: 6,
               }}
             />
           </div>
@@ -605,7 +605,7 @@ export function LessonListeningExercise({
                           key={`at-${i}-${w}-${index}`}
                           style={{
                             padding: "6px 10px",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             border: `1px solid ${
                               perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
                             }`,

@@ -26,7 +26,7 @@ export default function TextAreaLesson() {
     <div
       style={{
         background: "rgba(255, 255, 255, 0.8)",
-        borderRadius: "4px",
+        borderRadius: "6px",
         padding: "16px",
         border: `1px solid ${partnerColor()}30`,
       }}
@@ -61,7 +61,7 @@ export default function TextAreaLesson() {
           border: isFocused
             ? `2px solid ${partnerColor()}`
             : "2px solid #e1e8ed",
-          borderRadius: "4px",
+          borderRadius: "6px",
           background: "#ffffff",
           color: "#2c3e50",
           resize: "vertical",

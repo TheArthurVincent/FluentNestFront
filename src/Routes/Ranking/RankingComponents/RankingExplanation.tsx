@@ -14,7 +14,7 @@ export default function RankingExplanation() {
         style={{
           padding: "1.5rem",
           backgroundColor: "#f9f9f9",
-          borderRadius: "4px",
+          borderRadius: "6px",
           maxWidth: "800px",
           margin: "2rem auto",
           color: "#333",
@@ -76,7 +76,7 @@ export default function RankingExplanation() {
             borderLeft: "4px solid #66bb6a",
             padding: "1rem",
             marginTop: "1rem",
-            borderRadius: "4px",
+            borderRadius: "6px",
           }}
         >
           <strong>Dica:</strong> Para subir de nível mais rapidamente, tente

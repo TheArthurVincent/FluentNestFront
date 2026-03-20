@@ -177,7 +177,7 @@ function ModalInBody({
             style={{
               border: "1px solid #E5E7EB",
               background: "#FFFFFF",
-              borderRadius: 999,
+              borderRadius: 6,
               padding: "6px 10px",
               cursor: "pointer",
               fontWeight: 800,
@@ -349,7 +349,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
         style={{
           width: 44,
           height: 24,
-          borderRadius: 999,
+          borderRadius: 6,
           border: `1px solid ${value ? partnerColor() : "#E5E7EB"}`,
           background: value ? `${partnerColor()}20` : "#F3F4F6",
           position: "relative",
@@ -363,7 +363,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           style={{
             width: 18,
             height: 18,
-            borderRadius: 999,
+            borderRadius: 6,
             background: value ? partnerColor() : "#9CA3AF",
             position: "absolute",
             top: 2,
@@ -492,7 +492,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               style={{
                 fontFamily: "Plus Jakarta Sans",
                 fontSize: 14,
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "1px solid #E5E7EB",
                 padding: "6px 10px",
                 backgroundColor: "#F9FAFB",
@@ -523,7 +523,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 }
                 style={{
                   fontFamily: "Plus Jakarta Sans",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   padding: "6px 10px",
                   backgroundColor: "#F9FAFB",
@@ -550,7 +550,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 style={{
                   fontFamily: "Plus Jakarta Sans",
                   maxWidth: 10,
-                  borderRadius: 8,
+                  borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   padding: "6px 10px",
                   backgroundColor: "#F9FAFB",
@@ -750,7 +750,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 disabled={currentPage === 0}
                 style={{
                   padding: "4px 8px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   backgroundColor: currentPage === 0 ? "#F3F4F6" : "#FFFFFF",
                   cursor: currentPage === 0 ? "default" : "pointer",
@@ -765,7 +765,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 disabled={currentPage >= totalPages - 1}
                 style={{
                   padding: "4px 8px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   backgroundColor:
                     currentPage >= totalPages - 1 ? "#F3F4F6" : "#FFFFFF",
@@ -889,7 +889,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 onClick={() => setSelectedEvent(null)}
                 style={{
                   padding: "10px 12px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   background: "#FFFFFF",
                   cursor: "pointer",
@@ -904,7 +904,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 href={`/my-calendar/event/${selectedEvent._id}`}
                 style={{
                   padding: "10px 12px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: `1px solid ${partnerColor()}`,
                   background: `${partnerColor()}10`,
                   color: partnerColor(),

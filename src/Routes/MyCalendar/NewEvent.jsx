@@ -81,7 +81,7 @@ export default function NewClassModal({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          borderRadius: "4px",
+          borderRadius: "6px",
           boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
         }}
         onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
@@ -168,7 +168,7 @@ export default function NewClassModal({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                     backgroundColor: "white",
@@ -211,7 +211,7 @@ export default function NewClassModal({
                     style={{
                       width: "100%",
                       padding: "0.75rem",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #ced4da",
                       fontSize: "0.9rem",
                       backgroundColor: "white",
@@ -253,7 +253,7 @@ export default function NewClassModal({
                     style={{
                       width: "100%",
                       padding: "0.75rem",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #ced4da",
                       fontSize: "0.9rem",
                       backgroundColor: "white",
@@ -293,7 +293,7 @@ export default function NewClassModal({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -322,7 +322,7 @@ export default function NewClassModal({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -366,7 +366,7 @@ export default function NewClassModal({
                           newClass.duration == minutes ? "#f8f9fa" : "white",
                         color:
                           newClass.duration == minutes ? "#495057" : "#6c757d",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         cursor: "pointer",
                         fontSize: "0.75rem",
                         fontWeight: "400",
@@ -396,7 +396,7 @@ export default function NewClassModal({
                     style={{
                       width: "50px",
                       padding: "0.25rem",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e9ecef",
                       fontSize: "0.75rem",
                       textAlign: "center",
@@ -438,7 +438,7 @@ export default function NewClassModal({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -470,7 +470,7 @@ export default function NewClassModal({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -495,7 +495,7 @@ export default function NewClassModal({
                     backgroundColor: "#6c757d",
                     color: "white",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     cursor: "pointer",
                     fontSize: "0.9rem",
                     fontWeight: "500",
@@ -518,7 +518,7 @@ export default function NewClassModal({
                     backgroundColor: partnerColor(),
                     color: "white",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     cursor: isDisabled ? "not-allowed" : "pointer",
                     fontSize: "0.9rem",
                     fontWeight: "500",

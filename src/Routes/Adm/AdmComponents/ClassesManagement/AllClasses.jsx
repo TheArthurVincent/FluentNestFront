@@ -83,8 +83,8 @@ export function AllClasses({ headers }) {
           }}
         >
           <p>Are you sure you want to delete this class?</p>
-          <Button onClick={() => setIsModalOpen(false)}>No</Button>
-          <Button onClick={() => deleteTutoring(deleteId)}>Yes</Button>
+          <button onClick={() => setIsModalOpen(false)}>No</button>
+          <button onClick={() => deleteTutoring(deleteId)}>Yes</button>
         </div>
       </Modal>
       <div
@@ -94,9 +94,9 @@ export function AllClasses({ headers }) {
           justifyContent: "space-between",
         }}
       >
-        <Button onClick={() => seeAllTutorings()}>
+        <button onClick={() => seeAllTutorings()}>
           <i className="fa fa-refresh" aria-hidden="true" />
-        </Button>
+        </button>
         <span>
           <Input
             style={{
@@ -134,9 +134,9 @@ export function AllClasses({ headers }) {
                     <Link target="_blank" to={tutoring.videoUrl}>
                       {tutoring.date} - Veja a aula
                     </Link>
-                    <Button onClick={() => setSeeDelete(tutoring.id)}>
+                    <button onClick={() => setSeeDelete(tutoring.id)}>
                       Apagar aula
-                    </Button>
+                    </button>
                   </div>
                   <div
                     style={{

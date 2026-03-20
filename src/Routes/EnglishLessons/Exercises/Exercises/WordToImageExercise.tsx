@@ -321,7 +321,7 @@ export default function WordToImageExercise({
                 onClick={() => setShowPerformanceModal(true)}
                 style={{
                   padding: "8px 14px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   background: "#FFFFFF",
                   border: "1px solid #E5E7EB",
                   cursor: "pointer",
@@ -336,7 +336,7 @@ export default function WordToImageExercise({
                 onClick={resetExercise}
                 style={{
                   padding: "8px 14px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   background: "#FFFFFF",
                   border: "1px solid #E5E7EB",
                   cursor: "pointer",

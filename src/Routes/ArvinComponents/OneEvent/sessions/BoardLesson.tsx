@@ -108,7 +108,7 @@ const Board: FC<BoardProps> = ({
               maxWidth: "fit-content",
               border: "none",
               marginLeft: "auto",
-              borderRadius: "4px",
+              borderRadius: "6px",
               cursor: "pointer",
               fontSize: 13,
               fontWeight: 600,

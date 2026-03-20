@@ -383,7 +383,7 @@ export default function TeacherSubscription() {
                             backgroundColor: "#ed5914",
                             color: "white",
                             padding: "2px 6px",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                           }}
                         >
                           Selecionado
@@ -446,7 +446,7 @@ export default function TeacherSubscription() {
                       style={{
                         marginBottom: 6,
                         padding: "10px",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         listStyleType: "none",
                         backgroundColor: "#fff",
                         minWidth: "200px",
@@ -653,7 +653,7 @@ export default function TeacherSubscription() {
                         color: "white",
                         padding: "12px 18px",
                         border: "none",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         fontSize: "16px",
                         fontWeight: "bold",
                         cursor: "pointer",

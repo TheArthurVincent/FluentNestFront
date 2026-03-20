@@ -112,7 +112,7 @@ const FlashcardsHistory = ({
             getNewCards(selectedStudentId, parseInt(e.target.value));
           }}
           style={{
-            borderRadius: "4px",
+            borderRadius: "6px",
             border: "1px solid #e2e8f0",
             backgroundColor: "#f8fafc",
             fontSize: "11px",
@@ -153,7 +153,7 @@ const FlashcardsHistory = ({
                   className="flashcard-day"
                   style={{
                     marginBottom: "0.75rem",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     overflow: "hidden",
                     boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
                     border: "1px solid #f1f5f9",
@@ -200,7 +200,7 @@ const FlashcardsHistory = ({
                         fontSize: "12px",
                         fontWeight: "500",
                         padding: "2px 6px",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         backgroundColor: expandedFlashcardsDays[date]
                           ? "rgba(255,255,255,0.2)"
                           : partnerColor(),
@@ -228,7 +228,7 @@ const FlashcardsHistory = ({
                             padding: "0.5rem",
                             marginBottom: "0.5rem",
                             backgroundColor: "#ffffff",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             border: "1px solid #e2e8f0",
                             boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
                             transition:

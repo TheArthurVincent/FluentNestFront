@@ -157,7 +157,7 @@ function metricChipStyle(
     alignItems: "center",
     gap: 8,
     padding: "7px 11px",
-    borderRadius: 999,
+    borderRadius: 6,
     background,
     border: `1px solid ${border}`,
     color,
@@ -186,7 +186,7 @@ const progressBarBgStyle: React.CSSProperties = {
   width: "100%",
   height: 8,
   background: "#F2F4F7",
-  borderRadius: 999,
+  borderRadius: 6,
   overflow: "hidden",
   marginBottom: 16,
 };
@@ -196,7 +196,7 @@ const neutralMetricsChipStyle: React.CSSProperties = {
   alignItems: "center",
   gap: 8,
   padding: "7px 11px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   color: "#111827",
@@ -224,7 +224,7 @@ const labelStyle: React.CSSProperties = {
 
 const textareaStyle: React.CSSProperties = {
   width: "100%",
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #D1D5DB",
   padding: 10,
   outline: "none",
@@ -236,7 +236,7 @@ const textareaStyle: React.CSSProperties = {
 
 const primaryButtonStyle: React.CSSProperties = {
   padding: "8px 14px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: partnerColor(),
   color: "#FFFFFF",
   border: "none",
@@ -251,7 +251,7 @@ const primaryButtonStyle: React.CSSProperties = {
 
 const ghostButtonStyle: React.CSSProperties = {
   padding: "6px 12px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#F3F4F6",
   color: "#111827",
   border: "1px solid #E5E7EB",
@@ -449,7 +449,7 @@ export function DictationExercise({
                 width: `${progressPct}%`,
                 background: partnerColor(),
                 transition: "width 240ms ease",
-                borderRadius: 999,
+                borderRadius: 6,
               }}
             />
           </div>
@@ -666,7 +666,7 @@ export function DictationExercise({
                       <span
                         style={{
                           padding: "6px 10px",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           border: `1px solid ${exactColor.border}`,
                           background: exactColor.background,
                           color: exactColor.text,
@@ -681,7 +681,7 @@ export function DictationExercise({
                       <span
                         style={{
                           padding: "6px 10px",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           border: `1px solid ${misplacedColor.border}`,
                           background: misplacedColor.background,
                           color: misplacedColor.text,
@@ -696,7 +696,7 @@ export function DictationExercise({
                       <span
                         style={{
                           padding: "6px 10px",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           border: `1px solid ${wrongColor.border}`,
                           background: wrongColor.background,
                           color: wrongColor.text,
@@ -772,7 +772,7 @@ export function DictationExercise({
                             key={`at-${i}-${word}-${index}`}
                             style={{
                               padding: "7px 12px",
-                              borderRadius: 999,
+                              borderRadius: 6,
                               border: `1px solid ${palette.border}`,
                               background: palette.background,
                               color: palette.text,
@@ -897,7 +897,7 @@ export function DictationExercise({
                   style={{
                     marginTop: 16,
                     padding: 10,
-                    borderRadius: 8,
+                    borderRadius: 6,
                     background: "#FFFBEB",
                     border: "1px solid #FDE68A",
                     fontSize: 13,

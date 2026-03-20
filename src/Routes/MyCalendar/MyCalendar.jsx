@@ -87,7 +87,7 @@ function EventPreviewModal({ event, onClose }) {
           width: "520px",
           maxWidth: "95vw",
           background: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "none",
           boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
           overflow: "hidden",
@@ -180,7 +180,7 @@ function EventPreviewModal({ event, onClose }) {
                   textDecoration: "none",
                   border: `1px solid ${partnerColor()}40`,
                   padding: "10px 12px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   textAlign: "center",
                   background: `${partnerColor()}10`,
                 }}
@@ -204,7 +204,7 @@ function EventPreviewModal({ event, onClose }) {
             rel="noreferrer"
             style={{
               padding: "8px 16px",
-              borderRadius: "8px",
+              borderRadius: "6px",
               background: partnerColor(),
               color: "#fff",
               textDecoration: "none",
@@ -1834,7 +1834,7 @@ function MyCalendar({
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
         }}
@@ -1896,7 +1896,7 @@ function MyCalendar({
                         border: isToday
                           ? `3px solid ${partnerColor()}`
                           : "1px solid #e0e0e0",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
                         boxShadow: isToday
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
@@ -1976,7 +1976,7 @@ function MyCalendar({
                                                   : todo.category == "other"
                                                     ? "rgba(216, 191, 234, 0.7)"
                                                     : "rgba(234, 191, 215, 0.7)",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
                                   }}
@@ -2094,7 +2094,7 @@ function MyCalendar({
                                 style={{
                                   marginBottom: "5px",
                                   textDecoration: "none",
-                                  borderRadius: "4px",
+                                  borderRadius: "6px",
                                   overflow: "hidden",
                                   transition: "all 0.2s ease",
                                   cursor: "pointer",
@@ -2150,7 +2150,7 @@ function MyCalendar({
                                             width: "6px",
                                             height: "6px",
                                             backgroundColor: "white",
-                                            borderRadius: "4px",
+                                            borderRadius: "6px",
                                             marginRight: "5px",
                                             animation: "pulse 2s infinite",
                                           }}
@@ -2176,7 +2176,7 @@ function MyCalendar({
                                       backgroundColor: "rgba(255,255,255,0.2)",
                                       color: categoryColor.text,
                                       padding: "2px 5px",
-                                      borderRadius: "4px",
+                                      borderRadius: "6px",
                                       fontWeight: "600",
                                       textTransform: "uppercase",
                                       letterSpacing: "0.3px",
@@ -2358,7 +2358,7 @@ function MyCalendar({
               <div
                 style={{
                   marginBottom: "1rem",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   marginTop: "12px",
                 }}
               >
@@ -2377,7 +2377,7 @@ function MyCalendar({
                       alignItems: "center",
                       gap: "4px",
                       background: "#f8f9fa",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       padding: "2px",
                     }}
                   >
@@ -2388,7 +2388,7 @@ function MyCalendar({
                         height: "28px",
                         background: !disabledAvoid ? "#e9ecef" : "#ffffff",
                         border: "1px solid #dee2e6",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         color: !disabledAvoid ? "#adb5bd" : "#495057",
                         cursor: !disabledAvoid ? "not-allowed" : "pointer",
                         display: "flex",
@@ -2425,7 +2425,7 @@ function MyCalendar({
                         height: "28px",
                         background: !disabledAvoid ? "#e9ecef" : "#ffffff",
                         border: "1px solid #dee2e6",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         color: !disabledAvoid ? "#adb5bd" : "#495057",
                         cursor: !disabledAvoid ? "not-allowed" : "pointer",
                         display: "flex",
@@ -2445,7 +2445,7 @@ function MyCalendar({
                   <div
                     style={{
                       background: "#f8f9fa",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e9ecef",
                       overflow: "hidden",
                     }}

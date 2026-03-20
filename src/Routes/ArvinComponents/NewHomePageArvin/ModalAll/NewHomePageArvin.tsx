@@ -48,7 +48,7 @@ export default function ModalShowAllCORINGA({
     border: "1px solid #e5e7eb",
     background: "#fff",
     color: "#111827",
-    borderRadius: 4,
+    borderRadius: 6,
     fontSize: isDesktop ? 12 : 14,
     cursor: "pointer",
     margin: isDesktop ? "0 4px" : "4px 0",
@@ -144,7 +144,7 @@ export default function ModalShowAllCORINGA({
           style={{
             background: "#fff",
             padding: "32px 24px",
-            borderRadius: "8px",
+            borderRadius: "6px",
             width: "90%",
             maxWidth: "400px",
           }}

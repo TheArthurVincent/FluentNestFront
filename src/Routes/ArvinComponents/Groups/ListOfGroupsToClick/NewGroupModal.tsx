@@ -91,7 +91,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
       <button
         onClick={handleOpen}
         style={{
-          borderRadius: 999,
+          borderRadius: 6,
           border: "none",
           padding: "8px 14px",
           fontSize: 13,
@@ -197,7 +197,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
                     disabled={loading}
                     style={{
                       width: "100%",
-                      borderRadius: 8,
+                      borderRadius: 6,
                       border: "1px solid #e2e8f0",
                       padding: "8px 10px",
                       fontSize: 14,
@@ -226,7 +226,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
                     rows={3}
                     style={{
                       width: "100%",
-                      borderRadius: 8,
+                      borderRadius: 6,
                       border: "1px solid #e2e8f0",
                       padding: "8px 10px",
                       fontSize: 14,
@@ -251,7 +251,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
                   disabled={loading}
                   style={{
                     padding: "8px 14px",
-                    borderRadius: 999,
+                    borderRadius: 6,
                     border: "none",
                     background: "#e5e7eb",
                     color: "#111827",
@@ -267,7 +267,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
                   disabled={!canCreate}
                   style={{
                     padding: "8px 14px",
-                    borderRadius: 999,
+                    borderRadius: 6,
                     border: "none",
                     background: canCreate ? partnerColor() : "#9ca3af",
                     color: textpartnerColorContrast(),

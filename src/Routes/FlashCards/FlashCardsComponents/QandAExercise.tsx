@@ -247,7 +247,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       display: !seeAnswer ? "none" : "block",
                       marginTop: "1rem",
                       padding: "1.5rem",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                     }}
                     className="box-shadow-white"
                   >
@@ -292,7 +292,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       style={{
                         marginBottom: "1.25rem",
                         padding: "1rem",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         cursor: "pointer",
                         fontSize: "1.1rem",
                         color: "white",

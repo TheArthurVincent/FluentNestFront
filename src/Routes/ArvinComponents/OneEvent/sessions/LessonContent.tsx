@@ -50,7 +50,7 @@ const LessonContent: FC<LessonContentProps> = ({
       <div
         style={{
           backgroundColor: "#FFFFFF",
-          borderRadius: 8,
+          borderRadius: 6,
           padding: 18,
           border: "1px solid #E5E7EB",
           display:

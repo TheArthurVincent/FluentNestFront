@@ -713,7 +713,7 @@ export const BackToHomePage = () => {
           backgroundColor: "#000",
           color: textPrimaryColorContrast(),
           padding: "0.4rem",
-          borderRadius: "4px",
+          borderRadius: "6px",
           fontSize: "12px",
           textDecoration: "none",
         }}
@@ -733,7 +733,7 @@ export const UpgradeGoldButton = () => {
         color: "white",
         textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
         padding: "0.4rem",
-        borderRadius: "4px",
+        borderRadius: "6px",
         fontSize: "12px",
         textDecoration: "none",
         margin: "1rem auto",

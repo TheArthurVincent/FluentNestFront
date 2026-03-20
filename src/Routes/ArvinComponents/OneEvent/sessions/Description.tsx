@@ -35,7 +35,7 @@ const overlayStyle: React.CSSProperties = {
 const modalStyle: React.CSSProperties = {
   width: "min(92vw, 520px)",
   background: "#fff",
-  borderRadius: 8,
+  borderRadius: 6,
   boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
   overflow: "hidden",
   border: "1px solid #e2e8f0",
@@ -44,13 +44,13 @@ const modalStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: "8px 10px",
   fontSize: 13,
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -60,7 +60,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: partnerColor(),
   color: "white",
@@ -345,7 +345,7 @@ const Description: FC<DescriptionProps> = ({
                       color: partnerColor(),
                       textDecoration: "none",
                       padding: "8px 0px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "white",
                     }}
                     onMouseOver={(e) =>
@@ -442,7 +442,7 @@ const Description: FC<DescriptionProps> = ({
                   maxWidth: "fit-content",
                   border: "none",
                   marginLeft: "auto",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   cursor: "pointer",
                   fontSize: 13,
                   fontWeight: 600,
@@ -460,7 +460,7 @@ const Description: FC<DescriptionProps> = ({
                   maxWidth: "fit-content",
                   border: "none",
                   marginLeft: "auto",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   cursor: "pointer",
                   fontSize: 13,
                   fontWeight: 600,

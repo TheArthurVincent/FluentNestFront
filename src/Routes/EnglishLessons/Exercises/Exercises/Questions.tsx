@@ -197,7 +197,7 @@ export function QuestionsExercise({
                 backgroundColor: "white",
                 color: partnerColor(),
                 border: `1px solid ${partnerColor()}`,
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px 16px",
                 fontSize: "14px",
                 cursor: loading ? "not-allowed" : "pointer",
@@ -225,7 +225,7 @@ export function QuestionsExercise({
           style={{
             minHeight: "400px",
             border: "1px solid #e5e7eb",
-            borderRadius: "4px",
+            borderRadius: "6px",
             position: "relative",
           }}
         >

@@ -80,7 +80,7 @@ export default function ExplanationLesson({
                       width: "80px",
                       height: "1px",
                       background: `linear-gradient(90deg, ${partnerColor()} 0%, ${partnerColor()}60 100%)`,
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                     }}
                   />
                 </div>
@@ -109,7 +109,7 @@ export default function ExplanationLesson({
                         style={{
                           width: "200px",
                           height: "auto",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
                         }}
                       />
@@ -131,7 +131,7 @@ export default function ExplanationLesson({
                           key={listIndex}
                           style={{
                             backgroundColor: "#ffffff",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             border: "1px solid #f1f5f9",
                             borderLeft: `5px solid ${partnerColor()}`,
                             transition:

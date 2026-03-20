@@ -513,7 +513,7 @@ export function FindTeacher({ headers, id, plan }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginBottom: "24px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -581,7 +581,7 @@ export function FindTeacher({ headers, id, plan }) {
                 <div
                   style={{
                     padding: "4px 8px",
-                    borderRadius: 4,
+                    borderRadius: 6,
                     fontSize: 10,
                     fontWeight: 500,
                     backgroundColor: "#e3f2fd",
@@ -595,7 +595,7 @@ export function FindTeacher({ headers, id, plan }) {
                   Cartão Ativo
                 </div>
               )}
-              <Button
+              <button
                 variant="outlined"
                 size="small"
                 onClick={() => {
@@ -628,7 +628,7 @@ export function FindTeacher({ headers, id, plan }) {
                 style={{
                   minWidth: "auto",
                   padding: "8px 10px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   color: partnerColor(),
                   borderColor: partnerColor(),
                   fontSize: "8px",
@@ -636,21 +636,21 @@ export function FindTeacher({ headers, id, plan }) {
                 }}
               >
                 ✏️ Editar
-              </Button>
-              <Button
+              </button>
+              <button
                 variant="outlined"
                 size="small"
                 onClick={() => setSelectedStudent(null)}
                 style={{
                   minWidth: "auto",
                   padding: "8px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   color: "#6c757d",
                   borderColor: "#e8eaed",
                 }}
               >
                 ✕
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -780,7 +780,7 @@ export function FindTeacher({ headers, id, plan }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.feeUpToDate
@@ -829,7 +829,7 @@ export function FindTeacher({ headers, id, plan }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.onHold
@@ -878,7 +878,7 @@ export function FindTeacher({ headers, id, plan }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor:
@@ -1309,7 +1309,7 @@ export function FindTeacher({ headers, id, plan }) {
             padding: "10px 16px",
             margin: "10px",
             border: "1px solid #e8eaed",
-            borderRadius: "4px",
+            borderRadius: "6px",
             fontSize: "11px",
             outline: "none",
             transition: "all 0.2s ease",
@@ -1339,7 +1339,7 @@ export function FindTeacher({ headers, id, plan }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "1rem",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -1451,7 +1451,7 @@ export function FindTeacher({ headers, id, plan }) {
                         <span
                           style={{
                             padding: "4px 8px",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             fontSize: "8px",
                             fontWeight: "500",
                             backgroundColor:
@@ -1507,7 +1507,7 @@ export function FindTeacher({ headers, id, plan }) {
         maxWidth="lg"
         PaperProps={{
           style: {
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -1545,17 +1545,17 @@ export function FindTeacher({ headers, id, plan }) {
                 Gerenciar informações do professor
               </div>
             </div>
-            <Button
+            <button
               onClick={handleSeeModal}
               style={{
                 minWidth: "auto",
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 color: "#6c757d",
               }}
             >
               <CloseIcon />
-            </Button>
+            </button>
           </div>
         </DialogTitle>
 
@@ -1565,7 +1565,7 @@ export function FindTeacher({ headers, id, plan }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow:
@@ -1711,7 +1711,7 @@ export function FindTeacher({ headers, id, plan }) {
                 marginTop: "24px",
               }}
             >
-              <Button
+              <button
                 variant="contained"
                 onClick={() => editStudent(ID)}
                 style={{
@@ -1719,13 +1719,13 @@ export function FindTeacher({ headers, id, plan }) {
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "11px",
                 }}
               >
                 Salvar Informações
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -1734,7 +1734,7 @@ export function FindTeacher({ headers, id, plan }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow:
@@ -1765,7 +1765,7 @@ export function FindTeacher({ headers, id, plan }) {
                     <MenuItem value="superadmin">Admin</MenuItem>
                   </Select>
                 </FormControl>
-                <Button
+                <button
                   variant="contained"
                   onClick={() => editStudentPermissions(ID)}
                   style={{
@@ -1774,13 +1774,13 @@ export function FindTeacher({ headers, id, plan }) {
                     color: "#fff",
                     fontWeight: "500",
                     padding: "10px 24px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     textTransform: "none",
                     fontSize: "11px",
                   }}
                 >
                   Salvar Permissões
-                </Button>
+                </button>
               </Grid>
 
               <Grid item xs={12} md={6}>
@@ -1833,7 +1833,7 @@ export function FindTeacher({ headers, id, plan }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow:
@@ -1881,7 +1881,7 @@ export function FindTeacher({ headers, id, plan }) {
                 marginTop: "20px",
               }}
             >
-              <Button
+              <button
                 variant="contained"
                 onClick={() => editStudentPassword(ID)}
                 disabled={!newPassword || newPassword !== confirmPassword}
@@ -1890,13 +1890,13 @@ export function FindTeacher({ headers, id, plan }) {
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "11px",
                 }}
               >
                 Alterar Senha
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -1908,19 +1908,19 @@ export function FindTeacher({ headers, id, plan }) {
               display: "grid",
               justifyItems: "center",
               alignItems: "center",
-              borderRadius: "4px",
+              borderRadius: "6px",
               border: "1px solid #ffcccc",
             }}
           >
             {!seeConfirmDelete ? (
-              <Button
+              <button
                 color="error"
                 variant="outlined"
                 onClick={() => setSeeConfirmDelete(true)}
                 style={{
                   fontWeight: "500",
                   padding: "10px 20px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "11px",
                   borderColor: "#dc3545",
@@ -1928,7 +1928,7 @@ export function FindTeacher({ headers, id, plan }) {
                 }}
               >
                 Excluir Professor
-              </Button>
+              </button>
             ) : (
               <div style={{ width: "100%", textAlign: "center" }}>
                 <div
@@ -1964,27 +1964,27 @@ export function FindTeacher({ headers, id, plan }) {
                     marginTop: "20px",
                   }}
                 >
-                  <Button
+                  <button
                     onClick={() => setSeeConfirmDelete(false)}
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "11px",
                       color: "#6c757d",
                     }}
                   >
                     Cancelar
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     color="error"
                     variant="contained"
                     onClick={handleDelete}
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "11px",
                       backgroundColor: "#dc3545",
@@ -1992,7 +1992,7 @@ export function FindTeacher({ headers, id, plan }) {
                     }}
                   >
                     Confirmar Exclusão
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}

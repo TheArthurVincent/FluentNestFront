@@ -487,7 +487,7 @@ const SentencesEditor: React.FC<Props> = ({
           border: "1px solid #f59e0b",
           background: "#fffbeb",
           color: "#92400e",
-          borderRadius: 8,
+          borderRadius: 6,
           padding: "10px 12px",
           fontSize: 12,
           display: "flex",

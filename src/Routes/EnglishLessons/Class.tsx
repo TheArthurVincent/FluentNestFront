@@ -93,7 +93,7 @@ export default function EnglishClassCourse2({
     background: "#fff",
     color: "#111827",
     padding: isDesktop ? "6px 10px" : "10px 16px",
-    borderRadius: 4,
+    borderRadius: 6,
     fontSize: isDesktop ? 12 : 14,
     cursor: "pointer",
     margin: isDesktop ? "0 4px" : "4px 0",
@@ -2909,7 +2909,7 @@ export default function EnglishClassCourse2({
         fontStyle: "SemiBold",
         fontSize: "14px",
         backgroundColor: "#ffffff",
-        borderRadius: "8px",
+        borderRadius: "6px",
       }}
     >
       {classTitle && !fetchEventData && <Helmets text={classTitle || ""} />}
@@ -3116,7 +3116,7 @@ export default function EnglishClassCourse2({
                           onChange={(e) => handleStudentChange(e)}
                           value={studentID}
                           style={{
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             border: "1px solid #e2e8f0",
                             backgroundColor: "#f8fafc",
                             fontSize: "11px",
@@ -3178,7 +3178,7 @@ export default function EnglishClassCourse2({
                         <button
                           onClick={() => setExercise(!exercise)}
                           style={{
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             border: "1px solid #e2e8f0",
                             backgroundColor: partnerColor(),
                             fontSize: "11px",
@@ -3209,7 +3209,7 @@ export default function EnglishClassCourse2({
                                 cursor: "pointer",
                                 padding: "4px 6px",
                                 backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                               }}
                               onClick={generatePPT}
                               onMouseEnter={(e) => {
@@ -3234,7 +3234,7 @@ export default function EnglishClassCourse2({
                                 cursor: "pointer",
                                 padding: "4px 6px",
                                 backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                               }}
                               onClick={generateWord}
                               onMouseEnter={(e) => {
@@ -3259,7 +3259,7 @@ export default function EnglishClassCourse2({
                                 cursor: "pointer",
                                 padding: "4px 6px",
                                 backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                               }}
                               onClick={generatePDF}
                               onMouseEnter={(e) => {
@@ -3487,7 +3487,7 @@ export default function EnglishClassCourse2({
                                           backdropFilter:
                                             "saturate(1.1) blur(6px)",
                                           borderBottom: `2px solid ${partnerColor()}15`,
-                                          borderRadius: 4,
+                                          borderRadius: 6,
                                         }}
                                       >
                                         <h2
@@ -3520,7 +3520,7 @@ export default function EnglishClassCourse2({
                                         padding: "0.5rem",
                                         textAlign: "center",
                                         backgroundColor: "#f6f6f6",
-                                        borderRadius: "4px",
+                                        borderRadius: "6px",
                                         margin: "0.5rem 0",
                                         fontStyle: "italic",
                                       }}
@@ -3807,7 +3807,7 @@ export default function EnglishClassCourse2({
                               alignItems: "center",
                               justifyContent: "center",
                               gap: 8,
-                              borderRadius: 8,
+                              borderRadius: 6,
                               fontSize: 12,
                             }}
                           >
@@ -4066,7 +4066,7 @@ export default function EnglishClassCourse2({
                                               color: "#933232ff",
                                               fontSize: 12,
                                               padding: 4,
-                                              borderRadius: 999,
+                                              borderRadius: 6,
                                             }}
                                             onClick={() => {
                                               setSeeAudios(false);

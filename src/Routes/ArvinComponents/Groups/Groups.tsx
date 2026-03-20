@@ -64,7 +64,7 @@ export function Turmas({
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
           padding: "10px",

@@ -224,7 +224,7 @@ var AllCards = ({
           <button
             onClick={() => fetchMoreCards(true)}
             style={{
-              borderRadius: 999,
+              borderRadius: 6,
               fontSize: "11px",
               padding: "4px 8px",
               height: "28px",
@@ -238,7 +238,7 @@ var AllCards = ({
           <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
           <input
             style={{
-              borderRadius: 999,
+              borderRadius: 6,
               border: "1px solid #e2e8f0",
               backgroundColor: "#f8fafc",
               fontSize: "11px",
@@ -312,7 +312,7 @@ var AllCards = ({
                         fontSize: "11px",
                         padding: "3px 8px",
                         height: "24px",
-                        borderRadius: 999,
+                        borderRadius: 6,
                         border: "1px solid #e2e8f0",
                         backgroundColor: "#fff7ed",
                         cursor: "pointer",
@@ -388,7 +388,7 @@ var AllCards = ({
                               style={{
                                 background: "#ffffff",
                                 border: "1px solid #e2e8f0",
-                                borderRadius: 999,
+                                borderRadius: 6,
                                 padding: "4px 6px",
                                 cursor: "pointer",
                                 fontSize: "12px",
@@ -415,7 +415,7 @@ var AllCards = ({
                             style={{
                               background: "#ffffff",
                               border: "1px solid #e2e8f0",
-                              borderRadius: 999,
+                              borderRadius: 6,
                               padding: "4px 6px",
                               cursor: "pointer",
                               fontSize: "12px",
@@ -431,7 +431,7 @@ var AllCards = ({
                             fontSize: "11px",
                             padding: "3px 8px",
                             height: "24px",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             border: "1px solid #fee2e2",
                             backgroundColor: "#fef2f2",
                             cursor: "pointer",
@@ -634,7 +634,7 @@ var AllCards = ({
                             flex: 1,
                             padding: "8px",
                             border: "1px solid #e2e8f0",
-                            borderRadius: 8,
+                            borderRadius: 6,
                             fontSize: 13,
                           }}
                           value={newFront}
@@ -647,7 +647,7 @@ var AllCards = ({
                             flexBasis: "35%",
                             padding: "8px",
                             border: "1px solid #e2e8f0",
-                            borderRadius: 8,
+                            borderRadius: 6,
                             fontSize: 12,
                           }}
                           value={newLGFront}
@@ -675,7 +675,7 @@ var AllCards = ({
                               flex: 1,
                               padding: "8px",
                               border: "1px solid #e2e8f0",
-                              borderRadius: 8,
+                              borderRadius: 6,
                               fontSize: 13,
                             }}
                             value={newBack}
@@ -688,7 +688,7 @@ var AllCards = ({
                               flexBasis: "35%",
                               padding: "8px",
                               border: "1px solid #e2e8f0",
-                              borderRadius: 8,
+                              borderRadius: 6,
                               fontSize: 12,
                             }}
                             value={newLGBack}
@@ -706,7 +706,7 @@ var AllCards = ({
                           style={{
                             padding: "8px",
                             border: "1px solid #e2e8f0",
-                            borderRadius: 8,
+                            borderRadius: 6,
                             fontSize: 13,
                           }}
                           value={newBackComments}
@@ -745,7 +745,7 @@ var AllCards = ({
                       backgroundColor: "#fee2e2",
                       color: "#b91c1c",
                       border: "none",
-                      borderRadius: 999,
+                      borderRadius: 6,
                       padding: "0.4rem 0.9rem",
                       cursor: "pointer",
                       fontSize: 12,
@@ -763,7 +763,7 @@ var AllCards = ({
                       backgroundColor: partnerColor(),
                       color: "#ffffff",
                       border: "none",
-                      borderRadius: 999,
+                      borderRadius: 6,
                       padding: "0.4rem 0.9rem",
                       cursor: "pointer",
                       fontSize: 12,

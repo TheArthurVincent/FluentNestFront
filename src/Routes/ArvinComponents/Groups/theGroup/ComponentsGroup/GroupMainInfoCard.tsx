@@ -25,7 +25,7 @@ export const GroupMainInfoCard: FC<{
         style={{
           width: "100%",
           backgroundColor: "#f8fafc",
-          borderRadius: 8,
+          borderRadius: 6,
           border: "1px solid #e2e8f0",
           fontWeight: 600,
           fontSize: 14,
@@ -47,7 +47,7 @@ export const GroupMainInfoCard: FC<{
         style={{
           width: "100%",
           backgroundColor: "#f8fafc",
-          borderRadius: 8,
+          borderRadius: 6,
           border: "1px solid #e2e8f0",
           fontWeight: 400,
           fontSize: 13,

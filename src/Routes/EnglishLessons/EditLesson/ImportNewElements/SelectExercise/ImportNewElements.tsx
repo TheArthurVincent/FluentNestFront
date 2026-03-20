@@ -152,7 +152,7 @@ export default function ImportElementsEditor({
       chip: {
         fontSize: 11,
         padding: "3px 9px",
-        borderRadius: 999,
+        borderRadius: 6,
         background: softBrand,
         border: `1px solid ${borderBrand}`,
         color: "#111827",

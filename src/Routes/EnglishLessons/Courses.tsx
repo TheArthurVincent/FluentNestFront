@@ -187,7 +187,7 @@ const thumbWrap: React.CSSProperties = {
   background: "#f3f4f6",
   padding: 0,
   overflow: "hidden",
-  borderRadius: "8px 8px 0 0",
+  borderRadius: "6px 8px 0 0",
 };
 
 const titleWrap: React.CSSProperties = { padding: "10px 12px 12px" };
@@ -213,7 +213,7 @@ const badgeBase: React.CSSProperties = {
   color: "#fff",
   letterSpacing: 0.2,
   textTransform: "uppercase" as const,
-  borderRadius: 999,
+  borderRadius: 6,
   fontFamily: "Plus Jakarta Sans",
   fontWeight: 600,
   backdropFilter: "blur(2px)", // texto mais legível sobre imagem
@@ -686,7 +686,7 @@ export default function EnglishCourses({
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
           padding: "10px",

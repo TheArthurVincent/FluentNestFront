@@ -222,7 +222,7 @@ export function ManageGroupClasses({ headers }) {
             onChange={handleDescriptionChange}
             initialContent={"Type here"}
           />
-          <Button onClick={() => postNewClass()}>Salvar</Button>
+          <button onClick={() => postNewClass()}>Salvar</button>
         </div>
       </div>
     </>

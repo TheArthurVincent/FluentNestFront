@@ -76,7 +76,7 @@ export default function ImageLessonModelSlide({
               key={i}
               style={{
                 backgroundColor: "#ffffff",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "5px",
                 transition: "all 0.3s ease",
                 position: "relative",
@@ -200,7 +200,7 @@ export default function ImageLessonModelSlide({
                     aspectRatio: "1 / 1",
                     objectFit: "cover",
                     objectPosition: "center",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                   }}
                 />
               </div>

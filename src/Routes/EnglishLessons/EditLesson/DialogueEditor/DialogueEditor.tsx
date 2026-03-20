@@ -26,7 +26,7 @@ type Props = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -36,7 +36,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const dangerBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -47,7 +47,7 @@ const dangerBtnStyle: React.CSSProperties = {
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: "#06b6d4",
   color: "white",
@@ -135,7 +135,7 @@ export default function DialogueEditor({
         style={{
           fontSize: 11,
           padding: "2px 6px",
-          borderRadius: 999,
+          borderRadius: 6,
           border: "1px solid #e2e8f0",
           background: isMale ? "#eff6ff" : "#fff1f2",
           color: isMale ? "#1d4ed8" : "#be123c",
@@ -321,7 +321,7 @@ export default function DialogueEditor({
               placeholder="Dialogue – Talking About Jobs"
               style={{
                 border: "1px solid #e2e8f0",
-                borderRadius: 8,
+                borderRadius: 6,
                 padding: 8,
                 fontSize: 13,
               }}
@@ -332,7 +332,7 @@ export default function DialogueEditor({
           <div
             style={{
               border: "1px dashed #94a3b8",
-              borderRadius: 8,
+              borderRadius: 6,
               padding: 10,
               color: "#475569",
               fontSize: 12.5,
@@ -377,7 +377,7 @@ export default function DialogueEditor({
                 style={{
                   width: "100%",
                   border: "1px solid #e2e8f0",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   padding: 10,
                   fontSize: 13,
                   lineHeight: 1.45,
@@ -405,7 +405,7 @@ export default function DialogueEditor({
                 style={{
                   padding: 10,
                   border: "1px dashed #94a3b8",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   color: "#64748b",
                 }}
               >
@@ -479,7 +479,7 @@ export default function DialogueEditor({
                   }
                   style={{
                     border: "1px solid #e2e8f0",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     padding: 8,
                     fontSize: 13,
                   }}

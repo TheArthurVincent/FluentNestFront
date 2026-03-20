@@ -18,7 +18,7 @@ export function FeeNotUpToDate() {
         justifyContent: "center",
         alignItems: "center",
         padding: "20px",
-        borderRadius: "4px",
+        borderRadius: "6px",
         boxSizing: "border-box",
         textAlign: "center",
       }}
@@ -48,7 +48,7 @@ export function FeeNotUpToDate() {
           padding: "12px 20px",
           backgroundColor: partnerColor(),
           color: "#fff",
-          borderRadius: "4px",
+          borderRadius: "6px",
           textDecoration: "none",
           fontSize: "18px",
         }}

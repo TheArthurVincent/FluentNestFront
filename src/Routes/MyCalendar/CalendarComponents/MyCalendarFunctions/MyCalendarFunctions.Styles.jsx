@@ -20,7 +20,7 @@ export const spanChecked = {
 
 export const singleClassButton = {
   border: "1px solid #dee2e6",
-  borderRadius: "4px",
+  borderRadius: "6px",
   color: "grey",
   fontSize: "12px",
   transition: "all 0.15s ease",
@@ -33,7 +33,7 @@ export const containerPlus = {
   display: "flex",
   gap: "2px",
   padding: "5px",
-  borderRadius: "4px",
+  borderRadius: "6px",
 };
 
 export const seePlusButtonsStyles = {
@@ -41,7 +41,7 @@ export const seePlusButtonsStyles = {
   height: "32px",
   background: "#9fe39fff",
   border: "1px solid #dee2e6",
-  borderRadius: "4px",
+  borderRadius: "6px",
   fontSize: "12px",
   transition: "all 0.15s ease",
   display: "flex",
@@ -51,7 +51,7 @@ export const seePlusButtonsStyles = {
 
 export const recurrentButton = {
   border: "1px solid #dee2e6",
-  borderRadius: "4px",
+  borderRadius: "6px",
   fontSize: "12px",
   transition: "all 0.15s ease",
   display: "flex",
@@ -64,7 +64,7 @@ export const updateButton = {
   width: "32px",
   height: "32px",
   border: "1px solid #dee2e6",
-  borderRadius: "4px",
+  borderRadius: "6px",
   fontSize: "12px",
   transition: "all 0.15s ease",
   display: "flex",

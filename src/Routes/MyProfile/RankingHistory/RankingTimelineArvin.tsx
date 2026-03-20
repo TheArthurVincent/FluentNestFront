@@ -163,7 +163,7 @@ export default function RankingTimelineArvin({
         maxWidth: "960px",
         backgroundColor: "#fff",
         padding: "1.5rem",
-        borderRadius: "8px",
+        borderRadius: "6px",
         ...fontBase,
       }}
     >
@@ -197,7 +197,7 @@ export default function RankingTimelineArvin({
               style={{
                 width: "312px",
                 padding: "10px 12px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: "1px solid #e5e7eb",
                 outline: "none",
                 background: "#fff",
@@ -219,7 +219,7 @@ export default function RankingTimelineArvin({
       <div
         style={{
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           overflow: "hidden",
           border: "1px solid #e5e7eb",
           maxHeight: "28rem",

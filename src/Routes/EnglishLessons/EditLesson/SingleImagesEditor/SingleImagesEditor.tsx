@@ -20,7 +20,7 @@ type Props = {
 };
 
 const ghostBtn: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -30,7 +30,7 @@ const ghostBtn: React.CSSProperties = {
 };
 
 const dangerBtn: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -42,7 +42,7 @@ const dangerBtn: React.CSSProperties = {
 
 const inputStyle: React.CSSProperties = {
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 8,
   fontSize: 13,
   width: "100%",
@@ -144,7 +144,7 @@ export default function SingleImagesEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
-        borderRadius: 8,
+        borderRadius: 6,
         padding: "5px 12px",
         background: "linear-gradient(to right, #eef2ff77, #ffffff)",
       }}
@@ -270,7 +270,7 @@ export default function SingleImagesEditor({
               <div
                 key={i}
                 style={{
-                  borderRadius: 8,
+                  borderRadius: 6,
                   overflow: "hidden",
                   background: "white",
                   display: "grid",

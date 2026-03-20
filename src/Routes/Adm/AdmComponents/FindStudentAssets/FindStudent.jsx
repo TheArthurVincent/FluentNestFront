@@ -550,7 +550,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginBottom: "24px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -604,7 +604,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               </div>
             </div>
             {!isResponsible && (
-              <Button
+              <button
                 variant="outlined"
                 size="small"
                 onClick={() => {
@@ -643,7 +643,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 style={{
                   minWidth: "auto",
                   padding: "8px 10px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   color: partnerColor(),
                   borderColor: partnerColor(),
                   fontSize: "8px",
@@ -651,23 +651,23 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 }}
               >
                 ✏️ Editar
-              </Button>
+              </button>
             )}
-            <Button
+            <button
               variant="outlined"
               size="small"
               onClick={() => setSelectedStudent(null)}
               style={{
                 minWidth: "auto",
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 color: "#6c757d",
                 borderColor: "#e8eaed",
                 marginRight: "8px",
               }}
             >
               ✕
-            </Button>
+            </button>
           </div>
 
           <Grid container spacing={3}>
@@ -919,7 +919,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.feeUpToDate
@@ -967,7 +967,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.onHold
@@ -1016,7 +1016,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       display: "inline-flex",
                       alignItems: "center",
                       padding: "4px 8px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor:
@@ -1107,7 +1107,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       display: "inline-flex",
                       alignItems: "center",
                       padding: "4px 8px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor: "#e1f5fe",
@@ -1237,7 +1237,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               backgroundColor: "#ffffff",
               margin: "auto",
               marginTop: "16px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               boxShadow:
                 "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
               border: "1px solid #e8eaed",
@@ -1296,7 +1296,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                         style={{
                           padding: "10px 16px",
                           backgroundColor: "#fafbfc",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           border: "1px solid #e8eaed",
                           display: "flex",
                           flexDirection: "column",
@@ -1349,7 +1349,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                 display: "inline-flex",
                                 alignItems: "center",
                                 padding: "2px 6px",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                                 fontSize: "8px",
                                 fontWeight: "500",
                                 backgroundColor: report.paidFor
@@ -1492,7 +1492,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     marginTop: "16px",
                     padding: "10px 16px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #dee2e6",
                   }}
                 >
@@ -1671,7 +1671,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     marginTop: "16px",
                     padding: "8px 10px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #dee2e6",
                   }}
                 >
@@ -1744,7 +1744,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -1807,7 +1807,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                             style={{
                               backgroundColor: "#ffffff",
                               border: "1px solid #e9ecef",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               padding: "20px",
                               transition: "all 0.3s ease",
                               borderLeft: `4px solid ${
@@ -1858,7 +1858,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                             ? "#856404"
                                             : "#495057",
                                     padding: "4px 10px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     fontSize: "8px",
 
                                     textTransform: "uppercase",
@@ -1871,7 +1871,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                     backgroundColor: "#e9ecef",
                                     color: "#495057",
                                     padding: "4px 8px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     fontSize: "8px",
                                   }}
                                 >
@@ -1971,7 +1971,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                     overflowY: "auto",
                                     padding: "8px",
                                     border: "1px solid #e9ecef",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                   }}
                                 >
                                   <div
@@ -2025,7 +2025,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                         gap: "4px",
                                         padding: "4px 8px",
                                         backgroundColor: "white",
-                                        borderRadius: "4px",
+                                        borderRadius: "6px",
                                         border: `1px solid ${partnerColor()}`,
                                       }}
                                     >
@@ -2053,7 +2053,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     textAlign: "center",
                     padding: "40px 20px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "2px dashed #dee2e6",
                   }}
                 >
@@ -2080,7 +2080,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -2143,7 +2143,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                             style={{
                               backgroundColor: "#ffffff",
                               border: "1px solid #e9ecef",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               padding: "20px",
                               transition: "all 0.3s ease",
                               borderLeft: `4px solid ${
@@ -2194,7 +2194,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                             ? "#856404"
                                             : "#495057",
                                     padding: "4px 10px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     fontSize: "8px",
 
                                     textTransform: "uppercase",
@@ -2207,7 +2207,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                     backgroundColor: "#e9ecef",
                                     color: "#495057",
                                     padding: "4px 8px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     fontSize: "8px",
                                   }}
                                 >
@@ -2351,7 +2351,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                                         gap: "4px",
                                         padding: "4px 8px",
                                         backgroundColor: "white",
-                                        borderRadius: "4px",
+                                        borderRadius: "6px",
                                         border: "1px solid #0ea5e9",
                                       }}
                                     >
@@ -2379,7 +2379,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     textAlign: "center",
                     padding: "40px 20px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "2px dashed #dee2e6",
                   }}
                 >
@@ -2406,7 +2406,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -2445,7 +2445,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   style={{
                     backgroundColor: "#ffffff",
                     padding: "24px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     marginBottom: "24px",
                     border: "1px solid #e8eaed",
                     boxShadow:
@@ -2602,7 +2602,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             padding: "10px 16px",
             margin: "10px",
             border: "1px solid #e8eaed",
-            borderRadius: "4px",
+            borderRadius: "6px",
             fontSize: "11px",
             outline: "none",
             transition: "all 0.2s ease",
@@ -2632,7 +2632,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "1rem",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -2740,7 +2740,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                         <span
                           style={{
                             padding: "4px 8px",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             fontSize: "8px",
                             fontWeight: "500",
                             backgroundColor:
@@ -2788,7 +2788,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             backgroundColor: "#fafbfc",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "4px",
+            borderRadius: "6px",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "10px 16px",
@@ -2827,7 +2827,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2866,7 +2866,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2905,7 +2905,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2944,7 +2944,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2984,7 +2984,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
         maxWidth="lg"
         PaperProps={{
           style: {
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
@@ -3023,17 +3023,17 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 Gerenciar informações do aluno
               </Typography>
             </div>
-            <Button
+            <button
               onClick={handleSeeModal}
               style={{
                 minWidth: "auto",
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 color: "#6c757d",
               }}
             >
               <CloseIcon />
-            </Button>
+            </button>
           </div>
         </DialogTitle>
 
@@ -3043,7 +3043,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow:
@@ -3073,7 +3073,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: "#e8eaed",
@@ -3102,7 +3102,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: "#e8eaed",
@@ -3141,7 +3141,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: !isCpfValid ? "#e74c3c" : "#e8eaed",
@@ -3170,7 +3170,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3193,7 +3193,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3216,7 +3216,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3280,7 +3280,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 marginTop: "24px",
               }}
             >
-              <Button
+              <button
                 variant="contained"
                 onClick={() => editStudent(ID)}
                 style={{
@@ -3288,7 +3288,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "11px",
                   boxShadow:
@@ -3296,7 +3296,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 }}
               >
                 Salvar Informações
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -3306,7 +3306,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               style={{
                 backgroundColor: "#ffffff",
                 padding: "24px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 marginBottom: "24px",
                 border: "1px solid #e8eaed",
                 boxShadow:
@@ -3335,7 +3335,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       label="Permissões"
                       onChange={(e) => setPermissions(e.target.value)}
                       sx={{
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         backgroundColor: "#fafbfc",
                         "& .MuiOutlinedInput-notchedOutline": {
                           borderColor: "#e8eaed",
@@ -3353,7 +3353,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       <MenuItem value="superadmin">Admin</MenuItem>
                     </Select>
                   </FormControl>
-                  <Button
+                  <button
                     variant="contained"
                     onClick={() => editStudentPermissions(ID)}
                     style={{
@@ -3362,7 +3362,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       color: "#fff",
                       fontWeight: "500",
                       padding: "10px 24px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "11px",
                       boxShadow:
@@ -3370,7 +3370,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     }}
                   >
                     Salvar Permissões
-                  </Button>
+                  </button>
                 </Grid>
               </Grid>
             </div>
@@ -3381,7 +3381,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               style={{
                 backgroundColor: "#ffffff",
                 padding: "24px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 marginBottom: "24px",
                 border: "1px solid #e8eaed",
                 boxShadow:
@@ -3407,7 +3407,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3439,7 +3439,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3471,7 +3471,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3503,7 +3503,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3546,7 +3546,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     style={{
                       fontSize: "11px",
                       padding: "8px 16px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontWeight: "500",
                       boxShadow:
@@ -3579,7 +3579,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#fafbfc",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         "& fieldset": {
                           borderColor: "#e8eaed",
                         },
@@ -3611,7 +3611,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#fafbfc",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         "& fieldset": {
                           borderColor: "#e8eaed",
                         },
@@ -3642,7 +3642,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   marginTop: "20px",
                 }}
               >
-                <Button
+                <button
                   variant="outlined"
                   onClick={() =>
                     submitPlusScore(ID, plusScore, descSpecial, "Others")
@@ -3651,7 +3651,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   style={{
                     fontWeight: "500",
                     padding: "10px 24px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     textTransform: "none",
                     fontSize: "11px",
                     borderColor: partnerColor(),
@@ -3659,7 +3659,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   }}
                 >
                   Adicionar Pontuação
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -3669,7 +3669,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow:
@@ -3700,7 +3700,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       "& fieldset": {
                         borderColor: "#e8eaed",
                       },
@@ -3733,7 +3733,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "#fafbfc",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       "& fieldset": {
                         borderColor: "#e8eaed",
                       },
@@ -3764,7 +3764,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 marginTop: "20px",
               }}
             >
-              <Button
+              <button
                 variant="contained"
                 onClick={() => editStudentPassword(ID)}
                 disabled={!newPassword || newPassword !== confirmPassword}
@@ -3773,7 +3773,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "11px",
                   boxShadow:
@@ -3781,7 +3781,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                 }}
               >
                 Alterar Senha
-              </Button>
+              </button>
             </div>
           </div>
           <div
@@ -3791,20 +3791,20 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
               display: "grid",
               justifyItems: "center",
               alignItems: "center",
-              borderRadius: "4px",
+              borderRadius: "6px",
               border: "1px solid #ffcccc",
             }}
           >
             {!seeConfirmDelete ? (
               <>
-                <Button
+                <button
                   color="error"
                   variant="outlined"
                   onClick={() => setSeeConfirmDelete(true)}
                   style={{
                     fontWeight: "500",
                     padding: "10px 20px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     textTransform: "none",
                     fontSize: "11px",
                     borderColor: "#dc3545",
@@ -3812,7 +3812,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                   }}
                 >
                   Excluir Aluno
-                </Button>
+                </button>
               </>
             ) : (
               <div style={{ width: "100%", textAlign: "center" }}>
@@ -3849,27 +3849,27 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     marginTop: "20px",
                   }}
                 >
-                  <Button
+                  <button
                     onClick={() => setSeeConfirmDelete(false)}
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "11px",
                       color: "#6c757d",
                     }}
                   >
                     Cancelar
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     color="error"
                     variant="contained"
                     onClick={handleDelete}
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                       fontSize: "11px",
                       backgroundColor: "#dc3545",
@@ -3877,7 +3877,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
                     }}
                   >
                     Confirmar Exclusão
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}

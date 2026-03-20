@@ -424,7 +424,7 @@ export function EntriesAndExits({
                 color: "#9ca3af",
                 backgroundColor: "#f9fafb",
                 padding: "2px 6px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontWeight: "500",
               }}
             >
@@ -466,7 +466,7 @@ export function EntriesAndExits({
               margin: "auto",
               backgroundColor: "#f9f9f9",
               border: "1px solid #ddd",
-              borderRadius: "4px",
+              borderRadius: "6px",
             }}
           >
             <div
@@ -481,7 +481,7 @@ export function EntriesAndExits({
                   padding: "8px",
                   backgroundColor: "#fff",
                   border: "1px solid #ccc",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textAlign: "center",
                 }}
               >
@@ -504,7 +504,7 @@ export function EntriesAndExits({
                   padding: "8px",
                   backgroundColor: "#fff",
                   border: "1px solid #ccc",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   textAlign: "center",
                 }}
               >
@@ -670,7 +670,7 @@ export function EntriesAndExits({
                 color: "#9ca3af",
                 backgroundColor: "#f9fafb",
                 padding: "2px 6px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 fontWeight: "500",
               }}
             >
@@ -791,7 +791,7 @@ export function EntriesAndExits({
         onClose={closeNewCostModal}
         fullWidth
         maxWidth="sm"
-        PaperProps={{ style: { borderRadius: "4px", padding: "8px" } }}
+        PaperProps={{ style: { borderRadius: "6px", padding: "8px" } }}
       >
         <DialogTitle>
           <div
@@ -897,7 +897,7 @@ export function EntriesAndExits({
                     backgroundColor: includeThisMonth ? "green" : "red",
                     color: "white",
                     padding: "2px 4px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     cursor: "pointer",
                   }}
                 >
@@ -959,7 +959,7 @@ export function EntriesAndExits({
         onClose={closeCostDetailModal}
         fullWidth
         maxWidth="sm"
-        PaperProps={{ style: { borderRadius: "4px", padding: "8px" } }}
+        PaperProps={{ style: { borderRadius: "6px", padding: "8px" } }}
       >
         <DialogTitle>
           <div

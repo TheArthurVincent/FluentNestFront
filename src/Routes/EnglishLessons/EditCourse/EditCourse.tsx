@@ -256,7 +256,7 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
               <div
                 style={{
                   border: "1px solid rgba(0,0,0,0.1)",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   overflow: "hidden",
                 }}
               >
@@ -279,7 +279,7 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
                   border: "1px solid #fecaca",
                   background: "#fef2f2",
                   color: "#7f1d1d",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   padding: "10px 12px",
                   display: "flex",
                   alignItems: "center",

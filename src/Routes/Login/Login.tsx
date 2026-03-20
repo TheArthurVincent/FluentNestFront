@@ -119,7 +119,7 @@ export function Login() {
                 backgroundColor: "#fff",
                 maxWidth: "fit-content",
                 margin: "auto",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
               className="box-shadow-white"
             >

@@ -93,7 +93,7 @@ export default function Ranking({ headers, isDesktop }: Props) {
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "1px solid #e8eaed",
           padding: "12px",
         }}

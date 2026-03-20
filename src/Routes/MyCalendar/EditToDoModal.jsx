@@ -64,7 +64,7 @@ export default function TodoModal({
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "#fff",
-          borderRadius: "4px",
+          borderRadius: "6px",
           boxShadow: "0 8px 32px #0002",
           minWidth: "340px",
           maxWidth: "95vw",
@@ -97,7 +97,7 @@ export default function TodoModal({
             style={{
               background: "#f3f4f6",
               color: "#555",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "4px 12px",
               fontWeight: 500,
             }}
@@ -109,7 +109,7 @@ export default function TodoModal({
             style={{
               background: "#f3f4f6",
               color: "#555",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "4px 12px",
               fontWeight: 500,
             }}
@@ -128,7 +128,7 @@ export default function TodoModal({
               background: partnerColor(),
               color: textpartnerColorContrast(),
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "6px 16px",
               fontWeight: 600,
               marginLeft: "8px",
@@ -145,7 +145,7 @@ export default function TodoModal({
             style={{
               marginTop: "1rem",
               background: "#f6f6f6",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "1rem",
               boxShadow: "0 2px 8px #0001",
               display: "flex",
@@ -161,7 +161,7 @@ export default function TodoModal({
               placeholder="Descrição"
               style={{
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 border: "1px solid #ddd",
               }}
             />
@@ -172,7 +172,7 @@ export default function TodoModal({
               onChange={(e) => setEditDate(e.target.value)}
               style={{
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 border: "1px solid #ddd",
               }}
             />
@@ -182,7 +182,7 @@ export default function TodoModal({
               onChange={(e) => setEditCategory(e.target.value)}
               style={{
                 padding: "8px",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 border: "1px solid #ddd",
               }}
             >
@@ -211,7 +211,7 @@ export default function TodoModal({
                     background: "red",
                     color: "white",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "6px 16px",
                     fontWeight: 600,
                   }}
@@ -225,7 +225,7 @@ export default function TodoModal({
                     background: "#eee",
                     color: "#333",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "6px 16px",
                     fontWeight: 500,
                   }}
@@ -239,7 +239,7 @@ export default function TodoModal({
                     background: partnerColor(),
                     color: textpartnerColorContrast(),
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "6px 16px",
                     fontWeight: 600,
                   }}
@@ -256,7 +256,7 @@ export default function TodoModal({
           style={{
             display: showDeleteEventConfirmation ? "block" : "none",
             background: "#f9fafb",
-            borderRadius: "4px",
+            borderRadius: "6px",
             padding: "12px 16px",
             boxShadow: "0 2px 8px #0001",
             border: "1px solid #e5e7eb",
@@ -271,7 +271,7 @@ export default function TodoModal({
                 background: "blue",
                 color: "white",
                 border: "none",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "6px 16px",
                 fontWeight: 600,
               }}
@@ -284,7 +284,7 @@ export default function TodoModal({
                 background: "red",
                 color: "white",
                 border: "none",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "6px 16px",
                 fontWeight: 600,
               }}
@@ -306,7 +306,7 @@ export default function TodoModal({
               padding: 0,
               margin: "10px 0 0 0",
               background: "#f9fafb",
-              borderRadius: "4px",
+              borderRadius: "6px",
               boxShadow: "0 2px 8px #0001",
               border: "1px solid #e5e7eb",
               maxWidth: "320px",
@@ -391,7 +391,7 @@ export default function TodoModal({
               onClick={onAddChecklistItem}
               style={{
                 padding: "8px 12px",
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "1px solid #e5e7eb",
                 background: "#fff",
                 boxShadow: "0 1px 3px #0001",

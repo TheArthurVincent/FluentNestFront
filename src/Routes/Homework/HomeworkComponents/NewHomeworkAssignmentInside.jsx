@@ -52,7 +52,7 @@ export function NewHomeworkAssignmentHere({
         style={{
           display: "inline-block",
           padding: "0.5rem 1rem",
-          borderRadius: "4px",
+          borderRadius: "6px",
           fontSize: "0.8rem",
           textWrap: "nowrap",
         }}
@@ -83,7 +83,7 @@ export function NewHomeworkAssignmentHere({
             width: "100%",
             background: "#fff",
             padding: "2.5rem 2rem 2rem 2rem",
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow: "0 8px 32px rgba(30,41,59,0.18)",
             position: "relative",
             display: "flex",
@@ -153,7 +153,7 @@ export function NewHomeworkAssignmentHere({
             <input
               style={{
                 padding: "0.7rem 1rem",
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "1px solid #e2e8f0",
                 fontSize: "1.08rem",
                 fontWeight: 500,
@@ -183,7 +183,7 @@ export function NewHomeworkAssignmentHere({
             </label>
             <div
               style={{
-                borderRadius: 8,
+                borderRadius: 6,
                 background: "#f8fafc",
                 padding: "1rem",
                 minHeight: "120px",

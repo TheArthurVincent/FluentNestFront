@@ -115,7 +115,7 @@ export default function MultipleTextsLessonModel({
                   background: "#fff",
                   borderLeft: `4px solid ${partnerColor()}`,
                   padding: "14px",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 }}
               >
@@ -149,7 +149,7 @@ export default function MultipleTextsLessonModel({
                         border: `1px solid ${partnerColor()}`,
                         background: "#fff",
                         color: partnerColor(),
-                        borderRadius: 8,
+                        borderRadius: 6,
                         padding: "6px 10px",
                         cursor: "pointer",
                         fontWeight: 700,
@@ -209,7 +209,7 @@ export default function MultipleTextsLessonModel({
                           style={{
                             textAlign: "left",
                             padding: "12px 14px",
-                            borderRadius: 8,
+                            borderRadius: 6,
                             border,
                             background,
                             color,

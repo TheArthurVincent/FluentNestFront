@@ -133,7 +133,7 @@ export default function RankingTimeline({
                 value={newID}
                 style={{
                   padding: "0.5rem",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   border: "1px solid #ccc",
                   fontWeight: 500,
                 }}
@@ -151,7 +151,7 @@ export default function RankingTimeline({
       <div
         style={{
           backgroundColor: lightGreyColor(),
-          borderRadius: "4px",
+          borderRadius: "6px",
           overflow: "auto",
           border: `2px solid ${lightGreyColor()}`,
           maxHeight: "28rem",

@@ -192,7 +192,7 @@ const Voice: FC<VoiceTypes> = ({
             setChangeB(!changeB);
           }}
           style={{
-            borderRadius: "4px",
+            borderRadius: "6px",
             border: "1px solid #e2e8f0",
             backgroundColor: "#f8fafc",
             fontSize: "11px",

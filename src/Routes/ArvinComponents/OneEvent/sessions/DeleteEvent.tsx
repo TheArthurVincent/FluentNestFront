@@ -132,7 +132,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
               disabled={isDeleting}
               style={{
                 padding: "6px 12px",
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "1px solid #E5E7EB",
                 background: "#FFFFFF",
                 fontSize: 12,
@@ -148,7 +148,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
               disabled={isDeleting}
               style={{
                 padding: "6px 12px",
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "none",
                 background: "#DC2626",
                 color: "#FFFFFF",
@@ -171,7 +171,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
       {allowedToEdit && evendId && (
         <button
           style={{
-            borderRadius: 8,
+            borderRadius: 6,
             backgroundColor: "#DC2626",
             color: "#FFFFFF",
             fontWeight: 600,

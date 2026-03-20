@@ -329,7 +329,7 @@ const SentenceMining = ({
           margin: !isDesktop ? "12px" : "16px auto",
           fontSize: "14px",
           backgroundColor: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "1px solid #e8eaed",
           padding: isDesktop ? "16px 18px 18px" : "12px 14px 16px",
           maxWidth: 960,
@@ -361,7 +361,7 @@ const SentenceMining = ({
                   onChange={handleStudentChange}
                   value={selectedStudentId}
                   style={{
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     backgroundColor: "#f8fafc",
                     fontSize: "13px",
@@ -405,7 +405,7 @@ const SentenceMining = ({
               }}
               value={selectedLanguage}
               style={{
-                borderRadius: "4px",
+                borderRadius: "6px",
                 border: "1px solid #e2e8f0",
                 backgroundColor: "#f8fafc",
                 fontSize: "13px",
@@ -455,7 +455,7 @@ const SentenceMining = ({
                 padding: "10px 14px",
                 margin: "auto",
                 backgroundColor: "#f9f9f9",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <input
@@ -479,7 +479,7 @@ const SentenceMining = ({
                   width: "95%",
                   padding: "6px 10px",
                   fontSize: "14px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                 }}
               />
 
@@ -521,7 +521,7 @@ const SentenceMining = ({
                         word.trim() === "" || dis ? "not-allowed" : "pointer",
                       padding: "4px 12px",
                       fontSize: "13px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       textTransform: "none",
                     }}
                     disabled={word.trim() === "" || dis}
@@ -547,7 +547,7 @@ const SentenceMining = ({
                           style={{
                             padding: "5px",
                             marginBottom: "15px",
-                            borderRadius: "4px",
+                            borderRadius: "6px",
                             color: textPrimaryColorContrast(),
                             backgroundColor: partnerColor(),
                             fontSize: "18px",

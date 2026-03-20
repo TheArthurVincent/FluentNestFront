@@ -315,7 +315,7 @@ export default function WhiteLabelPreview({ headers }) {
     backgroundPosition: "center",
     overflowY: "auto",
     color: formData.contrastColor,
-    borderRadius: "4px",
+    borderRadius: "6px",
     marginTop: "40px",
     border: `2px solid black`,
     width: "100%",
@@ -333,7 +333,7 @@ export default function WhiteLabelPreview({ headers }) {
     logo: formData.logo,
     padding: "10px 20px",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: "6px",
     fontSize: "16px",
 
     cursor: "pointer",
@@ -387,7 +387,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <div style={{ display: "grid", gap: "5px" }}>
@@ -415,7 +415,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               {" "}
@@ -426,7 +426,7 @@ export default function WhiteLabelPreview({ headers }) {
                   style={{
                     color: formData.color,
                     padding: "5px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                   }}
                 >
                   Cor Principal
@@ -458,7 +458,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               {" "}
@@ -468,7 +468,7 @@ export default function WhiteLabelPreview({ headers }) {
                     color: formData.contrastColor,
                     backgroundColor: formData.color,
                     padding: "5px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                   }}
                 >
                   Cor de contraste:{" "}
@@ -495,13 +495,13 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <label
                 style={{
                   padding: "5px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                 }}
               >
                 Cor de fundo:{" "}
@@ -603,7 +603,7 @@ export default function WhiteLabelPreview({ headers }) {
               className="box-shadow-black smooth"
               style={{
                 backgroundColor: alwaysWhite(),
-                borderRadius: "4px",
+                borderRadius: "6px",
                 color: alwaysBlack(),
                 padding: "0 0 2rem",
                 width: "85%",
@@ -618,7 +618,7 @@ export default function WhiteLabelPreview({ headers }) {
                     <TabList
                       sx={{
                         bgcolor: "white",
-                        borderRadius: "8px 8px 0 0",
+                        borderRadius: "6px 8px 0 0",
                         border: `1px solid #eee`,
                       }}
                       onChange={handleTabChange}
@@ -675,7 +675,7 @@ export default function WhiteLabelPreview({ headers }) {
                         backgroundColor: formData.color,
                         textAlign: "center",
                         padding: "12px",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                       }}
                     >
                       <h1 style={{}}>Contraste</h1>

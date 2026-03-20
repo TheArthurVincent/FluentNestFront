@@ -366,7 +366,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
         style={{
           marginTop: 14,
           padding: "6px 10px",
-          borderRadius: 999,
+          borderRadius: 6,
           border: "1px solid " + partnerColor(),
           background: "rgba(0,0,0,0.02)",
           color: partnerColor(),
@@ -515,7 +515,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                             }}
                             style={{
                               padding: "6px 10px",
-                              borderRadius: 999,
+                              borderRadius: 6,
                               border: "1px solid #cbd5e1",
                               backgroundColor: showNew ? "#fee2e2" : "#ecfdf3",
                               color: showNew ? "#b91c1c" : "#15803d",
@@ -553,7 +553,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                                   style={{
                                     backgroundColor: "#f8fafc",
                                     padding: "8px 10px",
-                                    borderRadius: 8,
+                                    borderRadius: 6,
                                     border: "1px solid #e2e8f0",
                                   }}
                                 >
@@ -627,7 +627,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                                         style={{
                                           padding: "4px 10px",
                                           fontSize: 11,
-                                          borderRadius: 999,
+                                          borderRadius: 6,
                                           border: "none",
                                           cursor: "pointer",
                                           backgroundColor: partnerColor(),
@@ -643,7 +643,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                                         style={{
                                           padding: "4px 10px",
                                           fontSize: 11,
-                                          borderRadius: 999,
+                                          borderRadius: 6,
                                           border: "none",
                                           cursor: "pointer",
                                           backgroundColor: "#ef4444",
@@ -706,7 +706,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                               style={{
                                 padding: "4px 10px",
                                 fontSize: 11,
-                                borderRadius: 999,
+                                borderRadius: 6,
                                 border: "none",
                                 cursor: "pointer",
                                 backgroundColor: "#ef4444",
@@ -804,7 +804,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                               onClick={updateOne}
                               style={{
                                 padding: "6px 12px",
-                                borderRadius: 999,
+                                borderRadius: 6,
                                 border: "none",
                                 cursor: "pointer",
                                 fontSize: 12,
@@ -1022,7 +1022,7 @@ export const GroupTutoringEditorModal: FC<Props> = ({
                               style={{
                                 marginTop: 4,
                                 padding: "6px 12px",
-                                borderRadius: 999,
+                                borderRadius: 6,
                                 border: "none",
                                 cursor: isFormIncompleteNew
                                   ? "not-allowed"

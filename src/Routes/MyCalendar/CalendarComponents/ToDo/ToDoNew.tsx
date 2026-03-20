@@ -78,7 +78,7 @@ const ToDoModal: React.FC<ToDoModalProps> = ({
         style={{
           background: "#fff",
           padding: "2rem",
-          borderRadius: "4px",
+          borderRadius: "6px",
           width: "320px",
           boxShadow: "0 2px 16px #0002",
         }}
@@ -129,7 +129,7 @@ const ToDoModal: React.FC<ToDoModalProps> = ({
             disabled={NumberOfChecklists === 1}
             style={{
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "8px 16px",
               fontWeight: 600,
               backgroundColor: "#edededff",
@@ -145,7 +145,7 @@ const ToDoModal: React.FC<ToDoModalProps> = ({
             onClick={() => setNumberOfChecklists((prev) => prev + 1)}
             style={{
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "8px 16px",
               fontWeight: 600,
               backgroundColor: "#edededff",
@@ -188,7 +188,7 @@ const ToDoModal: React.FC<ToDoModalProps> = ({
               background: "blue",
               color: "white",
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "8px 16px",
             }}
           >
@@ -215,7 +215,7 @@ const ToDoModal: React.FC<ToDoModalProps> = ({
                   : "green",
               color: "white",
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               padding: "8px 16px",
               fontWeight: 600,
             }}

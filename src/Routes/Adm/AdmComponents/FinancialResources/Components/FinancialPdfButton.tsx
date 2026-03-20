@@ -292,7 +292,7 @@ export default function FinancialPdfButton({
                   style={{
                     background: "#eee",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "8px 16px",
                     cursor: "pointer",
                   }}

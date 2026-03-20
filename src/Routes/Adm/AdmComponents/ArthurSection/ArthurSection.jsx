@@ -159,7 +159,7 @@ export function ArthurSection({ headers }) {
               width: "100%",
               maxWidth: "420px",
               padding: "20px",
-              borderRadius: "10px",
+              borderRadius: "6px",
             }}
           >
             <Typography style={{ fontWeight: 700, marginBottom: 10 }}>
@@ -240,7 +240,7 @@ export function ArthurSection({ headers }) {
                 style={{
                   backgroundColor: "#ffffff",
                   padding: "24px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   marginTop: "20px",
                   border: "1px solid #ffeaa7",
                   boxShadow: "0 2px 8px rgba(255,193,7,0.1)",
@@ -289,7 +289,7 @@ export function ArthurSection({ headers }) {
                       color: "#ffffff",
                       fontWeight: "500",
                       padding: "10px 24px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       fontSize: "14px",
                       boxShadow: "0 2px 4px rgba(220,53,69,0.2)",
                       minWidth: "100px",
@@ -305,7 +305,7 @@ export function ArthurSection({ headers }) {
                       color: "#6c757d",
                       fontWeight: "500",
                       padding: "10px 24px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       fontSize: "14px",
                       backgroundColor: "#ffffff",
                       minWidth: "100px",
@@ -321,7 +321,7 @@ export function ArthurSection({ headers }) {
                     marginTop: "20px",
                     padding: "10px",
                     backgroundColor: "#d4edda",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "1px solid #c3e6cb",
                   }}
                 >

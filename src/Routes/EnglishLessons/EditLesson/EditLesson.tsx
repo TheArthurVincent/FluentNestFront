@@ -1065,7 +1065,7 @@ export default function EditLesson({
                         background: "rgba(245, 158, 11, 0.10)",
                         border: "1px solid rgba(245, 158, 11, 0.20)",
                         padding: "4px 8px",
-                        borderRadius: 999,
+                        borderRadius: 6,
                       }}
                     >
                       Alterações não salvas
@@ -1079,7 +1079,7 @@ export default function EditLesson({
                         background: "rgba(34, 197, 94, 0.10)",
                         border: "1px solid rgba(34, 197, 94, 0.20)",
                         padding: "4px 8px",
-                        borderRadius: 999,
+                        borderRadius: 6,
                       }}
                     >
                       Salvo

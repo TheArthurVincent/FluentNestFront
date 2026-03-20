@@ -437,7 +437,7 @@ function ArvinLandingPageNew() {
                                 backgroundColor: "#ED5914",
                                 display: "inline-flex",
                                 padding: "12px",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                               }}
                             >
                               {item.icon}
@@ -1009,7 +1009,7 @@ function ArvinLandingPageNew() {
                     <div
                       style={{
                         backgroundColor: "#F3F5F7",
-                        borderRadius: "8px",
+                        borderRadius: "6px",
                         marginBottom: "12px",
                         padding: "4px 12px",
                       }}

@@ -38,7 +38,7 @@ const overlayStyle: React.CSSProperties = {
 const modalStyle: React.CSSProperties = {
   width: "min(92vw, 520px)",
   background: "#fff",
-  borderRadius: 8,
+  borderRadius: 6,
   height: "85vh",
   overflowY: "hidden",
   boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
@@ -46,7 +46,7 @@ const modalStyle: React.CSSProperties = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -56,7 +56,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: partnerColor(),
   color: "white",
@@ -70,7 +70,7 @@ const textareaStyle: React.CSSProperties = {
   width: "100%",
   minHeight: 170,
   resize: "vertical",
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   padding: 10,
   fontSize: 14,
@@ -94,7 +94,7 @@ const switchRowStyle: React.CSSProperties = {
 const switchTrackBase: React.CSSProperties = {
   width: 44,
   height: 24,
-  borderRadius: 999,
+  borderRadius: 6,
   position: "relative",
   border: "1px solid #e2e8f0",
   transition: "background-color 180ms ease",
@@ -105,7 +105,7 @@ const switchTrackBase: React.CSSProperties = {
 const switchThumbBase: React.CSSProperties = {
   width: 20,
   height: 20,
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#fff",
   position: "absolute",
   top: 1.5,
@@ -116,7 +116,7 @@ const switchThumbBase: React.CSSProperties = {
 const modeButtonBase: React.CSSProperties = {
   flex: 1,
   padding: "10px 12px",
-  borderRadius: 8,
+  borderRadius: 6,
   fontSize: 13,
   fontWeight: 500,
   cursor: "pointer",
@@ -395,7 +395,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
           <div
             style={{
               border: "2px dashed #e2e8f0",
-              borderRadius: 8,
+              borderRadius: 6,
               padding: 12,
               background: "#f8fafc",
             }}
@@ -413,7 +413,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 style={{
                   marginTop: 10,
                   padding: 10,
-                  borderRadius: 8,
+                  borderRadius: 6,
                   background: "#eff6ff",
                   border: "1px solid #bfdbfe",
                   fontSize: 13,
@@ -456,7 +456,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 style={{
                   marginTop: 10,
                   padding: 10,
-                  borderRadius: 8,
+                  borderRadius: 6,
                   background: "#fafafa",
                   border: "1px solid #e2e8f0",
                   fontSize: 13,
@@ -601,7 +601,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                   <div
                     style={{
                       border: "1px solid #e2e8f0",
-                      borderRadius: 8,
+                      borderRadius: 6,
                       background: "#fafafa",
                       padding: 10,
                       fontSize: 13,
@@ -904,7 +904,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             style={{
               padding: 12,
               border: "1px solid #e2e8f0",
-              borderRadius: 8,
+              borderRadius: 6,
               background: "#fafafa",
               color: "#334155",
             }}
@@ -960,7 +960,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
             style={{
               padding: 12,
               border: "1px solid #e2e8f0",
-              borderRadius: 8,
+              borderRadius: 6,
               background: "#fdfdfd",
               color: "#334155",
             }}

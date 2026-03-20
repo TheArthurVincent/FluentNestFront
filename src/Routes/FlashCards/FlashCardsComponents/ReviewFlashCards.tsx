@@ -322,7 +322,7 @@ const ReviewFlashCards = ({
               value={lang}
               onChange={(e) => setLang(e.target.value)}
               style={{
-                borderRadius: 999,
+                borderRadius: 6,
                 border: "1px solid #e2e8f0",
                 backgroundColor: "#f8fafc",
                 fontSize: "11px",
@@ -406,7 +406,7 @@ const ReviewFlashCards = ({
                                 ? "#cbd5e1"
                                 : partnerColor(),
                               border: "none",
-                              borderRadius: 999,
+                              borderRadius: 6,
                               padding: "6px 14px",
                               fontSize: 12,
                               fontWeight: 500,
@@ -454,7 +454,7 @@ const ReviewFlashCards = ({
                                   color: "#fff",
                                   border: "none",
                                   padding: "6px 14px",
-                                  borderRadius: 999,
+                                  borderRadius: 6,
                                   fontSize: 11,
                                   fontWeight: 500,
                                   cursor: "pointer",
@@ -472,7 +472,7 @@ const ReviewFlashCards = ({
                                   color: textPrimaryColorContrast(),
                                   border: "none",
                                   padding: "6px 14px",
-                                  borderRadius: 999,
+                                  borderRadius: 6,
                                   fontSize: 11,
                                   fontWeight: 500,
                                   cursor: "pointer",
@@ -509,7 +509,7 @@ const ReviewFlashCards = ({
                                   fontSize: 11,
                                   color: "#0f172a",
                                   backgroundColor: "#e5e7eb",
-                                  borderRadius: 999,
+                                  borderRadius: 6,
                                   padding: "2px 8px",
                                   display: "inline-block",
                                   marginBottom: 6,
@@ -544,7 +544,7 @@ const ReviewFlashCards = ({
                                       )
                                     }
                                     style={{
-                                      borderRadius: 999,
+                                      borderRadius: 6,
                                       border: "1px solid #e5e7eb",
                                       padding: "4px 8px",
                                       fontSize: 11,
@@ -572,7 +572,7 @@ const ReviewFlashCards = ({
                                       display: "block",
                                       margin: "1rem auto 0",
                                       objectPosition: "center",
-                                      borderRadius: "8px",
+                                      borderRadius: "6px",
                                       boxShadow:
                                         "0 8px 20px rgba(15,23,42,0.22)",
                                     }}
@@ -641,7 +641,7 @@ const ReviewFlashCards = ({
                                       )
                                     }
                                     style={{
-                                      borderRadius: 999,
+                                      borderRadius: 6,
                                       border: "1px solid #e5e7eb",
                                       padding: "4px 8px",
                                       fontSize: 11,
@@ -669,7 +669,7 @@ const ReviewFlashCards = ({
                                       display: "block",
                                       margin: "1rem auto 0",
                                       objectPosition: "center",
-                                      borderRadius: "8px",
+                                      borderRadius: "6px",
                                       boxShadow:
                                         "0 8px 20px rgba(15,23,42,0.22)",
                                     }}
@@ -689,7 +689,7 @@ const ReviewFlashCards = ({
                           color: "#64748b",
                           fontSize: 13,
                           backgroundColor: "#f8fafc",
-                          borderRadius: 8,
+                          borderRadius: 6,
                           margin: "0.75rem 0",
                           border: "1px dashed #cbd5e1",
                         }}
@@ -735,7 +735,7 @@ const ReviewFlashCards = ({
               style={{
                 backgroundColor: "#ecfdf3",
                 color: partnerColor(),
-                borderRadius: 999,
+                borderRadius: 6,
                 border: `1px solid ${partnerColor()}`,
                 padding: "6px 14px",
                 fontSize: 12,

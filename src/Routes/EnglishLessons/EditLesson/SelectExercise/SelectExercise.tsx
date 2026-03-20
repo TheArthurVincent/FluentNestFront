@@ -45,7 +45,7 @@ type Props = {
 
 const inputStyle: React.CSSProperties = {
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 8,
   fontSize: 13,
   width: "100%",
@@ -53,7 +53,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const ghostBtn: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -69,7 +69,7 @@ const ghostSm: React.CSSProperties = {
 };
 
 const dangerBtn: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -539,7 +539,7 @@ export default function SelectExerciseEditor({
                 style={{
                   padding: 10,
                   border: "1px dashed #94a3b8",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   color: "#64748b",
                 }}
               >
@@ -665,7 +665,7 @@ export default function SelectExerciseEditor({
                             style={{
                               fontSize: 12,
                               padding: "2px 8px",
-                              borderRadius: 999,
+                              borderRadius: 6,
                               border:
                                 c.status === "right"
                                   ? "1px solid #86efac"

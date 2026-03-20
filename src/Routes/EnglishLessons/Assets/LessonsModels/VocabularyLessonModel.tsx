@@ -260,7 +260,7 @@ export default function VocabularyLessonModel({
               key={i}
               style={{
                 border: "1px solid #e3e6ea",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px 12px 8px 12px",
                 position: "relative",
                 minHeight: "40px",

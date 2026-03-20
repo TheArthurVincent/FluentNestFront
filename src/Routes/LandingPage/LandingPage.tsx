@@ -103,7 +103,7 @@ function LandingPage() {
             color: "#fff",
             border: "none",
             cursor: "pointer",
-            borderRadius: "4px",
+            borderRadius: "6px",
             textDecoration: "none",
           }}
           href="/login"

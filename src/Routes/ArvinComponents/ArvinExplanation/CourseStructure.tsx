@@ -96,7 +96,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
             fontStyle: "SemiBold",
             fontSize: "14px",
             backgroundColor: "#ffffff",
-            borderRadius: "8px",
+            borderRadius: "6px",
             border: "1px solid #e8eaed",
             padding: "12px",
             width: isDesktop ? 320 : "auto",
@@ -143,7 +143,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "8px 10px",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     background: isSelectedModule ? "#f6f8fa" : "transparent",
                     border: isSelectedModule
                       ? "1px solid #eef0f2"
@@ -162,7 +162,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
                       fontWeight: 700,
                       color: "#5f6368",
                       padding: "2px 8px",
-                      borderRadius: 999,
+                      borderRadius: 6,
                       background: "#ffffff",
                       border: "1px solid #eef0f2",
                     }}
@@ -181,7 +181,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
                         onClick={() => setSelectedLesson(lesson)}
                         style={{
                           padding: "8px 10px",
-                          borderRadius: 8,
+                          borderRadius: 6,
                           cursor: "pointer",
                           background: isSelectedLesson
                             ? "#f1f3f4"
@@ -246,7 +246,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
             flex: 1,
             background: "#fff",
             border: "1px solid #e8eaed",
-            borderRadius: 8,
+            borderRadius: 6,
             padding: 16,
             margin: !isDesktop ? "0px 12px 12px 12px" : "16px auto",
             minHeight: isDesktop ? "calc(100vh - 160px)" : "auto",
@@ -286,7 +286,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
                         background: "#eef3fd",
                         border: "1px solid #dfe7fb",
                         padding: "4px 10px",
-                        borderRadius: 999,
+                        borderRadius: 6,
                       }}
                     >
                       Vídeo
@@ -301,7 +301,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
                         background: "#eef7f0",
                         border: "1px solid #dcefe0",
                         padding: "4px 10px",
-                        borderRadius: 999,
+                        borderRadius: 6,
                       }}
                     >
                       Explicação

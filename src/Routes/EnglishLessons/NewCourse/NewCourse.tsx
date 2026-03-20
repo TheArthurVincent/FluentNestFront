@@ -145,7 +145,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
             width: "100%",
             maxWidth: "560px",
             background: "#fff",
-            borderRadius: "8px",
+            borderRadius: "6px",
             boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
             overflow: "hidden",
           }}
@@ -190,7 +190,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   background: "#fef2f2",
                   color: "#991b1b",
                   border: "1px solid #fecaca",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "10px 12px",
                   fontSize: "13px",
                 }}
@@ -224,7 +224,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   style={{
                     width: "100%",
                     padding: "10px 12px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     outline: "none",
                   }}
@@ -247,7 +247,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   style={{
                     width: "100%",
                     padding: "10px 12px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     background: "#fff",
                     outline: "none",
@@ -278,7 +278,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                 style={{
                   width: "100%",
                   padding: "10px 12px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   border: "1px solid #e2e8f0",
                   outline: "none",
                 }}
@@ -310,7 +310,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   style={{
                     width: "100%",
                     padding: "8px",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     border: "1px solid #e2e8f0",
                     background: "#fff",
                     outline: "none",
@@ -324,7 +324,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                 style={{
                   height: "38px",
                   padding: "0 12px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   border: "1px dashed #cbd5e1",
                   background: "#f8fafc",
                   color: "#64748b",
@@ -343,7 +343,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                   display: "grid",
                   gap: "8px",
                   border: "1px dashed #e2e8f0",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "10px",
                 }}
               >
@@ -357,7 +357,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                     width: "100%",
                     height: "160px",
                     objectFit: "cover",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                   }}
                   onError={(e) => (e.currentTarget.style.display = "none")}
                 />
@@ -385,7 +385,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
               disabled={loading || uploading}
               style={{
                 padding: "10px 14px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: "1px solid #e2e8f0",
                 background: "#ffffff",
                 color: "#334155",
@@ -404,7 +404,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
                 alignItems: "center",
                 gap: "8px",
                 padding: "10px 14px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: "1px solid #0ea5e9",
                 background: loading || uploading ? "#7dd3fc" : "#38bdf8",
                 color: "white",
@@ -447,7 +447,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
           alignItems: "center",
           gap: "8px",
           padding: "8px 12px",
-          borderRadius: "8px",
+          borderRadius: "6px",
           border: "1px solid #e2e8f0",
           background: "#ffffff",
           color: "#334155",

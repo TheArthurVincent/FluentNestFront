@@ -73,7 +73,7 @@ export function CardCalendar({
       style={{
         fontSize: "10px",
         border: isToday ? `3px solid ${partnerColor()}` : "1px solid #e0e0e0",
-        borderRadius: "4px",
+        borderRadius: "6px",
         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
         boxShadow: isToday
           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
@@ -149,7 +149,7 @@ export function CardCalendar({
                         : todo.category === "other"
                         ? "rgba(216, 191, 234, 0.7)"
                         : "rgba(234, 191, 215, 0.7)",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "5px",
                     boxShadow: "0 1px 2px #b8b8b8ff",
                   }}

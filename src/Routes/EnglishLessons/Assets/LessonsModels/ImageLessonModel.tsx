@@ -262,7 +262,7 @@ export default function ImageLessonModel({
 
   const tabBtn = (active: boolean): React.CSSProperties => ({
     padding: "8px 12px",
-    borderRadius: 999,
+    borderRadius: 6,
     border: `1px solid ${active ? "#111" : "#E5E7EB"}`,
     background: active ? "#111" : "#FFFFFF",
     color: active ? "#fff" : "#111827",
@@ -509,7 +509,7 @@ export default function ImageLessonModel({
                   color: "#fff",
                   backgroundColor: "#00000095",
                   padding: "6px",
-                  borderRadius: 4,
+                  borderRadius: 6,
                   textAlign: "center",
                   fontSize: 12,
                   textTransform: "uppercase",

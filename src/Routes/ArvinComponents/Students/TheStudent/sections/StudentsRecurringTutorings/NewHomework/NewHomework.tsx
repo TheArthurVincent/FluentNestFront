@@ -52,7 +52,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
     width: "100%",
     padding: "12px",
     border: "1px solid #ddd",
-    borderRadius: "4px",
+    borderRadius: "6px",
     fontSize: "14px",
     outline: "none",
     transition: "border-color 0.2s",
@@ -136,19 +136,19 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
   return (
     <>
       {/* Botão que abre o modal */}
-      <Button
+      <button
         onClick={() => setOpen(true)}
         style={{
           backgroundColor: partnerColor(),
           color: "#fff",
           fontWeight: 600,
-          borderRadius: 999,
+          borderRadius: 6,
           textTransform: "none",
           padding: "8px 18px",
         }}
       >
         {buttonLabel}
-      </Button>
+      </button>
 
       {/* Modal (MUI Dialog usa Portal grudado no body) */}
       <Dialog
@@ -273,7 +273,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
                     fontSize: "15px",
                     fontWeight: 600,
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     cursor:
                       isLoading || !formData.description.trim()
                         ? "not-allowed"

@@ -90,7 +90,7 @@ export function EditResponsibleModal({
           background: partnerColor(),
           color: "#fff",
           border: "none",
-          borderRadius: "4px",
+          borderRadius: "6px",
           padding: "6px 16px",
           cursor: "pointer",
           fontWeight: 500,
@@ -117,7 +117,7 @@ export function EditResponsibleModal({
           <div
             style={{
               background: "#fff",
-              borderRadius: "4px",
+              borderRadius: "6px",
               boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
               padding: "32px",
               minWidth: "340px",
@@ -156,7 +156,7 @@ export function EditResponsibleModal({
                     padding: "8px",
                     marginTop: 4,
                     border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: 15,
                   }}
                 />
@@ -174,7 +174,7 @@ export function EditResponsibleModal({
                     padding: "8px",
                     marginTop: 4,
                     border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: 15,
                   }}
                 />
@@ -192,7 +192,7 @@ export function EditResponsibleModal({
                     padding: "8px",
                     marginTop: 4,
                     border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     fontSize: 15,
                   }}
                 />
@@ -207,7 +207,7 @@ export function EditResponsibleModal({
                   maxHeight: 160,
                   overflowY: "auto",
                   border: "1px solid #eee",
-                  borderRadius: 4,
+                  borderRadius: 6,
                   background: "#fafbfc",
                   padding: "8px 6px",
                   marginTop: 8,
@@ -274,7 +274,7 @@ export function EditResponsibleModal({
                     background: "red",
                     color: "#fff",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "8px 24px",
                     fontWeight: 600,
                     fontSize: 16,
@@ -291,7 +291,7 @@ export function EditResponsibleModal({
                     background: partnerColor(),
                     color: "#fff",
                     border: "none",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "8px 24px",
                     fontWeight: 600,
                     fontSize: 16,

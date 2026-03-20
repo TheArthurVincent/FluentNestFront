@@ -165,7 +165,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
           onChange={(e) => setSelectedMonth(Number(e.target.value))}
           style={{
             padding: "6px 10px",
-            borderRadius: "8px",
+            borderRadius: "6px",
             border: "1px solid #E3E8F0",
             fontFamily: "Plus Jakarta Sans",
             fontSize: "12px",
@@ -237,7 +237,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
               style={{
                 height: "41px",
                 width: "41px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -405,7 +405,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                             flexDirection: "column",
                             gap: "4px",
                             padding: "10px 12px",
-                            borderRadius: "8px",
+                            borderRadius: "6px",
                             textDecoration: "none",
                             border: "1px solid #E5E7EB",
                             marginBottom: "8px",

@@ -151,7 +151,7 @@ export function Contract({ headers }: HeadersProps) {
           </select>
 
           <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
-            <Button
+            <button
               variant="contained"
               sx={{
                 backgroundColor: editing ? "red" : partnerColor(),
@@ -165,10 +165,10 @@ export function Contract({ headers }: HeadersProps) {
               onClick={() => setEditing(!editing)}
             >
               {editing ? "Cancelar Edição" : "Editar Termos"}
-            </Button>
+            </button>
 
             {editing && (
-              <Button
+              <button
                 variant="contained"
                 sx={{
                   backgroundColor: partnerColor(),
@@ -180,10 +180,10 @@ export function Contract({ headers }: HeadersProps) {
                 onClick={handleSaveContractTerms}
               >
                 Salvar
-              </Button>
+              </button>
             )}
 
-            <Button
+            <button
               variant="contained"
               sx={{
                 backgroundColor: partnerColor(),
@@ -195,7 +195,7 @@ export function Contract({ headers }: HeadersProps) {
               onClick={generatePDF}
             >
               Gerar PDF
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -233,7 +233,7 @@ export function Contract({ headers }: HeadersProps) {
                       color: "#fff",
                       padding: "4px 10px",
                       border: "none",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       display: "flex",
                       alignItems: "center",
                       gap: "4px",
@@ -387,7 +387,7 @@ export function Contract({ headers }: HeadersProps) {
                         background: "red",
                         color: "white",
                         border: "none",
-                        borderRadius: "4px",
+                        borderRadius: "6px",
                         padding: "2px 6px",
                         cursor: "pointer",
                       }}
@@ -402,7 +402,7 @@ export function Contract({ headers }: HeadersProps) {
                     backgroundColor: partnerColor(),
                     color: "#fff",
                     padding: "6px 12px",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     border: "none",
                     cursor: "pointer",
                     marginTop: "1rem",
@@ -445,7 +445,7 @@ export function Contract({ headers }: HeadersProps) {
           </div>
 
           <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
-            <Button
+            <button
               variant="contained"
               sx={{
                 backgroundColor: editing ? "red" : partnerColor(),
@@ -459,10 +459,10 @@ export function Contract({ headers }: HeadersProps) {
               onClick={() => setEditing(!editing)}
             >
               {editing ? "Cancelar Edição" : "Editar Termos"}
-            </Button>
+            </button>
 
             {editing && (
-              <Button
+              <button
                 variant="contained"
                 sx={{
                   backgroundColor: partnerColor(),
@@ -474,10 +474,10 @@ export function Contract({ headers }: HeadersProps) {
                 onClick={handleSaveContractTerms}
               >
                 Salvar
-              </Button>
+              </button>
             )}
 
-            <Button
+            <button
               variant="contained"
               sx={{
                 backgroundColor: partnerColor(),
@@ -489,7 +489,7 @@ export function Contract({ headers }: HeadersProps) {
               onClick={generatePDF}
             >
               Gerar PDF
-            </Button>
+            </button>
           </div>
         </>
       )}

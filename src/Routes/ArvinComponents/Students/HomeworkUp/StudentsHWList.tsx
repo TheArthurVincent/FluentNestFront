@@ -139,7 +139,7 @@ export function ListOfStudentsHWToClick({
           style={{
             flex: 1,
             minWidth: isDesktop ? 260 : "100%",
-            borderRadius: 999,
+            borderRadius: 6,
             border: "1px solid #E2E8F0",
             padding: "8px 14px",
             fontSize: 13,

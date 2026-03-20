@@ -32,7 +32,7 @@ type Props = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -42,7 +42,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const dangerBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -53,7 +53,7 @@ const dangerBtnStyle: React.CSSProperties = {
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: "#06b6d4",
   color: "white",
@@ -324,7 +324,7 @@ export default function AudioAndTextEditor({
               placeholder="Ex.: Life Expectancy Audio Explanation"
               style={{
                 border: "1px solid #e2e8f0",
-                borderRadius: 8,
+                borderRadius: 6,
                 padding: 8,
                 fontSize: 13,
               }}
@@ -342,7 +342,7 @@ export default function AudioAndTextEditor({
               style={{
                 width: "100%",
                 border: "1px solid #e2e8f0",
-                borderRadius: 8,
+                borderRadius: 6,
                 padding: 10,
                 fontSize: 13,
                 lineHeight: 1.45,
@@ -365,7 +365,7 @@ export default function AudioAndTextEditor({
                   placeholder='Cole a URL (Drive/CDN) ou um <iframe> de embed (pegarei o "src")'
                   style={{
                     border: "1px solid #e2e8f0",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     padding: 8,
                     fontSize: 13,
                   }}
@@ -409,7 +409,7 @@ export default function AudioAndTextEditor({
                 width: 96,
                 height: 96,
                 border: "1px solid #e2e8f0",
-                borderRadius: 8,
+                borderRadius: 6,
                 overflow: "hidden",
                 display: "grid",
                 placeItems: "center",

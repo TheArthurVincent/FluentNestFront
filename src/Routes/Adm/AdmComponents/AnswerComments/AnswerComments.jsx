@@ -84,21 +84,21 @@ export function AllComments({ headers }) {
               {comment.comment}
             </Typography>
             <div sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Button
+              <button
                 color="error"
                 variant="contained"
                 sx={{ marginTop: 1 }}
                 onDoubleClick={() => deleteComment(comment.id)}
               >
                 Clique duas vezes para rejeitar
-              </Button>
-              <Button
+              </button>
+              <button
                 variant="contained"
                 sx={{ marginTop: 1 }}
                 onClick={() => handleOpenModal(comment)}
               >
                 Responder
-              </Button>
+              </button>
             </div>
           </Paper>
         ))
@@ -114,7 +114,7 @@ export function AllComments({ headers }) {
             width: 400,
             background: "white",
             padding: 3,
-            borderRadius: "4px",
+            borderRadius: "6px",
             boxShadow:
               "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
           }}
@@ -144,12 +144,12 @@ export function AllComments({ headers }) {
           <div
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
           >
-            <Button onClick={handleCloseModal} sx={{ marginRight: 1 }}>
+            <button onClick={handleCloseModal} sx={{ marginRight: 1 }}>
               Cancelar
-            </Button>
-            <Button variant="contained" onClick={handleSubmitResponse}>
+            </button>
+            <button variant="contained" onClick={handleSubmitResponse}>
               Enviar
-            </Button>
+            </button>
           </div>
         </div>
       </Modal>

@@ -679,7 +679,7 @@ export default function ExerciseRunner({
       style={{
         display: "flex",
         backgroundColor: "white",
-        borderRadius: "4px",
+        borderRadius: "6px",
         zIndex: 100,
         padding: "1rem",
         boxSizing: "border-box",
@@ -745,7 +745,7 @@ export default function ExerciseRunner({
               onClick={() => setBoardVisible(true)}
               style={{
                 padding: "8px 14px",
-                borderRadius: 999,
+                borderRadius: 6,
                 border: "1px solid #E5E7EB",
                 background: "#F9FAFB",
                 cursor: "pointer",
@@ -799,7 +799,7 @@ export default function ExerciseRunner({
                 disabled={boardFinishing || !studentId}
                 style={{
                   padding: "8px 14px",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: "none",
                   background: boardFinishing ? "#9CA3AF" : partnerColor(),
                   color: "#FFFFFF",
@@ -828,7 +828,7 @@ export default function ExerciseRunner({
           <div
             style={{
               padding: 6,
-              borderRadius: 8,
+              borderRadius: 6,
             }}
           >
             <h2

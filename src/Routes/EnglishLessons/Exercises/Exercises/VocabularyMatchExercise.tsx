@@ -95,7 +95,7 @@ const headerRightStyle: React.CSSProperties = {
 
 const restartButtonStyle: React.CSSProperties = {
   padding: "6px 10px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#FFFFFF",
   cursor: "pointer",
   fontWeight: 600,
@@ -138,7 +138,7 @@ const selectedStyle: React.CSSProperties = {
 
 const audioButtonStyle: React.CSSProperties = {
   padding: "8px",
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#F3F4F6",
   border: "1px solid #D1D5DB",
   cursor: "pointer",

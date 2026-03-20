@@ -4,7 +4,7 @@ import { partnerColor } from "../../../../../Styles/Styles";
 
 export const cardBase: React.CSSProperties = {
   backgroundColor: "#FFFFFF",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 18,
   border: "1px solid #E5E7EB",
 };
@@ -24,13 +24,13 @@ export const pillStatus: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 600,
   padding: "4px 10px",
-  borderRadius: 8,
+  borderRadius: 6,
   // backgroundColor: `${partnerColor()}20`,
   // color: partnerColor(),
 };
 
 export const statCardBase: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 12,
   backgroundColor: `${partnerColor()}10`,
   display: "grid",

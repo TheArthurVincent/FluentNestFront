@@ -230,7 +230,7 @@ export function ListOfStudentsToClick({
             style={{
               flex: 1,
               minWidth: isDesktop ? 260 : "100%",
-              borderRadius: 999,
+              borderRadius: 6,
               border: "1px solid #E2E8F0",
               padding: "8px 14px",
               fontSize: 13,
@@ -322,7 +322,7 @@ export function ListOfStudentsToClick({
                 display: "flex",
                 background: "linear-gradient(to right, #f5f5f5, #ffffff)",
                 padding: 8,
-                borderRadius: 8,
+                borderRadius: 6,
                 color: "inherit",
                 textDecoration: "none",
                 alignItems: "center",

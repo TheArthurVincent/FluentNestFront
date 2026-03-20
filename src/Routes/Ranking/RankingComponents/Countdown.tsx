@@ -63,7 +63,7 @@ export default function Countdown({ text, targetDate }: CountDownProps) {
         style={{
           backgroundColor: timeLeft.days == 0 ? "red" : partnerColor(),
           color: textPrimaryColorContrast(),
-          borderRadius: "4px",
+          borderRadius: "6px",
           fontSize: "1rem",
           padding: "6px 8px",
           fontWeight: 600,

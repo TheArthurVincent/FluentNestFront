@@ -87,7 +87,7 @@ export default function GroupClasses({ headers }) {
             alignItems: "center",
           }}
         >
-          <Button
+          <button
             style={{
               backgroundColor: "#000",
               color: textPrimaryColorContrast(),
@@ -96,7 +96,7 @@ export default function GroupClasses({ headers }) {
             disabled={currentPage === 1}
           >
             {UniversalTexts.previousButton}
-          </Button>
+          </button>
           <span
             style={{
               color: alwaysBlack(),
@@ -104,7 +104,7 @@ export default function GroupClasses({ headers }) {
           >
             {currentPage}/{totalPages}
           </span>
-          <Button
+          <button
             style={{
               backgroundColor: "#000",
               color: textPrimaryColorContrast(),
@@ -113,7 +113,7 @@ export default function GroupClasses({ headers }) {
             disabled={currentPage === totalPages}
           >
             {UniversalTexts.nextButton}
-          </Button>
+          </button>
         </div>
         <div style={{ display: "flex", gap: "3rem" }}>
           <div
@@ -172,7 +172,7 @@ export default function GroupClasses({ headers }) {
                   backgroundColor: partnerColor(),
                   color: textPrimaryColorContrast(),
                   padding: "10px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   display: "flex",
                   gap: "5px",
                   alignItems: "center",

@@ -30,7 +30,7 @@ export default function VocabularyLesson({
               key={i}
               style={{
                 backgroundColor: "#ffffff",
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "5px",
                 transition: "all 0.3s ease",
                 position: "relative",

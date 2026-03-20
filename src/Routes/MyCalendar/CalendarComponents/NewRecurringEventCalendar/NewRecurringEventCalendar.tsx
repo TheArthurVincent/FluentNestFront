@@ -717,7 +717,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                         style={{
                           display: "inline-flex",
                           padding: 4,
-                          borderRadius: 999,
+                          borderRadius: 6,
                           backgroundColor: "#f1f5f9",
                           gap: 4,
                           width: "fit-content",
@@ -738,7 +738,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           style={{
                             border: "none",
                             cursor: "pointer",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             padding: "6px 12px",
                             fontSize: 12,
                             fontWeight: 500,
@@ -766,7 +766,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           style={{
                             border: "none",
                             cursor: "pointer",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             padding: "6px 12px",
                             fontSize: 12,
                             fontWeight: 500,
@@ -797,7 +797,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           style={{
                             border: "none",
                             cursor: "pointer",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             padding: "6px 12px",
                             fontSize: 12,
                             fontWeight: 500,
@@ -814,7 +814,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                       {showStudentsRecurring && (
                         <div
                           style={{
-                            borderRadius: 8,
+                            borderRadius: 6,
                             padding: 10,
                             backgroundColor: "#f8fafc",
                             border: "1px solid #e2e8f0",
@@ -873,7 +873,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                       {showGroupsRecurring && (
                         <div
                           style={{
-                            borderRadius: 8,
+                            borderRadius: 6,
                             padding: 10,
                             backgroundColor: "#f8fafc",
                             border: "1px solid #e2e8f0",
@@ -963,7 +963,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                     ? "#fff1f2"
                                     : "#f8fafc",
                                   padding: "8px 10px",
-                                  borderRadius: 8,
+                                  borderRadius: 6,
                                   border: isExpiring
                                     ? "1px solid #fb7185"
                                     : "1px solid #e2e8f0",
@@ -975,7 +975,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                       backgroundColor: "#fb7185",
                                       color: "white",
                                       padding: "2px 6px",
-                                      borderRadius: 999,
+                                      borderRadius: 6,
                                       fontSize: 10,
                                       display: "inline-flex",
                                       alignItems: "center",
@@ -1053,7 +1053,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                       style={{
                                         padding: "4px 10px",
                                         fontSize: 11,
-                                        borderRadius: 999,
+                                        borderRadius: 6,
                                         border: "none",
                                         cursor: "pointer",
                                         backgroundColor: partnerColor(),
@@ -1068,7 +1068,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                       style={{
                                         padding: "4px 10px",
                                         fontSize: 11,
-                                        borderRadius: 999,
+                                        borderRadius: 6,
                                         border: "none",
                                         cursor: "pointer",
                                         backgroundColor: "#ef4444",
@@ -1128,7 +1128,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           style={{
                             padding: "4px 10px",
                             fontSize: 11,
-                            borderRadius: 999,
+                            borderRadius: 6,
                             border: "none",
                             cursor: "pointer",
                             backgroundColor: "#ef4444",
@@ -1223,7 +1223,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           onClick={updateOneTutoring}
                           style={{
                             padding: "6px 12px",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             border: "none",
                             cursor: "pointer",
                             fontSize: 12,
@@ -1248,7 +1248,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                           }
                           style={{
                             padding: "6px 10px",
-                            borderRadius: 999,
+                            borderRadius: 6,
                             border: "1px solid #cbd5e1",
                             backgroundColor: showSeeEditTutoring
                               ? "#fee2e2"
@@ -1434,7 +1434,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                           : "1px solid #e0e0e0",
                                       cursor: "pointer",
                                       padding: "2px 6px",
-                                      borderRadius: "4px",
+                                      borderRadius: "6px",
                                       fontSize: "10px",
                                       fontWeight: 500,
                                       color:
@@ -1474,7 +1474,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                   style={{
                                     padding: "6px",
                                     maxWidth: "60px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     border: "1px solid #ced4da",
                                     fontSize: "12px",
                                     textAlign: "center",
@@ -1546,7 +1546,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                           : "1px solid #e0e0e0",
                                       cursor: "pointer",
                                       padding: "2px 6px",
-                                      borderRadius: "4px",
+                                      borderRadius: "6px",
                                       fontSize: "10px",
                                       fontWeight: 500,
                                       color:
@@ -1586,7 +1586,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                   style={{
                                     padding: "6px",
                                     maxWidth: "60px",
-                                    borderRadius: "4px",
+                                    borderRadius: "6px",
                                     border: "1px solid #ced4da",
                                     fontSize: "12px",
                                     textAlign: "center",
@@ -1601,7 +1601,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                   padding: "6px 8px",
                                   backgroundColor: "#f8f9fa",
                                   border: "1px solid #e9ecef",
-                                  borderRadius: "4px",
+                                  borderRadius: "6px",
                                   fontSize: "11px",
                                   color: "#6c757d",
                                   lineHeight: "1.3",
@@ -1617,7 +1617,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                               style={{
                                 marginTop: 4,
                                 padding: "6px 12px",
-                                borderRadius: 999,
+                                borderRadius: 6,
                                 border: "none",
                                 cursor: isFormIncompleteNew
                                   ? "not-allowed"

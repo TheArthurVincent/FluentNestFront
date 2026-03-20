@@ -37,7 +37,7 @@ interface FormDataState {
 const switchTrackBase: React.CSSProperties = {
   width: 44,
   height: 24,
-  borderRadius: 999,
+  borderRadius: 6,
   position: "relative",
   border: "1px solid #e2e8f0",
   transition: "background-color 180ms ease",
@@ -48,7 +48,7 @@ const switchTrackBase: React.CSSProperties = {
 const switchThumbBase: React.CSSProperties = {
   width: 20,
   height: 20,
-  borderRadius: 999,
+  borderRadius: 6,
   background: "#fff",
   position: "absolute",
   top: 1.5,
@@ -176,7 +176,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
     width: "100%",
     padding: "12px",
     border: "1px solid #ddd",
-    borderRadius: "4px",
+    borderRadius: "6px",
     fontSize: "14px",
     outline: "none",
     transition: "border-color 0.2s",
@@ -204,19 +204,19 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
 
   return (
     <>
-      <Button
+      <button
         onClick={() => setOpen(true)}
         style={{
           backgroundColor: partnerColor(),
           color: "#fff",
           fontWeight: 600,
-          borderRadius: 999,
+          borderRadius: 6,
           textTransform: "none",
           padding: "8px 18px",
         }}
       >
         + Novo Aluno
-      </Button>
+      </button>
 
       <Dialog
         open={open}
@@ -345,7 +345,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
                   fontSize: "16px",
                   fontWeight: 600,
                   border: "none",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                   cursor: isLoading ? "not-allowed" : "pointer",
                   marginTop: "1rem",
                   display: "flex",

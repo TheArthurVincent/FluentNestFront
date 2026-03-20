@@ -212,7 +212,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                   style={{
                     border: `1px solid ${UI.border}`,
                     background: UI.bg,
-                    borderRadius: 8,
+                    borderRadius: 6,
                     fontSize: 12,
                     padding: "4px 8px",
                     cursor: "pointer",
@@ -332,7 +332,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                 style={{
                   border: `1px solid ${UI.border}`,
                   background: UI.bg,
-                  borderRadius: 8,
+                  borderRadius: 6,
                   fontSize: 12,
                   padding: "4px 8px",
                   cursor: "pointer",

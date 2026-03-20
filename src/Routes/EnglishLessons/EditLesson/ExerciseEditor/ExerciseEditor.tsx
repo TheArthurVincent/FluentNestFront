@@ -397,7 +397,7 @@ export default function ExerciseEditor({
               gap: 8,
               background: "#f8fafc",
               border: "1px solid #e2e8f0",
-              borderRadius: 8,
+              borderRadius: 6,
               padding: 10,
             }}
           >
@@ -443,7 +443,7 @@ export default function ExerciseEditor({
                 key={`${idx}-${(q || "").slice(0, 12)}`}
                 style={{
                   border: "1px solid #e2e8f0",
-                  borderRadius: 8,
+                  borderRadius: 6,
                   padding: 10,
                   display: "flex",
                   gap: 8,
@@ -512,7 +512,7 @@ export default function ExerciseEditor({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: "8px 10px",
   fontSize: 13,
   boxSizing: "border-box",
@@ -526,7 +526,7 @@ const textareaStyle: React.CSSProperties = {
 };
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: "#06b6d4",
   color: "white",
@@ -537,7 +537,7 @@ const primaryBtnStyle: React.CSSProperties = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -547,7 +547,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const dangerBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -559,7 +559,7 @@ const dangerBtnStyle: React.CSSProperties = {
 
 const emptyStyle: React.CSSProperties = {
   border: "1px dashed #94a3b8",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 16,
   color: "#64748b",
   fontSize: 13,

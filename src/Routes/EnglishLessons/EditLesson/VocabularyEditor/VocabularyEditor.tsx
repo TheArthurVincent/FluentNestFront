@@ -492,7 +492,7 @@ export default function VocabularyEditor({
           border: "1px solid #f59e0b",
           background: "#fffbeb",
           color: "#92400e",
-          borderRadius: 8,
+          borderRadius: 6,
           padding: "10px 12px",
           fontSize: 12,
           display: "flex",
@@ -697,7 +697,7 @@ export default function VocabularyEditor({
                   key={idx}
                   style={{
                     border: "1px solid #e2e8f0",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     padding: 10,
                     display: "grid",
                     gap: 10,
@@ -844,7 +844,7 @@ export default function VocabularyEditor({
                       gap: 12,
                       background: "#f0f9ff",
                       padding: 10,
-                      borderRadius: 8,
+                      borderRadius: 6,
                       border: "1px solid #e2e8f0",
                     }}
                   >
@@ -914,7 +914,7 @@ export default function VocabularyEditor({
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: "8px 10px",
   fontSize: 13,
 };
@@ -925,7 +925,7 @@ const selectStyle: React.CSSProperties = {
 } as React.CSSProperties;
 
 const primaryBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #0891b2",
   backgroundColor: "#06b6d4",
   color: "white",
@@ -936,7 +936,7 @@ const primaryBtnStyle: React.CSSProperties = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
@@ -946,7 +946,7 @@ const ghostBtnStyle: React.CSSProperties = {
 };
 
 const dangerBtnStyle: React.CSSProperties = {
-  borderRadius: 8,
+  borderRadius: 6,
   border: "1px solid #ef4444",
   backgroundColor: "#ef4444",
   color: "white",
@@ -957,7 +957,7 @@ const dangerBtnStyle: React.CSSProperties = {
 
 const emptyStyle: React.CSSProperties = {
   border: "1px dashed #94a3b8",
-  borderRadius: 8,
+  borderRadius: 6,
   padding: 16,
   color: "#64748b",
   fontSize: 13,

@@ -94,7 +94,7 @@ function HTMLEditor({ onChange, initialContent }) {
           direction: "ltr",
           textAlign: "left",
           border: `1px solid ${partnerColor()}55`,
-          borderRadius: "8px",
+          borderRadius: "6px",
           boxSizing: "border-box",
           overflow: "auto",
           maxHeight: "85vh",

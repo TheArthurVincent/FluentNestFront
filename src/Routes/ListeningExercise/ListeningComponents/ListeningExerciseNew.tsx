@@ -564,7 +564,7 @@ const ListeningExerciseNew = ({
         style={{
           maxWidth: "500px",
           padding: "2rem",
-          borderRadius: "4px",
+          borderRadius: "6px",
           backgroundColor: "#fff",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
           border: "1px solid #e0e0e0",
@@ -629,7 +629,7 @@ const ListeningExerciseNew = ({
           style={{
             backgroundColor: "#f8f9fa",
             padding: "1.5rem",
-            borderRadius: "4px",
+            borderRadius: "6px",
             marginBottom: "1.5rem",
             border: "1px solid #e9ecef",
           }}
@@ -686,7 +686,7 @@ const ListeningExerciseNew = ({
               backgroundColor: partnerColor(),
               color: "#fff",
               textDecoration: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               fontSize: "0.95rem",
               fontWeight: "500",
               transition: "all 0.2s",
@@ -706,7 +706,7 @@ const ListeningExerciseNew = ({
               backgroundColor: "transparent",
               color: "#666",
               textDecoration: "none",
-              borderRadius: "4px",
+              borderRadius: "6px",
               fontSize: "0.9rem",
               border: "1px solid #ddd",
               transition: "all 0.2s",
@@ -768,7 +768,7 @@ const ListeningExerciseNew = ({
               }}
               value={selectedStudentId}
               style={{
-                borderRadius: "4px",
+                borderRadius: "6px",
                 border: "1px solid #e2e8f0",
                 backgroundColor: "#f8fafc",
                 fontSize: "13px",
@@ -816,7 +816,7 @@ const ListeningExerciseNew = ({
                 margin: "auto",
                 textAlign: "center",
                 padding: "20px",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               {cardsLength ? (
@@ -833,7 +833,7 @@ const ListeningExerciseNew = ({
                       <p
                         style={{
                           padding: "10px",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           backgroundColor:
                             similarity === 100
                               ? "#4caf40"
@@ -871,7 +871,7 @@ const ListeningExerciseNew = ({
                         style={{
                           display: "grid",
                           border: "solid 1px #ccc",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           padding: "15px",
                           backgroundColor: "#fff",
                         }}
@@ -898,7 +898,7 @@ const ListeningExerciseNew = ({
                         style={{
                           display: "grid",
                           border: "solid 1px #ccc",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           padding: "15px",
                           backgroundColor: "#fff",
                         }}
@@ -1038,7 +1038,7 @@ const ListeningExerciseNew = ({
                       marginTop: "1rem",
                       width: "85%",
                       padding: "10px",
-                      borderRadius: "4px",
+                      borderRadius: "6px",
                       border: "1px solid #ccc",
                     }}
                     placeholder="Use this area for reference if you need to transcribe what you hear"

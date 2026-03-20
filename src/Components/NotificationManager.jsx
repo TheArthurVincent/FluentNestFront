@@ -138,12 +138,12 @@ const NotificationManager = () => {
             </TextContent>
 
             <ButtonGroup>
-              <Button onClick={handleSubscribe} primary disabled={loading}>
+              <button onClick={handleSubscribe} primary disabled={loading}>
                 {loading ? "Ativando..." : "🔔 Sim, quero receber!"}
-              </Button>
-              <Button onClick={handleDismiss} disabled={loading}>
+              </button>
+              <button onClick={handleDismiss} disabled={loading}>
                 Agora não
-              </Button>
+              </button>
             </ButtonGroup>
 
             <PrivacyNote>Você pode cancelar a qualquer momento</PrivacyNote>

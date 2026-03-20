@@ -407,47 +407,38 @@ export default function HomeworkRenderer({
   const baseModalStyle = {
     position: "fixed" as const,
     inset: 0,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    background: "rgba(15, 23, 42, 0.55)",
+    backdropFilter: "blur(3px)",
     display: "flex",
     justifyContent: "center",
     alignItems: isDesktop ? "center" : "flex-start",
     zIndex: 10000,
-    padding: isDesktop ? "0" : "20px 8px",
+    padding: isDesktop ? "24px" : "18px 10px",
   };
 
   const modalBoxStyle = {
     backgroundColor: "#fff",
-    borderRadius: 6,
-    padding: isDesktop ? "24px" : "16px",
-    maxWidth: isDesktop ? "500px" : "100%",
-    width: isDesktop ? "90%" : "100%",
-    maxHeight: isDesktop ? "90vh" : "calc(100vh - 40px)",
+    borderRadius: 12,
+    padding: isDesktop ? "22px" : "16px",
+    maxWidth: isDesktop ? "620px" : "100%",
+    width: isDesktop ? "92%" : "100%",
+    maxHeight: isDesktop ? "88vh" : "calc(100vh - 36px)",
     overflowY: "auto" as const,
-    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-    marginTop: isDesktop ? "0" : "20px",
+    border: "1px solid #E2E8F0",
+    boxShadow: "0 24px 60px rgba(15, 23, 42, 0.18)",
+    marginTop: isDesktop ? "0" : "10px",
   };
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: 20 }}>
+      <div style={loadingContainerStyle}>
         <CircularProgress style={{ color: partnerColor() }} />
       </div>
     );
   }
 
   if (homeworks.length === 0) {
-    return (
-      <p
-        style={{
-          fontFamily: "Plus Jakarta Sans",
-          fontWeight: 400,
-          fontSize: 13,
-          color: "#6B7280",
-        }}
-      >
-        Nenhum homework encontrado.
-      </p>
-    );
+    return <p style={emptyTextStyle}>Nenhum homework encontrado.</p>;
   }
 
   return (
@@ -467,51 +458,25 @@ export default function HomeworkRenderer({
             ref={isLastItem ? lastItemRef : null}
             style={{
               ...cardBase,
-              padding: 14,
-              marginBottom: 10,
+              ...homeworkCardStyle,
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 8,
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span
-                  style={{
-                    ...cardTitle,
-                    marginBottom: 2,
-                    fontSize: 13,
-                  }}
-                >
+            <div style={topRowStyle(isDesktop)}>
+              <div style={headerInfoColumnStyle}>
+                <div style={headlineRowStyle}>
                   {showStudentName && hw.studentName ? (
-                    <span style={cardTitle}>{hw.studentName}</span>
+                    <span style={studentNameStyle}>{hw.studentName}</span>
                   ) : null}
 
                   {hw.dueDate ? (
-                    <span
-                      style={
-                        showStudentName && hw.studentName
-                          ? { marginLeft: 8 }
-                          : cardTitle
-                      }
-                    >
+                    <span style={dateHeadlineStyle}>
                       Entrega em: {formatDateBr(hw.dueDate)}
                     </span>
                   ) : null}
-                </span>
+                </div>
 
                 {hw.assignmentDate && (
-                  <span
-                    style={{
-                      fontSize: 11,
-                      color: "#6B7280",
-                      fontWeight: 500,
-                    }}
-                  >
+                  <span style={assignmentDateStyle}>
                     Atribuído em: {formatDateBr(hw.assignmentDate)}
                   </span>
                 )}
@@ -520,8 +485,10 @@ export default function HomeworkRenderer({
               <span
                 style={{
                   ...pillStatus,
-                  backgroundColor: isDone ? "#e6f4ea" : "#fff7e6",
-                  color: isDone ? "#137333" : "#92400e",
+                  ...statusPillStyle,
+                  backgroundColor: isDone ? "#EAF8EF" : "#FFF6E8",
+                  color: isDone ? "#137333" : "#9A6700",
+                  border: `1px solid ${isDone ? "#B7E1C1" : "#F8D9A0"}`,
                 }}
               >
                 {isDone ? "Concluído" : "Pendente"}
@@ -529,21 +496,13 @@ export default function HomeworkRenderer({
             </div>
 
             {isAllowed && (
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 8,
-                  marginTop: 4,
-                  marginBottom: 10,
-                }}
-              >
+              <div style={actionsWrapStyle}>
                 {isDone ? (
                   <button
                     type="button"
                     disabled={disabled}
                     onClick={() => handleReturnToPending(hw._id)}
-                    style={buttonStyle}
+                    style={ghostActionButton}
                   >
                     Marcar como pendente
                   </button>
@@ -557,7 +516,7 @@ export default function HomeworkRenderer({
                         hw.submittedAt ? pointsLateHW : pointsMadeHW,
                       )
                     }
-                    style={buttonStyle}
+                    style={ghostActionButton}
                   >
                     Marcar como feito
                   </button>
@@ -567,7 +526,7 @@ export default function HomeworkRenderer({
                   type="button"
                   disabled={disabled}
                   onClick={() => justStatus(hw._id)}
-                  style={buttonStyle}
+                  style={ghostActionButton}
                 >
                   Só mudar status
                 </button>
@@ -576,67 +535,30 @@ export default function HomeworkRenderer({
                   type="button"
                   disabled={disabled}
                   onClick={() => openDeleteModal(hw._id)}
-                  style={{
-                    ...buttonStyle,
-                    border: "1px solid #FCA5A5",
-                    backgroundColor: "#FEF2F2",
-                    color: "#B91C1C",
-                  }}
+                  style={dangerGhostButton}
                 >
                   Excluir
                 </button>
               </div>
             )}
 
-            <div
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontSize: 13,
-                fontWeight: 500,
-                color: "#111827",
-                marginBottom: 10,
-              }}
-            >
+            <div style={contentSectionStyle}>
+              <div style={sectionCaptionStyle}>Enunciado</div>
               <div
-                style={{ color: "#333", lineHeight: "1.4" }}
+                style={sectionHtmlStyle}
                 dangerouslySetInnerHTML={{ __html: hw.description }}
               />
             </div>
 
             {(mode === "all" || mode == "student") && hasAnswer && (
-              <div
-                style={{
-                  padding: 12,
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  background: "#fafafa",
-                  color: "#334155",
-                  marginBottom: 10,
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#64748b",
-                    marginBottom: 6,
-                  }}
-                >
-                  Resposta do aluno
-                </div>
+              <div style={contentSectionStyle}>
+                <div style={sectionCaptionStyle}>Resposta do aluno</div>
 
                 {hw.attachments && (
-                  <>
+                  <div style={attachmentRowStyle}>
                     {!isAllowed && (
                       <button
-                        style={{
-                          marginRight: 8,
-                          color: "#ef4444",
-                          padding: 0,
-                          border: "none",
-                          fontWeight: "bold",
-                          backgroundColor: "transparent",
-                          cursor: "pointer",
-                        }}
+                        style={deleteFileButtonStyle}
                         title="Excluir arquivo"
                         onClick={() => handleDeleteFile(hw._id)}
                       >
@@ -648,14 +570,16 @@ export default function HomeworkRenderer({
                       href={hw.attachments}
                       target="_blank"
                       rel="noopener noreferrer"
+                      style={attachmentLinkStyle}
                     >
                       Baixar Arquivo
                     </a>
-                  </>
+                  </div>
                 )}
 
                 {hw.answers && (
                   <div
+                    style={answerHtmlStyle}
                     dangerouslySetInnerHTML={{
                       __html: hw.answers || "",
                     }}
@@ -665,20 +589,11 @@ export default function HomeworkRenderer({
             )}
 
             {(mode === "all" || mode == "student") && hasCommentAnswer && (
-              <div
-                style={{
-                  padding: 12,
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  marginBottom: 10,
-                }}
-              >
-                <div style={{ fontSize: 12, marginBottom: 6 }}>
-                  Comentário do professor
-                </div>
+              <div style={commentSectionStyle}>
+                <div style={commentCaptionStyle}>Comentário do professor</div>
 
                 <div
-                  style={{ fontStyle: "italic", fontSize: 12 }}
+                  style={commentContentStyle}
                   dangerouslySetInnerHTML={{
                     __html: hw.commentAnswer || "",
                   }}
@@ -688,28 +603,22 @@ export default function HomeworkRenderer({
 
             {(mode === "all" || mode == "student") &&
               !isAllowed &&
-              !hasCommentAnswer &&
               !hw.attachments && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginTop: 8,
-                  }}
-                >
+                <div style={studentActionRowStyle}>
                   <button
                     type="button"
                     onClick={() => openSubmissionModal(hw)}
-                    disabled={!hw.description || hasCommentAnswer}
+                    disabled={hasCommentAnswer}
                     style={{
-                      ...buttonStyle,
-                      cursor:
-                        !hw.description || hasCommentAnswer
-                          ? "not-allowed"
-                          : "pointer",
-                      opacity: !hw.description || hasCommentAnswer ? 0.6 : 1,
+                      ...primaryActionButton,
+                      cursor: hasCommentAnswer ? "not-allowed" : "pointer",
+                      opacity: hasCommentAnswer ? 0.6 : 1,
                     }}
+                    title={
+                      hasCommentAnswer
+                        ? "Não é possível alterar a resposta após o comentário do professor"
+                        : "Responder homework"
+                    }
                   >
                     {hasAnswer ? "Editar resposta" : "Responder"}
                   </button>
@@ -717,24 +626,21 @@ export default function HomeworkRenderer({
               )}
 
             {(mode === "all" || mode == "student") && isAllowed && (
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: 8,
-                  marginTop: 4,
-                  marginBottom: 10,
-                }}
-              >
+              <div style={actionsWrapStyle}>
                 <button
                   type="button"
                   onClick={() => openEditHomeworkModal(hw)}
                   disabled={hasAnswer}
                   style={{
-                    ...buttonStyle,
+                    ...ghostActionButton,
                     cursor: hasAnswer ? "not-allowed" : "pointer",
                     opacity: hasAnswer ? 0.6 : 1,
                   }}
+                  title={
+                    hasAnswer
+                      ? "Não é possível editar a descrição após o aluno responder"
+                      : "Editar homework"
+                  }
                 >
                   Editar homework
                 </button>
@@ -743,7 +649,7 @@ export default function HomeworkRenderer({
                   <button
                     type="button"
                     onClick={() => openCommentModal(hw)}
-                    style={buttonStyle}
+                    style={primaryActionButton}
                   >
                     {hasCommentAnswer
                       ? "Editar comentário"
@@ -754,55 +660,33 @@ export default function HomeworkRenderer({
             )}
 
             {eventId && (
-              <a
-                href={`/my-calendar/event/${eventId}`}
-                style={{
-                  marginTop: 14,
-                  marginLeft: "auto",
-                  display: "block",
-                  maxWidth: "fit-content",
-                  fontWeight: 700,
-                  textAlign: "right",
-                  color: partnerColor(),
-                  textDecoration: "none",
-                  fontSize: 12,
-                  textTransform: "uppercase",
-                }}
-              >
-                {mode === "all" || mode == "student"
-                  ? "Acessar"
-                  : "Acessar Aula"}
-                <i style={{ marginLeft: 8 }} className="fa fa-chevron-right" />
-              </a>
+              <div style={footerLinkRowStyle}>
+                <a
+                  href={`/my-calendar/event/${eventId}`}
+                  style={eventLinkStyle}
+                >
+                  {mode === "all" || mode == "student"
+                    ? "Acessar"
+                    : "Acessar Aula"}
+                  <i
+                    style={{ marginLeft: 8 }}
+                    className="fa fa-chevron-right"
+                  />
+                </a>
+              </div>
             )}
           </div>
         );
       })}
 
       {loadingMore && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: 12,
-            marginBottom: 12,
-          }}
-        >
+        <div style={loadingMoreStyle}>
           <CircularProgress size={24} style={{ color: partnerColor() }} />
         </div>
       )}
 
       {!hasNextPage && homeworks.length > 0 && (
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: 12,
-            color: "#6B7280",
-            marginTop: 12,
-          }}
-        >
-          Todos os homeworks foram carregados.
-        </p>
+        <p style={loadedAllTextStyle}>Todos os homeworks foram carregados.</p>
       )}
 
       {isDeleteModalOpen &&
@@ -811,41 +695,20 @@ export default function HomeworkRenderer({
             <div
               style={{
                 ...modalBoxStyle,
-                maxWidth: 400,
+                maxWidth: 430,
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              <h2
-                style={{
-                  margin: 0,
-                  marginBottom: 12,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  color: "#111827",
-                }}
-              >
-                Confirmar exclusão
-              </h2>
+              <div style={deleteModalHeaderStyle}>
+                <h2 style={deleteModalTitleStyle}>Confirmar exclusão</h2>
+              </div>
 
-              <p
-                style={{
-                  margin: 0,
-                  marginBottom: 20,
-                  fontSize: 14,
-                  color: "#4B5563",
-                }}
-              >
+              <p style={deleteModalTextStyle}>
                 Tem certeza de que deseja excluir este homework? Esta ação não
                 pode ser desfeita.
               </p>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: 8,
-                }}
-              >
+              <div style={modalFooterStyle(isDesktop)}>
                 <button onClick={closeDeleteModal} style={secondaryBtn}>
                   Cancelar
                 </button>
@@ -882,7 +745,7 @@ export default function HomeworkRenderer({
                 </button>
               </div>
 
-              <div style={{ marginBottom: isDesktop ? 20 : 16 }}>
+              <div style={modalSectionStyle}>
                 <label style={sectionLabelStyle(isDesktop)}>
                   {UniversalTexts?.howDoYouWantToRespond ||
                     "Como você quer responder?"}
@@ -893,7 +756,6 @@ export default function HomeworkRenderer({
                     display: "flex",
                     flexDirection: isDesktop ? "row" : "column",
                     gap: 12,
-                    marginBottom: 16,
                   }}
                 >
                   <button
@@ -919,7 +781,7 @@ export default function HomeworkRenderer({
               </div>
 
               {submissionMode === "file" ? (
-                <div style={{ marginBottom: isDesktop ? 20 : 16 }}>
+                <div style={modalSectionStyle}>
                   <label style={inputLabelStyle(isDesktop)}>
                     {UniversalTexts?.chooseFile || "Escolha o arquivo:"}
                   </label>
@@ -933,20 +795,19 @@ export default function HomeworkRenderer({
 
                   {selectedFile && (
                     <div style={selectedFileBoxStyle}>
-                      <span style={{ fontSize: 14, color: "#075985" }}>
+                      <span
+                        style={{
+                          fontSize: 14,
+                          color: "#0F172A",
+                          fontWeight: 500,
+                        }}
+                      >
                         {selectedFile.name}
                       </span>
 
                       <button
                         onClick={() => setSelectedFile(null)}
-                        style={{
-                          marginLeft: "auto",
-                          background: "none",
-                          border: "none",
-                          color: "#ef4444",
-                          cursor: "pointer",
-                          fontSize: "16px",
-                        }}
+                        style={removeSelectedFileButtonStyle}
                       >
                         ×
                       </button>
@@ -954,20 +815,13 @@ export default function HomeworkRenderer({
                   )}
                 </div>
               ) : (
-                <div style={{ marginBottom: 20 }}>
+                <div style={modalSectionStyle}>
                   <label style={inputLabelStyle(isDesktop)}>
                     {UniversalTexts?.respondDirectlyHere ||
                       "Responda diretamente aqui:"}
                   </label>
 
-                  <div
-                    style={{
-                      border: "2px solid #e2e8f0",
-                      borderRadius: 6,
-                      backgroundColor: "#ffffff",
-                      minHeight: "300px",
-                    }}
-                  >
+                  <div style={editorBoxStyle}>
                     <HTMLEditor
                       onChange={handleHomeworkAnswerChange}
                       initialContent={selectedHomeworkContent}
@@ -976,14 +830,7 @@ export default function HomeworkRenderer({
                 </div>
               )}
 
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: isDesktop ? "row" : "column-reverse",
-                  gap: 12,
-                  justifyContent: isDesktop ? "flex-end" : "stretch",
-                }}
-              >
+              <div style={modalFooterStyle(isDesktop)}>
                 <button onClick={closeSubmissionModal} style={secondaryBtn}>
                   {UniversalTexts?.cancel || "Cancelar"}
                 </button>
@@ -1038,28 +885,14 @@ export default function HomeworkRenderer({
                 </button>
               </div>
 
-              <div
-                style={{
-                  border: "2px solid #e2e8f0",
-                  borderRadius: 6,
-                  backgroundColor: "#ffffff",
-                  minHeight: "300px",
-                  marginBottom: 16,
-                }}
-              >
+              <div style={{ ...editorBoxStyle, marginBottom: 18 }}>
                 <HTMLEditor
                   onChange={handleHomeworkAnswerChange}
                   initialContent={selectedHomeworkContent}
                 />
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: 8,
-                }}
-              >
+              <div style={modalFooterStyle(isDesktop)}>
                 <button onClick={closeSubmissionModal} style={secondaryBtn}>
                   Cancelar
                 </button>
@@ -1102,21 +935,13 @@ export default function HomeworkRenderer({
               </div>
 
               {selectedHomeworkAnswer && (
-                <div style={{ marginBottom: 16 }}>
+                <div style={modalSectionStyle}>
                   <label style={inputLabelStyle(isDesktop)}>
                     Resposta do aluno
                   </label>
 
                   <div
-                    style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 6,
-                      backgroundColor: "#f8fafc",
-                      padding: 12,
-                      fontSize: 13,
-                      color: "#334155",
-                      marginBottom: 16,
-                    }}
+                    style={studentAnswerPreviewStyle}
                     dangerouslySetInnerHTML={{
                       __html: selectedHomeworkAnswer || "",
                     }}
@@ -1124,38 +949,16 @@ export default function HomeworkRenderer({
                 </div>
               )}
 
-              <div
-                style={{
-                  borderRadius: 6,
-                  backgroundColor: "#ffffff",
-                  minHeight: "300px",
-                  marginBottom: 16,
-                }}
-              >
+              <div style={{ marginBottom: 18 }}>
                 <textarea
                   value={commentAnswerText}
                   onChange={(e) => setCommentAnswerText(e.target.value)}
                   placeholder="Comente a resposta"
-                  style={{
-                    width: "100%",
-                    minHeight: 250,
-                    resize: "vertical",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 6,
-                    padding: 12,
-                    fontSize: 14,
-                    fontFamily: "inherit",
-                  }}
+                  style={commentTextareaStyle}
                 />
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: 8,
-                }}
-              >
+              <div style={modalFooterStyle(isDesktop)}>
                 <button onClick={closeSubmissionModal} style={secondaryBtn}>
                   Cancelar
                 </button>
@@ -1184,121 +987,424 @@ export default function HomeworkRenderer({
   );
 }
 
-const buttonStyle: React.CSSProperties = {
-  padding: "6px 10px",
-  borderRadius: 6,
-  border: "1px solid #E5E7EB",
-  backgroundColor: "#F9FAFB",
-  fontSize: 12,
+const homeworkCardStyle: React.CSSProperties = {
+  padding: 16,
+  marginBottom: 14,
+  borderRadius: 12,
+  border: "1px solid #E2E8F0",
+  background: "#FFFFFF",
+  boxShadow: "0 6px 18px rgba(15, 23, 42, 0.04)",
+};
+
+const topRowStyle = (isDesktop: boolean): React.CSSProperties => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: isDesktop ? "flex-start" : "flex-start",
+  flexDirection: isDesktop ? "row" : "column",
+  gap: 12,
+  marginBottom: 12,
+});
+
+const headerInfoColumnStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 4,
+  minWidth: 0,
+};
+
+const headlineRowStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 8,
+};
+
+const studentNameStyle: React.CSSProperties = {
+  ...cardTitle,
+  fontSize: 13,
+  color: "#0F172A",
+};
+
+const dateHeadlineStyle: React.CSSProperties = {
+  ...cardTitle,
+  fontSize: 13,
+  color: "#0F172A",
+};
+
+const assignmentDateStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "#65748C",
   fontWeight: 500,
+  fontFamily: "Inter",
+};
+
+const statusPillStyle: React.CSSProperties = {
+  alignSelf: "flex-start",
+  fontWeight: 700,
+  fontSize: 11,
+  letterSpacing: 0.2,
+};
+
+const actionsWrapStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 8,
+  marginBottom: 12,
+};
+
+const studentActionRowStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 8,
+  marginTop: 8,
+  marginBottom: 4,
+};
+
+const contentSectionStyle: React.CSSProperties = {
+  padding: 14,
+  border: "1px solid #E2E8F0",
+  borderRadius: 10,
+  background: "#F8FAFC",
+  color: "#334155",
+  marginBottom: 12,
+};
+
+const commentSectionStyle: React.CSSProperties = {
+  padding: 14,
+  border: "1px solid #E2E8F0",
+  borderRadius: 10,
+  background: "#FFFFFF",
+  marginBottom: 12,
+};
+
+const sectionCaptionStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "#65748C",
+  marginBottom: 8,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: 0.4,
+};
+
+const commentCaptionStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "#65748C",
+  marginBottom: 8,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: 0.4,
+};
+
+const sectionHtmlStyle: React.CSSProperties = {
+  fontSize: 15,
+  fontWeight: 500,
+  color: "#1E293B",
+  lineHeight: 1.55,
+};
+
+const answerHtmlStyle: React.CSSProperties = {
+  fontSize: 14,
+  color: "#1E293B",
+  lineHeight: 1.55,
+};
+
+const commentContentStyle: React.CSSProperties = {
+  fontStyle: "italic",
+  fontSize: 13,
+  color: "#334155",
+  lineHeight: 1.6,
+};
+
+const attachmentRowStyle: React.CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 10,
+  marginBottom: 10,
+};
+
+const deleteFileButtonStyle: React.CSSProperties = {
+  color: "#DC2626",
+  padding: "0",
+  border: "none",
+  fontWeight: 700,
+  backgroundColor: "transparent",
   cursor: "pointer",
+  fontSize: 12,
+};
+
+const attachmentLinkStyle: React.CSSProperties = {
+  color: partnerColor(),
+  fontWeight: 700,
+  textDecoration: "none",
+  fontSize: 12,
+};
+
+const footerLinkRowStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "flex-end",
+  marginTop: 2,
+};
+
+const eventLinkStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  fontWeight: 700,
+  color: partnerColor(),
+  textDecoration: "none",
+  fontSize: 12,
+  textTransform: "uppercase",
+  letterSpacing: 0.3,
+};
+
+const loadingContainerStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "center",
+  padding: 24,
+};
+
+const loadingMoreStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "center",
+  marginTop: 12,
+  marginBottom: 12,
+};
+
+const emptyTextStyle: React.CSSProperties = {
+  fontFamily: "Inter",
+  fontWeight: 500,
+  fontSize: 13,
+  color: "#65748C",
+};
+
+const loadedAllTextStyle: React.CSSProperties = {
+  textAlign: "center",
+  fontSize: 12,
+  color: "#65748C",
+  marginTop: 14,
+  fontWeight: 500,
+};
+
+const buttonBase: React.CSSProperties = {
+  borderRadius: 6,
+  padding: "8px 12px",
+  fontSize: 12,
+  fontWeight: 700,
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+};
+
+const ghostActionButton: React.CSSProperties = {
+  ...buttonBase,
+  border: "1px solid #D9E2EC",
+  backgroundColor: "#FFFFFF",
+  color: "#334155",
+};
+
+const primaryActionButton: React.CSSProperties = {
+  ...buttonBase,
+  border: `1px solid ${partnerColor()}`,
+  backgroundColor: partnerColor(),
+  color: "#FFFFFF",
+};
+
+const dangerGhostButton: React.CSSProperties = {
+  ...buttonBase,
+  border: "1px solid #F5C2C7",
+  backgroundColor: "#FFF5F5",
+  color: "#B42318",
 };
 
 const secondaryBtn: React.CSSProperties = {
-  backgroundColor: "transparent",
-  color: "#666",
-  border: "1px solid #ddd",
-  padding: "6px 12px",
+  backgroundColor: "#FFFFFF",
+  color: "#475467",
+  border: "1px solid #D0D5DD",
+  padding: "9px 14px",
   borderRadius: 6,
-  fontSize: 12,
+  fontSize: 13,
+  fontWeight: 600,
   cursor: "pointer",
 };
 
 const primaryBtn: React.CSSProperties = {
   backgroundColor: partnerColor(),
   color: "#fff",
-  border: "none",
-  padding: "6px 12px",
+  border: "1px solid transparent",
+  padding: "9px 14px",
   borderRadius: 6,
-  fontSize: 12,
+  fontSize: 13,
+  fontWeight: 700,
 };
 
 const dangerBtn: React.CSSProperties = {
-  backgroundColor: "#DC2626",
+  backgroundColor: "#D92D20",
   color: "#FFF",
-  border: "none",
-  padding: "6px 12px",
+  border: "1px solid transparent",
+  padding: "9px 14px",
   borderRadius: 6,
   fontSize: 13,
+  fontWeight: 700,
 };
 
 const closeBtnStyle: React.CSSProperties = {
-  background: "none",
-  border: "none",
-  fontSize: 24,
+  background: "#F8FAFC",
+  border: "1px solid #E2E8F0",
+  width: 36,
+  height: 36,
+  borderRadius: 6,
+  fontSize: 22,
   cursor: "pointer",
-  color: "#6b7280",
+  color: "#64748B",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  lineHeight: 1,
 };
 
 const modalHeaderStyle = (isDesktop: boolean): React.CSSProperties => ({
   display: "flex",
-  flexDirection: isDesktop ? "row" : "column",
+  flexDirection: isDesktop ? "row" : "row",
   justifyContent: "space-between",
-  alignItems: isDesktop ? "center" : "flex-start",
-  marginBottom: isDesktop ? 20 : 16,
-  borderBottom: "1px solid #e2e8f0",
-  paddingBottom: 16,
-  gap: isDesktop ? 0 : 12,
+  alignItems: isDesktop ? "center" : "center",
+  marginBottom: 18,
+  borderBottom: "1px solid #E2E8F0",
+  paddingBottom: 14,
+  gap: 12,
 });
 
 const modalTitleStyle = (isDesktop: boolean): React.CSSProperties => ({
   margin: 0,
-  fontSize: isDesktop ? 16 : 18,
-  fontWeight: 500,
-  color: "#495057",
+  fontSize: isDesktop ? 18 : 18,
+  fontWeight: 700,
+  color: "#0F172A",
+  lineHeight: 1.2,
 });
 
 const sectionLabelStyle = (isDesktop: boolean): React.CSSProperties => ({
   display: "block",
-  marginBottom: 12,
-  fontSize: isDesktop ? 16 : 18,
-  fontWeight: 600,
-  color: "#374151",
+  marginBottom: 10,
+  fontSize: isDesktop ? 14 : 15,
+  fontWeight: 700,
+  color: "#0F172A",
 });
 
 const inputLabelStyle = (isDesktop: boolean): React.CSSProperties => ({
   display: "block",
   marginBottom: 8,
-  fontSize: isDesktop ? 14 : 16,
-  fontWeight: 500,
-  color: "#374151",
+  fontSize: isDesktop ? 13 : 14,
+  fontWeight: 700,
+  color: "#334155",
 });
+
+const modalSectionStyle: React.CSSProperties = {
+  marginBottom: 18,
+};
 
 const toggleButtonStyle = (
   active: boolean,
   isDesktop: boolean,
 ): React.CSSProperties => ({
   flex: 1,
-  padding: isDesktop ? "8px 12px" : "12px 16px",
-  border: `1px solid ${active ? "#adb5bd" : "#dee2e6"}`,
-  borderRadius: 6,
+  padding: isDesktop ? "12px 14px" : "13px 14px",
+  border: `1px solid ${active ? partnerColor() : "#D0D5DD"}`,
+  borderRadius: 10,
   minHeight: isDesktop ? "auto" : "48px",
-  backgroundColor: active ? "#e9ecef" : "#f8f9fa",
-  color: active ? "#495057" : "#6c757d",
+  backgroundColor: active ? `${partnerColor()}15` : "#FFFFFF",
+  color: active ? "#0F172A" : "#475467",
   fontSize: isDesktop ? 13 : 14,
-  fontWeight: 400,
+  fontWeight: active ? 700 : 600,
   cursor: "pointer",
 });
 
 const fileInputStyle = (isDesktop: boolean): React.CSSProperties => ({
   width: "100%",
-  padding: isDesktop ? "12px" : "16px",
-  border: "2px dashed #e2e8f0",
-  borderRadius: 6,
-  backgroundColor: "#f8fafc",
+  padding: isDesktop ? "14px" : "16px",
+  border: "2px dashed #CBD5E1",
+  borderRadius: 10,
+  backgroundColor: "#F8FAFC",
   cursor: "pointer",
-  fontSize: isDesktop ? "14px" : "16px",
-  color: "#64748b",
+  fontSize: isDesktop ? "14px" : "15px",
+  color: "#64748B",
   minHeight: isDesktop ? "auto" : "60px",
 });
 
 const selectedFileBoxStyle: React.CSSProperties = {
   marginTop: 12,
   padding: 12,
-  backgroundColor: "#f0f9ff",
-  border: "1px solid #0ea5e9",
-  borderRadius: 6,
+  backgroundColor: "#F8FAFC",
+  border: "1px solid #DCE7F3",
+  borderRadius: 10,
   display: "flex",
   alignItems: "center",
   gap: 8,
+};
+
+const removeSelectedFileButtonStyle: React.CSSProperties = {
+  marginLeft: "auto",
+  background: "none",
+  border: "none",
+  color: "#DC2626",
+  cursor: "pointer",
+  fontSize: "18px",
+  fontWeight: 700,
+};
+
+const editorBoxStyle: React.CSSProperties = {
+  border: "1px solid #E2E8F0",
+  borderRadius: 10,
+  backgroundColor: "#FFFFFF",
+  minHeight: "300px",
+  overflow: "hidden",
+};
+
+const studentAnswerPreviewStyle: React.CSSProperties = {
+  border: "1px solid #E2E8F0",
+  borderRadius: 10,
+  backgroundColor: "#F8FAFC",
+  padding: 14,
+  fontSize: 13,
+  color: "#334155",
+  lineHeight: 1.55,
+};
+
+const commentTextareaStyle: React.CSSProperties = {
+  width: "100%",
+  minHeight: 250,
+  resize: "vertical",
+  border: "1px solid #D0D5DD",
+  borderRadius: 10,
+  padding: 14,
+  fontSize: 14,
+  fontFamily: "Inter, sans-serif",
+  color: "#0F172A",
+  backgroundColor: "#FFFFFF",
+  outline: "none",
+};
+
+const modalFooterStyle = (isDesktop: boolean): React.CSSProperties => ({
+  display: "flex",
+  flexDirection: isDesktop ? "row" : "column-reverse",
+  justifyContent: isDesktop ? "flex-end" : "stretch",
+  gap: 10,
+});
+
+const deleteModalHeaderStyle: React.CSSProperties = {
+  marginBottom: 10,
+  borderBottom: "1px solid #E2E8F0",
+  paddingBottom: 12,
+};
+
+const deleteModalTitleStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: 18,
+  fontWeight: 700,
+  color: "#0F172A",
+};
+
+const deleteModalTextStyle: React.CSSProperties = {
+  margin: 0,
+  marginBottom: 22,
+  fontSize: 14,
+  color: "#475467",
+  lineHeight: 1.6,
 };

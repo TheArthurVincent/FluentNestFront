@@ -519,7 +519,7 @@ export default function Modules({
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: "14px",
-              borderRadius: "8px",
+              borderRadius: "6px",
               width: isDesktop ? "95%" : "",
             }}
           >
@@ -848,7 +848,7 @@ export default function Modules({
                                                 key={tag}
                                                 style={{
                                                   fontSize: 10,
-                                                  borderRadius: 999,
+                                                  borderRadius: 6,
                                                   padding: "2px 8px",
                                                   background: "#e2e8f0",
                                                   color: "#334155",
@@ -878,7 +878,7 @@ export default function Modules({
                                     backgroundColor: "#ffffff",
                                     height: "fit-content",
                                     padding: "4px 8px",
-                                    borderRadius: 8,
+                                    borderRadius: 6,
                                     border: "1px solid #e2e8ef",
                                     marginLeft: "auto",
                                     zIndex: 5, // garante que fique acima do Link / card

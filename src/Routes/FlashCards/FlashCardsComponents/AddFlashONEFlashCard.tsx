@@ -49,7 +49,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
 
   /* ===================== STYLES ===================== */
   const inputStyle: React.CSSProperties = {
-    borderRadius: "4px",
+    borderRadius: "6px",
     border: "1px solid #e2e8f0",
     backgroundColor: "#f8fafc",
     fontSize: "13px",
@@ -63,7 +63,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
   };
 
   const selectStyle: React.CSSProperties = {
-    borderRadius: "4px",
+    borderRadius: "6px",
     border: "1px solid #e2e8f0",
     backgroundColor: "#f8fafc",
     fontSize: "11px",
@@ -126,7 +126,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
     <div
       style={{
         padding: "1rem",
-        borderRadius: "4px",
+        borderRadius: "6px",
         border: "1px solid #e2e8f0",
         margin: "1rem 0",
         backgroundColor: "#ffffff",
@@ -157,7 +157,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
           background: "#ef4444",
           color: "#fff",
           border: "none",
-          borderRadius: "4px",
+          borderRadius: "6px",
           padding: "4px 8px",
           cursor: "pointer",
           fontSize: "12px",
@@ -254,7 +254,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
             onClick={handleAI}
             disabled={loading}
             style={{
-              borderRadius: "4px",
+              borderRadius: "6px",
               border: "1px solid #e2e8f0",
               backgroundColor: "#fff",
               color: "#0f172a",

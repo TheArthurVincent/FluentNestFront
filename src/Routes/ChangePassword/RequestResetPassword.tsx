@@ -20,7 +20,7 @@ function RequestResetPassword() {
         {
           isArthurVincent,
           isArvin,
-        }
+        },
       );
       notifyAlert(response.data.message, partnerColor());
       setTimeout(() => {
@@ -58,7 +58,7 @@ function RequestResetPassword() {
                 backgroundColor: "#fff",
                 maxWidth: "fit-content",
                 margin: "auto",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
               className="box-shadow-white"
             >
@@ -109,7 +109,7 @@ function RequestResetPassword() {
                   alignItems: "center",
                 }}
               >
-                <Button
+                <button
                   onClick={handleSendPassword}
                   disabled={email == "" ? true : false}
                   style={{
@@ -119,7 +119,7 @@ function RequestResetPassword() {
                   }}
                 >
                   Enviar{" "}
-                </Button>
+                </button>
               </div>
               <NavLink to="/">Voltar ao Login</NavLink>
             </div>

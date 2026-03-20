@@ -1195,7 +1195,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               style={{
                                 backgroundColor: "#e8f4fd",
                                 border: "1px solid #bee5eb",
-                                borderRadius: "4px",
+                                borderRadius: "6px",
                                 padding: "16px",
                                 margin: "16px 0",
                                 display: "grid",
@@ -1274,7 +1274,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               gridArea: `item${index + 1}`,
                               backgroundColor: "#fff",
                               border: "1px solid #e5e7eb",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               padding: "12px",
                               textAlign: "left",
                               transition: "all 0.2s ease",
@@ -1407,7 +1407,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             style={{
                               backgroundColor: "#fff",
                               border: "1px solid #e5e7eb",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               padding: "12px",
                               marginBottom: "20px",
                               boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
@@ -1498,7 +1498,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       <div
                                         style={{
                                           textAlign: "center",
-                                          borderRadius: "4px",
+                                          borderRadius: "6px",
                                           color: report.paidFor
                                             ? "#2e7d32"
                                             : report.paidSoFar &&
@@ -1637,7 +1637,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                         gap: "12px",
                                         backgroundColor: "#fff",
                                         border: "1px solid #e5e7eb",
-                                        borderRadius: "4px",
+                                        borderRadius: "6px",
                                         opacity: 0.7,
                                         cursor: "pointer",
                                         transition: "all 0.2s ease",
@@ -1656,7 +1656,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       <div
                                         style={{
                                           textAlign: "center",
-                                          borderRadius: "4px",
+                                          borderRadius: "6px",
                                           color: "#9ca3af",
                                         }}
                                       >
@@ -1716,7 +1716,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                             fontWeight: "500",
                                             textAlign: "center",
                                             padding: "3px 8px",
-                                            borderRadius: "4px",
+                                            borderRadius: "6px",
                                             backgroundColor: "#f3f4f6",
                                             color: "#6b7280",
                                             minWidth: "60px",
@@ -1746,7 +1746,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                             style={{
                               backgroundColor: "#fff",
                               border: "1px solid #e5e7eb",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                               padding: "12px",
                               marginBottom: "20px",
                               boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
@@ -1837,7 +1837,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       <div
                                         style={{
                                           textAlign: "center",
-                                          borderRadius: "4px",
+                                          borderRadius: "6px",
                                           color: report.paidFor
                                             ? "#2e7d32"
                                             : report.paidSoFar &&
@@ -1976,7 +1976,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                         gap: "12px",
                                         backgroundColor: "#fff",
                                         border: "1px solid #e5e7eb",
-                                        borderRadius: "4px",
+                                        borderRadius: "6px",
                                         opacity: 0.7,
                                         cursor: "pointer",
                                         transition: "all 0.2s ease",
@@ -1991,7 +1991,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                       <div
                                         style={{
                                           textAlign: "center",
-                                          borderRadius: "4px",
+                                          borderRadius: "6px",
                                           color: "#9ca3af",
                                         }}
                                       >
@@ -2051,7 +2051,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                                             fontWeight: "500",
                                             textAlign: "center",
                                             padding: "3px 8px",
-                                            borderRadius: "4px",
+                                            borderRadius: "6px",
                                             backgroundColor: "#f3f4f6",
                                             color: "#6b7280",
                                             minWidth: "60px",
@@ -2092,7 +2092,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -2234,7 +2234,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -2545,7 +2545,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -2764,7 +2764,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         style={{
                           backgroundColor: "#f8f9fa",
                           border: "1px solid #e9ecef",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           padding: "16px",
                           margin: "16px 0",
                           fontSize: "16px",
@@ -2951,7 +2951,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                               alignItems: "center",
                               backgroundColor: "#ffdbdbff",
                               padding: "1rem",
-                              borderRadius: "4px",
+                              borderRadius: "6px",
                             }}
                           >
                             <p>Tem certeza que deseja excluir este item?</p>
@@ -3056,7 +3056,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "4px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -3233,7 +3233,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                   style={{
                     backgroundColor: "#f8f9fa",
                     border: "1px solid #e9ecef",
-                    borderRadius: "4px",
+                    borderRadius: "6px",
                     padding: "16px",
                     margin: "16px 0",
                     fontSize: "16px",

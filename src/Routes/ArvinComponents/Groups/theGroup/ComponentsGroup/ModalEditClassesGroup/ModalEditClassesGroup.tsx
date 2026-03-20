@@ -401,7 +401,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           <button
                             onClick={() => handleSelectTutoring(td)}
                             style={{
-                              borderRadius: 999,
+                              borderRadius: 6,
                               border: "1px solid #D1D5DB",
                               padding: "4px 10px",
                               fontSize: 11,
@@ -414,7 +414,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           <button
                             onClick={() => deleteTutoring(td)}
                             style={{
-                              borderRadius: 999,
+                              borderRadius: 6,
                               border: "1px solid #FECACA",
                               padding: "4px 10px",
                               fontSize: 11,
@@ -453,7 +453,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                         value={weekDay}
                         onChange={(e) => setWeekDay(e.target.value)}
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -476,7 +476,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                         value={timeOfTutoring}
                         onChange={(e) => setTimeOfTutoring(e.target.value)}
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -497,7 +497,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           setDuration(Number(e.target.value) || 0)
                         }
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -517,7 +517,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                         onChange={(e) => setLink(e.target.value)}
                         placeholder="https://meet.google.com/..."
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -543,7 +543,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           backgroundColor: `${partnerColor()}20`,
                           color: "black",
                           border: "none",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           padding: "8px 16px",
                           fontSize: 13,
                           fontWeight: 600,
@@ -558,7 +558,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           backgroundColor: partnerColor(),
                           color: "white",
                           border: "none",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           padding: "8px 16px",
                           fontSize: 13,
                           fontWeight: 600,
@@ -590,7 +590,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                         value={theNewWeekDay}
                         onChange={(e) => setTheNewWeekDay(e.target.value)}
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -615,7 +615,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           setTheNewTimeOfTutoring(e.target.value)
                         }
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -636,7 +636,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           setDuration(Number(e.target.value) || 0)
                         }
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -656,7 +656,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                         onChange={(e) => setTheNewLink(e.target.value)}
                         placeholder="https://meet.google.com/..."
                         style={{
-                          borderRadius: 8,
+                          borderRadius: 6,
                           border: "1px solid #E5E7EB",
                           padding: "6px 8px",
                           fontSize: 13,
@@ -671,7 +671,7 @@ export const ModalEditClassesGroup: FC<ModalEditClassesGroupProps> = ({
                           backgroundColor: "#111827",
                           color: "white",
                           border: "none",
-                          borderRadius: 999,
+                          borderRadius: 6,
                           padding: "8px 16px",
                           fontSize: 13,
                           fontWeight: 600,

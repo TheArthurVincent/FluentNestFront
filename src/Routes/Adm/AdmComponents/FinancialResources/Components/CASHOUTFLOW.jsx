@@ -330,7 +330,7 @@ export function DonutChartSaidasByItem({
             background: "rgba(17,24,39,0.95)",
             color: "#fff",
             padding: "10px 12px",
-            borderRadius: 5,
+            borderRadius: 6,
             fontSize: 12,
             width: 220,
             boxShadow: "0 10px 25px rgba(0,0,0,0.22)",

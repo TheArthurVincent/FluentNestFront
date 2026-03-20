@@ -74,7 +74,7 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
               style={{
                 marginTop: 10,
                 padding: 10,
-                borderRadius: 8,
+                borderRadius: 6,
                 border: "1px solid #e5e7eb",
                 backgroundColor: "#f9fafb",
                 fontSize: 11,
@@ -138,7 +138,7 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
               gap: 6,
               width: "100%",
               padding: "8px 0",
-              borderRadius: 999,
+              borderRadius: 6,
               border: `1px solid ${partnerColor()}`,
               backgroundColor: "transparent",
               color: partnerColor(),

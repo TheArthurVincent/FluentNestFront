@@ -53,7 +53,7 @@ const ReorderModulesButton: React.FC<Props> = ({
     width: "min(92vw, 560px)",
     background: "#fff",
     height: "70vh",
-    borderRadius: 8,
+    borderRadius: 6,
     boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
     overflow: "hidden",
   };

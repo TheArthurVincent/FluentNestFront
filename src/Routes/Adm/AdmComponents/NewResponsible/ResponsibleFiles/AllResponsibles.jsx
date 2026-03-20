@@ -60,7 +60,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           padding: "12px 18px",
           marginBottom: "18px",
           border: `2px solid ${partnerColor()}`,
-          borderRadius: "4px",
+          borderRadius: "6px",
           fontSize: "15px",
           outline: "none",
           transition: "all 0.2s ease",
@@ -85,7 +85,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           maxHeight: "340px",
           overflowY: "auto",
           border: `1px solid ${partnerColor()}40`,
-          borderRadius: "4px",
+          borderRadius: "6px",
           background: "#fafbfc",
           padding: "12px",
         }}
@@ -118,7 +118,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
                   marginLeft: 4,
                   background: `${partnerColor()}10`,
                   padding: "2px 8px",
-                  borderRadius: "4px",
+                  borderRadius: "6px",
                 }}
               >
                 {resp.email}

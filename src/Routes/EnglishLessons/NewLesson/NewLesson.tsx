@@ -71,7 +71,7 @@ export default function CreateClassButton({
           style={{
             backgroundColor: "white",
             padding: "20px",
-            borderRadius: "8px",
+            borderRadius: "6px",
             width: "90%",
             maxWidth: "400px",
             boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
@@ -157,7 +157,7 @@ export default function CreateClassButton({
           backgroundColor: partnerColor(),
           color: "white",
           border: "none",
-          borderRadius: "8px",
+          borderRadius: "6px",
           padding: "8px 14px",
           margin: "8px 0",
           fontSize: "13px",

@@ -138,7 +138,7 @@ export const WeeklyProgress: FC<WeeklyProgressProps> = ({
           onChange={(e) => setCategory(e.target.value)}
           style={{
             fontWeight: 600,
-            borderRadius: 4,
+            borderRadius: 6,
             border: "1px solid #ccc",
             padding: "2px 8px",
             fontSize: 12,
@@ -165,7 +165,7 @@ export const WeeklyProgress: FC<WeeklyProgressProps> = ({
             style={{
               fontFamily: "Inter",
               fontWeight: 500,
-              borderRadius: 4,
+              borderRadius: 6,
               fontStyle: "Medium",
               fontSize: "12px",
               lineHeight: "100%",
@@ -184,7 +184,7 @@ export const WeeklyProgress: FC<WeeklyProgressProps> = ({
                 background: `linear-gradient(to top, ${partnerColor()} ${
                   (values[index] / maxValue) * 100
                 }%, #e0e0e0 ${(values[index] / maxValue) * 100}%)`,
-                borderRadius: 4,
+                borderRadius: 6,
                 display: "flex",
                 alignItems: "flex-end",
                 justifyContent: "center",

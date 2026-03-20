@@ -222,7 +222,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 justifyContent: "center",
                 gap: "1rem",
                 padding: "0.5rem",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <div
@@ -338,7 +338,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
-          borderRadius: "8px",
+          borderRadius: "6px",
           margin: !isDesktop ? "12px" : "0px",
           display: "grid",
           gridAutoColumns: "1fr",
@@ -358,7 +358,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 gap: "1rem",
                 fontSize: "0.8rem",
                 padding: "0.5rem",
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
             >
               <div
@@ -468,7 +468,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           <div
             style={{
               background: "#fff",
-              borderRadius: 8,
+              borderRadius: 6,
               overflow: "hidden",
               border: "1px solid #e2e8f0",
               display: "flex",
@@ -488,7 +488,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 style={{
                   marginTop: 4,
                   width: "100%",
-                  borderRadius: 999,
+                  borderRadius: 6,
                   border: "1px solid transparent",
                   padding: "8px 12px",
                   fontSize: 13,
@@ -525,7 +525,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     background: "#1e293b",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     padding: 12,
                     display: "grid",
                     overflowY: "auto",
@@ -557,7 +557,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                                 border: isSelected
                                   ? `1px solid ${partnerColor()}`
                                   : "1px solid #334155",
-                                borderRadius: 8,
+                                borderRadius: 6,
                                 padding: 8,
 
                                 fontSize: 12,
@@ -582,7 +582,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     background: "#2e293b",
-                    borderRadius: 8,
+                    borderRadius: 6,
                     padding: 12,
                     display: "grid",
                     overflowY: "auto",
@@ -614,7 +614,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                                 border: isSelected
                                   ? `1px solid ${partnerColor()}`
                                   : "1px solid #334155",
-                                borderRadius: 8,
+                                borderRadius: 6,
                                 padding: 8,
                                 fontSize: 12,
                                 color: "#e5e7eb",
@@ -651,7 +651,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       padding: "6px 16px",
                       fontSize: 12,
                       fontWeight: 500,
-                      borderRadius: 999,
+                      borderRadius: 6,
                       border: "1px solid #e5e7eb",
                       backgroundColor: "#ffffff",
                       color: "#0f172a",
@@ -679,7 +679,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       padding: "6px 16px",
                       fontSize: 12,
                       fontWeight: 600,
-                      borderRadius: 999,
+                      borderRadius: 6,
                       border: "1px solid transparent",
                       background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}cc)`,
                       color: "#ffffff",

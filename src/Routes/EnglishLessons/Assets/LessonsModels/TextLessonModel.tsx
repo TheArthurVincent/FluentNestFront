@@ -23,7 +23,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
           <div
             style={{
               marginBottom: "20px",
-              borderRadius: "4px",
+              borderRadius: "6px",
               overflow: "hidden",
               boxShadow:
                 "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
@@ -39,7 +39,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
                 objectFit: "cover",
                 display: "block",
                 border: `2px solid ${partnerColor()}20`,
-                borderRadius: "4px",
+                borderRadius: "6px",
               }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -57,7 +57,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
             marginBottom: "20px",
             padding: "20px",
             background: "rgba(255, 255, 255, 0.7)",
-            borderRadius: "4px",
+            borderRadius: "6px",
             backdropFilter: "blur(10px)",
             border: "1px solid rgba(255, 255, 255, 0.3)",
             textAlign: "justify",
