@@ -509,7 +509,7 @@ export default function ImageLessonModel({
                   color: "#fff",
                   backgroundColor: "#00000095",
                   padding: "6px",
-                  borderRadius: 6,
+                  borderRadius: 4,
                   textAlign: "center",
                   fontSize: 12,
                   textTransform: "uppercase",

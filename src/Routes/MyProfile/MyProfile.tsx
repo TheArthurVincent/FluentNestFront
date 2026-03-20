@@ -119,7 +119,7 @@ export function MyProfile({
     border: "1px solid #e5e7eb",
     background: "#fff",
     color: "#111827",
-    borderRadius: 6,
+    borderRadius: 4,
     fontSize: isDesktop ? 12 : 14,
     cursor: "pointer",
     margin: isDesktop ? "0 4px" : "4px 0",

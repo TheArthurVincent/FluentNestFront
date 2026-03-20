@@ -581,7 +581,7 @@ export function FindTeacher({ headers, id, plan }) {
                 <div
                   style={{
                     padding: "4px 8px",
-                    borderRadius: 6,
+                    borderRadius: 4,
                     fontSize: 10,
                     fontWeight: 500,
                     backgroundColor: "#e3f2fd",

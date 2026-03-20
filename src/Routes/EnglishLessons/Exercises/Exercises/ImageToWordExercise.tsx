@@ -240,7 +240,7 @@ export default function ImageToWordExercise({
         </div>
         <button
           onClick={() => onNext?.()}
-          style={{ marginTop: 10, padding: "8px 16px", borderRadius: 6 }}
+          style={{ marginTop: 10, padding: "8px 16px", borderRadius: 4 }}
         >
           Próximo
         </button>
@@ -528,7 +528,7 @@ export default function ImageToWordExercise({
                         }
                         style={{
                           padding: "8px",
-                          borderRadius: 6,
+                          borderRadius: 4,
                           background: "#F3F4F6",
                           border: "1px solid #D1D5DB",
                           cursor: "pointer",

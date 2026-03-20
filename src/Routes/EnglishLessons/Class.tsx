@@ -93,7 +93,7 @@ export default function EnglishClassCourse2({
     background: "#fff",
     color: "#111827",
     padding: isDesktop ? "6px 10px" : "10px 16px",
-    borderRadius: 6,
+    borderRadius: 4,
     fontSize: isDesktop ? 12 : 14,
     cursor: "pointer",
     margin: isDesktop ? "0 4px" : "4px 0",
@@ -3167,7 +3167,7 @@ export default function EnglishClassCourse2({
                         )}
                       </span>
                     </div>
-                    {/* {theclass?.elements?.length > 0 && !fetchEventData && (
+                    {theclass?.elements?.length > 0 && !fetchEventData && (
                       <div
                         style={{
                           display: "flex",
@@ -3175,7 +3175,7 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        <button
+                        {/* <button
                           onClick={() => setExercise(!exercise)}
                           style={{
                             borderRadius: "6px",
@@ -3192,7 +3192,7 @@ export default function EnglishClassCourse2({
                           }}
                         >
                           {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
-                        </button>
+                        </button> */}
                         {!exercise && (
                           <div
                             className="isMobileDisapear"
@@ -3304,7 +3304,7 @@ export default function EnglishClassCourse2({
                           </div>
                         )}
                       </div>
-                    )} */}
+                    )}
                   </span>
 
                   {!seeBoard && !exercise && theclass?.elements?.length > 0 && (
@@ -3487,7 +3487,7 @@ export default function EnglishClassCourse2({
                                           backdropFilter:
                                             "saturate(1.1) blur(6px)",
                                           borderBottom: `2px solid ${partnerColor()}15`,
-                                          borderRadius: 6,
+                                          borderRadius: 4,
                                         }}
                                       >
                                         <h2

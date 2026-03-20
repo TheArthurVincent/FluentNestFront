@@ -207,7 +207,7 @@ export function EditResponsibleModal({
                   maxHeight: 160,
                   overflowY: "auto",
                   border: "1px solid #eee",
-                  borderRadius: 6,
+                  borderRadius: 4,
                   background: "#fafbfc",
                   padding: "8px 6px",
                   marginTop: 8,

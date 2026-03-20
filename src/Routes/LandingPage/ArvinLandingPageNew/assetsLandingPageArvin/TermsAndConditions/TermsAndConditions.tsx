@@ -44,7 +44,7 @@ export default function TermsAndConditions({
     (terms.sections || []).forEach((sec, i) => {
       parts.push(`section${i + 1}_title:${sec.title}`);
       (sec.items || []).forEach((it, j) =>
-        parts.push(`section${i + 1}_item${j + 1}:${it}`)
+        parts.push(`section${i + 1}_item${j + 1}:${it}`),
       );
     });
     return parts.join("\n");
@@ -92,7 +92,7 @@ export default function TermsAndConditions({
   const s = {
     wrap: {
       border: `1px solid #eee`,
-      borderRadius: 6,
+      borderRadius: 4,
       marginTop: 10,
       padding: 16,
       background: "#fff",
@@ -100,7 +100,7 @@ export default function TermsAndConditions({
     title: { margin: "0 0 8px 0", fontSize: 16 },
     box: {
       border: "1px solid #e5e7eb",
-      borderRadius: 6,
+      borderRadius: 4,
       padding: 10,
       height: 180,
       overflow: "auto" as const,
@@ -121,7 +121,7 @@ export default function TermsAndConditions({
       border: "1px solid #e5e7eb",
       color: "#111827",
       padding: "2px 8px",
-      borderRadius: 6,
+      borderRadius: 4,
       fontSize: 10,
     },
   } as const;
