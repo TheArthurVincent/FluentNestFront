@@ -6,6 +6,7 @@ import {
   cardBase,
   cardTitle,
 } from "../../../Students/TheStudent/types/studentPage.styles";
+import { CircularProgress } from "@mui/material";
 
 export type GroupClassEvent = {
   _id?: string;
@@ -50,7 +51,12 @@ export const GroupHistoryCard: FC<GroupHistoryCardProps> = ({
             color: "#6b7280",
           }}
         >
-          Carregando histórico...
+          <CircularProgress
+            size={20}
+            style={{
+              color: partnerColor(),
+            }}
+          />
         </div>
       ) : (
         <>

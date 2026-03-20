@@ -13,6 +13,7 @@ import {
 } from "../../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameVideoBlog } from "../../../../HomePage/Blog.Styled";
 import { cardBase } from "../types/studentPage.styles";
+import { CircularProgress } from "@mui/material";
 
 type StudentClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
@@ -573,7 +574,12 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               color: "#4B5563",
             }}
           >
-            Carregando histórico...
+            <CircularProgress
+              size={20}
+              style={{
+                color: partnerColor(),
+              }}
+            />{" "}
           </p>
         )}
 

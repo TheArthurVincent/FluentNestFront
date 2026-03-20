@@ -16,6 +16,7 @@ import {
   cardBase,
   pillStatus,
 } from "../../../Students/TheStudent/types/studentPage.styles";
+import { CircularProgress } from "@mui/material";
 
 type GroupClassesHistoryProps = HeadersProps & {
   isDesktop: boolean;
@@ -544,7 +545,12 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               color: "#4B5563",
             }}
           >
-            Carregando histórico...
+            <CircularProgress
+              size={20}
+              style={{
+                color: partnerColor(),
+              }}
+            />{" "}
           </p>
         )}
 
