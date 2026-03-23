@@ -2439,7 +2439,8 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
           {seePermissionsOrNot && (
             <>
               {loadingPermissions ? (
-                <CircularProgress />
+                                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+
               ) : (
                 <div
                   style={{

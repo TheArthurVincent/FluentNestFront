@@ -355,7 +355,7 @@ const SentenceMining = ({
               }}
             >
               {loadingStudents ? (
-                <CircularProgress size={20} style={{ color: partnerColor() }} />
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
               ) : (
                 <select
                   onChange={handleStudentChange}
@@ -538,7 +538,7 @@ const SentenceMining = ({
             {see && (
               <>
                 {loading ? (
-                  <CircularProgress style={{ color: partnerColor() }} />
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
                 ) : (
                   finalWord !== "" && (
                     <>

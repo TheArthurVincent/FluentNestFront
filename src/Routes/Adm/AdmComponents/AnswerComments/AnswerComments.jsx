@@ -75,7 +75,7 @@ export function AllComments({ headers }) {
     <div>
       <HOne>Comentários Pendentes</HOne>
       {loading ? (
-        <CircularProgress style={{ color: partnerColor() }} />
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
       ) : (
         comments.map((comment, index) => (
           <Paper key={index} sx={{ padding: 2, marginBottom: 2 }} elevation={3}>

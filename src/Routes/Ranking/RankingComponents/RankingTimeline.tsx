@@ -159,7 +159,7 @@ export default function RankingTimeline({
       >
         {loading ? (
           <div style={{ textAlign: "center", padding: "2rem" }}>
-            <CircularProgress style={{ color: partnerColor() }} />
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
           </div>
         ) : (
           <table style={{ width: "100%", borderCollapse: "collapse" }}>

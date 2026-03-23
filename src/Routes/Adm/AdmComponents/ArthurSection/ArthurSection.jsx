@@ -213,7 +213,7 @@ export function ArthurSection({ headers }) {
                       gap: 8,
                     }}
                   >
-                    <CircularProgress size={14} />
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
                     Validando
                   </span>
                 ) : (

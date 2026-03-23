@@ -272,7 +272,8 @@ const AddFlashCards = ({
               {isAIMode ? (
                 <div style={{ marginBottom: "1rem" }}>
                   {loadingFlashcardsAI ? (
-                    <CircularProgress />
+                                      <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+
                   ) : (
                     <textarea
                       value={textInput}

@@ -2071,7 +2071,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                   )}
                 </>
               ) : (
-                <CircularProgress style={{ color: primaryColor() }} />
+                <i className="fa fa-spinner fa-spin" aria-hidden="true" />
               )}
             </section>
           </div>
@@ -2583,7 +2583,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
               </div>
             </DialogTitle>
             {loadingFD ? (
-              <CircularProgress style={{ color: primaryColor() }} />
+              <i className="fa fa-spinner fa-spin" aria-hidden="true" />
             ) : (
               <DialogContent style={{ padding: "24px 24px 16px" }}>
                 {selectedFinancialReport && (
