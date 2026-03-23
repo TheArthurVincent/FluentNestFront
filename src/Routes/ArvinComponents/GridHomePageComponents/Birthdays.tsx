@@ -259,7 +259,7 @@ export const Birthdays: FC<BirthdaysProps> = ({
                   />
                   <a
                     href={`/students/${s.id}`}
-                    target="_blank"
+                    
                     rel="noreferrer"
                     style={{
                       display: "flex",

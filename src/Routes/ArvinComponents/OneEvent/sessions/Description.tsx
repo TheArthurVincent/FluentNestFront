@@ -29,6 +29,7 @@ const overlayStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  pointerEvents: "auto", // garante que ele intercepta o clique
   zIndex: 99999,
 };
 
@@ -170,10 +171,20 @@ const Description: FC<DescriptionProps> = ({
 
   const renderModal = () => {
     if (!isModalOpen) return null;
-    if (typeof document === "undefined") return null;
 
+    if (typeof document === "undefined") return null;
+    useEffect(() => {
+      if (isModalOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "";
+      }
+    }, [isModalOpen]);
     return createPortal(
-      <div style={overlayStyle}>
+      <div
+        onClick={(e) => e.stopPropagation()} // 👈 trava qualquer clique
+        style={overlayStyle}
+      >
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div
@@ -226,11 +237,15 @@ const Description: FC<DescriptionProps> = ({
                     borderRadius: 6,
                     border: "1px solid #cbd5e1",
                     backgroundColor:
-                      saving || loadingDescription || description.trim().split(/\s+/).filter(Boolean).length < 5
+                      saving ||
+                      loadingDescription ||
+                      description.trim().split(/\s+/).filter(Boolean).length < 5
                         ? "grey"
                         : "white",
                     cursor:
-                      saving || loadingDescription || description.trim().split(/\s+/).filter(Boolean).length < 5
+                      saving ||
+                      loadingDescription ||
+                      description.trim().split(/\s+/).filter(Boolean).length < 5
                         ? "not-allowed"
                         : "pointer",
                   }}

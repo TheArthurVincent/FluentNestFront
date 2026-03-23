@@ -476,7 +476,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                 >
                   <a
                     href={homeworkAttachment}
-                    target="_blank"
+                    
                     rel="noopener noreferrer"
                     style={{
                       color: partnerColor(),
@@ -613,7 +613,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
                       <div style={{ marginBottom: hasTextAnswer ? 10 : 0 }}>
                         <a
                           href={homeworkAttachment}
-                          target="_blank"
+                          
                           rel="noopener noreferrer"
                           style={{
                             color: partnerColor(),
@@ -936,7 +936,7 @@ const HomeworkClass: FC<HomeworkClassProps> = ({
 
                 <a
                   href={homeworkAttachment}
-                  target="_blank"
+                  
                   rel="noopener noreferrer"
                   style={{
                     color: partnerColor(),

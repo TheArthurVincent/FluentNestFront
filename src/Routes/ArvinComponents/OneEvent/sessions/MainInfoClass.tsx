@@ -1202,7 +1202,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       style={{
                         marginLeft: 10,
                       }}
-                      target="_blank"
+                      
                       href="/students"
                     >
                       Clique aqui para dar mais créditos a este aluno.
@@ -1271,7 +1271,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                               style={{
                                 marginLeft: "10px",
                               }}
-                              target="_blank"
+                              
                               href="/my-calendar"
                             >
                               Acesse o Calendário
@@ -1448,8 +1448,8 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     };
 
     return createPortal(
-      <div style={overlayStyle} onClick={close}>
-        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+      <div style={overlayStyle} onClick={(e) => e.stopPropagation()}>
+        <div style={modalStyle}>
           <div
             style={{
               padding: "16px 16px",
@@ -1697,7 +1697,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               {event.link && event.status == "marcado" && (
                 <a
                   href={event.link}
-                  target="_blank"
+                  
                   rel="noreferrer"
                   style={{
                     display: "flex",
@@ -1725,7 +1725,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               {event.importantLink && (
                 <a
                   href={event.importantLink}
-                  target="_blank"
+                  
                   rel="noreferrer"
                   style={{
                     display: "flex",

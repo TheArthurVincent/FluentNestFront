@@ -345,7 +345,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
             {/* Corpo do modal */}
             <div style={{ padding: 16 }}>
               {selectedNotification?.link ? (
-                <Link target="_blank" to={selectedNotification.link}>
+                <Link  to={selectedNotification.link}>
                   <h2
                     style={{
                       margin: "0 0 8px",

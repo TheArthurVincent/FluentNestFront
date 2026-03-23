@@ -62,7 +62,7 @@ export default function AudioFile({
   const LinkOnly = (
     <a
       href={link || "#"}
-      target="_blank"
+      
       rel="noopener noreferrer"
       style={{ textDecoration: "underline" }}
     >
@@ -125,7 +125,7 @@ export default function AudioFile({
             Se o áudio não tocar no player acima,{" "}
             <a
               href={`https://drive.google.com/file/d/${fileId}/preview`}
-              target="_blank"
+              
               rel="noopener noreferrer"
               style={{ textDecoration: "underline" }}
             >
@@ -135,7 +135,7 @@ export default function AudioFile({
           </div>
           <a
             href={`https://drive.google.com/file/d/${fileId}/preview`}
-            target="_blank"
+            
             rel="noopener noreferrer"
           >
             Abrir arquivo de áudio

@@ -1023,7 +1023,7 @@ const NewRecurringEventCalendar: FC<NewRecurringEventCalendarProps> = ({
                                       {item.day} • {item.time || item.startTime}
                                       {item.link && (
                                         <Link
-                                          target="_blank"
+                                          
                                           to={item.link}
                                           style={{
                                             color: partnerColor(),

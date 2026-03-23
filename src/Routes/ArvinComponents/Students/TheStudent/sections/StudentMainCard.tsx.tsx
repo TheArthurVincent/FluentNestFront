@@ -1072,7 +1072,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               {student.googleDriveLink ? (
                 <a
                   href={student.googleDriveLink}
-                  target="_blank"
+                  
                   rel="noreferrer"
                   style={{
                     color: partnerColor(),

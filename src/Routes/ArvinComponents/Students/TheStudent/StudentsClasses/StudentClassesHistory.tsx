@@ -446,7 +446,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       >
         <a
           href={`/students/${theOfficialId}`}
-          target="_blank"
+          
           rel="noreferrer"
           style={{
             marginTop: 14,

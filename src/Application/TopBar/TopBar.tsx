@@ -640,7 +640,7 @@ export const TopBar: FC = () => {
             }}
           >
             <button onClick={handleClose}>✕</button>
-            <Link target="_blank" to={selectedNotification.link}>
+            <Link  to={selectedNotification.link}>
               <HTwo>{selectedNotification.message}</HTwo>
             </Link>
             <HThree>{formatDateBr(selectedNotification.date)}</HThree>

@@ -568,7 +568,7 @@ export default function HomeworkRenderer({
 
                     <a
                       href={hw.attachments}
-                      target="_blank"
+                      
                       rel="noopener noreferrer"
                       style={attachmentLinkStyle}
                     >

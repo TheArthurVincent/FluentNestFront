@@ -107,7 +107,7 @@ function LandingPage() {
             textDecoration: "none",
           }}
           href="/login"
-          target="_blank"
+          
         >
           Já sou aluno
         </a>

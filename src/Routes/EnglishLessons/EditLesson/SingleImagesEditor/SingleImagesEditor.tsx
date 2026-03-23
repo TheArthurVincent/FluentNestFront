@@ -301,7 +301,7 @@ export default function SingleImagesEditor({
                       borderRadius: 6,
                     }}
                     href={img}
-                    target="_blank"
+                    
                     rel="noopener noreferrer"
                   >
                     Abrir

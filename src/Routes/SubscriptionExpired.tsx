@@ -586,7 +586,7 @@ export function SubscriptionExpired() {
                 {pixUrl && (
                   <div style={styles.pixLink}>
                     Link para pagamento via Pix:{" "}
-                    <a href={pixUrl} target="_blank" rel="noreferrer">
+                    <a href={pixUrl}  rel="noreferrer">
                       {pixUrl}
                     </a>
                   </div>

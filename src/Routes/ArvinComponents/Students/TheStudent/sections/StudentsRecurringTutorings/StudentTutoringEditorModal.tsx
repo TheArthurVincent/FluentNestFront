@@ -592,7 +592,7 @@ export const StudentTutoringEditorModal: FC<Props> = ({
                                       {item.link && (
                                         <a
                                           href={item.link}
-                                          target="_blank"
+                                          
                                           rel="noreferrer"
                                           style={{
                                             display: "inline-block",

@@ -38,7 +38,7 @@ export const contentFaq = [
             Revise{" "}
             <a
               href="/flash-cards"
-              target="_blank"
+              
             >
               flashcards
             </a>{" "}
@@ -75,7 +75,7 @@ export const contentFaq = [
         🔍 Nossa plataforma:{" "}
         <a
           href="/sentence-mining"
-          target="_blank"
+          
         >
           Sentence Mining
         </a>
@@ -83,17 +83,17 @@ export const contentFaq = [
         🌐 Outros sites úteis:
         <ul>
           <li>
-            <a href="https://www.linguee.com/" target="_blank">
+            <a href="https://www.linguee.com/" >
               Linguee
             </a>
           </li>
           <li>
-            <a href="https://youglish.com/" target="_blank">
+            <a href="https://youglish.com/" >
               YouGlish
             </a>
           </li>
           <li>
-            <a href="https://context.reverso.net/traducao/" target="_blank">
+            <a href="https://context.reverso.net/traducao/" >
               Reverso
             </a>
           </li>
@@ -169,7 +169,7 @@ export const contentFaq = [
         Acesse seus flashcards aqui:{" "}
         <a
           href="/flash-cards"
-          target="_blank"
+          
         >
           Flashcards
         </a>
@@ -216,7 +216,7 @@ export const contentFaq = [
         Acesse os cursos gravados através deste link:{" "}
         <a
           href="/teaching-materials"
-          target="_blank"
+          
         >
           Cursos Gravados
         </a>
@@ -303,13 +303,13 @@ export const contentFaq = [
         Sugestões complementares:
         <ul>
           <li>
-            <a href="https://www.bbc.co.uk/learningenglish" target="_blank">
+            <a href="https://www.bbc.co.uk/learningenglish" >
               BBC Learning English
             </a>{" "}
             – vídeos e notícias
           </li>
           <li>
-            <a href="https://www.ted.com/" target="_blank">
+            <a href="https://www.ted.com/" >
               TED
             </a>{" "}
             – palestras com legendas

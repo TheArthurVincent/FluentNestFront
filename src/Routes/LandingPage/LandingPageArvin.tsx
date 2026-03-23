@@ -144,7 +144,7 @@ function LandingPageArvin() {
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com/login"
-          target="_blank"
+          
         >
           Aluno
         </a>
@@ -161,7 +161,7 @@ function LandingPageArvin() {
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com/login"
-          target="_blank"
+          
         >
           Responsável
         </a>
@@ -178,7 +178,7 @@ function LandingPageArvin() {
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com/login"
-          target="_blank"
+          
         >
           Professor
         </a>{" "}
@@ -229,7 +229,7 @@ function LandingPageArvin() {
                 style={{ backgroundColor: "#ed5914" }}
                 href="/lp/arvin"
                 className="cta-button"
-                target="_blank"
+                
               >
                 Inscreva-se com 30 dias grátuitos!
               </a>
@@ -314,7 +314,7 @@ function LandingPageArvin() {
             style={{ backgroundColor: "#ed5914" }}
             href="/lp/arvin"
             className="cta-button"
-            target="_blank"
+            
           >
             Inscreva-se
           </a>

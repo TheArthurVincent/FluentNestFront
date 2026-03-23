@@ -546,7 +546,7 @@ export function EntriesAndExits({
                   <a
                     key={student.id}
                     href={`/students/${student.id}`}
-                    target="_blank"
+                    
                     style={{
                       display: "flex",
                       gap: "8px",

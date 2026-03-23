@@ -930,7 +930,7 @@ function EditModal({
                 >
                   <a
                     href={link}
-                    target="_blank"
+                    
                     rel="noopener noreferrer"
                     style={{
                       textAlign: "center",
@@ -1036,7 +1036,7 @@ function EditModal({
                     />
                     <a
                       href={googleDriveLink}
-                      target="_blank"
+                      
                       rel="noopener noreferrer"
                       style={{
                         color: partnerColor(),
@@ -1080,7 +1080,7 @@ function EditModal({
                         .toLowerCase()
                         .replace(/\s+/g, "-")
                         .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
-                      target="_blank"
+                      
                       style={{
                         color: partnerColor(),
                         textDecoration: "none",

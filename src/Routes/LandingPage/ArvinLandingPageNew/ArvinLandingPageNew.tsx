@@ -197,7 +197,7 @@ function ArvinLandingPageNew() {
             <a
               className="arvin-landing-page-desktop-menu-link"
               href="http://portal.arvinplatform.com/login"
-              target="_blank"
+              
             >
               Entrar
             </a>

@@ -47,23 +47,13 @@ function shuffle<T>(arr: T[]): T[] {
 
 // mesmas cores usadas no outro componente para vincular frente/back
 const pairColors = [
-  "#4dabf7",
-  "#51cf66",
-  "#ffa94d",
-  "#000000",
-  "#845ef7",
-  "#008cffff",
-  "#753951",
-  "#ff00aaff",
-  "#7c542cff",
-  "#926060ff",
-  "#71b0d8ff",
-  "#228be6",
-  "#495057",
-  "#5c7cfa",
-  "#37b24d",
+  "#2563EB", // blue
+  "#16A34A", // green
+  "#3f1588", // violet
+  "#c07d00", // amber
+  "#000000", // black
+  "#0891B2", // cyan
 ];
-
 // ==== ESTILOS NO CLIMA DO CALENDÁRIO / ARVIN ====
 
 const cardContainerStyle: React.CSSProperties = {
@@ -152,10 +142,23 @@ const audioButtonStyle: React.CSSProperties = {
 
 const checkTagStyle: React.CSSProperties = {
   fontSize: 12,
-  color: "#16A34A",
-  fontWeight: 600,
+  fontWeight: 700,
   fontFamily: "Plus Jakarta Sans",
+  color: "inherit",
 };
+function getAudioButtonStyle(
+  isDone: boolean,
+  color: string,
+): React.CSSProperties {
+  if (!isDone) return audioButtonStyle;
+
+  return {
+    ...audioButtonStyle,
+    background: "rgba(255,255,255,0.14)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    color: "#FFFFFF",
+  };
+}
 
 const finishedRowStyle: React.CSSProperties = {
   marginTop: 12,
@@ -473,6 +476,13 @@ export default function VocabularyMatchExercise({
       setSelectedFront(null);
     }
   }
+  function getMatchedCardStyle(color: string): React.CSSProperties {
+    return {
+      background: color,
+      border: `2px solid ${color}`,
+      color: "#FFFFFF",
+    };
+  }
 
   return (
     <div style={cardContainerStyle}>
@@ -493,23 +503,26 @@ export default function VocabularyMatchExercise({
                 key={`front-${frontSlot}`}
                 style={{
                   ...baseCardStyle,
-                  border: `2px solid ${isDone ? color : "#E5E7EB"}`,
-                  ...(isSelected ? selectedStyle : {}),
-                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                  ...(isDone
+                    ? getMatchedCardStyle(color)
+                    : {
+                        border: `2px solid ${isSelected ? "#111827" : "#E5E7EB"}`,
+                        background: "#FFFFFF",
+                        color: "#111827",
+                      }),
+                  ...(isSelected && !isDone ? selectedStyle : {}),
                 }}
                 onClick={() => {
                   handlePickFront(realIndex);
                   readText(s.english, true, frontLang, selectedVoice);
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}1F`
-                    : "#F9FAFB";
+                  if (isDone) return;
+                  e.currentTarget.style.background = "#F9FAFB";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}14`
-                    : "#FFFFFF";
+                  if (isDone) return;
+                  e.currentTarget.style.background = "#FFFFFF";
                 }}
               >
                 <div
@@ -527,7 +540,11 @@ export default function VocabularyMatchExercise({
                       gap: 12,
                     }}
                   >
-                    <i className="fa fa-volume-up" aria-hidden="true" />
+                    <i
+                      className="fa fa-volume-up"
+                      aria-hidden="true"
+                      style={{ color: "inherit" }}
+                    />{" "}
                   </span>
                   {isDone && <span style={checkTagStyle}>✔</span>}
                 </div>
@@ -549,21 +566,24 @@ export default function VocabularyMatchExercise({
                 key={`back-${slot}`}
                 style={{
                   ...baseCardStyle,
-                  border: `2px solid ${isDone ? color : "#E5E7EB"}`,
-                  ...(isDone ? { backgroundColor: `${color}14` } : {}),
+                  ...(isDone
+                    ? getMatchedCardStyle(color)
+                    : {
+                        border: "2px solid #E5E7EB",
+                        background: "#FFFFFF",
+                        color: "#111827",
+                      }),
                 }}
                 onClick={() => {
                   if (!isDone) handlePickBack(slot);
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}1F`
-                    : "#F9FAFB";
+                  if (isDone) return;
+                  e.currentTarget.style.background = "#F9FAFB";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = isDone
-                    ? `${color}14`
-                    : "#FFFFFF";
+                  if (isDone) return;
+                  e.currentTarget.style.background = "#FFFFFF";
                 }}
               >
                 <div
@@ -579,7 +599,7 @@ export default function VocabularyMatchExercise({
                   >
                     {backLang !== "pt" && s?.portuguese && (
                       <button
-                        style={audioButtonStyle}
+                        style={getAudioButtonStyle(isDone, color)}
                         onClick={(e) => {
                           e.stopPropagation();
                           readText(s.portuguese, true, backLang, selectedVoice);
@@ -592,11 +612,12 @@ export default function VocabularyMatchExercise({
                     <div style={{ marginLeft: 4 }}>
                       <div
                         style={{
-                          color: "#4B5563",
+                          color: "inherit",
                           fontStyle: "italic",
                           fontSize: 13,
                           wordBreak: "break-word",
                           fontFamily: "Plus Jakarta Sans",
+                          fontWeight: isDone ? 600 : 400,
                         }}
                       >
                         {s.portuguese}

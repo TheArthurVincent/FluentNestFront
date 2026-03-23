@@ -108,7 +108,7 @@ export const TopBarVertical: FC<ItemSideBarProps> = ({
                   cursor: "pointer",
                   textDecoration: "none",
                 }}
-                target="_blank"
+                
                 rel="noopener noreferrer"
               >
                 <SpanHover>
