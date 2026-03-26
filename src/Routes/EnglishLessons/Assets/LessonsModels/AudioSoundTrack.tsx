@@ -83,7 +83,7 @@ export default function AudioSoundTrack({
       />
       <div
         style={{
-          fontSize: "10px",
+          fontSize: "1em",
           color: "#cccccc",
           lineBreak: "anywhere",
           wordBreak: "normal",

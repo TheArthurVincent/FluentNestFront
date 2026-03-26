@@ -2898,10 +2898,11 @@ export default function EnglishClassCourse2({
     }
   }, [theclass]);
 
+  const [contentZoom, setContentZoom] = useState(102);
+
   return (
     <div
       style={{
-        // margin: "auto",
         padding: mainStudentID ? 0 : "1rem",
         minHeight: theclass?.elements?.length > 0 ? "80vh" : "none",
         fontFamily: "Plus Jakarta Sans",
@@ -3175,24 +3176,6 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        {/* <button
-                          onClick={() => setExercise(!exercise)}
-                          style={{
-                            borderRadius: "6px",
-                            border: "1px solid #e2e8f0",
-                            backgroundColor: partnerColor(),
-                            fontSize: "11px",
-                            fontWeight: "400",
-                            color: "white",
-                            padding: "4px 6px",
-                            height: "28px",
-                            outline: "none",
-                            cursor: "pointer",
-                            display: "block",
-                          }}
-                        >
-                          {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
-                        </button> */}
                         {!exercise && (
                           <div
                             className="isMobileDisapear"
@@ -3402,13 +3385,74 @@ export default function EnglishClassCourse2({
                   <>
                     {theclass?.elements?.length > 0 && (
                       <div
+                        className="lesson-content-zoom"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (!(e.ctrlKey && e.altKey)) return;
+
+                          if (e.key === "+" || e.key === "=") {
+                            e.preventDefault();
+                            setContentZoom((prev) => Math.min(prev + 1, 200));
+                          }
+
+                          if (e.key === "-" || e.key === "_") {
+                            e.preventDefault();
+                            setContentZoom((prev) => Math.max(prev - 1, 70));
+                          }
+                        }}
                         style={{
-                          maxWidth: "780%",
-                          margin: "0 auto",
-                          background: "#ffffff",
-                          position: "relative",
+                          width: "100%",
+                          maxWidth: "100%",
+                          ["--lesson-font-scale" as any]: `${contentZoom / 100}`,
                         }}
                       >
+                        <style>
+                          {`
+      .lesson-content-zoom {
+        line-height: 1.5;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+
+      .lesson-content-zoom * {
+        max-width: 100% !important;
+        box-sizing: border-box;
+      }
+
+      .lesson-content-zoom p,
+      .lesson-content-zoom span,
+      .lesson-content-zoom li,
+      .lesson-content-zoom a,
+      .lesson-content-zoom strong,
+      .lesson-content-zoom em,
+      .lesson-content-zoom td,
+      .lesson-content-zoom th,
+      .lesson-content-zoom div {
+        font-size: calc(1em * var(--lesson-font-scale)) !important;
+        line-height: 1.5 !important;
+        white-space: normal !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+      }
+
+      .lesson-content-zoom img,
+      .lesson-content-zoom video,
+      .lesson-content-zoom iframe {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      .lesson-content-zoom table {
+        width: 100% !important;
+        table-layout: fixed !important;
+      }
+
+      .lesson-content-zoom [style*="width"] {
+        max-width: 100% !important;
+      }
+    `}
+                        </style>
+
                         <div
                           style={{
                             width: "40px",
@@ -3431,7 +3475,7 @@ export default function EnglishClassCourse2({
                             style={{
                               margin: "1rem auto",
                               maxWidth: "800px",
-                              fontSize: "16px",
+                              fontSize: "1.2em",
                               textAlign: "center",
                               color: darkGreyColor(),
                               lineHeight: 1.5,
@@ -3494,7 +3538,7 @@ export default function EnglishClassCourse2({
                                           style={{
                                             margin: 0,
                                             padding: "10px",
-                                            fontSize: "18px",
+                                            fontSize: "1.2em",
                                             fontWeight: 600,
                                             color: partnerColor(),
                                             textAlign: "center",
@@ -3552,6 +3596,7 @@ export default function EnglishClassCourse2({
                                   ) : element.type === "vocabulary" ? (
                                     <VocabularyLesson
                                       exerciseScore={exerciseScore}
+                                      contentZoom={contentZoom}
                                       mainTag={theclass.mainTag}
                                       element={element}
                                       studentId={mainStudentID || studentID}
@@ -3896,10 +3941,29 @@ export default function EnglishClassCourse2({
                                   >
                                     <div
                                       style={{
-                                        width: "100%",
-                                        transform: `scale(${boardZoom / 100})`,
+                                        transform: `scale(${contentZoom / 100})`,
                                         transformOrigin: "top center",
                                         boxSizing: "border-box",
+                                        width: "100%",
+                                        maxWidth: "100%",
+                                        ["--lesson-font-scale" as any]: `${contentZoom / 100}`,
+                                      }}
+                                      onKeyDown={(e) => {
+                                        if (!(e.ctrlKey && e.altKey)) return;
+
+                                        if (e.key === "+" || e.key === "=") {
+                                          e.preventDefault();
+                                          setContentZoom((prev) =>
+                                            Math.min(prev + 1, 200),
+                                          );
+                                        }
+
+                                        if (e.key === "-" || e.key === "_") {
+                                          e.preventDefault();
+                                          setContentZoom((prev) =>
+                                            Math.max(prev - 1, 70),
+                                          );
+                                        }
                                       }}
                                     >
                                       <HTMLEditor

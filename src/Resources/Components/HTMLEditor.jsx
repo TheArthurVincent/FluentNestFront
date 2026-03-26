@@ -83,23 +83,82 @@ function HTMLEditor({ onChange, initialContent }) {
     editor.root.setAttribute("spellcheck", "false");
   }
 
+  const [textSize, setTextSize] = useState(1);
+
+  useEffect(() => {
+    if (editor) {
+      editor.root.style.fontSize = `${textSize}em`;
+    }
+  }, [textSize, editor]);
+
   const memoizedEditor = useMemo(() => {
     return (
-      <div
-        ref={editorRef}
-        style={{
-          marginTop: "1rem",
-          fontSize: "14px",
-          width: "100%",
-          direction: "ltr",
-          textAlign: "left",
-          border: `1px solid ${partnerColor()}55`,
-          borderRadius: "6px",
-          boxSizing: "border-box",
-          overflow: "auto",
-          maxHeight: "85vh",
-        }}
-      />
+      <>
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <button
+            style={{
+              width: "10px",
+              height: "10px",
+              fontSize: "0.4rem",
+            }}
+            onClick={() => setTextSize(1)}
+          >
+            S
+          </button>
+          <button
+            style={{
+              width: "10px",
+              height: "10px",
+              fontSize: "0.6rem",
+            }}
+            onClick={() => setTextSize(1.5)}
+          >
+            M
+          </button>
+          <button
+            style={{
+              width: "10px",
+              height: "10px",
+              fontSize: "0.9rem",
+            }}
+            onClick={() => setTextSize(2)}
+          >
+            G
+          </button>
+          <button
+            onClick={() => setTextSize(2.5)}
+            style={{
+              width: "10px",
+              height: "10px",
+              fontSize: "1.1rem",
+            }}
+          >
+            GG
+          </button>
+        </div>
+        <div
+          ref={editorRef}
+          style={{
+            marginTop: "1rem",
+            fontSize: `${textSize}em`,
+            width: "100%",
+            direction: "ltr",
+            textAlign: "left",
+            border: `1px solid ${partnerColor()}55`,
+            borderRadius: "6px",
+            boxSizing: "border-box",
+            overflow: "auto",
+            maxHeight: "85vh",
+          }}
+        />
+      </>
     );
   }, []);
 

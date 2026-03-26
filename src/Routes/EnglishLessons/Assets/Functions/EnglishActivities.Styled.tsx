@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { alwaysBlack, alwaysWhite } from "../../../../Styles/Styles";
 
 export const ImgLesson = styled.img`
-  width: 100%;
-  max-width: 12rem;
+  width: 20em;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;

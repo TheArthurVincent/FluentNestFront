@@ -119,27 +119,6 @@ export default function AudioFile({
               borderRadius: "6px",
             }}
           />
-          {/* <div
-            style={{ fontSize: "0.9rem", color: "#555", textAlign: "center" }}
-          >
-            Se o áudio não tocar no player acima,{" "}
-            <a
-              href={`https://drive.google.com/file/d/${fileId}/preview`}
-              
-              rel="noopener noreferrer"
-              style={{ textDecoration: "underline" }}
-            >
-              clique aqui para abrir no Google Drive
-            </a>
-            .
-          </div>
-          <a
-            href={`https://drive.google.com/file/d/${fileId}/preview`}
-            
-            rel="noopener noreferrer"
-          >
-            Abrir arquivo de áudio
-          </a> */}
         </>
       )}
 
@@ -149,7 +128,7 @@ export default function AudioFile({
           style={{
             padding: "5px",
             lineHeight: "1.6",
-            fontSize: "1.1rem",
+            fontSize: "1.1em",
             marginBottom: "1rem",
             width: "100%",
           }}
@@ -161,7 +140,7 @@ export default function AudioFile({
               padding: "12px",
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              gap: "0.5em",
             }}
           >
             <span>

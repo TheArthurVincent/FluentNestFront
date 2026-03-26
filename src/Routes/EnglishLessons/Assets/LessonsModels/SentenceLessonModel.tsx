@@ -214,7 +214,7 @@ export default function SentenceLessonModel({
     background: active ? partnerColor() : "#FFFFFF",
     color: active ? "#fff" : "#111827",
     cursor: "pointer",
-    fontSize: 12,
+    fontSize: "1em",
     fontWeight: 700,
   });
 
@@ -248,7 +248,7 @@ export default function SentenceLessonModel({
               fontWeight: "700",
               padding: "6px 10px",
               borderRadius: 6,
-              fontSize: 12,
+              fontSize: "1em",
               cursor: loading ? "not-allowed" : "pointer",
               transition: "all .2s",
             }}
@@ -267,7 +267,7 @@ export default function SentenceLessonModel({
             fontWeight: "700",
             padding: "6px 10px",
             borderRadius: 6,
-            fontSize: 12,
+            fontSize: "1em",
             cursor: "pointer",
             transition: "all .2s",
           }}
@@ -335,7 +335,7 @@ export default function SentenceLessonModel({
                     style={{
                       fontWeight: 500,
                       color: "#222",
-                      fontSize: "18px",
+                      fontSize: "1.125em",
                       marginBottom: 2,
                       wordBreak: "break-word",
                     }}
@@ -346,7 +346,7 @@ export default function SentenceLessonModel({
                     style={{
                       color: "#6c757d",
                       fontStyle: "italic",
-                      fontSize: "14px",
+                      fontSize: "0.875em",
                       wordBreak: "break-word",
                     }}
                   >
@@ -369,7 +369,7 @@ export default function SentenceLessonModel({
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "15px",
+                        fontSize: "1em",
                         transition: "all 0.2s",
                         opacity: 0.7,
                       }}
@@ -437,7 +437,7 @@ export default function SentenceLessonModel({
                 }}
               >
                 <div
-                  style={{ fontWeight: 800, fontSize: 14, color: "#111827" }}
+                  style={{ fontWeight: 800, fontSize: "1em", color: "#111827" }}
                 >
                   <HelpInfo
                     title="Como funciona o ditado"
@@ -508,7 +508,7 @@ Conseguir escrever a frase exatamente como foi dita, com todas as palavras corre
                       border: "none",
                       background: "transparent",
                       cursor: "pointer",
-                      fontSize: 18,
+                      fontSize: "1.125em",
                       lineHeight: 1,
                       marginLeft: 4,
                     }}

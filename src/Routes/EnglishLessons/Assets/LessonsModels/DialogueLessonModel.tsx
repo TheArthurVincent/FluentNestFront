@@ -117,7 +117,7 @@ export default function DialogueLessonModel({
       >
         <span
           style={{
-            fontSize: 14,
+            fontSize: "1em",
             color: "#475569",
           }}
         >
@@ -138,7 +138,7 @@ export default function DialogueLessonModel({
             backgroundColor: "#ffffff",
             marginBottom: "12px",
             color: partnerColor(),
-            fontSize: "18px",
+            fontSize: "1em",
             cursor: "pointer",
             outline: "none",
           }}
@@ -176,7 +176,7 @@ export default function DialogueLessonModel({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "28px",
+                fontSize: "1.75em",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
               }}
             >
@@ -227,7 +227,7 @@ export default function DialogueLessonModel({
                           justifyContent: "center",
                           color: "white",
                           fontWeight: "bold",
-                          fontSize: "18px",
+                          fontSize: "1.125em",
                           marginRight: "12px",
                           flexShrink: 0,
                         }}
@@ -263,7 +263,7 @@ export default function DialogueLessonModel({
                             ? "0 0px 12px rgba(0,0,0,0.1)"
                             : `0 0px 12px ${partnerColor()}40`,
                           border: isLeft ? "1px solid #e5e7eb" : "none",
-                          fontSize: "18px",
+                          fontSize: "1.125em",
                           lineHeight: "1.5",
                           transition: "all 0.2s ease",
                         }}
@@ -294,7 +294,7 @@ export default function DialogueLessonModel({
                           justifyContent: "center",
                           color: "white",
                           fontWeight: "bold",
-                          fontSize: "18px",
+                          fontSize: "1.125em",
                           marginLeft: "12px",
                           flexShrink: 0,
                         }}
@@ -317,7 +317,7 @@ export default function DialogueLessonModel({
             backgroundColor: "#f1f5f9",
             borderRadius: "6px",
             border: "1px solid #e2e8f0",
-            fontSize: "18px",
+            fontSize: "1.125em",
             color: "#64748b",
             fontStyle: "italic",
             textAlign: "center",

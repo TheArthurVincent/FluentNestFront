@@ -44,7 +44,7 @@ export default function ExerciseLessonModel({
               >
                 <div
                   style={{
-                    fontSize: "16px",
+                    fontSize: "1em",
                     fontWeight: "500",
                     color: "#1a202c",
                     lineHeight: "1.5",

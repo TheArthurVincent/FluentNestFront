@@ -16,6 +16,7 @@ interface VocabularyLessonProps {
   element: any;
   studentId?: string;
   mainTag: string;
+  contentZoom: number;
   selectedVoice: any;
   exerciseScore: (points: number, description: string, id?: string) => void;
   studentsIds?: string[];
@@ -27,6 +28,7 @@ export default function VocabularyLessonModel({
   headers,
   element,
   mainTag,
+  contentZoom,
   studentId,
   exerciseScore,
   selectedVoice,
@@ -248,7 +250,7 @@ export default function VocabularyLessonModel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+          gridTemplateColumns: `repeat(auto-fit, minmax(${contentZoom / 4}em, 1fr))`,
           gap: "10px",
         }}
       >
@@ -288,7 +290,7 @@ export default function VocabularyLessonModel({
                         padding: 0,
                         border: "none",
                         cursor: "pointer",
-                        fontSize: "13px",
+                        fontSize: ".8em",
                         background: "none",
                         transition: "all 0.2s",
                       }}
@@ -311,7 +313,7 @@ export default function VocabularyLessonModel({
                       style={{
                         fontWeight: 500,
                         color: "#222",
-                        fontSize: "14px",
+                        fontSize: ".8em",
                         marginBottom: 2,
                         wordBreak: "break-word",
                       }}
@@ -322,7 +324,7 @@ export default function VocabularyLessonModel({
                       style={{
                         color: "#6c757d",
                         fontStyle: "italic",
-                        fontSize: "13px",
+                        fontSize: ".8em",
                         wordBreak: "break-word",
                       }}
                     >
@@ -351,7 +353,7 @@ export default function VocabularyLessonModel({
                           alignItems: "center",
                           justifyContent: "center",
                           fontWeight: "bold",
-                          fontSize: "15px",
+                          fontSize: ".8em",
                           cursor: loading ? "not-allowed" : "pointer",
                           transition: "all 0.2s",
                           opacity: 0.7,

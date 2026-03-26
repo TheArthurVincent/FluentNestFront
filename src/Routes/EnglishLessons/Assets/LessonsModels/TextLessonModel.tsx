@@ -51,7 +51,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
         {/* Text content */}
         <div
           style={{
-            fontSize: "16px",
+            fontSize: "1em",
             lineHeight: "1.8",
             color: "#2c3e50",
             marginBottom: "20px",

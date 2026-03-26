@@ -92,7 +92,7 @@ export default function MultipleTextsLessonModel({
           <div
             style={{
               fontWeight: 800,
-              fontSize: 20,
+              fontSize: "1.25em",
               marginBottom: 16,
               color: "#222",
             }}
@@ -132,7 +132,7 @@ export default function MultipleTextsLessonModel({
                   <div
                     style={{
                       fontWeight: 700,
-                      fontSize: 16,
+                      fontSize: "1em",
                       color: "#222",
                     }}
                   >
@@ -228,7 +228,7 @@ export default function MultipleTextsLessonModel({
                   <div
                     style={{
                       marginTop: 12,
-                      fontSize: 14,
+                      fontSize: "1em",
                       fontWeight: 700,
                       color: isCorrect ? "#1e7a35" : "#b3261e",
                     }}

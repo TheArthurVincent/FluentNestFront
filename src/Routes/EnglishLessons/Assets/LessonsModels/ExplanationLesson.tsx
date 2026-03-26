@@ -66,7 +66,7 @@ export default function ExplanationLesson({
                     zIndex: 1,
                     fontWeight: "600",
                     marginBottom: "12px",
-                    fontSize: 20,
+                    fontSize: "2em",
                     letterSpacing: "-0.03em",
                     lineHeight: "1.2",
                   }}
@@ -78,7 +78,7 @@ export default function ExplanationLesson({
                     style={{
                       marginTop: "5px",
                       width: "80px",
-                      height: "1px",
+                      height: "2px",
                       background: `linear-gradient(90deg, ${partnerColor()} 0%, ${partnerColor()}60 100%)`,
                       borderRadius: "6px",
                     }}
@@ -132,6 +132,7 @@ export default function ExplanationLesson({
                           style={{
                             backgroundColor: "#ffffff",
                             borderRadius: "6px",
+                            fontSize: "1em",
                             border: "1px solid #f1f5f9",
                             borderLeft: `5px solid ${partnerColor()}`,
                             transition:
@@ -150,7 +151,6 @@ export default function ExplanationLesson({
                             {/* Texto da explicação */}
                             <div
                               style={{
-                                // fontSize: "17px",
                                 fontWeight: "400",
                                 lineHeight: "1.7",
                                 flex: 1,
@@ -160,12 +160,12 @@ export default function ExplanationLesson({
                             </div>
                           </div>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 </div>
               </div>
-            )
+            ),
           )}
       </div>
     </div>
