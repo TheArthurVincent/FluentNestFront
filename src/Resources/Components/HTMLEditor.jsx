@@ -83,7 +83,7 @@ function HTMLEditor({ onChange, initialContent }) {
     editor.root.setAttribute("spellcheck", "false");
   }
 
-  const [textSize, setTextSize] = useState(1);
+  const [textSize, setTextSize] = useState(1.2);
 
   useEffect(() => {
     if (editor) {
@@ -108,7 +108,7 @@ function HTMLEditor({ onChange, initialContent }) {
               height: "10px",
               fontSize: "0.4rem",
             }}
-            onClick={() => setTextSize(1)}
+            onClick={() => setTextSize(1.2)}
           >
             S
           </button>
@@ -118,7 +118,7 @@ function HTMLEditor({ onChange, initialContent }) {
               height: "10px",
               fontSize: "0.6rem",
             }}
-            onClick={() => setTextSize(1.5)}
+            onClick={() => setTextSize(1.7)}
           >
             M
           </button>
@@ -128,12 +128,12 @@ function HTMLEditor({ onChange, initialContent }) {
               height: "10px",
               fontSize: "0.9rem",
             }}
-            onClick={() => setTextSize(2)}
+            onClick={() => setTextSize(2.2)}
           >
             G
           </button>
           <button
-            onClick={() => setTextSize(2.5)}
+            onClick={() => setTextSize(2.7)}
             style={{
               width: "10px",
               height: "10px",
