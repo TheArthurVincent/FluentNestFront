@@ -46,7 +46,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
   const updateNumberOfNotifications = async (userId: any) => {
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/numberofnotifications/${userId}`
+        `${backDomain}/api/v1/numberofnotifications/${userId}`,
       );
 
       const notifications = response.data.notifications;
@@ -345,18 +345,21 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
             {/* Corpo do modal */}
             <div style={{ padding: 16 }}>
               {selectedNotification?.link ? (
-                <Link  to={selectedNotification.link}>
-                  <h2
-                    style={{
-                      margin: "0 0 8px",
-                      fontSize: 16,
-                      color: UI.text,
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {selectedNotification.message}
-                  </h2>
-                </Link>
+                <div
+                  style={{
+                    margin: "0 0 8px",
+                    fontSize: 16,
+                    color: UI.text,
+                    cursor: "pointer",
+                    lineHeight: 1.3,
+                  }}
+                  onClick={() => {
+                    window.location.href = selectedNotification.link;
+                    handleClose();
+                  }}
+                >
+                  {selectedNotification.message}
+                </div>
               ) : (
                 <h2
                   style={{
