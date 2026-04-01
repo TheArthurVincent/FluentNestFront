@@ -51,6 +51,7 @@ import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
 import FinancialResources from "./Adm/AdmComponents/FinancialResources/FinancialResources";
 import ResponsibleMainFile from "./Adm/AdmComponents/NewResponsible/ResponsibleMainFile";
 import CourseStructure from "./ArvinComponents/ArvinExplanation/CourseStructure";
+import PartnerTutors from "./Adm/AdmComponents/PartnerTutors/PartnerTutors";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -346,6 +347,18 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         />
       ),
     },
+    // {
+    //   levelcard: true,
+    //   title: "Partner Tutors",
+    //   showLeftBar: true,
+    //   component: (
+    //     <PartnerTutors
+    //       headers={headers}
+    //       isDesktop={isDesktop}
+    //       id={id}
+    //     />
+    //   ),
+    // },
     {
       levelcard: true,
       title: "Responsibles",
