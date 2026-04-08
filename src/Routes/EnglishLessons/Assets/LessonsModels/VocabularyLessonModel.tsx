@@ -5,6 +5,7 @@ import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
   backDomain,
   onLoggOut,
+  truncateString,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
@@ -123,7 +124,7 @@ export default function VocabularyLessonModel({
       }
 
       notifyAlert(
-        messages.join(" | ") || "Flashcards adicionados.",
+        truncateString(messages.join(" | ") || "Flashcards adicionados.", 25),
         partnerColor(),
       );
       setClickedButtons((prev) => new Set(prev).add(index));
@@ -186,7 +187,7 @@ export default function VocabularyLessonModel({
       }
 
       notifyAlert(
-        messages.join(" | ") || "Flashcards adicionados.",
+        truncateString(messages.join(" | ") || "Flashcards adicionados.", 25),
         partnerColor(),
       );
       setClickedButtons(new Set(sentences.map((_, idx) => idx)));

@@ -5,6 +5,7 @@ import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
   backDomain,
   onLoggOut,
+  truncateString,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
@@ -122,7 +123,10 @@ export default function SentenceLessonModel({
         if (showThis) messages.push(showThis);
       }
 
-      notifyAlert(messages.join(" | ") || "Flashcards adicionados.", "green");
+      notifyAlert(
+        truncateString(messages.join(" | ") || "Flashcards adicionados.", 25),
+        partnerColor(),
+      );
       setClickedButtons((prev) => new Set(prev).add(index));
     } catch (error) {
       alert("Erro ao enviar cards");
@@ -183,7 +187,10 @@ export default function SentenceLessonModel({
         if (showThis) messages.push(showThis);
       }
 
-      notifyAlert(messages.join(" | ") || "Flashcards adicionados.", "green");
+      notifyAlert(
+        truncateString(messages.join(" | ") || "Flashcards adicionados.", 25),
+        partnerColor(),
+      );
       setClickedButtons(new Set(sentences.map((_: any, idx: number) => idx)));
       setDone(true);
     } catch (error) {

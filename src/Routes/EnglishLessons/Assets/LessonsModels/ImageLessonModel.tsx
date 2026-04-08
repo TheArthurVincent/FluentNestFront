@@ -6,6 +6,7 @@ import axios from "axios";
 import {
   backDomain,
   onLoggOut,
+  truncateString,
 } from "../../../../Resources/UniversalComponents";
 import { Tooltip } from "@mui/material";
 import ImageToWordExercise, {
@@ -14,6 +15,7 @@ import ImageToWordExercise, {
 import WordToImageExercise, {
   defaultLabels as wordToImageDefaultLabels,
 } from "../../Exercises/Exercises/WordToImageExercise";
+import { partnerColor } from "../../../../Styles/Styles";
 
 type Langs = { language1: string; language2: string };
 
@@ -159,7 +161,10 @@ export default function ImageLessonModel({
         if (showThis) messages.push(showThis);
       }
 
-      notifyAlert(messages.join(" | ") || "Enviado.", "green");
+      notifyAlert(
+        truncateString(messages.join(" | ") || "Enviado.", 25),
+        partnerColor(),
+      );
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
       onLoggOut();
@@ -231,7 +236,7 @@ export default function ImageLessonModel({
         if (showThis) messages.push(showThis);
       }
 
-      notifyAlert(messages.join(" | ") || "Enviado.", "green");
+      notifyAlert(messages.join(" | ") || "Enviado.", partnerColor());
       setClickedButtons(new Set(images.map((_, idx) => idx)));
       setDone(true);
     } catch (error) {

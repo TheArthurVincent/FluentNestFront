@@ -1,6 +1,9 @@
 import React from "react";
 import { partnerColor } from "../../../../Styles/Styles";
-import { backDomain } from "../../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
@@ -38,9 +41,9 @@ export default function SentenceLessonModelSlide({
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${studentId}`,
         { newCards },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
-      notifyAlert("Card adicionado", "green");
+      notifyAlert(truncateString("Card adicionado", 25), partnerColor());
     } catch (error) {
       alert("Erro ao enviar cards");
     }

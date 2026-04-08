@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { backDomain } from "../../Resources/UniversalComponents";
+import {
+  backDomain,
+  truncateString,
+} from "../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
@@ -107,12 +110,15 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${myId}`,
         { newCards },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       notifyAlert(
-        "Card adicionado: " + response.data.addedNewFlashcards,
-        "green"
+        truncateString(
+          "Card adicionado: " + response.data.addedNewFlashcards,
+          25,
+        ),
+        partnerColor(),
       );
       fetchObjectUniv();
       onChange(!change);

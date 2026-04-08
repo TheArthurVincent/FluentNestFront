@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  CircularProgress,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Tooltip,
-} from "@mui/material";
+import { FormControlLabel, Radio, RadioGroup, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain } from "../../Resources/UniversalComponents";
 import {
@@ -276,7 +270,7 @@ const SentenceMining = ({
       );
       notifyAlert(
         "Card adicionado: " + response.data.addedNewFlashcards,
-        "green",
+        partnerColor(),
       );
       onChange(!change);
 
@@ -355,7 +349,7 @@ const SentenceMining = ({
               }}
             >
               {loadingStudents ? (
-                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                <i className="fa fa-spinner fa-spin" aria-hidden="true" />
               ) : (
                 <select
                   onChange={handleStudentChange}

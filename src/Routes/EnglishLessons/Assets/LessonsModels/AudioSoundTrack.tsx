@@ -3,6 +3,7 @@ import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import {
   backDomain,
   onLoggOut,
+  truncateString,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { notifyAlert } from "../Functions/FunctionLessons";
@@ -64,7 +65,7 @@ export default function AudioSoundTrack({
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyAlert(showThis, "green");
+      notifyAlert(truncateString(showThis, 25), "green");
     } catch (error) {
       notifyAlert("Erro ao enviar cards", "red");
       onLoggOut();

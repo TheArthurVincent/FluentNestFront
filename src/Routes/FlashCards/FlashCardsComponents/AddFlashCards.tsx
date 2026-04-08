@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  onLoggOut,
+  truncateString,
+} from "../../../Resources/UniversalComponents";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
-import { CircularProgress, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
@@ -103,7 +107,7 @@ const AddFlashCards = ({
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/ai-flashcards-from-text/${myId}`,
-        { textInput, numberOfCards }
+        { textInput, numberOfCards },
       );
 
       // Processar os cards retornados pela IA
@@ -127,7 +131,7 @@ const AddFlashCards = ({
         setChange && setChange(!change);
         notifyAlert(
           `${aiCards.length} flashcards gerados com sucesso!`,
-          "green"
+          "green",
         );
       }
 
@@ -177,7 +181,7 @@ const AddFlashCards = ({
   const addNewCards = async () => {
     // Filtra cards que tenham frente e verso preenchidos
     const filteredCards = cards.filter(
-      (card) => card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+      (card) => card.frontCard.trim() !== "" && card.backCard.trim() !== "",
     );
     const newCards = filteredCards.map((card) => ({
       backComments: card.backComments,
@@ -194,7 +198,7 @@ const AddFlashCards = ({
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         { newCards },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
 
       const showThis =
@@ -205,7 +209,7 @@ const AddFlashCards = ({
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyAlert(showThis, "green");
+      notifyAlert(truncateString(showThis, 25), partnerColor());
       setCards([]);
     } catch (error) {
       notifyAlert(UniversalTexts?.errorSendingCards || "Erro ao enviar cards");
@@ -272,8 +276,7 @@ const AddFlashCards = ({
               {isAIMode ? (
                 <div style={{ marginBottom: "1rem" }}>
                   {loadingFlashcardsAI ? (
-                                      <i className="fa fa-spinner fa-spin" aria-hidden="true" />
-
+                    <i className="fa fa-spinner fa-spin" aria-hidden="true" />
                   ) : (
                     <textarea
                       value={textInput}
@@ -440,7 +443,7 @@ const AddFlashCards = ({
           {(() => {
             const filteredCards = cards.filter(
               (card) =>
-                card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+                card.frontCard.trim() !== "" && card.backCard.trim() !== "",
             );
             if (filteredCards.length === 0) {
               return (
