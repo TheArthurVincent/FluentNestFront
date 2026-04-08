@@ -61,9 +61,6 @@ export default function HomeworkRenderer({
   const actualHeaders = headers || {};
   const effectiveId = studentId || loggedId || "";
 
-  const pointsMadeHW = listOfCriteria[0].score[0].score;
-  const pointsLateHW = listOfCriteria[0].score[1].score;
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -301,7 +298,6 @@ export default function HomeworkRenderer({
 
   const handleReturnToPending = async (tutoringId: string) => {
     if (!effectiveId) return;
-
     setDisabled?.(true);
 
     try {
@@ -510,12 +506,7 @@ export default function HomeworkRenderer({
                   <button
                     type="button"
                     disabled={disabled}
-                    onClick={() =>
-                      updateRealizedClass(
-                        hw._id,
-                        hw.submittedAt ? pointsLateHW : pointsMadeHW,
-                      )
-                    }
+                    onClick={() => updateRealizedClass(hw._id, 750)}
                     style={ghostActionButton}
                   >
                     Marcar como feito
@@ -568,7 +559,6 @@ export default function HomeworkRenderer({
 
                     <a
                       href={hw.attachments}
-                      
                       rel="noopener noreferrer"
                       style={attachmentLinkStyle}
                     >

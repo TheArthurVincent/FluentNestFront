@@ -19,8 +19,8 @@ export function PendingHomeworkAssignments({ headers }) {
   var actualHeaders = headers || {};
 
   // Pontuações do ranking
-  var pointsMadeHW = listOfCriteria[0].score[0].score;
-  var pointsLateHW = listOfCriteria[0].score[1].score;
+  var pointsMadeHW = 750;
+  var pointsLateHW = 750;
   var fetchPendingHomework = async () => {
     var getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     var { id, permissions } = getLoggedUser;
@@ -31,7 +31,7 @@ export function PendingHomeworkAssignments({ headers }) {
         `${backDomain}/api/v1/pendinghomework/${id}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       setPendingHomeworkList(response.data.tutoringHomeworkList || []);
     } catch (error) {
@@ -53,7 +53,7 @@ export function PendingHomeworkAssignments({ headers }) {
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
       fetchPendingHomework();
       notifyAlert("Homework atualizado com sucesso!", partnerColor());
@@ -75,7 +75,7 @@ export function PendingHomeworkAssignments({ headers }) {
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
       fetchPendingHomework();
 
@@ -231,7 +231,7 @@ export function PendingHomeworkAssignments({ headers }) {
                       updateRealizedClass(
                         homework._id,
                         homework.studentID,
-                        pointsMadeHW
+                        pointsMadeHW,
                       )
                     }
                     style={{
@@ -255,7 +255,7 @@ export function PendingHomeworkAssignments({ headers }) {
                       updateRealizedClass(
                         homework._id,
                         homework.studentID,
-                        pointsLateHW
+                        pointsLateHW,
                       )
                     }
                     style={{

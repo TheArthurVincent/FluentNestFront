@@ -4,6 +4,7 @@ import { listOfCriteria } from "../../../Ranking/RankingComponents/ListOfCriteri
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function PendingHomeworkAssignments({ id, headers }) {
   const [pendingHomeworkList, setPendingHomeworkList] = useState([]);
@@ -14,8 +15,8 @@ export function PendingHomeworkAssignments({ id, headers }) {
   const actualHeaders = headers || {};
 
   // Pontuações do ranking
-  const pointsMadeHW = listOfCriteria[0].score[0].score;
-  const pointsLateHW = listOfCriteria[0].score[1].score;
+  const pointsMadeHW = 750;
+  const pointsLateHW = 750;
 
   const fetchPendingHomework = async () => {
     setLoading(true);
@@ -24,7 +25,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
         `${backDomain}/api/v1/pendinghomework/${id}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       setPendingHomeworkList(response.data.tutoringHomeworkList || []);
     } catch (error) {
@@ -46,9 +47,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
-      notifyAlert("Homework atualizado com sucesso!", "green");
+      notifyAlert("Homework atualizado com sucesso!", partnerColor());
     } catch (error) {
       notifyAlert("Erro ao atualizar homework");
       console.error(error);
@@ -67,9 +68,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
         },
         {
           headers: actualHeaders,
-        }
+        },
       );
-      notifyAlert("Status atualizado com sucesso!", "green");
+      notifyAlert("Status atualizado com sucesso!", partnerColor());
     } catch (error) {
       notifyAlert("Erro ao atualizar status");
       console.error(error);
@@ -84,7 +85,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
       await axios.delete(`${backDomain}/api/v1/homework/${homeworkId}`, {
         headers: actualHeaders,
       });
-      notifyAlert("Homework deletado com sucesso!", "green");
+      notifyAlert("Homework deletado com sucesso!", partnerColor());
     } catch (error) {
       notifyAlert("Erro ao deletar homework");
       console.error(error);
@@ -222,7 +223,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                       updateRealizedClass(
                         homework._id,
                         homework.studentID,
-                        pointsMadeHW
+                        pointsMadeHW,
                       )
                     }
                     style={{
@@ -246,7 +247,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                       updateRealizedClass(
                         homework._id,
                         homework.studentID,
-                        pointsLateHW
+                        pointsLateHW,
                       )
                     }
                     style={{

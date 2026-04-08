@@ -205,9 +205,9 @@ const ClassByParam: React.FC<{
   const flat = useMemo(
     () =>
       modulesRef.flatMap((m) =>
-        (m.classes || []).map((c) => ({ ...c, __module: m }))
+        (m.classes || []).map((c) => ({ ...c, __module: m })),
       ),
-    [modulesRef]
+    [modulesRef],
   );
 
   const idx = flat.findIndex((c) => c._id === moduleKey);
@@ -282,7 +282,7 @@ export default function Modules({
             else set.add(studentID);
             c.studentsWhoCompletedIt = Array.from(set);
           }
-        })
+        }),
       );
       return next;
     });
@@ -291,7 +291,7 @@ export default function Modules({
       const response = await axios.put(
         `${backDomain}/api/v1/course/${id}`,
         { studentID },
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       const updated = response.data.studentsWhoCompletedIt;
       setModules((prev) => {
@@ -299,7 +299,7 @@ export default function Modules({
         next.forEach((m) =>
           (m.classes || []).forEach((c) => {
             if (c._id === id) c.studentsWhoCompletedIt = updated;
-          })
+          }),
         );
         return next;
       });
@@ -318,7 +318,7 @@ export default function Modules({
         `${backDomain}/api/v1/students/${myId}`,
         {
           headers: actualHeaders,
-        }
+        },
       );
       setStudentsList(response.data.listOfStudents || []);
     } catch {
@@ -360,7 +360,7 @@ export default function Modules({
     try {
       const res = await axios.get<{ modules: ModuleItem[] }>(
         `${backDomain}/api/v1/module/${courseId}`,
-        { headers: actualHeaders }
+        { headers: actualHeaders },
       );
       const mod = res.data?.modules || [];
       setModules(mod);
@@ -382,14 +382,14 @@ export default function Modules({
     axios.patch(
       `${backDomain}/api/v1/class/${id}`,
       { order },
-      { headers: actualHeaders }
+      { headers: actualHeaders },
     );
 
   const bulkReorder = async (pairs: Array<{ id: string; order: number }>) =>
     axios.post(
       `${backDomain}/api/v1/classes/reorder`,
       { pairs },
-      { headers: actualHeaders }
+      { headers: actualHeaders },
     );
 
   const moveClass = async (moduleIdx: number, viewIdx: number, dir: 1 | -1) => {
@@ -462,7 +462,7 @@ export default function Modules({
   const [displayRouteDiv, setDisplayRouteDiv] = useState(true);
   useEffect(() => {
     const isRootOfCourse = /^\/teaching-materials\/[^/]+\/?$/.test(
-      loc.pathname
+      loc.pathname,
     );
     setDisplayRouteDiv(isRootOfCourse);
   }, [loc.pathname]);
@@ -585,7 +585,7 @@ export default function Modules({
                             <option key={index} value={student.id}>
                               {truncateString(
                                 `${student.name} ${student.lastname}`,
-                                28
+                                28,
                               )}
                             </option>
                           ))}
@@ -741,7 +741,7 @@ export default function Modules({
                                             >
                                               {truncateString(
                                                 cls.tags[0] || "",
-                                                22
+                                                22,
                                               )}
                                             </span>
                                           )}
@@ -754,19 +754,6 @@ export default function Modules({
                                             gap: 6,
                                           }}
                                         >
-                                          {/* <span
-                                            style={{
-                                              fontSize: 11,
-                                              color: isCompleted
-                                                ? partnerColor()
-                                                : "#64748b",
-                                            }}
-                                          >
-                                            {isCompleted
-                                              ? "Done"
-                                              : "Mark as done"}
-                                          </span> */}
-
                                           <label
                                             title={
                                               isCompleted
@@ -826,7 +813,7 @@ export default function Modules({
                                           >
                                             {truncateString(
                                               cls.description,
-                                              140
+                                              140,
                                             )}
                                           </p>
                                         )}

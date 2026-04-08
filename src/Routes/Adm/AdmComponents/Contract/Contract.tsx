@@ -317,8 +317,8 @@ export function Contract({ headers }: HeadersProps) {
             >
               {signed ? (
                 <>
-                  {/* <CheckCircleIcon style={{ color: "green" }} /> */}
-                  <span style={{ color: "green" }}>Assinado</span>
+                  {/* <CheckCircleIcon style={{ color: partnerColor() }} /> */}
+                  <span style={{ color: partnerColor() }}>Assinado</span>
                 </>
               ) : (
                 <>

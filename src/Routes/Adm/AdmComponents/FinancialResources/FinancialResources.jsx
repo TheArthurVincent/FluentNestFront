@@ -363,14 +363,14 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
         newCostDescription,
         typeOfItem,
       );
-      notifyAlert("Custo fixo adicionado com sucesso!", "green");
+      notifyAlert("Custo fixo adicionado com sucesso!", partnerColor());
       setShowGenerateButton(false);
       setIncludeThisMonth(false);
       setNewCostModalOpen(!newCostModalOpen);
       setNewCostAmount("");
       setNewCostDescription("");
     } catch (error) {
-      notifyAlert("Erro ao criar custo fíxo", partnerColor());
+      notifyAlert("Erro ao criar custo fíxo", "red");
     }
   };
 
