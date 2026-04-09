@@ -138,6 +138,127 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     return myId;
   }, [event?.studentID, myId]);
 
+  const [isStudentCommentModalOpen, setIsStudentCommentModalOpen] =
+    useState(false);
+  const [editingStudentComment, setEditingStudentComment] = useState("");
+  const [savingStudentComment, setSavingStudentComment] = useState(false);
+
+  const saveStudentComment = async () => {
+    try {
+      setSavingStudentComment(true);
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/student-comment/${myStudentId}`,
+        { newComment: editingStudentComment },
+        { headers: headers as any },
+      );
+
+      const updatedComment = response.data?.studentComment || "";
+      setStudentComment(updatedComment);
+      setEditingStudentComment(updatedComment);
+      setIsStudentCommentModalOpen(false);
+
+      notifyAlert("Comentário do aluno salvo com sucesso.", partnerColor());
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao salvar comentário do aluno.", partnerColor());
+    } finally {
+      setSavingStudentComment(false);
+    }
+  };
+
+  const renderStudentCommentModal = () => {
+    if (!isStudentCommentModalOpen) return null;
+    if (typeof document === "undefined") return null;
+
+    const close = () => {
+      if (!savingStudentComment) {
+        setIsStudentCommentModalOpen(false);
+      }
+    };
+
+    return createPortal(
+      <div style={overlayStyle} onClick={close}>
+        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+          <div
+            style={{
+              padding: "16px 16px",
+              borderBottom: "1px solid #e2e8f0",
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#0f172a",
+            }}
+          >
+            Editar comentário sobre o aluno.
+          </div>
+          <i
+            style={{
+              padding: "12px 16px",
+              display: "block",
+              fontSize: 12,
+              color: "#64748b",
+            }}
+          >
+            Esta sessão serve para te ajudar a lembrar dos combinados que você
+            fez com o aluno — como conteúdos que se comprometeu a ensinar,
+            estratégias para apoiá-lo melhor e formas de acompanhar o progresso
+            dele ao longo das aulas.
+          </i>
+          <div style={{ padding: "12px", display: "grid", gap: 12 }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Sobre o aluno
+              </label>
+
+              <textarea
+                value={editingStudentComment}
+                onChange={(e) => setEditingStudentComment(e.target.value)}
+                disabled={savingStudentComment}
+                placeholder="Escreva aqui um comentário sobre o aluno..."
+                style={{
+                  ...inputStyle,
+                  minHeight: 140,
+                  resize: "vertical",
+                  fontFamily: "Plus Jakarta Sans",
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: 12,
+              borderTop: "1px solid #e2e8f0",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              style={ghostBtnStyle}
+              onClick={close}
+              disabled={savingStudentComment}
+            >
+              Cancelar
+            </button>
+
+            <button
+              onClick={saveStudentComment}
+              style={{
+                ...primaryBtnStyle,
+                opacity: savingStudentComment ? 0.7 : 1,
+              }}
+              disabled={savingStudentComment}
+            >
+              {savingStudentComment ? "Salvando..." : "Salvar"}
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body,
+    );
+  };
+
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [attendanceSaving, setAttendanceSaving] = useState(false);
   const [theNameOfTheStudents, setTheNameOfTheStudents] = useState("");
@@ -2012,29 +2133,45 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   </button>
                 </>
               )}
-              {canEditAttendance && studentComment && (
-                <>
-                  <span
-                    style={{
-                      fontWeight: 400,
-                      color: "#030303",
-                      marginTop: 8,
-                      fontSize: 12,
-                    }}
-                  >
-                    <b> Sobre o aluno:</b> {studentComment}
-                  </span>
-                </>
-              )}
             </div>
           </div>
         </article>
+        {canEditAttendance && (
+          <button
+            type="button"
+            onClick={() => {
+              setEditingStudentComment(studentComment || "");
+              setIsStudentCommentModalOpen(true);
+            }}
+            style={{
+              textAlign: "left",
+              background: "transparent",
+              border: "none",
+              display: "grid",
+              margin: "8px auto",
+              padding: "8px 20px",
+              fontSize: 12,
+              color: "#030303",
+              maxWidth: "800px",
+              cursor: "pointer",
+            }}
+            title="Clique para editar"
+          >
+            <b>Sobre o aluno:</b>
+            <i>
+              {studentComment && studentComment.trim()
+                ? studentComment
+                : "Clique para adicionar um comentário"}
+            </i>
+          </button>
+        )}
       </div>
 
       {renderMainInfoModal()}
       {renderAttendanceListModal()}
       {renderRescheduleModal()}
       {renderPreviousClassesModal()}
+      {renderStudentCommentModal()}
       {renderDescriptionModal()}
     </>
   );
