@@ -118,7 +118,7 @@ function ModalPortal({
 }
 
 /** ===================== LIMITES ===================== */
-const MAX_BLOCKS = 12;
+const MAX_BLOCKS = 25;
 
 /** ===================== TAGS (VOCABULARY → TAGS) ===================== */
 const normalizeTag = (t: string) =>
