@@ -184,6 +184,7 @@ function EventPreviewModal({ event, onClose }) {
                   textAlign: "center",
                   background: `${partnerColor()}10`,
                 }}
+                target="_blank"
               >
                 Abrir link da aula
               </a>

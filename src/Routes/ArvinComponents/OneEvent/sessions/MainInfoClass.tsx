@@ -149,6 +149,23 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     AttendanceItem[]
   >([]);
   const [isAttendanceListOpen, setIsAttendanceListOpen] = useState(false);
+  const [studentComment, setStudentComment] = useState("");
+
+  const fetchStudentComment = async () => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/student-comment/${myStudentId}`,
+        { headers: headers as any },
+      );
+      setStudentComment(response.data?.studentComment || "");
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao salvar lista de presença.", partnerColor());
+    } finally {
+      setAttendanceSaving(false);
+    }
+  };
+
   const isEstablishedGroupClass = event?.category === "Established Group Class";
   async function fetchAttendanceList() {
     if (!isEstablishedGroupClass) return;
@@ -221,8 +238,9 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   useEffect(() => {
     if (!evendId) return;
     fetchAttendanceList();
+    fetchStudentComment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [evendId]);
+  }, [evendId, myStudentId]);
 
   useEffect(() => {
     if (isAttendanceListOpen) {
@@ -705,6 +723,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   useEffect(() => {
     setTheLesson(lesson || null);
+    fetchStudentComment();
   }, [lesson]);
 
   const updateMainInfo = async (id: string) => {
@@ -1202,7 +1221,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                       style={{
                         marginLeft: 10,
                       }}
-                      
                       href="/students"
                     >
                       Clique aqui para dar mais créditos a este aluno.
@@ -1271,7 +1289,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                               style={{
                                 marginLeft: "10px",
                               }}
-                              
                               href="/my-calendar"
                             >
                               Acesse o Calendário
@@ -1697,7 +1714,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               {event.link && event.status == "marcado" && (
                 <a
                   href={event.link}
-                  
                   rel="noreferrer"
                   style={{
                     display: "flex",
@@ -1716,6 +1732,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     marginTop: 2,
                     boxSizing: "border-box",
                   }}
+                  target="_blank"
                 >
                   <i className="fa fa-external-link" />
                   Link da Sala
@@ -1725,7 +1742,6 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               {event.importantLink && (
                 <a
                   href={event.importantLink}
-                  
                   rel="noreferrer"
                   style={{
                     display: "flex",
@@ -1994,6 +2010,20 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   >
                     Descrição
                   </button>
+                </>
+              )}
+              {canEditAttendance && studentComment && (
+                <>
+                  <span
+                    style={{
+                      fontWeight: 400,
+                      color: "#030303",
+                      marginTop: 8,
+                      fontSize: 12,
+                    }}
+                  >
+                    <b> Sobre o aluno:</b> {studentComment}
+                  </span>
                 </>
               )}
             </div>
