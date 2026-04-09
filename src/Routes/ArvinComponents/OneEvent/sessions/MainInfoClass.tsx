@@ -1832,7 +1832,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                 boxSizing: "border-box",
               }}
             >
-              {event.link && event.status == "marcado" && (
+              {event.link && (
                 <a
                   href={event.link}
                   rel="noreferrer"
@@ -2136,35 +2136,37 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </div>
           </div>
         </article>
-        {canEditAttendance && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditingStudentComment(studentComment || "");
-              setIsStudentCommentModalOpen(true);
-            }}
-            style={{
-              textAlign: "left",
-              background: "transparent",
-              border: "none",
-              display: "grid",
-              margin: "8px auto",
-              padding: "8px 20px",
-              fontSize: 12,
-              color: "#030303",
-              maxWidth: "800px",
-              cursor: "pointer",
-            }}
-            title="Clique para editar"
-          >
-            <b>Sobre o aluno:</b>
-            <i>
-              {studentComment && studentComment.trim()
-                ? studentComment
-                : "Clique para adicionar um comentário"}
-            </i>
-          </button>
-        )}
+        {canEditAttendance &&
+          event?.category !== "Established Group Class" &&
+          event?.category !== "Group Class" && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingStudentComment(studentComment || "");
+                setIsStudentCommentModalOpen(true);
+              }}
+              style={{
+                textAlign: "left",
+                background: "transparent",
+                border: "none",
+                display: "grid",
+                margin: "8px auto",
+                padding: "8px 20px",
+                fontSize: 12,
+                color: "#030303",
+                maxWidth: "800px",
+                cursor: "pointer",
+              }}
+              title="Clique para editar"
+            >
+              <b>Sobre o aluno:</b>
+              <i>
+                {studentComment && studentComment.trim()
+                  ? studentComment
+                  : "Clique para adicionar um comentário"}
+              </i>
+            </button>
+          )}
       </div>
 
       {renderMainInfoModal()}
