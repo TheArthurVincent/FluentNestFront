@@ -9,7 +9,7 @@ import { StudentTodayClassesCard } from "./sections/StudentTodayClassesCard";
 import { StudentLessonsCard } from "./sections/StudentLessons";
 import { StudentScoresCard } from "./sections/StudentScoresCard";
 import { StudentFinancialReportsCard } from "./sections/StudentFinancialReportsCard";
-import { StudentItem, TodayClass } from "./types/studentsTypes";
+import { StudentItem } from "./types/studentsTypes";
 import { StudentMainCard } from "./sections/StudentMainCard.tsx";
 import { StudentHWCard } from "./sections/StudentHomework";
 
@@ -120,7 +120,6 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
           <StudentTodayClassesCard actualHeaders={headers} student={student} />
           <StudentScoresCard student={student} />
         </div>
-
         {/* COLUNA DIREITA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentFinancialReportsCard

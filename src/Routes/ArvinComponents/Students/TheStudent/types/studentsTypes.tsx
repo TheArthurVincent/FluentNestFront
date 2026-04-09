@@ -30,6 +30,8 @@ export type StudentItem = {
   theId: string;
   username: string;
   permissions: string;
+  personalComment: string;
+  paymentDate: string;
   supreme: boolean;
   name: string;
   lastname: string;

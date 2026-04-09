@@ -56,8 +56,13 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
   const [editName, setEditName] = useState(student.name || "");
+  const [editPersonalComment, setEditPersonalComment] = useState(
+    student.personalComment || "",
+  );
+  const [editPaymentDate, setEditPaymentDate] = useState(
+    student.paymentDate || 0,
+  );
   const [editLastname, setEditLastname] = useState(student.lastname || "");
   const [editEmail, setEditEmail] = useState(student.email || "");
   const [editAddress, setEditAddress] = useState(student.address || "");
@@ -146,8 +151,9 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     setDeleteError(null);
     setDeleteConfirmText("");
     setDeleting(false);
-
     setEditName(student.name || "");
+    setEditPersonalComment(student.personalComment || "");
+    setEditPaymentDate(student.paymentDate || 0);
     setEditFee(student.fee || 0);
     setEditUpToDate(student.feeUpToDate || false);
     setGoogleDriveLink(student.googleDriveLink || "");
@@ -194,6 +200,8 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
         feeUpToDate: editUpToDate,
         googleDriveLink: googleDriveLink,
         onHold: onHold,
+        personalComment: editPersonalComment,
+        paymentDate: editPaymentDate,
         email: editEmail,
         address: editAddress,
         phoneNumber: editPhone,
@@ -504,6 +512,22 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                   onChange={(e) => setEditPhone(e.target.value)}
                   disabled={saving}
                   placeholder="(11) 99999-9999"
+                />
+                <Field
+                  label="Data de Pagamento"
+                  type="number"
+                  value={editPaymentDate}
+                  onChange={(e) => setEditPaymentDate(e.target.value)}
+                  disabled={saving}
+                  placeholder="5"
+                />
+                <Field
+                  label="Comentário"
+                  type="text"
+                  value={editPersonalComment}
+                  onChange={(e) => setEditPersonalComment(e.target.value)}
+                  disabled={saving}
+                  placeholder="Comentário pessoal sobre o aluno"
                 />
 
                 {/* Mensalidade */}
@@ -1058,6 +1082,8 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
           <Row label="CPF" value={student.doc || "-"} />
           <Row label="Email" value={student.email || "-"} />
           <Row label="ID" value={student.theId || "-"} />
+          <Row label="Comentários" value={student.personalComment || "-"} />
+          <Row label="Data de pag." value={student.paymentDate || "-"} />
           <div style={{ display: "flex", gap: 8 }}>
             <span
               style={{
@@ -1072,7 +1098,6 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
               {student.googleDriveLink ? (
                 <a
                   href={student.googleDriveLink}
-                  
                   rel="noreferrer"
                   style={{
                     color: partnerColor(),
