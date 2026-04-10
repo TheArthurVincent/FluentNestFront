@@ -2159,12 +2159,12 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               }}
               title="Clique para editar"
             >
-              <b>Sobre o aluno:</b>
-              <i>
+              <b>Sobre o aluno</b>
+              {/* <i>
                 {studentComment && studentComment.trim()
                   ? studentComment
                   : "Clique para adicionar um comentário"}
-              </i>
+              </i> */}
             </button>
           )}
       </div>
