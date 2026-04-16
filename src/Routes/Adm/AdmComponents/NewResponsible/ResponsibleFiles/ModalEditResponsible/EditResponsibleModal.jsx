@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { backDomain } from "../../../../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../../../../Styles/Styles";
@@ -15,72 +16,373 @@ export function EditResponsibleModal({
   students,
 }) {
   const [loading, setLoading] = useState(false);
-  const [theName, setTheName] = useState(name);
-  const [theID, setTheID] = useState(id);
-  const [theEmail, setTheEmail] = useState(email);
-  const [theLastname, setTheLastname] = useState(lastname);
   const [seeModal, setSeeModal] = useState(false);
   const [seeDelete, setSeeDelete] = useState(false);
+
+  const [theName, setTheName] = useState(name || "");
+  const [theLastname, setTheLastname] = useState(lastname || "");
+  const [theEmail, setTheEmail] = useState(email || "");
   const [allStudents, setAllStudents] = useState([]);
   const [selectedStudentIds, setSelectedStudentIds] = useState(
-    students ? students.map((s) => s._id) : []
+    students ? students.map((s) => s._id) : [],
   );
 
+  const modalRoot = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    return document.body;
+  }, []);
+
   useEffect(() => {
+    setTheName(name || "");
+    setTheLastname(lastname || "");
+    setTheEmail(email || "");
+    setSelectedStudentIds(students ? students.map((s) => s._id) : []);
+  }, [name, lastname, email, students]);
+
+  useEffect(() => {
+    if (!seeModal) return;
+
     setSeeDelete(false);
-    if (seeModal) {
-      axios
-        .get(`${backDomain}/api/v1/students/${myID}`, { headers })
-        .then((res) => setAllStudents(res.data.listOfStudents || []))
-        .catch(() => setAllStudents([]));
-    }
+
+    const fetchStudents = async () => {
+      try {
+        const res = await axios.get(`${backDomain}/api/v1/students/${myID}`, {
+          headers,
+        });
+        setAllStudents(res.data.listOfStudents || []);
+      } catch (error) {
+        console.log(error);
+        setAllStudents([]);
+      }
+    };
+
+    fetchStudents();
   }, [seeModal, myID, headers]);
+
+  useEffect(() => {
+    if (!seeModal) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [seeModal]);
+
+  const closeModal = () => {
+    if (loading) return;
+    setSeeDelete(false);
+    setSeeModal(false);
+  };
 
   const handleCheckboxChange = (studentId) => {
     setSelectedStudentIds((prev) =>
       prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
+        ? prev.filter((currentId) => currentId !== studentId)
+        : [...prev, studentId],
     );
   };
 
   const handleSave = async () => {
     setLoading(true);
+
     try {
-      const response = await axios.put(
+      await axios.put(
         `${backDomain}/api/v1/responsible/${id}`,
         {
           name: theName,
           lastname: theLastname,
-          studentIds: selectedStudentIds,
           email: theEmail,
+          studentIds: selectedStudentIds,
         },
-        { headers }
+        { headers },
       );
+
       setFlag((prev) => !prev);
       setSeeModal(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       alert("Erro ao salvar");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async () => {
     setLoading(true);
+
     try {
-      const response = await axios.delete(
-        `${backDomain}/api/v1/responsible/${theID}`,
-        { headers }
-      );
+      await axios.delete(`${backDomain}/api/v1/responsible/${id}`, {
+        headers,
+      });
+
       setFlag((prev) => !prev);
       setSeeModal(false);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       alert("Erro ao excluir");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
+  const modalContent = seeModal ? (
+    <div
+      onClick={closeModal}
+      style={{
+        position: "fixed",
+        inset: 0,
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(0,0,0,0.35)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+        zIndex: 999999,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: "560px",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          background: "#fff",
+          borderRadius: "14px",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.18)",
+          padding: "28px",
+          position: "relative",
+        }}
+      >
+        <button
+          onClick={closeModal}
+          disabled={loading}
+          aria-label="Fechar"
+          style={{
+            position: "absolute",
+            top: "14px",
+            right: "16px",
+            background: "transparent",
+            border: "none",
+            fontSize: "26px",
+            lineHeight: 1,
+            cursor: "pointer",
+            color: "#666",
+          }}
+        >
+          ×
+        </button>
+
+        <h2
+          style={{
+            margin: "0 0 24px 0",
+            color: partnerColor(),
+            fontSize: "24px",
+          }}
+        >
+          Editar responsável
+        </h2>
+
+        <div style={{ display: "grid", gap: "16px" }}>
+          <label style={{ display: "grid", gap: "6px", color: "#333" }}>
+            <span style={{ fontWeight: 600 }}>Nome</span>
+            <input
+              type="text"
+              value={theName}
+              onChange={(e) => setTheName(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: "10px",
+                border: "1px solid #d9d9d9",
+                outline: "none",
+                fontSize: "15px",
+              }}
+            />
+          </label>
+
+          <label style={{ display: "grid", gap: "6px", color: "#333" }}>
+            <span style={{ fontWeight: 600 }}>Sobrenome</span>
+            <input
+              type="text"
+              value={theLastname}
+              onChange={(e) => setTheLastname(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: "10px",
+                border: "1px solid #d9d9d9",
+                outline: "none",
+                fontSize: "15px",
+              }}
+            />
+          </label>
+
+          <label style={{ display: "grid", gap: "6px", color: "#333" }}>
+            <span style={{ fontWeight: 600 }}>Email</span>
+            <input
+              type="text"
+              value={theEmail}
+              onChange={(e) => setTheEmail(e.target.value)}
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                borderRadius: "10px",
+                border: "1px solid #d9d9d9",
+                outline: "none",
+                fontSize: "15px",
+              }}
+            />
+          </label>
+
+          <div style={{ display: "grid", gap: "8px" }}>
+            <span style={{ fontWeight: 600, color: "#333" }}>Alunos</span>
+
+            <div
+              style={{
+                border: "1px solid #e7e7e7",
+                borderRadius: "12px",
+                background: "#fafafa",
+                padding: "12px",
+                maxHeight: "220px",
+                overflowY: "auto",
+              }}
+            >
+              {allStudents.length > 0 ? (
+                allStudents.map((student) => {
+                  const checked = selectedStudentIds.includes(student._id);
+
+                  return (
+                    <label
+                      key={student._id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "8px 4px",
+                        cursor: "pointer",
+                        color: "#333",
+                        borderBottom: "1px solid #f0f0f0",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => handleCheckboxChange(student._id)}
+                      />
+                      <span>
+                        {student.name} {student.lastname} - {student.email}
+                      </span>
+                    </label>
+                  );
+                })
+              ) : (
+                <div style={{ color: "#888", fontStyle: "italic" }}>
+                  Nenhum aluno encontrado
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "12px",
+            marginTop: "24px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            {seeDelete ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <span style={{ fontWeight: 600, color: "#b00020" }}>
+                  Excluir este responsável?
+                </span>
+
+                <button
+                  onClick={() => setSeeDelete(false)}
+                  disabled={loading}
+                  style={{
+                    background: "#666",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "10px 16px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                  }}
+                >
+                  Não
+                </button>
+
+                <button
+                  onClick={handleDelete}
+                  disabled={loading}
+                  style={{
+                    background: "#d32f2f",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "10px",
+                    padding: "10px 16px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                  }}
+                >
+                  {loading ? "Excluindo..." : "Sim"}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setSeeDelete(true)}
+                disabled={loading}
+                style={{
+                  background: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "12px 18px",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                Excluir
+              </button>
+            )}
+          </div>
+
+          {!seeDelete && (
+            <button
+              onClick={handleSave}
+              disabled={loading}
+              style={{
+                background: partnerColor(),
+                color: "#fff",
+                border: "none",
+                borderRadius: "10px",
+                padding: "12px 18px",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {loading ? "Salvando..." : "Salvar"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   return (
     <>
@@ -90,222 +392,17 @@ export function EditResponsibleModal({
           background: partnerColor(),
           color: "#fff",
           border: "none",
-          borderRadius: "6px",
-          padding: "6px 16px",
+          borderRadius: "8px",
+          padding: "8px 16px",
           cursor: "pointer",
-          fontWeight: 500,
-          fontSize: 14,
+          fontWeight: 600,
+          fontSize: "14px",
         }}
       >
         Editar
       </button>
-      {seeModal && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "#0005",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: "6px",
-              boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
-              padding: "32px",
-              minWidth: "340px",
-              maxWidth: "90vw",
-              position: "relative",
-            }}
-          >
-            <button
-              onClick={() => setSeeModal(false)}
-              style={{
-                position: "absolute",
-                top: 12,
-                right: 16,
-                background: "none",
-                border: "none",
-                fontSize: 22,
-                color: partnerColor(),
-                cursor: "pointer",
-              }}
-              aria-label="Fechar"
-            >
-              ×
-            </button>
-            <h2 style={{ color: partnerColor(), marginBottom: 18 }}>
-              Editar responsável
-            </h2>
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ fontWeight: 500, color: "#444" }}>
-                Nome:
-                <input
-                  type="text"
-                  value={theName}
-                  onChange={(e) => setTheName(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: 4,
-                    border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "6px",
-                    fontSize: 15,
-                  }}
-                />
-              </label>
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ fontWeight: 500, color: "#444" }}>
-                Sobrenome:
-                <input
-                  type="text"
-                  value={theLastname}
-                  onChange={(e) => setTheLastname(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: 4,
-                    border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "6px",
-                    fontSize: 15,
-                  }}
-                />
-              </label>
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ fontWeight: 500, color: "#444" }}>
-                Email:
-                <input
-                  type="text"
-                  value={theEmail}
-                  onChange={(e) => setTheEmail(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    marginTop: 4,
-                    border: `1px solid ${partnerColor()}60`,
-                    borderRadius: "6px",
-                    fontSize: 15,
-                  }}
-                />
-              </label>
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <span style={{ color: partnerColor(), fontWeight: 500 }}>
-                Alunos:
-              </span>
-              <div
-                style={{
-                  maxHeight: 160,
-                  overflowY: "auto",
-                  border: "1px solid #eee",
-                  borderRadius: 4,
-                  background: "#fafbfc",
-                  padding: "8px 6px",
-                  marginTop: 8,
-                }}
-              >
-                {allStudents.map((student) => (
-                  <label
-                    key={student._id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: 14,
-                      color: "#444",
-                      marginBottom: 6,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedStudentIds.includes(student.id)}
-                      onChange={() => handleCheckboxChange(student.id)}
-                      style={{ marginRight: 8 }}
-                    />
-                    {student.name} {student.lastname} - {student.email}
-                  </label>
-                ))}
-                {allStudents.length === 0 && (
-                  <div style={{ color: "#888", fontStyle: "italic" }}>
-                    Nenhum aluno encontrado
-                  </div>
-                )}
-              </div>
-            </div>
 
-            {seeDelete ? (
-              <div>
-                {" "}
-                Excluir?
-                <button
-                  style={{
-                    color: "white",
-                    backgroundColor: partnerColor(),
-                  }}
-                  onClick={() => setSeeDelete(false)}
-                >
-                  Não
-                </button>
-                <button
-                  style={{
-                    color: "white",
-                    backgroundColor: "red",
-                  }}
-                  onClick={handleDelete}
-                >
-                  Sim
-                </button>{" "}
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() => setSeeDelete(true)}
-                  disabled={loading}
-                  style={{
-                    background: "red",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px 24px",
-                    fontWeight: 600,
-                    fontSize: 16,
-                    cursor: "pointer",
-                    marginTop: 12,
-                  }}
-                >
-                  Excluir
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={loading}
-                  style={{
-                    background: partnerColor(),
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px 24px",
-                    fontWeight: 600,
-                    fontSize: 16,
-                    cursor: "pointer",
-                    marginTop: 12,
-                  }}
-                >
-                  {loading ? "Salvando..." : "Salvar"}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {modalRoot && ReactDOM.createPortal(modalContent, modalRoot)}
     </>
   );
 }

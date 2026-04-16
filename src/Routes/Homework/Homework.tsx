@@ -199,6 +199,7 @@ export default function Homework({
           fontSize: "14px",
           backgroundColor: "#ffffff",
           borderRadius: "6px",
+          margin: "10px auto",
           width: "95%",
           border: "1px solid #e8eaed",
           padding: "10px",

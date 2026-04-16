@@ -185,6 +185,7 @@ export default function AllPendingHomeworkAssignments({
           backgroundColor: "#ffffff",
           borderRadius: "6px",
           width: "95%",
+          margin: "10px auto",
           border: "1px solid #e8eaed",
           padding: "10px",
         }}

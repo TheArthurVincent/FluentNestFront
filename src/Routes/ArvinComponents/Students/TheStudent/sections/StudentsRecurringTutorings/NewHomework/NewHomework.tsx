@@ -55,6 +55,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
     borderRadius: "6px",
     fontSize: "14px",
     outline: "none",
+    margin: "10px auto",
     transition: "border-color 0.2s",
   };
 
