@@ -254,7 +254,8 @@ const ItemRow: FC<{
         display: showItem ? "grid" : "none",
         alignItems: "center",
         borderRadius: "6px",
-        padding: collapsed ? "10px 0" : compact ? "6px 10px" : "8px 12px",
+        padding: collapsed ? "4px 0" : compact ? "6px 10px" : "8px 12px",
+        marginBottom: 2,
         backgroundColor: active ? bgActive : "transparent",
         transition: "background-color 0.15s ease-in-out",
         justifyItems: collapsed ? "center" : "stretch",
@@ -283,7 +284,7 @@ const ItemRow: FC<{
           <item.Icon
             color={active ? partnerColor() : baseTextColor}
             weight="bold"
-            size={iconSize}
+            size={collapsed ? 12 : iconSize}
           />
         )}
 
@@ -390,9 +391,15 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
 
       // Só chega aqui quando NÃO colapsado
       const hasActiveChild = node.items.some((ch) => isActivePath(ch.path));
-      // importante: permitir "false" explícito fechar mesmo com rota ativa
-      const expanded = openGroups[node.label] ?? hasActiveChild;
+      const manuallyExpanded = openGroups[node.label] ?? false;
+      const expanded = manuallyExpanded;
+      const shouldShowOnlyActiveChild = !manuallyExpanded && hasActiveChild;
 
+      const visibleChildren = expanded
+        ? node.items
+        : shouldShowOnlyActiveChild
+          ? node.items.filter((ch) => isActivePath(ch.path))
+          : [];
       return (
         <li
           key={`node-group-${node.label}-${idx}`}
@@ -418,13 +425,13 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
 
           <ul
             style={{
-              display: expanded ? "grid" : "none",
+              display: expanded || shouldShowOnlyActiveChild ? "grid" : "none",
               padding: 0,
               margin: 0,
               gap: 6,
             }}
           >
-            {node.items.map((child, cidx) => (
+            {visibleChildren.map((child, cidx) => (
               <ItemRow
                 key={`node-child-${child.path}-${cidx}`}
                 item={child}
