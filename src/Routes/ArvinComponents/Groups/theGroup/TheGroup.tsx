@@ -49,7 +49,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
           setLoadingStudents(true);
           const resStudents = await axios.get(
             `${backDomain}/api/v1/students/${teacherId}`,
-            { headers: headers as any }
+            { headers: headers as any },
           );
           setStudents(resStudents.data.listOfStudents || []);
           setLoadingStudents(false);
@@ -58,7 +58,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
         // Carrega o turma
         const resGroup = await axios.get(
           `${backDomain}/api/v1/group/${groupId}`,
-          { headers: headers as any }
+          { headers: headers as any },
         );
         const g: GroupItem = resGroup.data.group || resGroup.data;
         setGroup(g);
@@ -73,7 +73,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
         setLoadingHistory(true);
         const resHistory = await axios.get(
           `${backDomain}/api/v1/grouphistory/${groupId}`,
-          { headers: headers as any }
+          { headers: headers as any },
         );
         setClassesGroup(resHistory.data.classesGroup || []);
         setLoadingHistory(false);
@@ -97,13 +97,13 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
       await axios.put(
         `${backDomain}/api/v1/group/${group._id}`,
         { idToAddOrRemove: studentId },
-        { headers: headers as any }
+        { headers: headers as any },
       );
 
       setArrayOfIds((prev) =>
         prev.includes(studentId)
           ? prev.filter((id) => id !== studentId)
-          : [...prev, studentId]
+          : [...prev, studentId],
       );
     } catch (error) {
       console.error(error);
@@ -118,7 +118,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
       await axios.put(
         `${backDomain}/api/v1/group-name/${group._id}`,
         { name },
-        { headers: headers as any }
+        { headers: headers as any },
       );
     } catch (error) {
       console.error(error);
@@ -133,11 +133,26 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
       await axios.put(
         `${backDomain}/api/v1/group-description/${group._id}`,
         { description },
-        { headers: headers as any }
+        { headers: headers as any },
       );
     } catch (error) {
       console.error(error);
       notifyAlert("Erro ao alterar descrição da turma.");
+    }
+  };
+
+  const handleChangePersonalComment = async (comment: string) => {
+    if (!group || !group._id) return;
+    setGroup((prev) => (prev ? { ...prev, personalComment: comment } : prev));
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/group-altercomment/${group._id}`,
+        { comment },
+        { headers: headers as any },
+      );
+    } catch (error) {
+      console.error(error);
+      notifyAlert("Erro ao alterar comentário da turma.");
     }
   };
 
@@ -188,7 +203,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
     classesGroup && classesGroup.length > 0
       ? [...classesGroup].sort(
           (a, b) =>
-            new Date(b.date || "").getTime() - new Date(a.date || "").getTime()
+            new Date(b.date || "").getTime() - new Date(a.date || "").getTime(),
         )[0]
       : undefined;
 
@@ -244,6 +259,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
             group={group}
             onChangeName={handleChangeName}
             onChangeDescription={handleChangeDescription}
+            onChangePersonalComment={handleChangePersonalComment}
           />
           <GroupStudentsCard
             setTRIGGER={setTRIGGER}

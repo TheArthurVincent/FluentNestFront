@@ -4,6 +4,7 @@ import { newArvinTitleStyle } from "../../Groups";
 export type GroupItem = {
   _id: string;
   name?: string;
+  personalComment?: string;
   description?: string;
   studentIds?: Array<{ _id?: string } | string>;
 };

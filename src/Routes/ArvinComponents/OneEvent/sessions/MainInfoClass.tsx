@@ -138,30 +138,61 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     return myId;
   }, [event?.studentID, myId]);
 
+  const isEstablishedGroupClass = event?.category === "Established Group Class";
+
+  const groupId = useMemo(() => {
+    if (event?.group) return String(event.group);
+    if (event?.groupID) return String(event.groupID);
+    return "";
+  }, [event?.group, event?.groupID]);
+
+  const commentTargetId = isEstablishedGroupClass ? groupId : myStudentId;
+  const commentEntityLabel = isEstablishedGroupClass ? "grupo" : "aluno";
+  const commentEntityLabelCap = isEstablishedGroupClass ? "Grupo" : "Aluno";
+
   const [isStudentCommentModalOpen, setIsStudentCommentModalOpen] =
     useState(false);
   const [editingStudentComment, setEditingStudentComment] = useState("");
   const [savingStudentComment, setSavingStudentComment] = useState(false);
 
   const saveStudentComment = async () => {
+    if (!commentTargetId) {
+      notifyAlert(
+        `Não foi possível identificar o ${commentEntityLabel} desta aula.`,
+        partnerColor(),
+      );
+      return;
+    }
+
     try {
       setSavingStudentComment(true);
 
       const response = await axios.put(
-        `${backDomain}/api/v1/student-comment/${myStudentId}`,
+        `${backDomain}/api/v1/${
+          isEstablishedGroupClass ? "group-comment" : "student-comment"
+        }/${commentTargetId}`,
         { newComment: editingStudentComment },
         { headers: headers as any },
       );
 
-      const updatedComment = response.data?.studentComment || "";
+      const updatedComment = isEstablishedGroupClass
+        ? response.data?.groupComment || ""
+        : response.data?.studentComment || "";
+
       setStudentComment(updatedComment);
       setEditingStudentComment(updatedComment);
       setIsStudentCommentModalOpen(false);
 
-      notifyAlert("Comentário do aluno salvo com sucesso.", partnerColor());
+      notifyAlert(
+        `Comentário do ${commentEntityLabel} salvo com sucesso.`,
+        partnerColor(),
+      );
     } catch (error) {
       console.error(error);
-      notifyAlert("Erro ao salvar comentário do aluno.", partnerColor());
+      notifyAlert(
+        `Erro ao salvar comentário do ${commentEntityLabel}.`,
+        partnerColor(),
+      );
     } finally {
       setSavingStudentComment(false);
     }
@@ -189,7 +220,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               color: "#0f172a",
             }}
           >
-            Editar comentário sobre o aluno.
+            {`Editar comentário sobre o ${commentEntityLabel}.`}
           </div>
           <i
             style={{
@@ -199,22 +230,21 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
               color: "#64748b",
             }}
           >
-            Esta sessão serve para te ajudar a lembrar dos combinados que você
-            fez com o aluno — como conteúdos que se comprometeu a ensinar,
-            estratégias para apoiá-lo melhor e formas de acompanhar o progresso
-            dele ao longo das aulas.
+            {isEstablishedGroupClass
+              ? "Esta sessão serve para te ajudar a lembrar dos combinados da turma — como conteúdos que você quer reforçar, perfil geral do grupo, ritmo da classe e observações úteis para as próximas aulas."
+              : "Esta sessão serve para te ajudar a lembrar dos combinados que você fez com o aluno — como conteúdos que se comprometeu a ensinar, estratégias para apoiá-lo melhor e formas de acompanhar o progresso dele ao longo das aulas."}
           </i>
           <div style={{ padding: "12px", display: "grid", gap: 12 }}>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
-                Sobre o aluno
+                {`Sobre o ${commentEntityLabel}`}
               </label>
 
               <textarea
                 value={editingStudentComment}
                 onChange={(e) => setEditingStudentComment(e.target.value)}
                 disabled={savingStudentComment}
-                placeholder="Escreva aqui um comentário sobre o aluno..."
+                placeholder={`Escreva aqui um comentário sobre o ${commentEntityLabel}...`}
                 style={{
                   ...inputStyle,
                   minHeight: 140,
@@ -273,21 +303,33 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   const [studentComment, setStudentComment] = useState("");
 
   const fetchStudentComment = async () => {
+    if (!commentTargetId) {
+      setStudentComment("");
+      return;
+    }
+
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/student-comment/${myStudentId}`,
+        `${backDomain}/api/v1/${
+          isEstablishedGroupClass ? "group-comment" : "student-comment"
+        }/${commentTargetId}`,
         { headers: headers as any },
       );
-      setStudentComment(response.data?.studentComment || "");
+
+      setStudentComment(
+        isEstablishedGroupClass
+          ? response.data?.groupComment || ""
+          : response.data?.studentComment || "",
+      );
     } catch (error) {
       console.error(error);
-      notifyAlert("Erro ao salvar lista de presença.", partnerColor());
-    } finally {
-      setAttendanceSaving(false);
+      notifyAlert(
+        `Erro ao carregar comentário do ${commentEntityLabel}.`,
+        partnerColor(),
+      );
     }
   };
 
-  const isEstablishedGroupClass = event?.category === "Established Group Class";
   async function fetchAttendanceList() {
     if (!isEstablishedGroupClass) return;
 
@@ -361,7 +403,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     fetchAttendanceList();
     fetchStudentComment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [evendId, myStudentId]);
+  }, [evendId, myStudentId, groupId, isEstablishedGroupClass]);
 
   useEffect(() => {
     if (isAttendanceListOpen) {
@@ -845,7 +887,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   useEffect(() => {
     setTheLesson(lesson || null);
     fetchStudentComment();
-  }, [lesson]);
+  }, [lesson, groupId, isEstablishedGroupClass, myStudentId]);
 
   const updateMainInfo = async (id: string) => {
     try {
@@ -2136,37 +2178,35 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </div>
           </div>
         </article>
-        {canEditAttendance &&
-          event?.category !== "Established Group Class" &&
-          event?.category !== "Group Class" && (
-            <button
-              type="button"
-              onClick={() => {
-                setEditingStudentComment(studentComment || "");
-                setIsStudentCommentModalOpen(true);
-              }}
-              style={{
-                textAlign: "left",
-                background: "transparent",
-                border: "none",
-                display: "grid",
-                margin: "8px auto",
-                padding: "8px 20px",
-                fontSize: 12,
-                color: "#030303",
-                maxWidth: "800px",
-                cursor: "pointer",
-              }}
-              title="Clique para editar"
-            >
-              <b>Sobre o aluno</b>
-              {/* <i>
+        {allowedToEdit && (!isEstablishedGroupClass || Boolean(groupId)) && (
+          <button
+            type="button"
+            onClick={() => {
+              setEditingStudentComment(studentComment || "");
+              setIsStudentCommentModalOpen(true);
+            }}
+            style={{
+              textAlign: "left",
+              background: "transparent",
+              border: "none",
+              display: "grid",
+              margin: "8px auto",
+              padding: "8px 20px",
+              fontSize: 12,
+              color: "#030303",
+              maxWidth: "800px",
+              cursor: "pointer",
+            }}
+            title="Clique para editar"
+          >
+            <b>{`Sobre o ${commentEntityLabel}`}</b>
+            {/* <i>
                 {studentComment && studentComment.trim()
                   ? studentComment
                   : "Clique para adicionar um comentário"}
               </i> */}
-            </button>
-          )}
+          </button>
+        )}
       </div>
 
       {renderMainInfoModal()}
