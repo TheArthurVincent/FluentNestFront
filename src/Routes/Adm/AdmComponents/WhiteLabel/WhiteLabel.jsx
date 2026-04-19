@@ -368,7 +368,7 @@ export default function WhiteLabelPreview({ headers }) {
 
   return (
     <div className="page-wrapper" style={{ padding: "40px" }}>
-      {goldVisible && <UpgradeGoldButton />}
+      {/* {goldVisible && <UpgradeGoldButton />} */}
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
@@ -523,22 +523,18 @@ export default function WhiteLabelPreview({ headers }) {
                 }}
               />
             </div> */}
-            {goldVisible ? (
-              <UpgradeGoldButton />
-            ) : (
-              <button
-                type="submit"
-                style={{
-                  backgroundColor: partnerColor(),
-                  color: textpartnerColorContrast(),
-                  marginLeft: "auto",
-                  display: "flex",
-                }}
-                color={partnerColor()}
-              >
-                Salvar Tema
-              </button>
-            )}
+            <button
+              type="submit"
+              style={{
+                backgroundColor: partnerColor(),
+                color: textpartnerColorContrast(),
+                marginLeft: "auto",
+                display: "flex",
+              }}
+              color={partnerColor()}
+            >
+              Salvar Tema
+            </button>
           </form>
           {/* 🔎 Visualização do tema */}
           <div className="sample" style={sampleStyles}>

@@ -202,7 +202,7 @@ export function AllStudents({ headers, id, plan }) {
             )}
           </button>
         </form>
-        {goldVisible && <UpgradeGoldButton />}
+        {/* {goldVisible && <UpgradeGoldButton />} */}
       </div>
     </>
   );

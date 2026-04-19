@@ -219,7 +219,7 @@ export function NewResponsible({ headers, id, flag, setFlag }) {
             )}
           </button>
         </form>
-        {goldVisible && <UpgradeGoldButton />}
+        {/* {goldVisible && <UpgradeGoldButton />} */}
       </div>
     </>
   );

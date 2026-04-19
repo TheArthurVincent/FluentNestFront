@@ -1175,7 +1175,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                         {!showGenerateButton && (
                           <>
                             {goldVisible ? (
-                              <UpgradeGoldButton />
+                              <></>
                             ) : (
                               <button
                                 className="linguee-btn linguee-btn-outline"
