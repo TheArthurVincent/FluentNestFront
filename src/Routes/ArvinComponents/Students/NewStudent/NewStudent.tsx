@@ -192,7 +192,12 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
     { label: "Sobrenome", type: "text", key: "lastname", required: true },
     { label: "Mensalidade", type: "number", key: "fee", required: true },
     { label: "E-mail", type: "email", key: "email", required: true },
-    { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
+    {
+      label: "Data de Nascimento",
+      type: "date",
+      key: "dateOfBirth",
+      required: true,
+    },
     { label: "Senha", type: "password", key: "password", required: true },
     {
       label: "Confirme a Senha",
@@ -364,8 +369,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
                 )}
               </button>
             </form>
-
-            {goldVisible && <UpgradeGoldButton />}
           </div>
         </DialogContent>
 
