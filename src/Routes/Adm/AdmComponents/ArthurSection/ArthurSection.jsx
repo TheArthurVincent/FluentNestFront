@@ -80,8 +80,10 @@ export function ArthurSection({ headers }) {
         { headers: headersBack },
       );
       setResetVisible(true);
-      setTimeout(() => setHasReset(true), 800);
-      setTimeout(() => window.location.reload(), 1000);
+      console.log(response.data.studentsPerTeacher);
+
+      // setTimeout(() => setHasReset(true), 800);
+      // setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       notifyAlert("Erro ao resetar", partnerColor());
     }
@@ -213,7 +215,7 @@ export function ArthurSection({ headers }) {
                       gap: 8,
                     }}
                   >
-                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                    <i className="fa fa-spinner fa-spin" aria-hidden="true" />
                     Validando
                   </span>
                 ) : (

@@ -1120,6 +1120,14 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
           }
         `}
           </style>{" "}
+          <MonthPickerModalButton
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            setShowGenerateButton={setShowGenerateButton}
+            seeReports={seeReports}
+            generateMonthOptions={generateMonthOptions}
+            buttonLabel={transformMonth(selectedMonth)}
+          />
           {financialReports.length > 0 && (
             <div
               style={{
@@ -1130,14 +1138,6 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                 marginBottom: "16px",
               }}
             >
-              <MonthPickerModalButton
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                setShowGenerateButton={setShowGenerateButton}
-                seeReports={seeReports}
-                generateMonthOptions={generateMonthOptions}
-                buttonLabel={transformMonth(selectedMonth)}
-              />
               <FinancialPdfButton
                 selectedMonth={selectedMonth}
                 studentName={studentName}
