@@ -80,10 +80,9 @@ export function ArthurSection({ headers }) {
         { headers: headersBack },
       );
       setResetVisible(true);
-      console.log(response.data.studentsPerTeacher);
-
-      // setTimeout(() => setHasReset(true), 800);
-      // setTimeout(() => window.location.reload(), 1000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       notifyAlert("Erro ao resetar", partnerColor());
     }

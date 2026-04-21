@@ -1,9 +1,6 @@
 import React, { useState, FC, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
-import {
-  backDomain,
-  UpgradeGoldButton,
-} from "../../../../Resources/UniversalComponents";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 import {
   CircularProgress,
   Dialog,
@@ -11,12 +8,10 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
-  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { HOne } from "../../../../Resources/Components/RouteBox";
 
 interface NewStudentModalProps {
   headers?: Record<string, string>;
@@ -80,10 +75,8 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
     confirmPassword: "",
   });
 
-  const [includeThisMonth, setIncludeThisMonth] = useState<boolean>(true);
+  const [includeThisMonth, setIncludeThisMonth] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [upload, setUpload] = useState(true);
-  const [goldVisible, setGoldVisible] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleChange = (field: keyof FormDataState, value: string) => {
@@ -105,7 +98,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
       confirmPassword: "",
     });
     setIncludeThisMonth(true);
-    setUpload((prev) => !prev);
   };
 
   const validateForm = () => {
@@ -166,7 +158,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
         }`,
         partnerColor(),
       );
-      setGoldVisible(true);
     } finally {
       setIsLoading(false);
     }
