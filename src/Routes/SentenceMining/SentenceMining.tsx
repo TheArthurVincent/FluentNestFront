@@ -57,9 +57,7 @@ const SentenceMining = ({
   const [transation2, setTransation2] = useState<string>("");
 
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(
-    "Selecione um idioma",
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("english");
 
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
   const [students, setStudents] = useState<any[]>([]);
@@ -329,107 +327,6 @@ const SentenceMining = ({
           maxWidth: 960,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-            <div
-              style={{
-                padding: "1rem",
-                backgroundColor: alwaysWhite(),
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              {loadingStudents ? (
-                <i className="fa fa-spinner fa-spin" aria-hidden="true" />
-              ) : (
-                <select
-                  onChange={handleStudentChange}
-                  value={selectedStudentId}
-                  style={{
-                    borderRadius: "6px",
-                    border: "1px solid #e2e8f0",
-                    backgroundColor: "#f8fafc",
-                    fontSize: "13px",
-                    fontWeight: "400",
-                    color: "#64748b",
-                    padding: "6px 8px",
-                    minWidth: "200px",
-                    maxWidth: "300px",
-                    outline: "none",
-                    cursor: "pointer",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = partnerColor();
-                    e.target.style.backgroundColor = "#ffffff";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#e2e8f0";
-                    e.target.style.backgroundColor = "#f8fafc";
-                  }}
-                >
-                  <option value="">
-                    {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-                  </option>
-                  {students.map((student) => (
-                    <option
-                      key={student.id || student.theId}
-                      value={student.id || student.theId}
-                    >
-                      {student.name} {student.lastname}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          )}
-
-          {!loading && (
-            <select
-              onChange={(e) => {
-                setSelectedLanguage(e.target.value);
-              }}
-              value={selectedLanguage}
-              style={{
-                borderRadius: "6px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "13px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "6px 8px",
-                minWidth: "200px",
-                maxWidth: "300px",
-                outline: "none",
-                cursor: "pointer",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = partnerColor();
-                e.target.style.backgroundColor = "#ffffff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e2e8f0";
-                e.target.style.backgroundColor = "#f8fafc";
-              }}
-            >
-              <option value="Selecione um idioma" hidden>
-                Selecione um idioma
-              </option>
-              <option value="Inglês">Inglês</option>
-              <option value="Espanhol">Espanhol</option>
-              {isArthurVincent && <option value="Francês">Francês</option>}
-            </select>
-          )}
-        </div>
-
         {selectedLanguage !== "Selecione um idioma" && (
           <section
             id="review"

@@ -248,7 +248,7 @@ const AddFlashCards = ({
               }}
             >
               {/* Toggle Mode Button */}
-              <div
+              {/* <div
                 style={{
                   marginBottom: "1rem",
                   display: "flex",
@@ -270,7 +270,7 @@ const AddFlashCards = ({
                 >
                   {isAIMode ? "📝 Modo Manual" : "✨ Modo IA"}
                 </button>
-              </div>
+              </div> */}
 
               {/* AI Mode - Text Input */}
               {isAIMode ? (

@@ -1,17 +1,3 @@
-try {
-  const wl = localStorage.getItem("whiteLabel");
-  if (!wl) {
-    const defaultWL = {
-      color: "#ed5914",
-      contrastColor: "#eee",
-      logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135",
-    };
-    localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
-  }
-} catch (err) {
-  console.warn("[App] WhiteLabel localStorage falhou:", err);
-}
-
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
@@ -23,7 +9,6 @@ import {
   textPrimaryColorContrast,
   logoPartner,
 } from "./Styles/Styles";
-import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
 import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";
 import ResetPasswordFinalChange from "./Routes/ChangePassword/ResetPasswordFinalChange";
@@ -256,7 +241,7 @@ function App() {
           console.warn(
             "[App] Erro ao fazer parse do JSON do usuário:",
             error,
-            user
+            user,
           );
         }
       }
@@ -397,7 +382,7 @@ function App() {
             } catch (err) {
               console.error(
                 `[App] Erro ao renderizar rota ${route.path}:`,
-                err
+                err,
               );
               return null;
             }

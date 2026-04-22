@@ -1747,15 +1747,10 @@ export const updateInfo = async (id, headers) => {
       headers,
     });
     var userInfo = response.data.formattedStudentData;
-    var wl = response.data.whiteLabel;
     var loggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
-    var whiteLabel = JSON.parse(localStorage.getItem("whiteLabel")) || {};
-
-    loggedIn = Object.assign(loggedIn, userInfo);
-    whiteLabel = Object.assign(whiteLabel, wl);
+    X = loggedIn = Object.assign(loggedIn, userInfo);
     localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
     localStorage.setItem("selectedStudentID", id);
-    localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
   } catch (error) {
     console.log(error, "Erro ao atualizar dados");
   }

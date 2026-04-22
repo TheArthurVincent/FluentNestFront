@@ -249,7 +249,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
           </select>
 
           {/* IA */}
-          <button
+          {/* <button
             type="button"
             onClick={handleAI}
             disabled={loading}
@@ -267,7 +267,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
             title="Gerar tradução/definição para o Back (-1 token)"
           >
             {loading ? "..." : "✨ (-1)"}
-          </button>
+          </button> */}
         </div>
       </div>
 

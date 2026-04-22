@@ -22,7 +22,6 @@ import { HeadersProps } from "../Resources/types.universalInterfaces";
 import FlashCards from "./FlashCards/FlashCards";
 import Homework from "./Homework/Homework";
 import EnglishCourses from "./EnglishLessons/Courses";
-import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import Login from "./Login/Login";
@@ -33,11 +32,7 @@ import {
   partnerColor,
 } from "../Styles/Styles";
 import { ArvinTopBar } from "./ArvinComponents/ArvinTopSideBar/NewTopSideBar";
-import {
-  ItemRow,
-  menuItems,
-} from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
-import { DotsThreeCircleIcon } from "@phosphor-icons/react";
+import { menuItems } from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
 import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 import Students from "./ArvinComponents/Students/Students";
 import Turmas from "./ArvinComponents/Groups/Groups";
@@ -51,7 +46,6 @@ import CLSSUP from "./ArvinComponents/Students/HomeworkUp/ClassesUp";
 import FinancialResources from "./Adm/AdmComponents/FinancialResources/FinancialResources";
 import ResponsibleMainFile from "./Adm/AdmComponents/NewResponsible/ResponsibleMainFile";
 import CourseStructure from "./ArvinComponents/ArvinExplanation/CourseStructure";
-import PartnerTutors from "./Adm/AdmComponents/PartnerTutors/PartnerTutors";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -93,9 +87,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   }, []);
 
   const location = useLocation();
-  const currentPath = location.pathname;
-  const bgActive = `${partnerColor()}09`;
-  const baseTextColor = "#030303";
   useEffect(() => {
     setAppLoaded(!appLoaded);
 
@@ -347,18 +338,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         />
       ),
     },
-    // {
-    //   levelcard: true,
-    //   title: "Partner Tutors",
-    //   showLeftBar: true,
-    //   component: (
-    //     <PartnerTutors
-    //       headers={headers}
-    //       isDesktop={isDesktop}
-    //       id={id}
-    //     />
-    //   ),
-    // },
     {
       levelcard: true,
       title: "Responsibles",

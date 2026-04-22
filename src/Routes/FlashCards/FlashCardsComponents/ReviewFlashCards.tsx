@@ -67,9 +67,11 @@ const ReviewFlashCards = ({
     setBackCardVisible(false);
     setSee(true);
 
+    const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
+        `${backDomain}/api/v1/flashcards/${loggedIn.id || myId || selectedStudentId || loggedIn._id}`,
         {
           headers: actualHeaders,
           params: { category, lang },
@@ -238,8 +240,10 @@ const ReviewFlashCards = ({
     return () => timers.forEach(clearTimeout);
   };
 
-  const getHistory = async (id: string) => {
+  const getHistory = async () => {
     setLoading(true);
+    const loggedIn = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const { id } = loggedIn;
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcardhistory/${id}`,
@@ -256,7 +260,7 @@ const ReviewFlashCards = ({
 
   useEffect(() => {
     if (selectedStudentId) {
-      getHistory(selectedStudentId);
+      getHistory();
     }
   }, [selectedStudentId]);
 

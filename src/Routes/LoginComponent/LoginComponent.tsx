@@ -40,7 +40,6 @@ export function LoginComponent() {
       localStorage.setItem("authorization", `${token}`);
       localStorage.setItem("notifications", JSON.stringify(notifications));
       localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
-      localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
       const subDomain = window.location.hostname.split(".")[0];
       await handleLoginSuccess(loggedIn, subDomain);
       setButton("Sucesso");

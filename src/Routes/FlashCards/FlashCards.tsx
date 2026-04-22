@@ -27,7 +27,7 @@ interface FlashCardsProps {
    =============================== */
 const useIsDesktop = (bp = 700) => {
   const [isDesktop, setIsDesktop] = useState(
-    typeof window !== "undefined" ? window.innerWidth > bp : true
+    typeof window !== "undefined" ? window.innerWidth > bp : true,
   );
   useEffect(() => {
     const onResize = () => setIsDesktop(window.innerWidth > bp);
@@ -92,7 +92,7 @@ const FlashCards = ({
             `${backDomain}/api/v1/students/${id}`,
             {
               headers: actualHeaders,
-            }
+            },
           );
           const allUsers = response.data.listOfStudents || response.data;
           setStudents(allUsers);
@@ -208,113 +208,6 @@ const FlashCards = ({
         }}
       >
         <Helmets text="Flashcards" />
-
-        {/* HEADER DO CARD: título + seleção de aluno (quando ADM) */}
-        {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-          <header
-            style={{
-              display: "flex",
-              flexDirection: isDesktop ? "row" : "column",
-              justifyContent: "space-between",
-              alignItems: isDesktop ? "center" : "flex-start",
-              gap: 12,
-              marginBottom: 12,
-            }}
-          >
-            <div
-              style={{
-                padding: "6px 8px",
-                backgroundColor: "#f8fafc",
-                border: "1px solid #e2e8f0",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                margin: "auto",
-                minWidth: isDesktop ? 200 : "90%",
-              }}
-            >
-              {loadingStudents ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "90%",
-                  }}
-                >
-                  <CircularProgress
-                    size={18}
-                    style={{ color: partnerColor() }}
-                  />
-                </div>
-              ) : (
-                <>
-                  <select
-                    onChange={(e) => {
-                      handleStudentChange(e);
-                      const studentSelected = students.find(
-                        (student) =>
-                          student.id === e.target.value ||
-                          student.theId === e.target.value
-                      );
-                      if (studentSelected) {
-                        setSelectedStudent(
-                          (studentSelected.name || "") +
-                            " " +
-                            (studentSelected.lastname || "")
-                        );
-                      } else {
-                        setSelectedStudent("");
-                      }
-                    }}
-                    value={selectedStudentId}
-                    style={{
-                      borderRadius: 2,
-                      border: "1px solid #e2e8f0",
-                      fontSize: 12,
-                      fontWeight: 400,
-                      maxWidth: isDesktop ? "140px" : "90%",
-                      padding: "4px 8px",
-                      minWidth: isDesktop ? "180px" : "100%",
-                      outline: "none",
-                      cursor: "pointer",
-                      flex: 1,
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = partnerColor();
-                      e.target.style.backgroundColor = "#ffffff";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#e2e8f0";
-                      e.target.style.backgroundColor = alwaysWhite();
-                    }}
-                  >
-                    <option value="">
-                      {UniversalTexts?.selectAStudent ||
-                        "Selecione um aluno..."}
-                    </option>
-                    {students.map((student) => (
-                      <option
-                        key={student.id || student.theId}
-                        value={student.id || student.theId}
-                      >
-                        {student.name} {student.lastname}
-                      </option>
-                    ))}
-                  </select>
-                </>
-              )}
-            </div>
-            <div
-              style={{
-                borderTop: "1px solid #e2e8f0",
-                marginBottom: 10,
-              }}
-            />
-          </header>
-        )}
-
-        {/* LINHA DIVISÓRIA */}
-
         {/* TABS + CONTEÚDO */}
         <TabContext value={value}>
           {/* TABLIST em “pill” style */}

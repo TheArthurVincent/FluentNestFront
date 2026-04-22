@@ -45,7 +45,6 @@ export function Login() {
       localStorage.setItem("authorization", `${token}`);
       localStorage.setItem("notifications", JSON.stringify(notifications));
       localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
-      localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
 
       //Get sub domain
       const subDomain = window.location.hostname.split(".")[0];
