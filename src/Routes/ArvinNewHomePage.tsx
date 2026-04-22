@@ -670,7 +670,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             );
           })}
 
-        {/* Botão "Menu" extra (não participa do ativo/desmarcado dos links) */}
+        {/* Botão "Menu" extra (não participa do ativo/desmarcado dos links)
         <div
           style={{
             textDecoration: "none",
@@ -703,10 +703,10 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             />
           </span>
           <b>Menu</b>
-        </div>
+        </div> */}
       </footer>
 
-      {!isDesktop && (
+      {/* {!isDesktop && (
         <>
           <div
             style={{
@@ -728,7 +728,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               position: "fixed",
               bottom: 70,
               zIndex: 99,
-              height: "75vh",
+              height: "100vh",
               width: "100%",
               left: 0,
               right: 0,
@@ -767,7 +767,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               ))}
           </ul>
         </>
-      )}
+      )} */}
 
       <Outlet />
     </div>
