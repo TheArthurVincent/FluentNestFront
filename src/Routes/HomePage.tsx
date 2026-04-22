@@ -1,7 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Ranking from "./Ranking/Ranking";
-import GroupClasses from "./GroupClasses/GroupClasses";
 import { isArthurVincent, verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
@@ -14,37 +12,22 @@ import {
   updateInfo,
 } from "../Resources/UniversalComponents";
 import MyProfile from "./MyProfile/MyProfile";
-import Faq from "./Faq/Faq";
-import MyClasses from "./MyClasses/MyClasses";
-import Adm from "./Adm/Adm";
-import Blog from "./HomePage/HomePageContent";
 import { LevelCard } from "./LevelCard/LevelCard";
-import {
-  BlogRouteSizeControlBox,
-  RouteDiv,
-} from "../Resources/Components/RouteBox";
+import { BlogRouteSizeControlBox } from "../Resources/Components/RouteBox";
 import { HeadersProps } from "../Resources/types.universalInterfaces";
 import { TopBar } from "../Application/TopBar/TopBar";
 import FlashCards from "./FlashCards/FlashCards";
-import Homework from "./Homework/Homework";
 import AppFooter from "../Application/Footer/Footer";
 import EnglishCourses from "./EnglishLessons/Courses";
-import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
-import BlogPosts from "./HomePage/BlogPosts";
 // import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
-import MyCalendar from "./MyCalendar/MyCalendar";
 import { textPrimaryColorContrast, logoPartner } from "../Styles/Styles";
 import Redirect from "../Redirect";
-import Tokens from "./Tokens";
-import MyCalendarNew from "./MyCalendar/MyCalendarNew";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
   var [thePermissions, setPermissions] = useState<string>("");
-  var [admin, setAdmin] = useState<boolean>(false);
-  var [teacher, setTeacher] = useState<boolean>(false);
   var [_StudentId, setStudentId] = useState<string>("");
   var [picture, setPicture] = useState<string>("");
   var [change, setChange] = useState<boolean>(true);
@@ -64,8 +47,6 @@ export function HomePage({ headers }: HeadersProps) {
       setPermissions(permissions);
       setStudentId(id || _StudentId);
       setPicture(picture);
-      setAdmin(permissions === "superadmin" ? true : false);
-      setTeacher(permissions === "teacher" ? true : false);
       updateInfo(id, headers);
     } else {
       onLoggOut();
@@ -182,82 +163,6 @@ export function HomePage({ headers }: HeadersProps) {
 
   var appRoutes = [
     {
-      title: "Blog",
-      path: "/",
-      levelcard: true,
-      component: (
-        <Blog change={change} headers={headers} setChange={setChange} />
-      ),
-    },
-    {
-      path: "/dispose",
-      title: "My Classes",
-      component: <MyClasses headers={headers} />,
-    },
-    {
-      title: "Homework",
-      levelcard: false,
-      component: (
-        <Homework
-          change={change}
-          setChange={setChange}
-          headers={headers}
-          isDesktop={false}
-        />
-      ),
-    },
-    {
-      path: "my-homework-and-lessons",
-      title: "Homework",
-      levelcard: false,
-      component: (
-        <Homework
-          change={change}
-          setChange={setChange}
-          headers={headers}
-          isDesktop={false}
-        />
-      ),
-    },
-    {
-      title: "Homework",
-      levelcard: false,
-      path: "/my-classes",
-      component: (
-        <Homework
-          change={change}
-          setChange={setChange}
-          headers={headers}
-          isDesktop={false}
-        />
-      ),
-    },
-    {
-      title: "My Calendar",
-      component: (
-        <MyCalendar
-          change={change}
-          setChange={setChange}
-          myId={_StudentId}
-          thePermissions={thePermissions}
-          headers={headers}
-          isDesktop={undefined}
-        />
-      ),
-    },
-    {
-      title: "My Calendar Ref",
-      component: (
-        <MyCalendarNew
-          change={change}
-          setChange={setChange}
-          myId={_StudentId}
-          thePermissions={thePermissions}
-          headers={headers}
-        />
-      ),
-    },
-    {
       title: "Flash Cards",
       levelcard: true,
       component: (
@@ -270,21 +175,7 @@ export function HomePage({ headers }: HeadersProps) {
         />
       ),
     },
-    {
-      title: "Ranking",
-      component: <Ranking headers={headers} isDesktop={false} />,
-    },
-    {
-      title: "English Courses",
-      component: (
-        <EnglishCourses
-          setChange={setChange}
-          change={change}
-          headers={headers}
-          isDesktop={false}
-        />
-      ),
-    },
+
     {
       title: "Teaching Materials",
       component: (
@@ -313,14 +204,7 @@ export function HomePage({ headers }: HeadersProps) {
           <Redirect to="/" />
         ),
     },
-    {
-      title: "Live Classes",
-      component: <GroupClasses headers={headers} />,
-    },
-    {
-      title: "FAQ",
-      component: <Faq headers={headers} />,
-    },
+
     {
       title: "My Profile",
       component: (
@@ -332,24 +216,6 @@ export function HomePage({ headers }: HeadersProps) {
           }}
         />
       ),
-    },
-    {
-      title: "Posts",
-      component: (
-        <RouteDiv>
-          <BlogPosts headers={headers} />
-        </RouteDiv>
-      ),
-    },
-    {
-      path: "/adm-businessmanagement",
-      title: "Adm",
-      component:
-        verifyToken() && (admin || teacher) ? (
-          <Adm headers={headers} />
-        ) : (
-          <Blog change={change} headers={headers} setChange={setChange} />
-        ),
     },
   ];
 
@@ -371,8 +237,8 @@ export function HomePage({ headers }: HeadersProps) {
                 <Route
                   key={index}
                   path={`${
-                    component.path
-                      ? component.path
+                    (component as any).path
+                      ? (component as any).path
                       : pathGenerator(component.title)
                   }/*`}
                   element={
@@ -398,9 +264,6 @@ export function HomePage({ headers }: HeadersProps) {
               );
             })}
           </Routes>
-          {(thePermissions == "superadmin" || thePermissions == "teacher") && (
-            <Tokens id={_StudentId} headers={headers} change={change} />
-          )}
           <AppFooter see={see} />
           <Outlet />
         </div>
