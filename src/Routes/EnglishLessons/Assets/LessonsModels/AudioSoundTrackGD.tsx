@@ -62,7 +62,6 @@ export default function AudioFile({
   const LinkOnly = (
     <a
       href={link || "#"}
-      
       rel="noopener noreferrer"
       style={{ textDecoration: "underline" }}
     >
@@ -135,7 +134,6 @@ export default function AudioFile({
         >
           <div
             style={{
-              whiteSpace: "pre-wrap",
               color: "#0f172a",
               padding: "12px",
               display: "flex",
@@ -143,9 +141,15 @@ export default function AudioFile({
               gap: "0.5em",
             }}
           >
-            <span>
-              {element.text}
-            </span>
+            <div
+              style={{
+                whiteSpace: "pre-wrap",
+                fontSize: "1.1em",
+              }}
+              dangerouslySetInnerHTML={{
+                __html: element.text.replace(/\n/g, "<br>"),
+              }}
+            />
           </div>
         </div>
       )}
