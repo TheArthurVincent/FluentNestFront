@@ -1,10 +1,7 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
-import {
-  backDomain,
-  formatDateBr,
-} from "../../../Resources/UniversalComponents";
+import { backDomain } from "../../../Resources/UniversalComponents";
 import { PresentationIcon } from "@phosphor-icons/react";
 
 interface ContinueProps {
@@ -13,313 +10,275 @@ interface ContinueProps {
   isDesktop?: boolean;
 }
 
+type LastClassData = {
+  href: string;
+  image: string;
+  title: string;
+  moduleTitle: string;
+};
+
+const defaultMaterialIllustration =
+  "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80";
+
 export const Continue: FC<ContinueProps> = ({
   actualHeaders,
   studentId,
   isDesktop,
 }) => {
-  const [NXTCLASS, setNXTCLASS] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [now, setNow] = useState<Date>(new Date());
   const [thePermissions, setPermissions] = useState<any>("");
-  const [NEXT3, setNEXT3] = useState<any[]>([]);
-  const [teacher, setTeacher] = useState<any>("");
-  const [student, setStudent] = useState<any>("");
+  const [lastClassData, setLastClassData] = useState<LastClassData>({
+    href: "/teaching-materials",
+    image: "",
+    title: "",
+    moduleTitle: "",
+  });
 
-  const fetchLastClassId = async () => {
+  const fetchLastClass = async () => {
     setLoading(true);
-    const user = JSON.parse(localStorage.getItem("loggedIn") || '""');
-    setPermissions(user.permissions);
+
+    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    setPermissions(user.permissions || "");
+
+    const targetId = studentId || user.id;
+
+    if (!targetId) {
+      setLastClassData({
+        href: "/teaching-materials",
+        image: "",
+        title: "",
+        moduleTitle: "",
+      });
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/next-event/${user.id}`,
+        `${backDomain}/api/v1/currentclass/${targetId}`,
         {
           headers: actualHeaders,
         },
       );
-      if (response.data.nextEvent) {
-        setNXTCLASS(response.data.nextEvent);
-      } else {
-        setNXTCLASS("");
+
+      const theClass = response?.data?.theClass;
+      console.log("Resposta da última aula:", response.data);
+      if (!theClass) {
+        setLastClassData({
+          href: response.data.theClass
+            ? `/teaching-materials/${response.data.theClass.courseId}/${response.data.theClass._id}`
+            : "/teaching-materials",
+          image: "",
+          title: "",
+          moduleTitle: "",
+        });
+        return;
       }
 
-      if (response.data.nextThreeEvents) {
-        setNEXT3(response.data.nextThreeEvents);
-      } else {
-        setNEXT3([]);
-      }
+      const classId = theClass?._id || theClass?.classId || theClass?.id || "";
+      const moduleId =
+        theClass?.courseId ||
+        theClass?.moduleId ||
+        theClass?.module?._id ||
+        theClass?.module?.id ||
+        theClass?.module ||
+        "";
 
-      if (response.data.teacherName) {
-        setTeacher(response.data.teacherName);
-      }
+      const image =
+        theClass?.image ||
+        theClass?.classImage ||
+        theClass?.thumb ||
+        theClass?.thumbnail ||
+        theClass?.cover ||
+        theClass?.coverImage ||
+        theClass?.moduleImage ||
+        "";
 
-      if (response.data.nextEvent && response.data.nextEvent.student) {
-        setStudent(response.data.nextEvent.student);
-      }
+      const title =
+        theClass?.title ||
+        theClass?.classTitle ||
+        theClass?.name ||
+        "Última aula recebida";
+
+      const moduleTitle =
+        theClass?.moduleTitle ||
+        theClass?.module?.title ||
+        theClass?.module?.moduleTitle ||
+        "";
+
+      const href =
+        moduleId && classId
+          ? `/teaching-materials/${moduleId}/${classId}`
+          : "/teaching-materials";
+
+      setLastClassData({
+        href,
+        image,
+        title,
+        moduleTitle,
+      });
+      setLoading(false);
     } catch (error) {
-      console.error("Erro ao buscar próxima aula:", error);
+      console.error("Erro ao buscar última aula:", error);
+      setLastClassData({
+        href: "/teaching-materials",
+        image: "",
+        title: "",
+        moduleTitle: "",
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  // Buscar dados quando studentId/headers mudarem
   useEffect(() => {
-    fetchLastClassId();
+    fetchLastClass();
   }, [studentId, actualHeaders]);
 
-  // Atualiza "now" periodicamente para o "ao vivo" funcionar em tempo real
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(new Date());
-    }, 30_000); // a cada 30s
-    return () => clearInterval(interval);
-  }, []);
+  const hasLastClass = useMemo(() => {
+    return lastClassData.href !== "/teaching-materials";
+  }, [lastClassData.href]);
 
-  const formatTime = (date: Date) => {
-    const h = String(date.getHours()).padStart(2, "0");
-    const m = String(date.getMinutes()).padStart(2, "0");
-    return `${h}:${m}`;
-  };
+  const titleLine = (() => {
+    if (loading) return "Carregando materiais...";
+    if (hasLastClass) return "Continue de onde parou";
+    return "Materiais de estudos";
+  })();
 
-  // Cálculos de horário e "ao vivo"
-  let isLive = false;
-  let endTimeStr = "";
-
-  if (NXTCLASS && NXTCLASS.date && NXTCLASS.time && NXTCLASS.duration != null) {
-    const [year, month, day] = NXTCLASS.date.split("-").map(Number);
-    const [hour, minute] = NXTCLASS.time.split(":").map(Number);
-
-    const start = new Date(year, month - 1, day, hour, minute);
-    const end = new Date(start.getTime() + NXTCLASS.duration * 60_000);
-
-    endTimeStr = formatTime(end);
-    isLive = now >= start && now <= end;
-  }
-
-  // Usa _id ou id, dependendo do que o backend mandar
-  const eventId = NXTCLASS?._id || NXTCLASS?.id;
-  const hasNextClass = !!eventId;
-
-  const href = hasNextClass ? `my-calendar/event/${eventId}` : "/my-calendar";
+  const descriptionLine = (() => {
+    if (loading) return "Buscando sua última aula";
+    if (hasLastClass && lastClassData.title) return lastClassData.title;
+    return "Acesse suas aulas, conteúdos e materiais";
+  })();
 
   const buttonLabel = (() => {
     if (loading) return "Carregando...";
-    if (!hasNextClass) return "Acessar calendário";
-    if (isLive) return "Entrar na aula ao vivo";
-    return "Acessar";
-  })();
-
-  const titleLine = (() => {
-    if (!hasNextClass) return "Nenhuma próxima aula encontrada";
-    const who = thePermissions === "student" ? student : teacher;
-    if (!who) return "Próxima aula agendada";
-    return thePermissions == "student"
-      ? `Aula com ${teacher}`
-      : `Aula com ${student}`;
-  })();
-
-  const timeLine = (() => {
-    if (!hasNextClass || !NXTCLASS.date || !NXTCLASS.time) return "";
-    return `${NXTCLASS.date} • ${NXTCLASS.time}${
-      endTimeStr ? ` - ${endTimeStr}` : ""
-    }`;
+    if (hasLastClass) return "Abrir última aula";
+    return "Acessar materiais";
   })();
 
   return (
     <div
       style={{
-        border: `1px solid ${partnerColor()}50`,
-        backgroundImage: `linear-gradient(180deg, ${partnerColor()}15 70%, ${partnerColor()}05 100%)`,
-        borderRadius: "16px",
+        position: "relative",
+        borderRadius: "18px",
+        overflow: "hidden",
         marginTop: isDesktop ? 0 : 16,
-        padding: "24px 24px 20px 24px",
+        height: isDesktop ? "180px" : "160px",
         display: "flex",
-        flexDirection: "column",
-        gap: "16px",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+        border: `1px solid ${partnerColor()}25`,
       }}
     >
-      {/* Cabeçalho: ícone + título + live badge */}
+      {/* Background Image */}
+      <img
+        src={lastClassData.image || defaultMaterialIllustration}
+        alt="Background"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+
+      {/* Degradê da esquerda */}
       <div
         style={{
+          position: "absolute",
+          inset: 0,
+          background: `
+          linear-gradient(
+            -90deg,
+            rgba(0,0,0,0.75) 0%,
+            rgba(0,0,0,0.55) 95%,
+            rgba(0,0,0,0.15) 70%,
+            rgba(0,0,0,0.0) 100%
+          )
+        `,
+        }}
+      />
+
+      {/* Conteúdo */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "12px",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          textAlign: "right",
+          gap: "10px",
+          padding: "20px",
+          maxWidth: "70%",
         }}
       >
+        {/* Badge */}
         <div
           style={{
             display: "flex",
-            gap: "8px",
             alignItems: "center",
+            gap: "8px",
+            backgroundColor: "#ffffffee",
+            padding: "6px 10px",
+            borderRadius: "999px",
+            fontSize: 12,
+            fontWeight: 700,
           }}
         >
-          <PresentationIcon size={20} color={"#030303"} weight="bold" />
-          <span
-            style={{
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 700,
-              fontSize: 14,
-              textTransform: "uppercase",
-              letterSpacing: "4%",
-              color: "#030303",
-            }}
-          >
-            {isLive ? "Ao vivo" : "Próxima aula"}
-          </span>
+          <PresentationIcon size={16} weight="bold" />
+          {hasLastClass ? "Última aula" : "Materiais"}
         </div>
 
-        {isLive && (
-          <span
-            style={{
-              borderRadius: "999px",
-              fontSize: "12px",
-              backgroundColor: partnerColor(),
-              color: "white",
-              fontWeight: 500,
-              padding: "6px 12px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <i
-              className="fa fa-circle"
-              style={{ fontSize: 8, marginRight: 0 }}
-            />
-            Ao vivo
-          </span>
-        )}
-      </div>
-
-      {/* Informações da aula */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-        }}
-      >
+        {/* Título */}
         <span
           style={{
             fontFamily: "Plus Jakarta Sans",
             fontWeight: 700,
-            fontSize: isDesktop ? 18 : 16,
-            color: "#030303",
+            fontSize: isDesktop ? 20 : 17,
+            color: "#ffffff",
+            lineHeight: 1.3,
           }}
         >
-          {loading ? "Carregando próxima aula..." : titleLine}
+          {titleLine}
         </span>
 
-        {timeLine && !loading && (
-          <span
-            style={{
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 500,
-              fontSize: 13,
-              color: "#606060",
-            }}
-          >
-            {timeLine}
-          </span>
-        )}
+        {/* Descrição */}
+        <span
+          style={{
+            fontFamily: "Plus Jakarta Sans",
+            fontWeight: 500,
+            fontSize: 13,
+            color: "#e5e7eb",
+          }}
+        >
+          {descriptionLine}
+        </span>
+
+        {/* Botão */}
+        <a
+          href={lastClassData.href}
+          style={{
+            marginTop: "4px",
+            textDecoration: "none",
+            padding: "10px 14px",
+            borderRadius: "8px",
+            backgroundColor: "#ffffff",
+            color: "#030303",
+            fontWeight: 700,
+            fontSize: 13,
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+          }}
+        >
+          {buttonLabel}
+          <i className="fa fa-chevron-right" />
+        </a>
       </div>
-
-      {/* Botão principal */}
-      <a
-        target={"_self"}
-        href={href}
-        style={{
-          textDecoration: "none",
-          padding: "14px 12px",
-          borderRadius: "6px",
-          border: `1px solid ${partnerColor()}45`,
-          marginTop: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          maxWidth: "fit-content",
-          gap: "8px",
-          textAlign: "center",
-          cursor: "pointer",
-          width: isDesktop ? "fit-content" : "100%",
-          backgroundColor: `${partnerColor()}30`,
-          fontFamily: "Plus Jakarta Sans",
-          fontWeight: 600,
-          fontSize: 14,
-          color: "#030303",
-        }}
-      >
-        {buttonLabel}
-        <i className="fa fa-chevron-right" />
-      </a>
-
-      {/* Próximos eventos (apenas para teacher/superadmin) */}
-      {(thePermissions === "teacher" || thePermissions === "superadmin") &&
-        NEXT3.length > 1 && (
-          <div style={{ marginTop: "8px" }}>
-            <span
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontSize: 14,
-                color: "#030303",
-              }}
-            >
-              Próximos eventos
-            </span>
-
-            <div
-              style={{
-                marginTop: "8px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-              }}
-            >
-              {NEXT3.slice(1).map((ev, index) => {
-                const evId = ev._id || ev.id;
-
-                return (
-                  <div
-                    key={evId || index}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "2px",
-                    }}
-                  >
-                    <a
-                      target={isDesktop ? "_blank" : "_self"}
-                      href={`my-calendar/event/${evId}`}
-                      style={{
-                        textDecoration: "none",
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 500,
-                        fontSize: 13,
-                        color: "#030303",
-                      }}
-                    >
-                      {ev.student || ev.teacherName || "Aluno"}
-                    </a>
-
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#606060",
-                        fontFamily: "Plus Jakarta Sans",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {ev.date ? ev.date : ""} ({ev.time})
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
     </div>
   );
 };

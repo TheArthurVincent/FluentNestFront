@@ -324,7 +324,7 @@ export default function EnglishClassCourse2({
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/handlecurrentclass`,
-        { classId },
+        { classId, studentID: loggedInData.id || loggedInData._id },
         { headers: actualHeaders },
       );
     } catch (error) {

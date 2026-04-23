@@ -3,18 +3,11 @@ import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
-import { Continue } from "../Continue/Continue";
-import { FlashcardsReview } from "../GridHomePageComponents/FlashcardsReview";
-import { PracticalTipsTarget } from "../GridHomePageComponents/PracticalTipsTarget";
-import { HomeworkCard } from "../GridHomePageComponents/HomeworkCard";
-import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
-import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
-import { RankingCard } from "../GridHomePageComponents/RankingCard";
 import Helmets from "../../../Resources/Helmets";
 import Tokens from "../../Tokens";
-import { Birthdays } from "../GridHomePageComponents/Birthdays";
-import { User } from "../../MyProfile/types.MyProfile"; // AJUSTE SE PRECISAR
+import { User } from "../../MyProfile/types.MyProfile";
 import ModalShowAllCORINGA from "./ModalAll/NewHomePageArvin";
+import { Continue } from "../Continue/Continue";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -23,18 +16,57 @@ type MyHomePageProps = HeadersProps & {
   actualHeaders?: any;
 };
 
-export var newArvinTitleStyle = {
+type HomeCardItem = {
+  showToStudent: boolean;
+  showToTeacher: boolean;
+  title: string;
+  href: string;
+  type: "materials" | "flashcards" | "sentence-mining";
+};
+
+export const newArvinTitleStyle = {
   fontFamily: "Plus Jakarta Sans",
   fontWeight: 600,
-  fontStyle: "SemiBold",
   fontSize: 24,
-  letterSpacing: "0%",
+};
+
+const cardIllustrations: Record<HomeCardItem["type"], string> = {
+  materials:
+    "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
+  flashcards:
+    "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80",
+  "sentence-mining":
+    "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=1200&q=80",
+};
+
+const cardVisualContent: Record<
+  HomeCardItem["type"],
+  {
+    icon: string;
+    title: string;
+    subtitle: string;
+  }
+> = {
+  materials: {
+    icon: "fa-book",
+    title: "Cursos e conteúdos",
+    subtitle: "Acesse seus materiais",
+  },
+  flashcards: {
+    icon: "fa-clone",
+    title: "Revisão rápida",
+    subtitle: "Pratique com flashcards",
+  },
+  "sentence-mining": {
+    icon: "fa-quote-left",
+    title: "Frases úteis",
+    subtitle: "Explore a mineração",
+  },
 };
 
 export function MyHomePage({
   headers,
   change,
-  setChange,
   isDesktop,
   actualHeaders,
 }: MyHomePageProps) {
@@ -44,24 +76,29 @@ export function MyHomePage({
   >("");
   const [studentPicture, setStudentPicture] = useState("");
   const [id, setId] = useState<string>("");
-  const [appLoaded, setAppLoaded] = useState<boolean>(false);
-  const [showMoney, setShowMoney] = useState<boolean>(false);
-
-  const [universalWarning, setUniversalWarning] = useState<boolean>(false);
-  const [showUniversalWarningModal, setShowUniversalWarningModal] =
-    useState<boolean>(false);
-
+  const [studentId, setStudentId] = useState<string>("");
+  const [universalWarning, setUniversalWarning] = useState(false);
   const [user, setUser] = useState<User>({} as User);
+
+  const seeScore = async (userId: string) => {
+    try {
+      updateInfo(userId, headers);
+
+      const response = await axios.get(`${backDomain}/api/v1/score/${userId}`, {
+        headers: headers ? { ...headers } : {},
+      });
+
+      setMonthlyScore(response.data.monthlyScore);
+      setStudentPicture(response.data.picture);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const isUniversalWarning = async (userId: string) => {
     try {
       updateInfo(userId, headers);
-      setAppLoaded((prev) => !prev);
-    } catch (e) {
-      console.log(e);
-    }
 
-    try {
       const response = await axios.get(
         `${backDomain}/api/v1/universal-warning/${userId}`,
         {
@@ -69,38 +106,7 @@ export function MyHomePage({
         },
       );
 
-      const warning = response.data.universalWarning;
-      setUniversalWarning(warning);
-      setShowUniversalWarningModal(warning);
-
-      setTimeout(() => {
-        setAppLoaded((prev) => !prev);
-      }, 800);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const seeScore = async (userId: string) => {
-    try {
-      updateInfo(userId, headers);
-      setAppLoaded((prev) => !prev);
-    } catch (e) {
-      console.log(e);
-    }
-
-    try {
-      const response = await axios.get(`${backDomain}/api/v1/score/${userId}`, {
-        headers: headers ? { ...headers } : {},
-      });
-
-      setMonthlyScore(response.data.monthlyScore);
-      setStudentPicture(response.data.picture);
-
-      setAppLoaded((prev) => !prev);
-      setTimeout(() => {
-        setAppLoaded((prev) => !prev);
-      }, 800);
+      setUniversalWarning(response.data.universalWarning);
     } catch (error) {
       console.error(error);
     }
@@ -119,10 +125,7 @@ export function MyHomePage({
       );
 
       setUniversalWarning(false);
-      setShowUniversalWarningModal(false);
-
       updateInfo(id, headers);
-      setAppLoaded((prev) => !prev);
     } catch (error) {
       console.error(error);
     }
@@ -130,108 +133,167 @@ export function MyHomePage({
 
   useEffect(() => {
     const userLocal = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    const permissions = userLocal.permissions;
     const userId = userLocal.id;
+    const permissions = userLocal.permissions || "";
 
     setUser(userLocal);
+    setStudentId(userId);
     setId(userId);
     setPERMISSIONS(permissions);
 
     if (userId) {
       seeScore(userId);
-      setAppLoaded((prev) => !prev);
       isUniversalWarning(userId);
     }
   }, [change]);
 
-  const cards = [
+  const cards: HomeCardItem[] = [
     {
       showToStudent: false,
       showToTeacher: true,
-      component: (
-        <Birthdays
-          studentId={id}
-          appLoaded={appLoaded}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-        />
-      ),
-    },
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: (
-        <WeeklyProgress
-          studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
-    },
-    {
-      showToTeacher: false,
-      showToStudent: true,
-      component: (
-        <HomeworkCard
-          isDesktop={isDesktop}
-          studentId={id}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
-    },
-    {
-      showToTeacher: false,
-      showToStudent: true,
-      component: (
-        <RankingCard
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
-    },
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: <FlashcardsReview actualHeaders={actualHeaders} />,
-    },
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: (
-        <PracticalTipsTarget
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
+      title: "Materiais de estudos",
+      href: "/teaching-materials",
+      type: "materials",
     },
     {
       showToStudent: false,
       showToTeacher: true,
-      component: (
-        <CalendarCard
-          studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-        />
-      ),
+      title: "Flashcards",
+      href: "/flash-cards",
+      type: "flashcards",
+    },
+    {
+      showToStudent: false,
+      showToTeacher: true,
+      title: "Mineração de Sentenças",
+      href: "/sentence-mining",
+      type: "sentence-mining",
     },
   ];
 
-  const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
+  const canSee = (
+    item: Pick<HomeCardItem, "showToStudent" | "showToTeacher">,
+  ) => {
     if (PERMISSIONS === "teacher" || PERMISSIONS === "superadmin") {
       return item.showToTeacher;
     }
+
     return item.showToStudent;
+  };
+
+  const visibleCards = cards.filter(canSee);
+
+  const renderCardVisual = (item: HomeCardItem) => {
+    const visual = cardVisualContent[item.type];
+    const image = cardIllustrations[item.type];
+
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "110px",
+          borderRadius: "14px",
+          overflow: "hidden",
+          position: "relative",
+          background:
+            "linear-gradient(135deg, rgba(84,191,8,0.14), rgba(84,191,8,0.04))",
+          border: "1px solid rgba(84,191,8,0.18)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img
+          src={image}
+          alt={item.title}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.22,
+            display: "block",
+          }}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(135deg, rgba(84,191,8,0.18), rgba(255,255,255,0.08))",
+          }}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            color: partnerColor(),
+            padding: "0 14px",
+          }}
+        >
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "14px",
+              backgroundColor: "#ffffffdd",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+              flexShrink: 0,
+            }}
+          >
+            <i
+              className={`fa ${visual.icon}`}
+              style={{
+                fontSize: "20px",
+                color: partnerColor(),
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              lineHeight: 1.2,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 700,
+                fontSize: "14px",
+                color: "#1D2939",
+              }}
+            >
+              {visual.title}
+            </span>
+
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 500,
+                fontSize: "12px",
+                color: "#475467",
+              }}
+            >
+              {visual.subtitle}
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
     <div
       style={{
-        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
+        margin: isDesktop ? "0px 16px 0px 0px" : "0px",
       }}
     >
       {isDesktop && (
@@ -250,111 +312,19 @@ export function MyHomePage({
               alignItems: "center",
               paddingLeft: "8px",
               width: "100%",
-              fontSize: "1.5rem",
             }}
           >
             <span style={newArvinTitleStyle}>Início</span>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                justifyContent: "space-between",
-              }}
-            >
-              {PERMISSIONS == "student" && (
-                <span
-                  onClick={() => {
-                    seeScore(id);
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "60px",
-                    padding: "8px 12px",
-                    backgroundColor: `${partnerColor()}20`,
-                    border: `1px solid ${partnerColor()}50`,
-                  }}
-                >
-                  <i
-                    className="fa fa-trophy"
-                    style={{
-                      fontSize: "12px",
-                      left: "10px",
-                      top: "50%",
-                      color: partnerColor(),
-                      pointerEvents: "none",
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "14px",
-                      color: partnerColor(),
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    {monthlyScore} pts
-                  </span>
-                </span>
-              )}
-
-              {PERMISSIONS !== "student" && (
-                <span
-                  onClick={() => {
-                    seeScore(id);
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    borderRadius: "60px",
-                    padding: "8px 12px",
-                    backgroundColor: `${partnerColor()}20`,
-                    border: `1px solid ${partnerColor()}50`,
-                  }}
-                >
-                  <span
-                    onClick={() => setShowMoney(!showMoney)}
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "14px",
-                      color: partnerColor(),
-                      lineHeight: "100%",
-                      letterSpacing: "0%",
-                    }}
-                  >
-                    <Tokens id={id} headers={actualHeaders} change={change} />
-                  </span>
-                </span>
-              )}
-
-              <img
-                onClick={() => {
-                  window.location.assign("/my-profile");
-                }}
-                style={{
-                  height: "40px",
-                  width: "40px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-                src={
-                  studentPicture ||
-                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-                }
-                alt={studentPicture}
-              />
-            </span>
           </section>
         </div>
       )}
+
+      <Continue
+        actualHeaders={actualHeaders}
+        studentId={studentId}
+        isDesktop={isDesktop}
+      />
+
       <ModalShowAllCORINGA
         universalWarning={universalWarning}
         onClose={() => window.location.reload()}
@@ -365,38 +335,76 @@ export function MyHomePage({
           await turnOffUniversalWarning();
         }}
       />
-      <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
 
       <div
         style={{
-          columnCount: isDesktop ? 2 : 1,
-          columnGap: "16px",
-          marginTop: "32px",
+          display: "grid",
+          gridTemplateColumns: isDesktop ? "repeat(3, 1fr)" : "1fr",
+          gap: "16px",
           paddingBottom: "64px",
         }}
       >
-        {cards.map((item, index) => {
-          if (!canSee(item)) return null;
+        {visibleCards.map((item) => (
+          <a
+            key={item.type}
+            href={item.href}
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: "18px",
+              border: "1px solid #E3E8F0",
+              padding: "14px",
+              textDecoration: "none",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              minHeight: "210px",
+              gap: "16px",
+              boxShadow: "0 8px 30px rgba(16, 24, 40, 0.04)",
+              transition: "transform 0.18s ease, box-shadow 0.18s ease",
+            }}
+          >
+            {renderCardVisual(item)}
 
-          return (
             <div
-              key={index}
               style={{
-                marginBottom: "16px",
-                breakInside: "avoid",
-                backgroundColor: "white",
-                borderRadius: "16px",
-                border: "1px solid #E3E8F0",
-                padding: "20px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
               }}
             >
-              {item.component}
+              <span
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  color: "#030303",
+                  lineHeight: 1.4,
+                }}
+              >
+                {item.title}
+              </span>
+
+              <span
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontSize: "11px",
+                  textTransform: "uppercase",
+                  display: "flex",
+                  color: partnerColor(),
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                Acessar
+                <i className="fa fa-chevron-right" />
+              </span>
             </div>
-          );
-        })}
+          </a>
+        ))}
       </div>
 
-      <Helmets text={`Início`} />
+      <Helmets text="Início" />
     </div>
   );
 }

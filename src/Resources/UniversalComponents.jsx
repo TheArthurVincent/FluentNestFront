@@ -1748,7 +1748,7 @@ export const updateInfo = async (id, headers) => {
     });
     var userInfo = response.data.formattedStudentData;
     var loggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
-    X = loggedIn = Object.assign(loggedIn, userInfo);
+    loggedIn = Object.assign(loggedIn, userInfo);
     localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
     localStorage.setItem("selectedStudentID", id);
   } catch (error) {
