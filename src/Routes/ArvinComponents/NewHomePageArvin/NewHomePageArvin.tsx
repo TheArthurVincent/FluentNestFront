@@ -315,6 +315,33 @@ export function MyHomePage({
             }}
           >
             <span style={newArvinTitleStyle}>Início</span>
+
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                justifyContent: "space-between",
+              }}
+            >
+              <img
+                onClick={() => {
+                  window.location.assign("/my-profile");
+                }}
+                style={{
+                  height: "40px",
+                  width: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                }}
+                src={
+                  studentPicture ||
+                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                }
+                alt="Perfil"
+              />
+            </span>
           </section>
         </div>
       )}
