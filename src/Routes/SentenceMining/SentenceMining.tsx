@@ -121,12 +121,6 @@ const SentenceMining = ({
     }
   }, [myId]);
 
-  // Seleção de aluno pelo professor/admin
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const studentId = event.target.value;
-    setSelectedStudentId(studentId);
-  };
-
   // Mineração da palavra/frase
   const mineWord = async (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -406,7 +400,6 @@ const SentenceMining = ({
                   </RadioGroup>
                   <button
                     type="submit"
-                    title="-15"
                     style={{
                       cursor:
                         word.trim() === "" || dis ? "not-allowed" : "pointer",
@@ -417,10 +410,7 @@ const SentenceMining = ({
                     }}
                     disabled={word.trim() === "" || dis}
                   >
-                    {thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "✨ Minerar (-5)"
-                      : "Minerar (-10 total points)"}
+                    Minerar
                   </button>
                 </>
               )}
@@ -534,22 +524,6 @@ const SentenceMining = ({
             )}
           </section>
         )}
-
-        <span style={{ display: "flex", justifyContent: "right" }}>
-          {!isArthurVincent && (
-            <a
-              style={{
-                fontSize: "13px",
-                marginTop: "15px",
-                color: "#999",
-                textDecoration: "none",
-              }}
-              href="/flash-cards"
-            >
-              Veja os flashcards dos alunos
-            </a>
-          )}
-        </span>
       </div>
     </div>
   );
