@@ -101,7 +101,7 @@ export const ItemRow: FC<{
         {!collapsed && (
           <span
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: 14,

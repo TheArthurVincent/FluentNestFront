@@ -15,7 +15,7 @@ type ListStudentsClassesProps = HeadersProps & {
 };
 
 export const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
@@ -147,7 +147,7 @@ export function ListStudentsClasses({
             flexDirection: "column",
             gap: 12,
             transition: "0.25s",
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
           }}
         >

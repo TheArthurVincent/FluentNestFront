@@ -167,7 +167,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
             padding: "6px 10px",
             borderRadius: "6px",
             border: "1px solid #E3E8F0",
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontSize: "12px",
             fontWeight: 600,
             background: "#fff",
@@ -200,7 +200,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
             key={wd}
             style={{
               textAlign: "center",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontSize: "12px",
               fontWeight: 700,
               color: "#030303",
@@ -264,7 +264,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
         <a
           href="/my-calendar"
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 700,
             marginTop: "20px",
             fontSize: "12px",
@@ -329,7 +329,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                 >
                   <span
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontSize: "13px",
                       fontWeight: 700,
                       color: "#0f172a",
@@ -339,7 +339,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                   </span>
                   <span
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontSize: "11px",
                       color: "#6b7280",
                     }}
@@ -384,7 +384,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                   {dayEvents.length === 0 ? (
                     <div
                       style={{
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontSize: "12px",
                         color: "#6b7280",
                         padding: "8px 2px",
@@ -424,7 +424,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                           >
                             <span
                               style={{
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontSize: "13px",
                                 fontWeight: 600,
                                 color: "#111827",
@@ -435,7 +435,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
 
                             <span
                               style={{
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontSize: "11px",
                                 fontWeight: 600,
                                 padding: "2px 8px",
@@ -456,7 +456,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                               display: "flex",
                               gap: "8px",
                               alignItems: "center",
-                              fontFamily: "Plus Jakarta Sans",
+                              fontFamily: "Lato",
                               fontSize: "11px",
                               color: "#4B5563",
                             }}
@@ -481,7 +481,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                           {ev.description && (
                             <span
                               style={{
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontSize: "11px",
                                 color: "#6B7280",
                                 marginTop: "2px",
@@ -493,7 +493,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                           {ev.link && !isCanceled && (
                             <span
                               style={{
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontSize: "11px",
                                 color: isCanceled ? "#9CA3AF" : partnerColor(),
                                 textDecoration: "underline",

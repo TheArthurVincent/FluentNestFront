@@ -195,7 +195,7 @@ const FlashCards = ({
       {/* CARD PRINCIPAL */}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           margin: !isDesktop ? "12px" : "16px auto",
@@ -228,7 +228,7 @@ const FlashCards = ({
                 return {
                   width: "fit-content",
                   maxWidth: 520,
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   fontWeight: 600,
                   display: "flex",
                   justifyContent: "center",

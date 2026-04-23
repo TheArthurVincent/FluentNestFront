@@ -8,7 +8,6 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import {
-  alwaysWhite,
   partnerColor,
   textPrimaryColorContrast,
 } from "../../Styles/Styles";
@@ -17,7 +16,6 @@ import {
   UlSentences,
 } from "../EnglishLessons/Assets/Functions/EnglishActivities.Styled";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { isArthurVincent } from "../../App";
 import { newArvinTitleStyle } from "../ArvinComponents/Students/Students";
 import Voice from "../../Resources/Voice";
 
@@ -309,7 +307,7 @@ const SentenceMining = ({
       {/* CARD PRINCIPAL */}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           margin: !isDesktop ? "12px" : "16px auto",

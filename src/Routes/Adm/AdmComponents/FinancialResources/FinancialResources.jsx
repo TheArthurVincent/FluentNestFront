@@ -1097,7 +1097,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
       <>
         <div
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 600,
             fontStyle: "SemiBold",
             margin: !isDesktop ? "12px" : "16px auto",
@@ -1264,7 +1264,7 @@ export function FinancialResources({ headers, id, plan, isDesktop }) {
                   `,
                           gap: "12px",
                           marginBottom: "20px",
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                         }}
                       >
                         {calculateFinancialData().map((item, index) => (

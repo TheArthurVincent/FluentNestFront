@@ -91,7 +91,7 @@ function EventPreviewModal({ event, onClose }) {
           border: "none",
           boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
           overflow: "hidden",
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           animation: "fadeIn 0.2s ease-out",
         }}
       >
@@ -1830,7 +1830,7 @@ function MyCalendar({
       )}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
@@ -1844,7 +1844,7 @@ function MyCalendar({
           <div
             style={{
               margin: "16px auto",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 600,
               fontStyle: "SemiBold",
               display: "grid",

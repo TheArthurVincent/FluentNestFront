@@ -75,7 +75,7 @@ export function LoginComponent() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: "Plus Jakarta Sans, sans-serif",
+        fontFamily: "Lato, sans-serif",
       }}
     >
       <Helmets text={"Login"} />
@@ -224,7 +224,7 @@ export function LoginComponent() {
             maxWidth: "20rem",
             margin: "24px auto 0 auto",
             display: fail ? "block" : "none",
-            fontFamily: "Plus Jakarta Sans, sans-serif",
+            fontFamily: "Lato, sans-serif",
           }}
           severity="error"
         >

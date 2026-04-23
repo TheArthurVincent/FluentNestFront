@@ -11,7 +11,7 @@ type CLSSUPProps = HeadersProps & {
 };
 
 export var newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
@@ -55,7 +55,7 @@ export function CLSSUP({
       )}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",

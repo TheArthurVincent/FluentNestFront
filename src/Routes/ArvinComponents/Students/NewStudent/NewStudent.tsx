@@ -228,7 +228,7 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
             pb: 1,
           }}
         >
-          <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 600 }}>
+          <span style={{ fontFamily: "Lato", fontWeight: 600 }}>
             Novo Aluno
           </span>
           <IconButton onClick={() => setOpen(false)} size="small">

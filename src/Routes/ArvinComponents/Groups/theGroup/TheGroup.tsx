@@ -175,7 +175,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
   //     <div
   //       style={{
   //         padding: 16,
-  //         fontFamily: "Plus Jakarta Sans",
+  //         fontFamily: "Lato",
   //       }}
   //     >
   //       Carregando turma...
@@ -188,7 +188,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
       <div
         style={{
           padding: 16,
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
         }}
       >
         {/* Turma não encontrada. */}
@@ -241,7 +241,7 @@ const GroupPage: FC<GroupPageProps> = ({ headers, isDesktop, id }) => {
       <div
         style={{
           fontFamily:
-            "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+            "Lato, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
           display: "grid",
           gridTemplateColumns: isDesktop
             ? "minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr)"

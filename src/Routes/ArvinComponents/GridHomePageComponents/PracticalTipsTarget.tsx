@@ -51,7 +51,7 @@ export const PracticalTipsTarget: FC<PracticalTipsTargetProps> = ({
   }, [today]);
 
   const styleLi = {
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 600,
     fontStyle: "SemiBold",
     fontSize: "13px",

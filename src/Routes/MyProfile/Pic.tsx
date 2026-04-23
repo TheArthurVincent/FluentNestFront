@@ -37,7 +37,7 @@ export function AvatarUpload({
   // estilos padrão
   const fontBase: React.CSSProperties = {
     margin: "0 auto",
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 600,
     fontStyle: "SemiBold",
     fontSize: "14px",
@@ -94,7 +94,7 @@ export function AvatarUpload({
         accept="image/*"
         ref={fileInputRef}
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           border: "none",
           outline: "none",

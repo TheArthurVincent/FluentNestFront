@@ -134,7 +134,7 @@ export default function RankingTimelineArvin({
   /* ========================= Estilos base ========================= */
   const fontBase = {
     margin: "0 auto",
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 600 as const,
     fontStyle: "SemiBold",
     fontSize: "14px",
@@ -306,7 +306,7 @@ export default function RankingTimelineArvin({
                     border: "1px solid #e5e7eb",
                     background: "#fff",
                     cursor: "pointer",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 600,
                   }}
                   aria-label="Carregar mais itens do histórico"
@@ -318,7 +318,7 @@ export default function RankingTimelineArvin({
               {!canLoadMore && (
                 <span
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 600,
                     opacity: 0.8,
                   }}

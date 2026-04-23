@@ -47,7 +47,7 @@ export const RankingCard: FC<RankingCardProps> = ({
         <a
           href="/ranking"
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 700,
             marginTop: "20px",
             fontSize: "12px",

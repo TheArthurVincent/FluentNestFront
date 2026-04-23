@@ -138,7 +138,7 @@ export const NextClass: FC<NextClassProps> = ({
         {loading || NXTCLASS === "" ? (
           <span
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 700,
               fontStyle: "Bold",
               fontSize: "16px",
@@ -158,7 +158,7 @@ export const NextClass: FC<NextClassProps> = ({
           >
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 700,
                 fontStyle: "Bold",
                 fontSize: "16px",
@@ -177,7 +177,7 @@ export const NextClass: FC<NextClassProps> = ({
                 marginTop: "4px",
                 fontSize: "14px",
                 color: "#606060",
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 500,
                 letterSpacing: "0%",
               }}
@@ -195,7 +195,7 @@ export const NextClass: FC<NextClassProps> = ({
         target={isDesktop ? "_blank" : "_self"}
         href={NXTCLASS ? `my-calendar/event/${NXTCLASS._id}` : "/my-calendar"}
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 700,
           fontStyle: "Bold",
           marginTop: "20px",
@@ -219,7 +219,7 @@ export const NextClass: FC<NextClassProps> = ({
           <div style={{ marginTop: "20px" }}>
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 600,
                 fontSize: "16px",
                 color: "#030303",
@@ -250,7 +250,7 @@ export const NextClass: FC<NextClassProps> = ({
                     href={`my-calendar/event/${ev._id}`}
                     style={{
                       textDecoration: "none",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 500,
                       fontSize: "14px",
                       color: "#030303",
@@ -263,7 +263,7 @@ export const NextClass: FC<NextClassProps> = ({
                     style={{
                       fontSize: "13px",
                       color: "#606060",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 500,
                     }}
                   >

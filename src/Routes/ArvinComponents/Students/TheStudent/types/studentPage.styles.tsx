@@ -10,7 +10,7 @@ export const cardBase: React.CSSProperties = {
 };
 
 export const cardTitle: React.CSSProperties = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 700,
   fontSize: 14,
   color: "#111827",

@@ -147,7 +147,7 @@ function ModalInBody({
           border: "1px solid #E5E7EB",
           boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
           overflow: "hidden",
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
         }}
       >
         <div
@@ -341,7 +341,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
     onChange: (v: boolean) => void;
   }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <span style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}>
+      <span style={{ fontFamily: "Lato", color: "#4B5563" }}>
         Reagendadas:
       </span>
       <button
@@ -439,7 +439,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
       <div
         style={{
           ...cardBase,
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           margin: !isDesktop ? 12 : 0,
         }}
@@ -491,7 +491,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por descrição da aula..."
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontSize: 14,
                 borderRadius: 6,
                 border: "1px solid #E5E7EB",
@@ -523,7 +523,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   setStatusFilter(e.target.value as StatusFilter)
                 }
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   padding: "6px 10px",
@@ -549,7 +549,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                 value={pageSize}
                 onChange={(e) => handleChangePageSize(Number(e.target.value))}
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   maxWidth: 10,
                   borderRadius: 6,
                   border: "1px solid #E5E7EB",
@@ -569,7 +569,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           <p
             style={{
               marginTop: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               color: "#4B5563",
             }}
@@ -587,7 +587,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
           <p
             style={{
               marginTop: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               color: "#4B5563",
             }}
@@ -632,7 +632,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                       <span
                         style={{
                           fontSize: 12,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           color: "#111827",
                         }}
                       >
@@ -682,7 +682,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           <span
                             style={{
                               fontSize: 10,
-                              fontFamily: "Plus Jakarta Sans",
+                              fontFamily: "Lato",
                               color: "#4B5563",
                             }}
                           >
@@ -701,7 +701,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                           gap: 8,
                           color: partnerColor(),
                           fontSize: 10,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           textTransform: "uppercase",
                           whiteSpace: "nowrap",
                         }}
@@ -715,7 +715,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   {event.rescheduled && event.rescheduledDescription && (
                     <span
                       style={{
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontSize: 10,
                         backgroundColor: "#FEF3F2",
                         padding: "4px 8px",
@@ -740,7 +740,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               color: "#4B5563",
             }}
@@ -868,7 +868,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
               selectedEvent.rescheduledDescription && (
                 <div
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontSize: 12,
                     backgroundColor: "#FEF3F2",
                     padding: "10px 12px",
@@ -900,7 +900,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   background: "#FFFFFF",
                   cursor: "pointer",
                   fontWeight: 800,
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               >
                 Fechar
@@ -916,7 +916,7 @@ export const StudentClassesHistory: React.FC<StudentClassesHistoryProps> = ({
                   color: partnerColor(),
                   cursor: "pointer",
                   fontWeight: 900,
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   textDecoration: "none",
                   textTransform: "uppercase",
                   display: "inline-flex",

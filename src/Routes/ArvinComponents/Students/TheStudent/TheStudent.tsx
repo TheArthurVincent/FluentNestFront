@@ -54,7 +54,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
       <div
         style={{
           padding: 16,
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
         }}
       >
         Carregando aluno...
@@ -67,7 +67,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
       <div
         style={{
           padding: 16,
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
         }}
       >
         Aluno não encontrado.
@@ -96,7 +96,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
       <div
         style={{
           fontFamily:
-            "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+            "Lato, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
           display: "grid",
           gridTemplateColumns: isDesktop
             ? "repeat(3, minmax(0, 1fr))"

@@ -72,7 +72,7 @@ export function Adm({ headers }: HeadersProps) {
   return (
     <div
       style={{
-        fontFamily: "Plus Jakarta Sans",
+        fontFamily: "Lato",
         margin: "1.6rem auto",
         fontWeight: 600,
         fontStyle: "SemiBold",

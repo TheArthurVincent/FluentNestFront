@@ -127,7 +127,7 @@ function ModalInBody({
         justifyContent: "center",
         padding: 16,
         zIndex: 99999,
-        fontFamily: "Plus Jakarta Sans",
+        fontFamily: "Lato",
       }}
     >
       <div
@@ -414,7 +414,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
       <div
         style={{
           ...cardBase,
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           margin: !isDesktop ? 12 : 0,
         }}
       >
@@ -461,7 +461,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Buscar por descrição da aula..."
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontSize: 14,
                 borderRadius: 6,
                 border: "1px solid #E5E7EB",
@@ -482,7 +482,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
-                style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}
+                style={{ fontFamily: "Lato", color: "#4B5563" }}
               >
                 Status:
               </span>
@@ -493,7 +493,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   setStatusFilter(e.target.value as StatusFilter)
                 }
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   padding: "6px 10px",
@@ -512,7 +512,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
 
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span
-                style={{ fontFamily: "Plus Jakarta Sans", color: "#4B5563" }}
+                style={{ fontFamily: "Lato", color: "#4B5563" }}
               >
                 Mostrar:
               </span>
@@ -521,7 +521,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                 value={pageSize}
                 onChange={(e) => handleChangePageSize(Number(e.target.value))}
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   borderRadius: 6,
                   border: "1px solid #E5E7EB",
                   padding: "4px 8px",
@@ -540,7 +540,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           <p
             style={{
               marginTop: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               color: "#4B5563",
             }}
@@ -558,7 +558,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
           <p
             style={{
               marginTop: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               color: "#4B5563",
             }}
@@ -598,7 +598,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                       <span
                         style={{
                           fontSize: 12,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           color: "#111827",
                         }}
                       >
@@ -646,7 +646,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                           <span
                             style={{
                               fontSize: 10,
-                              fontFamily: "Plus Jakarta Sans",
+                              fontFamily: "Lato",
                               color: "#4B5563",
                             }}
                           >
@@ -665,7 +665,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                           gap: 8,
                           color: partnerColor(),
                           fontSize: 10,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           textTransform: "uppercase",
                           whiteSpace: "nowrap",
                         }}
@@ -679,7 +679,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   {event.rescheduled && event.rescheduledDescription && (
                     <span
                       style={{
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontSize: 10,
                         backgroundColor: "#FEF3F2",
                         padding: "4px 8px",
@@ -704,7 +704,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               color: "#4B5563",
             }}
           >
@@ -897,7 +897,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   background: "#FFFFFF",
                   cursor: "pointer",
                   fontWeight: 800,
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               >
                 Fechar
@@ -913,7 +913,7 @@ export const GroupClassesHistory: React.FC<GroupClassesHistoryProps> = ({
                   color: partnerColor(),
                   cursor: "pointer",
                   fontWeight: 900,
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   textDecoration: "none",
                   textTransform: "uppercase",
                   display: "inline-flex",

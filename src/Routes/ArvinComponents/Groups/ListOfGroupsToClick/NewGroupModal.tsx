@@ -128,7 +128,7 @@ export const NewGroupModal: React.FC<NewGroupModalProps> = ({
                 borderRadius: 12,
                 padding: 20,
                 boxShadow: "0 20px 45px rgba(15, 23, 42, 0.35)",
-                fontFamily: "Plus Jakarta Sans, system-ui, sans-serif",
+                fontFamily: "Lato, system-ui, sans-serif",
               }}
               onClick={(e) => e.stopPropagation()}
             >

@@ -72,7 +72,7 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
       <div
         style={{
           marginTop: "16px",
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 500,
           fontSize: "12px",
           padding: "8px 0",
@@ -89,7 +89,7 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
       <a
         href={`/my-homework-and-lessons/${studentId}`}
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 700,
           fontStyle: "Bold",
           marginTop: "20px",

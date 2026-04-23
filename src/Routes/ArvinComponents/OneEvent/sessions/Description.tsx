@@ -218,7 +218,7 @@ const Description: FC<DescriptionProps> = ({
                     ...inputStyle,
                     minHeight: 150,
                     resize: "vertical",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 />
                 <button
@@ -271,7 +271,7 @@ const Description: FC<DescriptionProps> = ({
                     ...inputStyle,
                     minHeight: 150,
                     resize: "vertical",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 />
               </div>

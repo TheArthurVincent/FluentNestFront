@@ -174,7 +174,7 @@ const ParentHeader: FC<{
         {!collapsed && (
           <span
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 600,
               fontSize: 14,
               lineHeight: "100%",
@@ -196,7 +196,7 @@ const ParentHeader: FC<{
               marginLeft: "auto",
               opacity: 0.55,
               fontSize: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 700,
             }}
           >
@@ -291,7 +291,7 @@ const ItemRow: FC<{
         {!collapsed && (
           <span
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: compact ? 12.5 : 14,

@@ -122,7 +122,7 @@ const metricsChipStyle: React.CSSProperties = {
   background: "#FFFFFF",
   border: "1px solid #E5E7EB",
   fontSize: 12,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 const metricsWrapperStyle: React.CSSProperties = {
@@ -141,7 +141,7 @@ const primaryButtonStyle: React.CSSProperties = {
   color: "#FFFFFF",
   border: "none",
   cursor: "pointer",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 13,
   fontWeight: 600,
   display: "inline-flex",
@@ -156,7 +156,7 @@ const ghostButtonStyle: React.CSSProperties = {
   color: "#111827",
   border: "1px solid #E5E7EB",
   cursor: "pointer",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 13,
   display: "inline-flex",
   alignItems: "center",
@@ -167,7 +167,7 @@ const finishedContinueTextStyle: React.CSSProperties = {
   fontSize: 14,
   color: "#065F46",
   fontWeight: 600,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 // ===================== PROPS =====================
@@ -254,7 +254,7 @@ export function LessonListeningExercise({
         <HeaderBar title="Listening" />
         <div
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontSize: 12,
             color: "#6B7280",
           }}
@@ -403,7 +403,7 @@ export function LessonListeningExercise({
             right={
               <span
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   fontSize: 12,
                   fontWeight: 600,
                   color: "#6B7280",
@@ -449,7 +449,7 @@ export function LessonListeningExercise({
                 style={{
                   fontSize: 13,
                   color: "#374151",
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               >
                 Seu desempenho foi registrado para esta atividade.
@@ -522,7 +522,7 @@ export function LessonListeningExercise({
                         style={{
                           fontSize: 12,
                           color: "#6B7280",
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                         }}
                       >
                         Transcrevendo...
@@ -534,7 +534,7 @@ export function LessonListeningExercise({
                     style={{
                       fontSize: 12,
                       color: "#6B7280",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                     }}
                   >
                     Grave sua resposta. Quando a transcrição terminar, a
@@ -588,7 +588,7 @@ export function LessonListeningExercise({
                       style={{
                         fontSize: 12,
                         color: "#6B7280",
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                       }}
                     >
                       Sua resposta:
@@ -612,7 +612,7 @@ export function LessonListeningExercise({
                             background: perWordCorrect[i]
                               ? "#D1FAE5"
                               : "#FEE2E2",
-                            fontFamily: "Plus Jakarta Sans",
+                            fontFamily: "Lato",
                             fontSize: 12,
                           }}
                         >
@@ -702,7 +702,7 @@ export function LessonListeningExercise({
                 maxHeight: "70vh",
                 padding: 16,
                 zIndex: 1000,
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,

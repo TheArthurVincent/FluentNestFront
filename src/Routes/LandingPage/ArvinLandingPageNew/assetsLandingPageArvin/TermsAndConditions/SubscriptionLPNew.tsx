@@ -161,7 +161,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           border: 1px solid #C3D4E9;
           border-radius: 8px;
           padding: 10px 12px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Lato', sans-serif;
           font-size: 14px;
           color: #555;
           outline: none;
@@ -170,7 +170,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           background: #fff;
         }
         .ts-label {
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Lato', sans-serif;
           font-size: 14px;
           font-weight: 600;
           color: #fff;
@@ -188,7 +188,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           border: 1px solid #C3D4E9;
           border-radius: 8px;
           padding: 12px 16px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Lato', sans-serif;
           font-size: 14px;
           color: #101721;
           background: #fff;
@@ -201,7 +201,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           border-radius: 30px;
           padding: 14px 40px;
           cursor: pointer;
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Lato', sans-serif;
           font-weight: 600;
           font-size: 14px;
           letter-spacing: -0.02em;
@@ -221,7 +221,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
         <div style={{ textAlign: "center" }}>
           <div
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 700,
               fontSize: 12,
               color: "#ED5914",
@@ -233,7 +233,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           </div>
           <p
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 700,
               fontSize: 24,
               color: "#fff",
@@ -244,7 +244,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           </p>
           <p
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 400,
               fontSize: 14,
               color: "#596780",
@@ -385,7 +385,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
                     fontSize: 12,
                     color: "#FF4423",
                     marginTop: 4,
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 >
                   {errors.confirmPassword}

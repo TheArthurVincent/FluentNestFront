@@ -2905,7 +2905,7 @@ export default function EnglishClassCourse2({
       style={{
         padding: mainStudentID ? 0 : "1rem",
         minHeight: theclass?.elements?.length > 0 ? "80vh" : "none",
-        fontFamily: "Plus Jakarta Sans",
+        fontFamily: "Lato",
         fontWeight: 600,
         fontStyle: "SemiBold",
         fontSize: "14px",

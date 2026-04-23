@@ -144,7 +144,7 @@ export default function StudentsRanking({
                   <div>
                     <span
                       style={{
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontWeight: 600,
                         fontStyle: "SemiBold",
                         fontSize: 16,
@@ -166,7 +166,7 @@ export default function StudentsRanking({
                     </span>
                     <span
                       style={{
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontWeight: 600,
                         fontStyle: "SemiBold",
                         fontSize: 16,
@@ -180,7 +180,7 @@ export default function StudentsRanking({
                   </div>
                   <span
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontStyle: "SemiBold",
                       fontSize: 16,

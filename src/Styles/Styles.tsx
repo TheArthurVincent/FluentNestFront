@@ -13,7 +13,7 @@ const getWhiteLabel = () => {
 
 export const partnerColor = (): string => {
   const wl = getWhiteLabel();
-  return wl.color || "#ed5914";
+  return wl.color || "#65a639";
 };
 
 export const textPrimaryColorContrast = (): string => {
@@ -25,7 +25,7 @@ export const logoPartner = (): string => {
   const wl = getWhiteLabel();
   return (
     wl.logo ||
-    "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
+    "https://ik.imagekit.io/vjz75qw96/assets/icons/FluentNest/FluentNest"
   );
 };
 

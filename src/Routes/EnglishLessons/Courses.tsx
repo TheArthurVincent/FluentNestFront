@@ -196,7 +196,7 @@ const titleStyle: React.CSSProperties = {
   margin: 0,
   fontSize: "0.98rem",
   lineHeight: 1.25,
-  fontFamily: "Plus Jakarta Sans", // tipografia do estilinho
+  fontFamily: "Lato", // tipografia do estilinho
   fontWeight: 600,
   display: "-webkit-box" as any,
   WebkitLineClamp: 2,
@@ -214,7 +214,7 @@ const badgeBase: React.CSSProperties = {
   letterSpacing: 0.2,
   textTransform: "uppercase" as const,
   borderRadius: 6,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   backdropFilter: "blur(2px)", // texto mais legível sobre imagem
 };
@@ -231,7 +231,7 @@ const lockBadge: React.CSSProperties = {
 const SectionTitleStyle: React.CSSProperties = {
   margin: "8px",
   fontSize: "1.1rem",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   letterSpacing: 0,
 };
@@ -349,7 +349,7 @@ const CourseCard: React.FC<{
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
         }}
         title={course.creatorFullName}
       >
@@ -681,7 +681,7 @@ export default function EnglishCourses({
       )}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",

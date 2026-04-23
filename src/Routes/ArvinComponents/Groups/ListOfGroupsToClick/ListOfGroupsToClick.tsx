@@ -22,7 +22,7 @@ type GroupItem = {
 };
 
 export const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
@@ -147,7 +147,7 @@ export function ListOfGroupsToClick({
                 alignItems: "center",
                 gap: 12,
                 transition: "0.2s",
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
               }}
             >
               {/* “Avatar” simples da turma */}

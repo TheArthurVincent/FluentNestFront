@@ -42,7 +42,7 @@ export const RecommendedMaterials: FC<RecommendedMaterialsProps> = ({
   }, [appLoaded, actualHeaders, studentId]);
 
   const styleLi = {
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 600,
     fontSize: "13px",
     lineHeight: "22px",

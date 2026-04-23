@@ -515,7 +515,7 @@ export default function Modules({
             style={{
               margin: "auto",
               padding: "10px",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: "14px",

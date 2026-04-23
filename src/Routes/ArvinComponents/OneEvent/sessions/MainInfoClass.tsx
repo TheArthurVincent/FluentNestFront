@@ -249,7 +249,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   ...inputStyle,
                   minHeight: 140,
                   resize: "vertical",
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               />
             </div>
@@ -1670,7 +1670,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                     ...inputStyle,
                     minHeight: 120,
                     resize: "vertical",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 />
 
@@ -1721,7 +1721,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
                   ...inputStyle,
                   minHeight: 120,
                   resize: "vertical",
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               />
             </div>

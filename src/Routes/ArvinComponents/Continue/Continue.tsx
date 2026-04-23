@@ -236,7 +236,7 @@ export const Continue: FC<ContinueProps> = ({
         {/* Título */}
         <span
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 700,
             fontSize: isDesktop ? 20 : 17,
             color: "#ffffff",
@@ -249,7 +249,7 @@ export const Continue: FC<ContinueProps> = ({
         {/* Descrição */}
         <span
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 500,
             fontSize: 13,
             color: "#e5e7eb",

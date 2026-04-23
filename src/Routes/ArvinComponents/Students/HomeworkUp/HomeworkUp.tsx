@@ -12,7 +12,7 @@ type HWUpProps = HeadersProps & {
 };
 
 export const newArvinTitleStyle: React.CSSProperties = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontSize: 24,
   letterSpacing: "0%",
@@ -37,7 +37,7 @@ export function HWUp({
   );
 
   const cardStyle: React.CSSProperties = {
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 600,
     fontSize: "14px",
     backgroundColor: "#ffffff",
@@ -63,7 +63,7 @@ export function HWUp({
     border: "1px solid transparent",
     padding: "10px 12px",
     cursor: "pointer",
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
     fontWeight: 700,
     fontSize: 13,
     transition: "all 160ms ease",

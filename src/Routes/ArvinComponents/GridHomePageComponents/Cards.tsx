@@ -95,7 +95,7 @@ export const StudyCards: FC<StudyCardsProps> = ({ isDesktop }) => {
 
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontSize: "13px",
                 fontWeight: 700,
                 color: "#030303",
@@ -107,7 +107,7 @@ export const StudyCards: FC<StudyCardsProps> = ({ isDesktop }) => {
 
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 700,
                 fontSize: "11px",
                 textTransform: "uppercase",

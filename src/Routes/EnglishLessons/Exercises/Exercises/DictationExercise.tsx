@@ -161,7 +161,7 @@ function metricChipStyle(
     color,
     fontSize: 12,
     fontWeight: 600,
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
   };
 }
 
@@ -199,7 +199,7 @@ const neutralMetricsChipStyle: React.CSSProperties = {
   border: "1px solid #E5E7EB",
   color: "#111827",
   fontSize: 12,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 const metricsWrapperStyle: React.CSSProperties = {
@@ -217,7 +217,7 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 600,
   color: "#111827",
   marginBottom: 8,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 const textareaStyle: React.CSSProperties = {
@@ -229,7 +229,7 @@ const textareaStyle: React.CSSProperties = {
   boxSizing: "border-box",
   fontSize: 14,
   lineHeight: 1.5,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 const primaryButtonStyle: React.CSSProperties = {
@@ -239,7 +239,7 @@ const primaryButtonStyle: React.CSSProperties = {
   color: "#FFFFFF",
   border: "none",
   cursor: "pointer",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 13,
   fontWeight: 600,
   display: "inline-flex",
@@ -254,7 +254,7 @@ const ghostButtonStyle: React.CSSProperties = {
   color: "#111827",
   border: "1px solid #E5E7EB",
   cursor: "pointer",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 13,
   display: "inline-flex",
   alignItems: "center",
@@ -265,7 +265,7 @@ const finishedContinueTextStyle: React.CSSProperties = {
   fontSize: 14,
   color: "#065F46",
   fontWeight: 600,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 // ===================== PROPS =====================
@@ -342,7 +342,7 @@ export function DictationExercise({
         <HeaderBar title={labels.dictationTitle} />
         <div
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontSize: 12,
             color: "#6B7280",
           }}
@@ -441,7 +441,7 @@ export function DictationExercise({
             right={
               <span
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   fontSize: 12,
                   fontWeight: 600,
                   color: "#6B7280",
@@ -485,7 +485,7 @@ export function DictationExercise({
                 style={{
                   fontSize: 13,
                   color: "#374151",
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                 }}
               >
                 Total de pontos: <strong>{totalPoints}</strong>
@@ -671,7 +671,7 @@ export function DictationExercise({
                       style={{
                         fontSize: 12,
                         color: "#6B7280",
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                       }}
                     >
                       Sua resposta
@@ -702,7 +702,7 @@ export function DictationExercise({
                               border: `1px solid ${palette.border}`,
                               background: palette.background,
                               color: palette.text,
-                              fontFamily: "Plus Jakarta Sans",
+                              fontFamily: "Lato",
                               fontSize: 12,
                               fontWeight: 700,
                             }}
@@ -719,7 +719,7 @@ export function DictationExercise({
                       fontSize: 12,
                       color: "#6B7280",
                       marginTop: 4,
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                     }}
                   >
                     Gabarito:
@@ -750,7 +750,7 @@ export function DictationExercise({
                     <div style={{ display: "grid", gap: 4 }}>
                       <b
                         style={{
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontSize: 13,
                           color: "#111827",
                         }}
@@ -761,7 +761,7 @@ export function DictationExercise({
                       <i
                         style={{
                           color: "#6B7280",
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontSize: 12,
                         }}
                       >
@@ -802,7 +802,7 @@ export function DictationExercise({
                     border: "1px solid #FDE68A",
                     fontSize: 13,
                     color: "#1F2937",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 >
                   <strong>Gabarito:</strong> {target}
@@ -845,7 +845,7 @@ export function DictationExercise({
                 maxHeight: "70vh",
                 padding: 16,
                 zIndex: 1000,
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,

@@ -663,11 +663,11 @@ export function MyProfile({
         </div>
       )}
 
-      <div style={{ fontFamily: "Plus Jakarta Sans" }}>
+      <div style={{ fontFamily: "Lato" }}>
         <div
           style={{
             margin: "auto",
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 600,
             fontStyle: "SemiBold",
             fontSize: "14px",

@@ -100,7 +100,7 @@ const LastClass: FC<LastClassProps> = ({
     <div style={{ margin: !isDesktop ? "0px" : "0px 16px 0px 0px" }}>
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontSize: "14px",
           borderRadius: "6px",

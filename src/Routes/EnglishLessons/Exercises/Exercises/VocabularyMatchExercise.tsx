@@ -78,7 +78,7 @@ const headerRightStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 8,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 12,
   color: "#4B5563",
 };
@@ -90,7 +90,7 @@ const restartButtonStyle: React.CSSProperties = {
   cursor: "pointer",
   fontWeight: 600,
   border: "1px solid #E5E7EB",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontSize: 11,
 };
 
@@ -143,7 +143,7 @@ const audioButtonStyle: React.CSSProperties = {
 const checkTagStyle: React.CSSProperties = {
   fontSize: 12,
   fontWeight: 700,
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   color: "inherit",
 };
 function getAudioButtonStyle(
@@ -169,7 +169,7 @@ const finishedRowStyle: React.CSSProperties = {
   alignItems: "center",
   gap: 8,
   justifyContent: "space-between",
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
 };
 
 // ==== COMPONENTES DE APOIO ====
@@ -616,7 +616,7 @@ export default function VocabularyMatchExercise({
                           fontStyle: "italic",
                           fontSize: 13,
                           wordBreak: "break-word",
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontWeight: isDone ? 600 : 400,
                         }}
                       >
@@ -639,7 +639,7 @@ export default function VocabularyMatchExercise({
             display: "flex",
             flexDirection: "column",
             gap: 8,
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
           }}
         >
           <div
@@ -697,7 +697,7 @@ export default function VocabularyMatchExercise({
                     maxHeight: "70vh",
                     padding: 16,
                     zIndex: 1000,
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     display: "flex",
                     flexDirection: "column",
                     gap: 12,

@@ -10,7 +10,7 @@ import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLesso
 import { levels } from "./RankingLevelsList";
 
 const FONT =
-  "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+  "Lato, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
 
 function getMonthsSince(
   startYear: number,

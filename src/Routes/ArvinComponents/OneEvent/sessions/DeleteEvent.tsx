@@ -94,7 +94,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
             width: "100%",
             maxWidth: 420,
             boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
           }}
           onClick={(e) => e.stopPropagation()}
         >

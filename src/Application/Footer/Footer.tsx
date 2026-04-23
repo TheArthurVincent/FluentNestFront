@@ -23,7 +23,7 @@ export default function AppFooter({ see }: AppFooterIn) {
       }}
     >
       <img
-        src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
+        src="https://ik.imagekit.io/vjz75qw96/assets/icons/FluentNest/FluentNest"
         alt="ARVIN Logo"
         style={{
           height: "1.5rem",

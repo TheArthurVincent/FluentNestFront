@@ -86,7 +86,7 @@ function ArvinLandingPageNew() {
     paddingLeft: "24px",
     backgroundColor: selectedToggle == 1 ? "#ED5914" : "#101721",
     color: "#FFF",
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
   };
 
   const selectedToggle2 = {
@@ -99,7 +99,7 @@ function ArvinLandingPageNew() {
     paddingLeft: "24px",
     backgroundColor: "#f3f5f7",
     color: "#90A3BF",
-    fontFamily: "Plus Jakarta Sans",
+    fontFamily: "Lato",
   };
 
   const scrollToPlans = () => {
@@ -258,7 +258,7 @@ function ArvinLandingPageNew() {
                 </div>
                 <div
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     maxWidth: 850,
                     fontWeight: 400,
                     fontStyle: "Regular",
@@ -297,7 +297,7 @@ function ArvinLandingPageNew() {
                     style={{
                       color: "#FFF",
                       backgroundColor: "#ED5914",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontSize: "14px",
                       lineHeight: "150%",
@@ -315,7 +315,7 @@ function ArvinLandingPageNew() {
                     style={{
                       backgroundColor: "#1A202C",
                       color: "#C3D4E9",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontSize: "14px",
                       lineHeight: "150%",
@@ -375,7 +375,7 @@ function ArvinLandingPageNew() {
                   <div
                     style={{
                       color: "#ED5914",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 700,
                       fontStyle: "Bold",
                       fontSize: "12px",
@@ -389,7 +389,7 @@ function ArvinLandingPageNew() {
                   <div
                     style={{
                       color: "#101721",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       marginTop: "6px",
                       fontWeight: 700,
                       fontStyle: "Bold",
@@ -448,7 +448,7 @@ function ArvinLandingPageNew() {
                               <p
                                 style={{
                                   color: "#101721",
-                                  fontFamily: "Plus Jakarta Sans",
+                                  fontFamily: "Lato",
                                   fontWeight: 600,
                                   fontStyle: "SemiBold",
                                   marginTop: "16px",
@@ -464,7 +464,7 @@ function ArvinLandingPageNew() {
                             {item.description && (
                               <p
                                 style={{
-                                  fontFamily: "Plus Jakarta Sans",
+                                  fontFamily: "Lato",
                                   fontWeight: 500,
                                   fontStyle: "Medium",
                                   fontSize: "14px",
@@ -504,7 +504,7 @@ function ArvinLandingPageNew() {
                   <div
                     style={{
                       color: "#ED5914",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 700,
                       fontStyle: "Bold",
                       fontSize: "12px",
@@ -528,7 +528,7 @@ function ArvinLandingPageNew() {
                       <div
                         style={{
                           color: "#101721",
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           marginTop: "6px",
                           fontWeight: 700,
                           padding: "2px",
@@ -584,7 +584,7 @@ function ArvinLandingPageNew() {
                       <div>
                         <div
                           style={{
-                            fontFamily: "Plus Jakarta Sans",
+                            fontFamily: "Lato",
                             fontWeight: 700,
                             fontStyle: "Bold",
                             fontSize: "16px",
@@ -619,7 +619,7 @@ function ArvinLandingPageNew() {
                                 />
                                 <p
                                   style={{
-                                    fontFamily: "Plus Jakarta Sans",
+                                    fontFamily: "Lato",
                                     fontWeight: 500,
                                     fontStyle: "Medium",
                                     fontSize: "14px",
@@ -654,7 +654,7 @@ function ArvinLandingPageNew() {
                                 />
                                 <p
                                   style={{
-                                    fontFamily: "Plus Jakarta Sans",
+                                    fontFamily: "Lato",
                                     fontWeight: 500,
                                     fontStyle: "Medium",
                                     fontSize: "14px",
@@ -714,7 +714,7 @@ function ArvinLandingPageNew() {
                 >
                   <div
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 700,
                       fontSize: 12,
                       lineHeight: "150%",
@@ -727,7 +727,7 @@ function ArvinLandingPageNew() {
 
                   <p
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 700,
                       fontSize: 24,
                       lineHeight: "150%",
@@ -741,7 +741,7 @@ function ArvinLandingPageNew() {
 
                   <p
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 500,
                       fontSize: 14,
                       lineHeight: "150%",
@@ -790,7 +790,7 @@ function ArvinLandingPageNew() {
                             <p
                               style={{
                                 margin: "0 0 8px 0",
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontWeight: 700,
                                 fontSize: 14,
                                 lineHeight: "150%",
@@ -803,7 +803,7 @@ function ArvinLandingPageNew() {
                             <p
                               style={{
                                 margin: 0,
-                                fontFamily: "Plus Jakarta Sans",
+                                fontFamily: "Lato",
                                 fontWeight: 500,
                                 fontSize: 14,
                                 lineHeight: "150%",
@@ -842,7 +842,7 @@ function ArvinLandingPageNew() {
                               <p
                                 style={{
                                   margin: 0,
-                                  fontFamily: "Plus Jakarta Sans",
+                                  fontFamily: "Lato",
                                   fontWeight: 700,
                                   fontSize: 14,
                                   lineHeight: "150%",
@@ -855,7 +855,7 @@ function ArvinLandingPageNew() {
                               <p
                                 style={{
                                   margin: 0,
-                                  fontFamily: "Plus Jakarta Sans",
+                                  fontFamily: "Lato",
                                   fontWeight: 400,
                                   fontSize: 14,
                                   lineHeight: "150%",
@@ -886,7 +886,7 @@ function ArvinLandingPageNew() {
               >
                 <div
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 >
                   <p
@@ -907,7 +907,7 @@ function ArvinLandingPageNew() {
                       color: "#596780",
                       marginTop: "12px",
                       marginBottom: "36px",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 500,
                       fontStyle: "Medium",
                       fontSize: "14px",
@@ -986,7 +986,7 @@ function ArvinLandingPageNew() {
                     padding: "4px 12px",
                     marginBottom: "24px",
                     borderRadius: "30px",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                   }}
                 >
                   Economize 20%
@@ -1033,7 +1033,7 @@ function ArvinLandingPageNew() {
                       </div>
                       <p
                         style={{
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontWeight: 500,
                           fontStyle: "Medium",
                           fontSize: "14px",
@@ -1054,7 +1054,7 @@ function ArvinLandingPageNew() {
                         <span
                           style={{
                             color: "#101721",
-                            fontFamily: " Plus Jakarta Sans",
+                            fontFamily: " Lato",
                             fontWeight: 600,
                             fontStyle: "SemiBold",
                             fontSize: "32px",
@@ -1067,7 +1067,7 @@ function ArvinLandingPageNew() {
                         <span
                           style={{
                             color: "#596780",
-                            fontFamily: "Plus Jakarta Sans",
+                            fontFamily: "Lato",
                             fontWeight: 500,
                             fontStyle: "Medium",
                             fontSize: "16px",
@@ -1153,7 +1153,7 @@ function ArvinLandingPageNew() {
                               )}
                               <span
                                 style={{
-                                  fontFamily: "Plus Jakarta Sans",
+                                  fontFamily: "Lato",
                                   fontWeight: 500,
                                   fontStyle: "Medium",
                                   fontSize: "14px",
@@ -1180,7 +1180,7 @@ function ArvinLandingPageNew() {
                             marginRight: "auto",
                             display: "block",
                             width: "90%",
-                            fontFamily: "Plus Jakarta Sans",
+                            fontFamily: "Lato",
                             fontWeight: 600,
                             fontStyle: "SemiBold",
                             fontSize: "14px",
@@ -1212,7 +1212,7 @@ function ArvinLandingPageNew() {
               >
                 <p
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 700,
                     fontSize: 24,
                     lineHeight: "150%",
@@ -1235,7 +1235,7 @@ function ArvinLandingPageNew() {
                     style={{
                       backgroundColor: "#1A202C",
                       color: "#C3D4E9",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontSize: "14px",
                       lineHeight: "150%",
@@ -1257,7 +1257,7 @@ function ArvinLandingPageNew() {
                     style={{
                       color: "#FFF",
                       backgroundColor: "#ED5914",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontSize: "14px",
                       lineHeight: "150%",
@@ -1273,7 +1273,7 @@ function ArvinLandingPageNew() {
                   </button>
                   <p
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 700,
                       fontSize: 24,
                       lineHeight: "150%",
@@ -1287,7 +1287,7 @@ function ArvinLandingPageNew() {
                   </p>
                   <p
                     style={{
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       maxWidth: 850,
                       fontWeight: 400,
                       fontStyle: "Regular",
@@ -1316,7 +1316,7 @@ function ArvinLandingPageNew() {
                       marginRight: "auto",
                       display: "flex",
                       width: "90%",
-                      fontFamily: "Plus Jakarta Sans",
+                      fontFamily: "Lato",
                       fontWeight: 600,
                       fontStyle: "SemiBold",
                       fontSize: "14px",
@@ -1378,7 +1378,7 @@ function ArvinLandingPageNew() {
               >
                 <div
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 700,
                     fontSize: 12,
                     marginBottom: "6px",
@@ -1391,7 +1391,7 @@ function ArvinLandingPageNew() {
                 </div>
                 <p
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 700,
                     marginBottom: "12px",
                     fontSize: 24,
@@ -1406,7 +1406,7 @@ function ArvinLandingPageNew() {
 
                 <p
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 500,
                     fontSize: 14,
                     lineHeight: "150%",
@@ -1434,7 +1434,7 @@ function ArvinLandingPageNew() {
                     marginRight: "auto",
                     display: "flex",
                     width: "90%",
-                    fontFamily: "Plus Jakarta Sans",
+                    fontFamily: "Lato",
                     fontWeight: 600,
                     fontStyle: "SemiBold",
                     fontSize: "14px",
@@ -1574,7 +1574,7 @@ function ArvinLandingPageNew() {
                         id="terms-title-inline"
                         style={{
                           margin: 0,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontWeight: 700,
                           fontSize: 14,
                           letterSpacing: "-0.02em",
@@ -1603,7 +1603,7 @@ function ArvinLandingPageNew() {
                       style={{
                         padding: 20,
                         overflow: "auto",
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontSize: 14,
                         lineHeight: "160%",
                         color: "#596780",
@@ -1661,7 +1661,7 @@ function ArvinLandingPageNew() {
                         id="policy-title-inline"
                         style={{
                           margin: 0,
-                          fontFamily: "Plus Jakarta Sans",
+                          fontFamily: "Lato",
                           fontWeight: 700,
                           fontSize: 14,
                           letterSpacing: "-0.02em",
@@ -1690,7 +1690,7 @@ function ArvinLandingPageNew() {
                       style={{
                         padding: 20,
                         overflow: "auto",
-                        fontFamily: "Plus Jakarta Sans",
+                        fontFamily: "Lato",
                         fontSize: 14,
                         lineHeight: "160%",
                         color: "#596780",

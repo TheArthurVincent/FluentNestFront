@@ -350,7 +350,7 @@ export default function ImageToWordExercise({
               display: "flex",
               flexDirection: "column",
               gap: 12,
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
             }}
           >
             <div
@@ -610,7 +610,7 @@ export default function ImageToWordExercise({
                 maxHeight: "70vh",
                 padding: 16,
                 zIndex: 1000,
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,

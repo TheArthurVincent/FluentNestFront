@@ -25,7 +25,7 @@ type HomeCardItem = {
 };
 
 export const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontSize: 24,
 };
@@ -265,7 +265,7 @@ export function MyHomePage({
           >
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 700,
                 fontSize: "14px",
                 color: "#1D2939",
@@ -276,7 +276,7 @@ export function MyHomePage({
 
             <span
               style={{
-                fontFamily: "Plus Jakarta Sans",
+                fontFamily: "Lato",
                 fontWeight: 500,
                 fontSize: "12px",
                 color: "#475467",
@@ -401,7 +401,7 @@ export function MyHomePage({
             >
               <span
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   fontSize: "16px",
                   fontWeight: 700,
                   color: "#030303",
@@ -413,7 +413,7 @@ export function MyHomePage({
 
               <span
                 style={{
-                  fontFamily: "Plus Jakarta Sans",
+                  fontFamily: "Lato",
                   fontWeight: 700,
                   fontSize: "11px",
                   textTransform: "uppercase",

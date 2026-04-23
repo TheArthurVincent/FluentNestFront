@@ -115,7 +115,7 @@ export default function GenerateEVSModal({
         border: "1px solid #e5e7eb",
         boxShadow: "0 18px 45px rgba(0,0,0,0.35)",
         padding: 16,
-        fontFamily: "Plus Jakarta Sans, system-ui, sans-serif",
+        fontFamily: "Lato, system-ui, sans-serif",
       },
       headerRow: {
         display: "flex",

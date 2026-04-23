@@ -37,7 +37,7 @@ export const GroupHeader: FC<{ group: GroupItem; isDesktop?: boolean }> = ({
           <div style={newArvinTitleStyle}>{group.name || "Turma sem nome"}</div>
           <div
             style={{
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
               fontSize: 13,
               color: "#64748b",
               marginTop: 4,

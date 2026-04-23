@@ -166,7 +166,7 @@ export const NewHomeworkModal: FC<NewHomeworkModalProps> = ({
             pb: 1,
           }}
         >
-          <span style={{ fontFamily: "Plus Jakarta Sans", fontWeight: 600 }}>
+          <span style={{ fontFamily: "Lato", fontWeight: 600 }}>
             Novo Homework
           </span>
           <IconButton onClick={() => setOpen(false)} size="small">

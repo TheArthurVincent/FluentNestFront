@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Lesson, mockCourse, Module } from "./mockCourse";
 
 const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontSize: 24,
 } as const;
@@ -90,7 +90,7 @@ export default function CourseStructure({ isDesktop }: CourseStructureProps) {
         {/* Sidebar / Lista de módulos e aulas */}
         <div
           style={{
-            fontFamily: "Plus Jakarta Sans",
+            fontFamily: "Lato",
             fontWeight: 600,
             margin: !isDesktop ? "12px" : "16px auto",
             fontStyle: "SemiBold",

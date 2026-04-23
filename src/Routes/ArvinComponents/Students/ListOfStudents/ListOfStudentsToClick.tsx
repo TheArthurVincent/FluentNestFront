@@ -15,7 +15,7 @@ type ListOfStudentsToClickProps = HeadersProps & {
 };
 
 export const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
@@ -313,7 +313,7 @@ export function ListOfStudentsToClick({
               justifyContent: "space-between",
               gap: 12,
               transition: "0.2s",
-              fontFamily: "Plus Jakarta Sans",
+              fontFamily: "Lato",
             }}
           >
             <Link

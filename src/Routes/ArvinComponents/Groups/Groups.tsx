@@ -12,7 +12,7 @@ type TurmasProps = HeadersProps & {
 };
 
 export const newArvinTitleStyle = {
-  fontFamily: "Plus Jakarta Sans",
+  fontFamily: "Lato",
   fontWeight: 600,
   fontStyle: "SemiBold",
   fontSize: 24,
@@ -59,7 +59,7 @@ export function Turmas({
       {/* Card principal – igual ao Students */}
       <div
         style={{
-          fontFamily: "Plus Jakarta Sans",
+          fontFamily: "Lato",
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
